@@ -1,0 +1,61 @@
+{
+ "items": [
+  {
+   "id": "rq_0001",
+   "kind": "dialect",
+   "pattern_id": "ad_107",
+   "raw": "Levantine/Gulf-mixed Arabic (Shami-leaning)",
+   "candidates": [
+    "shami",
+    "gulf"
+   ],
+   "note": "أكتر من لهجة مذكورة",
+   "applied": false,
+   "status": "open",
+   "resolved_value": null,
+   "created_at": "@now-2d"
+  },
+  {
+   "id": "rq_0002",
+   "kind": "framework_order",
+   "pattern_id": "ad_105",
+   "raw": "Authority Reveal | Us vs Them",
+   "candidates": [
+    "authority_reveal",
+    "us_vs_them"
+   ],
+   "note": "مدموج بالأصل — الترتيب حسب الكتابة وبيستاهل تأكيد",
+   "applied": true,
+   "status": "open",
+   "resolved_value": null,
+   "created_at": "@now-2d"
+  },
+  {
+   "id": "rq_0003",
+   "kind": "category",
+   "pattern_id": "ad_114",
+   "raw": "Beauty & wellness (unclear)",
+   "candidates": [
+    "skincare",
+    "supplements"
+   ],
+   "note": "فئة غير محسومة",
+   "applied": false,
+   "status": "open",
+   "resolved_value": null,
+   "created_at": "@now-1d"
+  },
+  {
+   "id": "rq_0004",
+   "kind": "country",
+   "pattern_id": "ad_112",
+   "raw": "السوق العربي",
+   "candidates": [],
+   "note": "بلد غير محدد — «السوق العربي» مثلاً مش بلد",
+   "applied": false,
+   "status": "open",
+   "resolved_value": null,
+   "created_at": "@now-1d"
+  }
+ ]
+}

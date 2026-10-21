@@ -1,0 +1,923 @@
+{
+ "vram_gb": 6.0,
+ "models": 3,
+ "shots": [
+  {
+   "id": "s1c1",
+   "scene": 1,
+   "type": "medium",
+   "duration_ms": 2880,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": {
+    "model_id": "mm_001",
+    "clip": "clips/c1.mp4",
+    "duration_ms": 2880,
+    "lipsync": false
+   },
+   "candidates": [
+    {
+     "clip": "clips/c1.mp4",
+     "model_id": "mm_001",
+     "model_name": "LTX محلي",
+     "duration_ms": 2880,
+     "fit": "trimmed",
+     "lipsync": false
+    }
+   ],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 130
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 230
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s1c2",
+   "scene": 1,
+   "type": "close",
+   "duration_ms": 3120,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 140
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 250
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s2c1",
+   "scene": 2,
+   "type": "hand_product",
+   "duration_ms": 2122,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [
+    {
+     "clip": "clips/c1.mp4",
+     "model_id": "ext:flow",
+     "model_name": "Flow (الإضافة)",
+     "provider": "extension:flow",
+     "path_used": "extension",
+     "duration_ms": 2122,
+     "fit": "trimmed",
+     "lipsync": false
+    }
+   ],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 95
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 170
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s2c2",
+   "scene": 2,
+   "type": "medium",
+   "duration_ms": 2264,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 102
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 181
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s2c3",
+   "scene": 2,
+   "type": "medium",
+   "duration_ms": 2614,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 118
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 209
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s3c1",
+   "scene": 3,
+   "type": "medium",
+   "duration_ms": 2264,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 102
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 181
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s3c2",
+   "scene": 3,
+   "type": "medium",
+   "duration_ms": 2334,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 105
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 187
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s3c3",
+   "scene": 3,
+   "type": "medium",
+   "duration_ms": 2402,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 108
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 192
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s4c1",
+   "scene": 4,
+   "type": "medium",
+   "duration_ms": 2557,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 115
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 205
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s4c2",
+   "scene": 4,
+   "type": "medium",
+   "duration_ms": 2337,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 105
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 187
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s4c3",
+   "scene": 4,
+   "type": "medium",
+   "duration_ms": 2106,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 95
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 168
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s5c1",
+   "scene": 5,
+   "type": "medium",
+   "duration_ms": 2520,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 113
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 202
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s5c2",
+   "scene": 5,
+   "type": "medium",
+   "duration_ms": 1985,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 89
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 159
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s5c3",
+   "scene": 5,
+   "type": "medium",
+   "duration_ms": 2495,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 112
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 200
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s6c1",
+   "scene": 6,
+   "type": "medium",
+   "duration_ms": 2394,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 108
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 192
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s6c2",
+   "scene": 6,
+   "type": "medium",
+   "duration_ms": 2395,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 108
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 192
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s6c3",
+   "scene": 6,
+   "type": "medium",
+   "duration_ms": 2211,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 99
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 177
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s7c1",
+   "scene": 7,
+   "type": "medium",
+   "duration_ms": 2914,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 131
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 233
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  },
+  {
+   "id": "s7c2",
+   "scene": 7,
+   "type": "medium",
+   "duration_ms": 3086,
+   "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
+   "talking": false,
+   "motion": null,
+   "candidates": [],
+   "has_image": true,
+   "ranked": [
+    {
+     "id": "mm_001",
+     "name": "LTX محلي",
+     "score": 19.5,
+     "matched": [
+      "product",
+      "realism"
+     ],
+     "eta_sec": 139
+    },
+    {
+     "id": "mm_002",
+     "name": "Wan صغير",
+     "score": 9.0,
+     "matched": [
+      "realism"
+     ],
+     "eta_sec": 247
+    }
+   ],
+   "excluded": [
+    {
+     "id": "mm_003",
+     "name": "Hunyuan",
+     "reason": "بيحتاج 24GB وعندك 6GB حرة"
+    }
+   ],
+   "needs": [
+    "product",
+    "realism"
+   ]
+  }
+ ],
+ "problems": [
+  {
+   "shot": "s1c2",
+   "message": "لقطة s1c2: ما في حركة مختارة"
+  },
+  {
+   "shot": "s2c1",
+   "message": "لقطة s2c1: ما في حركة مختارة"
+  },
+  {
+   "shot": "s2c2",
+   "message": "لقطة s2c2: ما في حركة مختارة"
+  },
+  {
+   "shot": "s2c3",
+   "message": "لقطة s2c3: ما في حركة مختارة"
+  },
+  {
+   "shot": "s3c1",
+   "message": "لقطة s3c1: ما في حركة مختارة"
+  },
+  {
+   "shot": "s3c2",
+   "message": "لقطة s3c2: ما في حركة مختارة"
+  },
+  {
+   "shot": "s3c3",
+   "message": "لقطة s3c3: ما في حركة مختارة"
+  },
+  {
+   "shot": "s4c1",
+   "message": "لقطة s4c1: ما في حركة مختارة"
+  },
+  {
+   "shot": "s4c2",
+   "message": "لقطة s4c2: ما في حركة مختارة"
+  },
+  {
+   "shot": "s4c3",
+   "message": "لقطة s4c3: ما في حركة مختارة"
+  },
+  {
+   "shot": "s5c1",
+   "message": "لقطة s5c1: ما في حركة مختارة"
+  },
+  {
+   "shot": "s5c2",
+   "message": "لقطة s5c2: ما في حركة مختارة"
+  },
+  {
+   "shot": "s5c3",
+   "message": "لقطة s5c3: ما في حركة مختارة"
+  },
+  {
+   "shot": "s6c1",
+   "message": "لقطة s6c1: ما في حركة مختارة"
+  },
+  {
+   "shot": "s6c2",
+   "message": "لقطة s6c2: ما في حركة مختارة"
+  },
+  {
+   "shot": "s6c3",
+   "message": "لقطة s6c3: ما في حركة مختارة"
+  },
+  {
+   "shot": "s7c1",
+   "message": "لقطة s7c1: ما في حركة مختارة"
+  },
+  {
+   "shot": "s7c2",
+   "message": "لقطة s7c2: ما في حركة مختارة"
+  }
+ ],
+ "eta_total_sec": 1984
+}

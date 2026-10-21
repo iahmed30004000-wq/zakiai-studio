@@ -1,0 +1,2600 @@
+{
+ "ad_105": {
+  "id": "ad_105",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "كشف السلطة الطبية",
+  "fields": {
+   "pattern_name": "كشف السلطة الطبية",
+   "one_line_summary": "كشف السلطة الطبية: خطّاف authority ← إثبات ← دعوة للطلب.",
+   "framework": "authority_reveal",
+   "framework_secondary": null,
+   "product_category": "fragrance",
+   "dialect_or_language": "gulf",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 8,
+   "production_complexity": null,
+   "hook": {
+    "type": "authority",
+    "duration_sec": 6.4,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 12.6,
+   "product_entry_style": null,
+   "proof_mechanism": "authority",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 36.0,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 40.0,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 6.4,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 5.9,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 3.3,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 6.2,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 7.3,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 7.1,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 3.8,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 2,
+   "names": [
+    "#1 - kama",
+    "#4 - vara"
+   ]
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_106": {
+  "id": "ad_106",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "كشف السلطة — نسخة قصيرة",
+  "fields": {
+   "pattern_name": "كشف السلطة — نسخة قصيرة",
+   "one_line_summary": "كشف السلطة — نسخة قصيرة: خطّاف authority ← إثبات ← دعوة للطلب.",
+   "framework": "authority_reveal",
+   "framework_secondary": null,
+   "product_category": "fragrance",
+   "dialect_or_language": "gulf",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 7,
+   "production_complexity": null,
+   "hook": {
+    "type": "authority",
+    "duration_sec": 8.6,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 15.9,
+   "product_entry_style": null,
+   "proof_mechanism": "authority",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 38.4,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 42.4,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 8.6,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 3.8,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 6.5,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 7.3,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 5.7,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 6.5,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 4.0,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_107": {
+  "id": "ad_107",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "الخبير بالمعمل",
+  "fields": {
+   "pattern_name": "الخبير بالمعمل",
+   "one_line_summary": "الخبير بالمعمل: خطّاف authority ← إثبات ← دعوة للطلب.",
+   "framework": "authority_reveal",
+   "framework_secondary": null,
+   "product_category": "fragrance",
+   "dialect_or_language": "msa_simple",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 6,
+   "production_complexity": null,
+   "hook": {
+    "type": "authority",
+    "duration_sec": 5.3,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 13.6,
+   "product_entry_style": null,
+   "proof_mechanism": "authority",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 39.7,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 43.7,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 5.3,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 4.8,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 6.0,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 8.3,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 5.6,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 4.6,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 9.1,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_108": {
+  "id": "ad_108",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "سلطة دينية تنقض الشك",
+  "fields": {
+   "pattern_name": "سلطة دينية تنقض الشك",
+   "one_line_summary": "سلطة دينية تنقض الشك: خطّاف shock ← إثبات ← دعوة للطلب.",
+   "framework": "authority_reveal",
+   "framework_secondary": null,
+   "product_category": "eye_care",
+   "dialect_or_language": "msa_simple",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 5,
+   "production_complexity": null,
+   "hook": {
+    "type": "shock",
+    "duration_sec": 8.5,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 13.0,
+   "product_entry_style": null,
+   "proof_mechanism": "authority",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 42.5,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 46.5,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 8.5,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 9.4,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 6.1,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 4.5,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 9.0,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 4.2,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 4.8,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_109": {
+  "id": "ad_109",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "أربع مشاكل وحلّيناها",
+  "fields": {
+   "pattern_name": "أربع مشاكل وحلّيناها",
+   "one_line_summary": "أربع مشاكل وحلّيناها: خطّاف question ← إثبات ← دعوة للطلب.",
+   "framework": "pas",
+   "framework_secondary": null,
+   "product_category": "hair_removal",
+   "dialect_or_language": "shami",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 9,
+   "production_complexity": null,
+   "hook": {
+    "type": "question",
+    "duration_sec": 7.0,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 15.5,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 42.1,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 46.1,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 7.0,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 3.6,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 5.4,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 8.5,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 7.5,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 6.1,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 8.0,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_110": {
+  "id": "ad_110",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "قبل وبعد بلا فلتر",
+  "fields": {
+   "pattern_name": "قبل وبعد بلا فلتر",
+   "one_line_summary": "قبل وبعد بلا فلتر: خطّاف demo ← إثبات ← دعوة للطلب.",
+   "framework": "demo_proof",
+   "framework_secondary": null,
+   "product_category": "hair_removal",
+   "dialect_or_language": "shami",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 8,
+   "production_complexity": null,
+   "hook": {
+    "type": "demo",
+    "duration_sec": 6.1,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 14.4,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 50.8,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 54.8,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 6.1,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 6.4,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 9.3,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 8.3,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 7.5,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 8.5,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 8.7,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_111": {
+  "id": "ad_111",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "شهادة زبونة حقيقية",
+  "fields": {
+   "pattern_name": "شهادة زبونة حقيقية",
+   "one_line_summary": "شهادة زبونة حقيقية: خطّاف testimonial ← إثبات ← دعوة للطلب.",
+   "framework": "ugc_testimonial",
+   "framework_secondary": null,
+   "product_category": "skincare",
+   "dialect_or_language": "egyptian",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 8,
+   "production_complexity": null,
+   "hook": {
+    "type": "testimonial",
+    "duration_sec": 5.8,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 14.6,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 40.1,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 44.1,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 5.8,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 4.4,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 8.5,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 8.8,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 8.5,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 4.0,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 4.1,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_112": {
+  "id": "ad_112",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "الحيلة اللي ما حدا بيقولها",
+  "fields": {
+   "pattern_name": "الحيلة اللي ما حدا بيقولها",
+   "one_line_summary": "الحيلة اللي ما حدا بيقولها: خطّاف secret ← إثبات ← دعوة للطلب.",
+   "framework": "the_hack",
+   "framework_secondary": null,
+   "product_category": "skincare",
+   "dialect_or_language": "gulf",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 7,
+   "production_complexity": null,
+   "hook": {
+    "type": "secret",
+    "duration_sec": 7.4,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 15.8,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 42.4,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 46.4,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 7.4,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 8.5,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 7.3,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 8.4,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 3.4,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 8.1,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 3.3,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_113": {
+  "id": "ad_113",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "نحن مقابل السوق",
+  "fields": {
+   "pattern_name": "نحن مقابل السوق",
+   "one_line_summary": "نحن مقابل السوق: خطّاف comparison ← إثبات ← دعوة للطلب.",
+   "framework": "us_vs_them",
+   "framework_secondary": null,
+   "product_category": "fragrance",
+   "dialect_or_language": "gulf",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 7,
+   "production_complexity": null,
+   "hook": {
+    "type": "comparison",
+    "duration_sec": 3.4,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 12.9,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 34.7,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 38.7,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 3.4,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 5.2,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 4.7,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 9.5,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 3.6,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 6.3,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 6.0,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_114": {
+  "id": "ad_114",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "قصة صاحبة المشروع",
+  "fields": {
+   "pattern_name": "قصة صاحبة المشروع",
+   "one_line_summary": "قصة صاحبة المشروع: خطّاف story ← إثبات ← دعوة للطلب.",
+   "framework": "story",
+   "framework_secondary": null,
+   "product_category": "skincare",
+   "dialect_or_language": "shami",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 6,
+   "production_complexity": null,
+   "hook": {
+    "type": "story",
+    "duration_sec": 5.0,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 14.0,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 47.9,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 51.9,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 5.0,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 8.6,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 7.7,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 9.0,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 7.7,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 8.6,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 5.3,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_115": {
+  "id": "ad_115",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "ترتيب أفضل خمسة",
+  "fields": {
+   "pattern_name": "ترتيب أفضل خمسة",
+   "one_line_summary": "ترتيب أفضل خمسة: خطّاف list ← إثبات ← دعوة للطلب.",
+   "framework": "countdown_ranked",
+   "framework_secondary": null,
+   "product_category": "supplements",
+   "dialect_or_language": "msa_simple",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 5,
+   "production_complexity": null,
+   "hook": {
+    "type": "list",
+    "duration_sec": 8.9,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 12.7,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 37.9,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 41.9,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 8.9,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 5.2,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 6.6,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 3.8,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 3.3,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 7.1,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 7.0,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "auth_offer_1": {
+  "id": "auth_offer_1",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "authored",
+  "name": "حزمة العرض المحدود",
+  "fields": {
+   "pattern_name": "حزمة العرض المحدود",
+   "one_line_summary": "حزمة العرض المحدود: خطّاف offer ← إثبات ← دعوة للطلب.",
+   "framework": "offer_bundle",
+   "framework_secondary": null,
+   "product_category": "fragrance",
+   "dialect_or_language": "gulf",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 7,
+   "production_complexity": null,
+   "hook": {
+    "type": "offer",
+    "duration_sec": 5.1,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 10.6,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 38.0,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 42.0,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 5.1,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 3.9,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 7.1,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 5.5,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 5.9,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 9.1,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 5.4,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "proven_ugc_rash": {
+  "id": "proven_ugc_rash",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "proven",
+  "name": "شهادة بعد الطفح — مثبت",
+  "fields": {
+   "pattern_name": "شهادة بعد الطفح — مثبت",
+   "one_line_summary": "شهادة بعد الطفح — مثبت: خطّاف testimonial ← إثبات ← دعوة للطلب.",
+   "framework": "ugc_testimonial",
+   "framework_secondary": null,
+   "product_category": "hair_removal",
+   "dialect_or_language": "shami",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 9,
+   "production_complexity": null,
+   "hook": {
+    "type": "testimonial",
+    "duration_sec": 7.8,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 15.2,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 41.4,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 45.4,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 7.8,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 5.8,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 4.7,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 7.4,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 5.6,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 6.3,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 7.8,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_116": {
+  "id": "ad_116",
+  "rev": "mockrev",
+  "archived": false,
+  "origin": "mined",
+  "name": "مكوّنات بالمجهر",
+  "fields": {
+   "pattern_name": "مكوّنات بالمجهر",
+   "one_line_summary": "مكوّنات بالمجهر: خطّاف macro ← إثبات ← دعوة للطلب.",
+   "framework": "ingredient_reveal",
+   "framework_secondary": null,
+   "product_category": "supplements",
+   "dialect_or_language": "egyptian",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 6,
+   "production_complexity": null,
+   "hook": {
+    "type": "macro",
+    "duration_sec": 7.2,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 10.9,
+   "product_entry_style": null,
+   "proof_mechanism": "demonstration",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 32.6,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 36.6,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 7.2,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 6.9,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 5.3,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة متوسطة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 3.7,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 3.6,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 4.8,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 5.1,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ },
+ "ad_999": {
+  "id": "ad_999",
+  "rev": "mockrev",
+  "archived": true,
+  "origin": "mined",
+  "name": "نمط قديم مؤرشف",
+  "fields": {
+   "pattern_name": "نمط قديم مؤرشف",
+   "one_line_summary": "كشف السلطة — نسخة قصيرة: خطّاف authority ← إثبات ← دعوة للطلب.",
+   "framework": "authority_reveal",
+   "framework_secondary": null,
+   "product_category": "fragrance",
+   "dialect_or_language": "gulf",
+   "dialect_sub": null,
+   "target_audience": null,
+   "reusability_score": 7,
+   "production_complexity": null,
+   "hook": {
+    "type": "authority",
+    "duration_sec": 8.6,
+    "mechanism": "ادّعاء يخلق فضولاً وشكاً بنفس اللحظة فيضطر المشاهد يكمل.",
+    "transferable_template": "شفت [نتيجة صعبة التصديق] بعد ما جرّبت [طريقة بسيطة]."
+   },
+   "product_entry_sec": 15.9,
+   "product_entry_style": null,
+   "proof_mechanism": "authority",
+   "objection_handled": [
+    "هل هذا حقيقي أم دعاية؟ — يُرد عليه بإثبات بصري",
+    "هل يناسب حالتي؟ — يُرد بقائمة أعراض عامة"
+   ],
+   "cta": {
+    "type": "رابط طلب مباشر",
+    "placement_sec": 38.4,
+    "wording_style": "أمر قصير مع سعر ثابت"
+   },
+   "pacing": {
+    "total_duration_sec": 42.4,
+    "cut_rhythm": null,
+    "words_per_second": 2.4
+   },
+   "visual_language": {
+    "shot_types": [],
+    "setting": null,
+    "production_style": null,
+    "text_overlay_style": null,
+    "talent": null
+   },
+   "emotional_arc": [
+    "فضول",
+    "شك",
+    "قلق",
+    "أمل",
+    "اطمئنان",
+    "رغبة",
+    "ثقة"
+   ],
+   "why_it_works": [
+    "يستبدل الإثبات العلمي بمصدر يثق فيه الجمهور فيُسقط الشك مبكراً",
+    "السعر ظاهر من أول ثانية فما في لحظة «كشف العرض» تكسر الإيقاع"
+   ],
+   "weak_points": [
+    "يعتمد على مصدر سلطة قد لا ينتقل لأسواق أخرى",
+    "ادعاءات قوية قد تخالف سياسات الإعلان لو نُقلت حرفياً"
+   ],
+   "best_for": [
+    "منتجات بسردية تراثية أو خبرة",
+    "أسواق تثق بالمرجعية"
+   ],
+   "avoid_for": [
+    "منتجات مُنظَّمة طبياً",
+    "أسواق علمانية متشككة"
+   ],
+   "scene_blueprint": [
+    {
+     "function": "خطّاف: ادّعاء صادم يوقف التمرير",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "فضول",
+     "duration_sec": 8.6,
+     "slot": 1,
+     "_k": 0
+    },
+    {
+     "function": "تكبير المشكلة بموقف يومي",
+     "shot_type": "إدراج نص بالشاشة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "شك",
+     "duration_sec": 3.8,
+     "slot": 2,
+     "_k": 1
+    },
+    {
+     "function": "كشف الآلية ببساطة",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "قلق",
+     "duration_sec": 6.5,
+     "slot": 3,
+     "_k": 2
+    },
+    {
+     "function": "إثبات بصري قبل وبعد",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "أمل",
+     "duration_sec": 7.3,
+     "slot": 4,
+     "_k": 3
+    },
+    {
+     "function": "مواجهة الاعتراض الأشهر",
+     "shot_type": "لقطة يد مع المنتج",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "اطمئنان",
+     "duration_sec": 5.7,
+     "slot": 5,
+     "_k": 4
+    },
+    {
+     "function": "دخول المنتج بلقطة قريبة",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "رغبة",
+     "duration_sec": 6.5,
+     "slot": 6,
+     "_k": 5
+    },
+    {
+     "function": "شهادة مستخدمة بلهجتها",
+     "shot_type": "لقطة وجه قريبة",
+     "vo_intent": "يمهّد للفكرة التالية بجملة قصيرة",
+     "on_screen_text_role": "كلمة مفتاحية وحدة",
+     "emotion": "ثقة",
+     "duration_sec": 4.0,
+     "slot": 7,
+     "_k": 6
+    }
+   ]
+  },
+  "missing_ar": 0,
+  "refs": {
+   "count": 0,
+   "names": []
+  },
+  "open_review": 0,
+  "history": [
+   {
+    "at": "@now-2d",
+    "by": "owner",
+    "action": "edit",
+    "fields": [
+     "one_line_summary",
+     "reusability_score"
+    ]
+   },
+   {
+    "at": "@now-9d",
+    "by": "ai",
+    "action": "translate"
+   },
+   {
+    "at": "@now-30d",
+    "by": "owner",
+    "action": "create"
+   }
+  ]
+ }
+}

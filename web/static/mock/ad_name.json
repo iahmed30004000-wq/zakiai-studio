@@ -1,0 +1,44 @@
+{
+ "VARA__ad_109__20260913_1348.json": {
+  "ad_name": "SY|vara|vara-lp-1|video|VP-vara-3-v2",
+  "ready": true,
+  "missing": [],
+  "parts": {
+   "country": "SY",
+   "product": "vara",
+   "landing_page": "vara-lp-1",
+   "type": "video",
+   "script_id": "VP-vara-3-v2"
+  }
+ },
+ "VARA__ad_109__20260913_1344.json": {
+  "ad_name": "SY|vara||video|VP-vara-2-v1",
+  "ready": false,
+  "missing": [
+   "landing_page"
+  ],
+  "parts": {
+   "country": "SY",
+   "product": "vara",
+   "landing_page": "",
+   "type": "video",
+   "script_id": "VP-vara-2-v1"
+  }
+ },
+ "default": {
+  "ad_name": "|||video",
+  "ready": false,
+  "missing": [
+   "country",
+   "product_code",
+   "landing_page"
+  ],
+  "parts": {
+   "country": "",
+   "product": "",
+   "landing_page": "",
+   "type": "video",
+   "script_id": ""
+  }
+ }
+}

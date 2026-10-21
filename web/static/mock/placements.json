@@ -1,0 +1,10 @@
+{
+  "vp_id": "VP-vara-3-v1",
+  "entries": [
+    {"id": "pl_demo1", "platform": "meta", "status": "published", "source": "manual", "ad_account_name": "متجر صحة بلس", "ad_account_id": "act_1234567890", "campaign_name": "اختبار VARA", "campaign_id": "120210000000001", "adset_name": "", "ad_name": "SY|vara|vara-page|video|VP-vara-3-v1", "ad_id": "", "ad_url": "", "published_at": "2026-10-20", "budget_daily": 15, "currency": "USD", "oms_campaign_code": "", "notes": ""}
+  ],
+  "platforms": {"meta": "ميتا (فيسبوك/إنستغرام)", "tiktok": "تيك توك", "snapchat": "سناب شات", "google": "جوجل/يوتيوب", "other": "منصة أخرى"},
+  "statuses": {"published": "منشور", "paused": "موقوف", "ended": "منتهي", "draft": "مسودة"},
+  "suggestion": {"ad_name": "SY|vara|vara-page|video|VP-vara-3-v1", "missing": [], "script_id": "VP-vara-3-v1"},
+  "oms": {"available": false, "reason": "العمليات ما عندها نقطة حملات للقراءة بعد — ادخل يدوياً", "accounts": [], "campaigns": []}
+}

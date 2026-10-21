@@ -1,0 +1,32 @@
+{
+ "extracts": 60,
+ "patterns": 14,
+ "scripts": 4,
+ "products": 3,
+ "avg_reusability": 7.1,
+ "strong_patterns": 9,
+ "frameworks": 9,
+ "categories": [
+  [
+   "عطور",
+   5
+  ],
+  [
+   "إزالة الشعر",
+   3
+  ],
+  [
+   "عناية بالبشرة",
+   3
+  ],
+  [
+   "مكمّلات غذائية",
+   2
+  ],
+  [
+   "عناية بالعين",
+   1
+  ]
+ ],
+ "active_jobs": 2
+}

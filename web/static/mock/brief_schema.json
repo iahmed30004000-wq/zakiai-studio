@@ -1,0 +1,185 @@
+{
+ "fields": [
+  {
+   "key": "product_name",
+   "label": "اسم المنتج",
+   "type": "text",
+   "group": "identity"
+  },
+  {
+   "key": "product_code",
+   "label": "كود المنتج (لاتيني — بيدخل باسم الإعلان)",
+   "type": "text",
+   "group": "identity"
+  },
+  {
+   "key": "category",
+   "label": "الفئة",
+   "type": "category",
+   "group": "identity"
+  },
+  {
+   "key": "country",
+   "label": "البلد",
+   "type": "country",
+   "group": "market"
+  },
+  {
+   "key": "dialect",
+   "label": "اللهجة",
+   "type": "dialect",
+   "group": "market"
+  },
+  {
+   "key": "landing_page",
+   "label": "اسم الصفحة (بيدخل باسم الإعلان)",
+   "type": "text",
+   "group": "market"
+  },
+  {
+   "key": "price",
+   "label": "السعر",
+   "type": "text",
+   "group": "commercial"
+  },
+  {
+   "key": "price_positioning",
+   "label": "موقع السعر",
+   "type": "text",
+   "group": "commercial"
+  },
+  {
+   "key": "offer",
+   "label": "العرض",
+   "type": "text",
+   "group": "commercial"
+  },
+  {
+   "key": "no_offer",
+   "label": "لا يوجد عرض",
+   "type": "bool",
+   "group": "commercial"
+  },
+  {
+   "key": "guarantee",
+   "label": "الضمان",
+   "type": "text",
+   "group": "commercial"
+  },
+  {
+   "key": "no_guarantee",
+   "label": "لا يوجد ضمان",
+   "type": "bool",
+   "group": "commercial"
+  },
+  {
+   "key": "scarcity_deadline",
+   "label": "تاريخ انتهاء العرض (للندرة)",
+   "type": "date",
+   "group": "commercial"
+  },
+  {
+   "key": "stock_units",
+   "label": "المخزون الفعلي (للندرة)",
+   "type": "number",
+   "group": "commercial"
+  },
+  {
+   "key": "core_promise",
+   "label": "الوعد الأساسي",
+   "type": "textarea",
+   "group": "content"
+  },
+  {
+   "key": "what_it_does",
+   "label": "شو بيعمل المنتج (آلية العمل)",
+   "type": "textarea",
+   "group": "content"
+  },
+  {
+   "key": "features",
+   "label": "مميزات المنتج",
+   "type": "list",
+   "group": "content"
+  },
+  {
+   "key": "target_audience",
+   "label": "الجمهور المستهدف",
+   "type": "textarea",
+   "group": "content"
+  },
+  {
+   "key": "pain_points",
+   "label": "نقاط الألم",
+   "type": "list",
+   "group": "content"
+  },
+  {
+   "key": "objections",
+   "label": "الاعتراضات المتوقعة",
+   "type": "list",
+   "group": "content"
+  },
+  {
+   "key": "proof_assets",
+   "label": "أصول الإثبات المتوفرة",
+   "type": "list",
+   "group": "content"
+  },
+  {
+   "key": "differentiator",
+   "label": "الميزة الفارقة",
+   "type": "textarea",
+   "group": "content"
+  },
+  {
+   "key": "production_constraints",
+   "label": "قيود الإنتاج",
+   "type": "textarea",
+   "group": "content"
+  },
+  {
+   "key": "forbidden_claims",
+   "label": "ادعاءات ممنوعة إضافية (فوق مكتبة الفئة)",
+   "type": "list",
+   "group": "safety"
+  },
+  {
+   "key": "market_claims_evidence",
+   "label": "سند ادعاءات عن منتجات السوق (إن وُجد)",
+   "type": "list",
+   "group": "safety"
+  },
+  {
+   "key": "brand_tone",
+   "label": "نبرة العلامة",
+   "type": "text",
+   "group": "content"
+  },
+  {
+   "key": "product_visual",
+   "label": "شكل المنتج (قفل بصري)",
+   "type": "textarea",
+   "group": "content"
+  }
+ ],
+ "required": [
+  "category",
+  "dialect",
+  "core_promise",
+  "what_it_does",
+  "features",
+  "pain_points",
+  "objections",
+  "proof_assets",
+  "offer",
+  "guarantee",
+  "production_constraints",
+  "forbidden_claims"
+ ],
+ "publish_required": [
+  "product_code",
+  "country",
+  "landing_page"
+ ]
+}

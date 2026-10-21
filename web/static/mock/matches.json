@@ -1,0 +1,56 @@
+{
+ "default": {
+  "_meta": {
+   "matched_at": "@now-1d",
+   "patterns_considered": 53
+  },
+  "ranked_patterns": [
+   {
+    "pattern_id": "ad_109",
+    "pattern_name": "أربع مشاكل وحلّيناها",
+    "fit_score": 86,
+    "reason": "الإطار بيناسب نقاط ألم المنتج والجمهور بنفس اللهجة.",
+    "required_adaptation": "استبدال أمثلة الكريمات بمنتجك",
+    "category_distance": "same",
+    "transfer_justification": "",
+    "warnings": []
+   },
+   {
+    "pattern_id": "proven_ugc_rash",
+    "pattern_name": "شهادة بعد الطفح — مثبت",
+    "fit_score": 71,
+    "reason": "الإطار بيناسب نقاط ألم المنتج والجمهور بنفس اللهجة.",
+    "required_adaptation": "",
+    "category_distance": "same",
+    "transfer_justification": "",
+    "warnings": [
+     "الدليل مبني على منتج واحد فقط"
+    ]
+   },
+   {
+    "pattern_id": "ad_113",
+    "pattern_name": "نحن مقابل السوق",
+    "fit_score": 58,
+    "reason": "الإطار بيناسب نقاط ألم المنتج والجمهور بنفس اللهجة.",
+    "required_adaptation": "تخفيف لهجة الهجوم",
+    "category_distance": "adjacent",
+    "transfer_justification": "نفس بنية المقارنة تنتقل من العطور للعناية لأن المنتجين استهلاكيين",
+    "warnings": [
+     "يحتاج مقارنة بلا تسمية منافس"
+    ]
+   },
+   {
+    "pattern_id": "ad_108",
+    "pattern_name": "سلطة دينية تنقض الشك",
+    "fit_score": 31,
+    "reason": "الإطار بيناسب نقاط ألم المنتج والجمهور بنفس اللهجة.",
+    "required_adaptation": "",
+    "category_distance": "far",
+    "transfer_justification": "",
+    "warnings": [
+     "فئة بعيدة: النمط يعتمد مرجعية دينية غير مناسبة"
+    ]
+   }
+  ]
+ }
+}

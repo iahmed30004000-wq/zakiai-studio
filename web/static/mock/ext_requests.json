@@ -1,0 +1,60 @@
+{
+ "requests": [
+  {
+   "id": "req_a1",
+   "kind": "ahat",
+   "name": "زفرة ارتياح",
+   "prompt": "زفرة ارتياح طويلة لامرأة بعد يوم تعب, clean, isolated sound effect, no music",
+   "mood": "calm",
+   "mood_label": "هادئ",
+   "seconds": 5,
+   "status": "pending",
+   "created_at": "@now-4m"
+  },
+  {
+   "id": "req_m1",
+   "kind": "music",
+   "name": "خلفية هادئة",
+   "prompt": "خلفية دافئة لإعلان عناية بالبشرة, instrumental, no vocals, no lyrics — بلا غناء ولا كلام",
+   "mood": "warm",
+   "mood_label": "دافئ",
+   "seconds": 30,
+   "status": "running",
+   "created_at": "@now-12m"
+  },
+  {
+   "id": "req_a2",
+   "kind": "ahat",
+   "name": "تنفّس عميق",
+   "prompt": "تنفس عميق هادئ قبل الكلام",
+   "mood": "any",
+   "mood_label": "أي مزاج",
+   "seconds": 4,
+   "status": "done",
+   "created_at": "@now-1h"
+  },
+  {
+   "id": "req_m2",
+   "kind": "music",
+   "name": "موسيقى فاشلة",
+   "prompt": "إيقاع حماسي خفيف, instrumental, no vocals",
+   "mood": "uplift",
+   "mood_label": "انتعاش",
+   "seconds": 45,
+   "status": "failed",
+   "error": "الموقع وصل لحد الاستخدام اليومي",
+   "created_at": "@now-2h"
+  },
+  {
+   "id": "req_x1",
+   "kind": "ahat",
+   "name": "<img src=x onerror=alert(1)>",
+   "prompt": "<script>alert('xss')</script> اختبار هروب النص",
+   "mood": "tense",
+   "mood_label": "توتر خفيف",
+   "seconds": 3,
+   "status": "pending",
+   "created_at": "@now-1m"
+  }
+ ]
+}

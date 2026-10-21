@@ -1,0 +1,60 @@
+{
+ "running": true,
+ "tasks": [
+  {
+   "task": "queue_poll",
+   "label": "التقاط طلبات الـ OMS",
+   "last_run": "@now-10m",
+   "last_success": "@now-10m",
+   "last_error": null,
+   "last_skipped": null,
+   "last_offline": null,
+   "runs": 312,
+   "failures": 0
+  },
+  {
+   "task": "crm_sync",
+   "label": "سحب أداء الإعلانات",
+   "last_run": "@now-3h",
+   "last_success": "@now-3h",
+   "last_error": null,
+   "last_skipped": null,
+   "last_offline": null,
+   "runs": 30,
+   "failures": 1
+  },
+  {
+   "task": "fatigue_scan",
+   "label": "كشف إرهاق الإعلانات",
+   "last_run": "@now-3h",
+   "last_success": "@now-3h",
+   "last_error": null,
+   "last_skipped": null,
+   "last_offline": null,
+   "runs": 30,
+   "failures": 0
+  },
+  {
+   "task": "learn_weekly",
+   "label": "التعلّم الأسبوعي للأنماط",
+   "last_run": "@now-3d",
+   "last_success": null,
+   "last_error": null,
+   "last_skipped": "بدنا 2 سيناريوهات محكوم عليها ع الأقل",
+   "last_offline": null,
+   "runs": 4,
+   "failures": 0
+  },
+  {
+   "task": "backup_daily",
+   "label": "نسخة احتياطية يومية",
+   "last_run": "@now-2d",
+   "last_success": "@now-2d",
+   "last_error": null,
+   "last_skipped": null,
+   "last_offline": null,
+   "runs": 20,
+   "failures": 0
+  }
+ ]
+}

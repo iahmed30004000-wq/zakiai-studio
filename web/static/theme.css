@@ -1,0 +1,262 @@
+/*
+  theme.css — هوية «ليالي الشرق»: قيم الألوان والخطوط والقياسات للثيمين.
+
+  ثيمين:
+    data-theme="night"  (الافتراضي)  سماء ليل بنفسجية، ذهبي، فيروزي، لازوردي.
+    data-theme="day"                 نهار فاتح على ورق عاجي، لازوردي وذهبي.
+  الأسماء القديمة dark / light / calm بتضل شغّالة: dark = night، light و calm = day.
+
+  القاعدة: كل الشاشات بتقرأ --vp-* بس. وبنعيد ضبط --zk-* الأساسية لنفس القيم
+  عشان مكوّنات zaki-ui (الأزرار، الحقول، الشريط الجانبي، المحطات) تتلوّن معنا.
+  الألوان الصارخة (الغروب والذهبي) للأبطال والعناوين والأزرار الأساسية بس؛
+  النص العادي هادئ بتباين AA (4.5 على الأقل) على كل السطوح.
+*/
+
+/* ═════════ القياسات والخطوط (مشتركة بين الثيمين) ═════════ */
+:root {
+  /* ── الخطوط ── */
+  --vp-font-sans:    var(--zk-font-sans);
+  --vp-font-heading: "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --vp-font-display: "Lalezar", "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI Black", Tahoma, sans-serif;
+  --vp-font-mono: Consolas, "Cascadia Mono", "Courier New", monospace;
+  --vp-fs-2xs: var(--zk-text-12);
+  --vp-fs-xs:  var(--zk-text-12);
+  --vp-fs-sm:  var(--zk-text-13);
+  --vp-fs-md:  var(--zk-text-14);
+  --vp-fs-lg:  var(--zk-text-16);
+  --vp-fs-xl:  var(--zk-text-20);
+  --vp-fs-2xl: var(--zk-text-24);
+  --vp-fs-hero: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  --vp-lh: var(--zk-leading-body);
+
+  /* ── المسافات ── */
+  --vp-space-1: var(--zk-space-4);
+  --vp-space-2: var(--zk-space-8);
+  --vp-space-3: var(--zk-space-12);
+  --vp-space-4: var(--zk-space-16);
+  --vp-space-5: var(--zk-space-24);
+  --vp-space-6: var(--zk-space-32);
+  --vp-gutter: var(--zk-space-16);
+  --vp-page-max: 76rem;
+
+  /* ── الأشكال ── */
+  --vp-radius-sm:   0.5rem;
+  --vp-radius-md:   0.75rem;
+  --vp-radius-lg:   1.125rem;
+  --vp-radius-pill: var(--zk-radius-full);
+  --vp-arch-h: 4.5rem;
+
+  /* ── التخطيط ── */
+  --vp-topbar-h: 3.75rem;
+  --vp-drawer-w: 26rem;
+  --vp-tap: var(--zk-tap-min);
+  --vp-z-topbar: var(--zk-z-sticky);
+  --vp-z-drawer: var(--zk-z-nav);
+  --vp-z-modal:  var(--zk-z-modal);
+  --vp-z-toast:  var(--zk-z-toast);
+  --vp-z-palette: var(--zk-z-palette);
+  --vp-ease: var(--zk-duration-fast) var(--zk-ease-standard);
+  --vp-ease-slow: 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ── ألوان الهوية الخام (نفسها بالثيمين؛ للزخرفة والأبطال) ── */
+  --vp-gold:       #f5c542;
+  --vp-gold-deep:  #a37a12;
+  --vp-lapis:      #1f4fbf;
+  --vp-turq:       #1fd1a5;
+  --vp-sunset-1:   #ff7a45;
+  --vp-sunset-2:   #ff4f9a;
+  --vp-sunset-3:   #5a1c7a;
+  --vp-night-ink:  #1a0b2e;
+  --vp-on-hero:    #ffffff;
+
+  /* ── ألوان المشاهد (فاتحة ومشبعة؛ النص فوقها غامق بالثيمين) ── */
+  --vp-scene-1: #f5c542;
+  --vp-scene-2: #3fe0b8;
+  --vp-scene-3: #ff8fb3;
+  --vp-scene-4: #8fb0ff;
+  --vp-scene-5: #ffa66b;
+  --vp-scene-6: #c3a3ff;
+  --vp-scene-7: #e3d98a;
+  --vp-scene-8: #7fdde6;
+  --vp-on-scene: #1a0b2e;
+}
+
+/* ═════════ «ليل» — الافتراضي ═════════ */
+:root,
+[data-theme="night"],
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* السماء: خلفية الصفحة كاملة */
+  --vp-sky: linear-gradient(180deg, #120a2a 0%, #180e36 38%, #24113f 72%, #34143f 100%);
+  --vp-sunset: linear-gradient(180deg, #ff7a45 0%, #ff4f9a 46%, #5a1c7a 100%);
+  --vp-hero-shade: linear-gradient(180deg, rgb(26 11 46 / 0) 30%, rgb(26 11 46 / 0.72) 100%);
+  --vp-orn: #f5c542;
+  --vp-orn-alpha: 0.085;
+
+  /* ── السطوح ── */
+  --vp-bg:            #120b29;
+  --vp-surface:       #1b1336;
+  --vp-surface-2:     #150f2d;
+  --vp-surface-3:     #2a1f4d;
+  --vp-glass:         rgb(20 13 44 / 0.82);
+  --vp-overlay:       rgb(10 6 26 / 0.72);
+  --vp-border:        #352a5b;
+  --vp-border-strong: #5a4b86;
+  --vp-border-input:  #7466a3;
+  --vp-hairline:      rgb(245 197 66 / 0.22);
+
+  /* ── النصوص ── */
+  --vp-text:          #f4effd;
+  --vp-heading:       #ffe7a3;
+  --vp-text-muted:    #c3b9dc;
+  --vp-text-faint:    #a194c6;
+
+  /* ── الهوية ── */
+  --vp-brand:         #f5c542;
+  --vp-brand-strong:  #ffd86b;
+  --vp-brand-soft:    #3a2d40;
+  --vp-brand-text:    #ffd86b;
+  --vp-on-brand:      #2a1600;
+  --vp-cta:           #f5c542;
+  --vp-cta-hover:     #ffd35e;
+  --vp-cta-edge:      #a37a12;
+  --vp-on-cta:        #2a1600;
+  --vp-accent:        #3fe0b8;
+  --vp-accent-soft:   #163b45;
+  --vp-focus-ring:    #ffd86b;
+
+  /* ── الحالات ── */
+  --vp-ok:            #3fe0b8;
+  --vp-ok-soft:       #163b45;
+  --vp-warn:          #ffaa63;
+  --vp-warn-soft:     #3e2737;
+  --vp-danger:        #ff7d93;
+  --vp-danger-soft:   #43183c;
+  --vp-on-danger:     #1a0712;
+  --vp-info:          #8fb0ff;
+  --vp-info-soft:     #22295b;
+  --vp-idle:          #a194c6;
+  --vp-idle-soft:     #2a1f4d;
+
+  /* ── الظلال ── */
+  --vp-shadow-1: 0 1px 2px rgb(0 0 0 / 0.45), 0 8px 24px rgb(5 2 18 / 0.35);
+  --vp-shadow-2: 0 4px 12px rgb(0 0 0 / 0.5), 0 24px 56px rgb(5 2 18 / 0.6);
+  --vp-glow:     0 0 0 1px rgb(245 197 66 / 0.45), 0 0 22px rgb(245 197 66 / 0.25);
+  --vp-text-shadow-hero: 3px 3px 0 #1a0b2e;
+  --vp-display-ink:    #f5c542;
+  --vp-display-shadow: 2px 2px 0 #000000;
+}
+
+/* ═════════ «نهار» — فاتح ═════════ */
+[data-theme="day"],
+[data-theme="light"],
+[data-theme="calm"] {
+  color-scheme: light;
+
+  --vp-sky: linear-gradient(180deg, #fbf6ec 0%, #f7eedf 50%, #f4e4d4 100%);
+  --vp-sunset: linear-gradient(180deg, #ff8a4c 0%, #f2558f 48%, #3d2a8c 100%);
+  --vp-hero-shade: linear-gradient(180deg, rgb(26 11 46 / 0) 30%, rgb(26 11 46 / 0.66) 100%);
+  --vp-orn: #9c6f0c;
+  --vp-orn-alpha: 0.09;
+
+  --vp-bg:            #f6efe2;
+  --vp-surface:       #fffbf3;
+  --vp-surface-2:     #f4ecdd;
+  --vp-surface-3:     #eadfc9;
+  --vp-glass:         rgb(255 251 243 / 0.86);
+  --vp-overlay:       rgb(30 21 55 / 0.45);
+  --vp-border:        #e2d4bb;
+  --vp-border-strong: #bba787;
+  --vp-border-input:  #8e7c60;
+  --vp-hairline:      rgb(156 111 12 / 0.28);
+
+  --vp-text:          #1e1537;
+  --vp-heading:       #22145a;
+  --vp-text-muted:    #4e4568;
+  --vp-text-faint:    #665d80;
+
+  --vp-brand:         #1f4fbf;
+  --vp-brand-strong:  #173d96;
+  --vp-brand-soft:    #e3e9f8;
+  --vp-brand-text:    #1a45aa;
+  --vp-on-brand:      #ffffff;
+  --vp-cta:           #f2bb2e;
+  --vp-cta-hover:     #f7c94a;
+  --vp-cta-edge:      #9c6f0c;
+  --vp-on-cta:        #2a1600;
+  --vp-accent:        #086a52;
+  --vp-accent-soft:   #dcefe8;
+  --vp-focus-ring:    #1f4fbf;
+
+  --vp-ok:            #0f6a45;
+  --vp-ok-soft:       #dff0e7;
+  --vp-warn:          #9a4f06;
+  --vp-warn-soft:     #f8e7d3;
+  --vp-danger:        #b3223d;
+  --vp-danger-soft:   #f8e1e5;
+  --vp-on-danger:     #ffffff;
+  --vp-info:          #1f4fbf;
+  --vp-info-soft:     #e3e9f8;
+  --vp-idle:          #665d80;
+  --vp-idle-soft:     #ece3d3;
+
+  --vp-shadow-1: 0 1px 2px rgb(60 40 10 / 0.08), 0 6px 18px rgb(60 40 10 / 0.07);
+  --vp-shadow-2: 0 4px 12px rgb(30 21 55 / 0.12), 0 22px 50px rgb(30 21 55 / 0.18);
+  --vp-glow:     0 0 0 1px rgb(31 79 191 / 0.4), 0 0 18px rgb(31 79 191 / 0.16);
+  --vp-text-shadow-hero: 3px 3px 0 #1a0b2e;
+  --vp-display-ink:    #22145a;
+  --vp-display-shadow: 2px 2px 0 #f2bb2e;
+}
+
+/* ═════════ رموز مشتقة (بتتبع الثيم الحالي تلقائياً) ═════════ */
+:root,
+[data-theme] {
+  --vp-focus: 0 0 0 2px var(--vp-bg), 0 0 0 4px var(--vp-focus-ring);
+  --vp-sunset-line: linear-gradient(90deg, var(--vp-sunset-1), var(--vp-sunset-2) 55%, var(--vp-gold));
+  --vp-cta-fill: linear-gradient(180deg, var(--vp-cta-hover), var(--vp-cta));
+
+  /* ── zaki-ui: نفس القيم عشان مكوّنات الحزمة تتبع الهوية ── */
+  --zk-color-surface-page:   var(--vp-bg);
+  --zk-color-surface-card:   var(--vp-surface);
+  --zk-color-surface-sunken: var(--vp-surface-2);
+  --zk-color-surface-raised: var(--vp-surface-3);
+  --zk-color-border:         var(--vp-border);
+  --zk-color-border-strong:  var(--vp-border-strong);
+  --zk-color-border-input:   var(--vp-border-input);
+  --zk-color-text-heading:   var(--vp-heading);
+  --zk-color-text:           var(--vp-text);
+  --zk-color-text-muted:     var(--vp-text-muted);
+  --zk-color-text-faint:     var(--vp-text-faint);
+  --zk-color-brand:          var(--vp-brand);
+  --zk-color-brand-on:       var(--vp-on-brand);
+  --zk-color-brand-hover:    var(--vp-brand-strong);
+  --zk-color-brand-soft:     var(--vp-brand-soft);
+  --zk-color-focus:          var(--vp-focus-ring);
+  --zk-color-warning:        var(--vp-warn);
+  --zk-color-warning-soft:   var(--vp-warn-soft);
+  --zk-color-error:          var(--vp-danger);
+  --zk-color-error-soft:     var(--vp-danger-soft);
+  --zk-color-error-border:   var(--vp-danger);
+  --zk-color-success:        var(--vp-ok);
+  --zk-color-success-soft:   var(--vp-ok-soft);
+  --zk-color-chart-1:        var(--vp-scene-1);
+  --zk-color-chart-2:        var(--vp-scene-4);
+  --zk-color-chart-3:        var(--vp-scene-6);
+  --zk-color-chart-4:        var(--vp-scene-2);
+  --zk-color-chart-5:        var(--vp-scene-5);
+  --zk-color-chart-6:        var(--vp-scene-3);
+  --zk-color-surface-sidebar: var(--vp-glass);
+  --zk-color-text-sidebar:   var(--vp-text-muted);
+  --zk-color-scrollbar:      var(--vp-border);
+  --zk-color-scrollbar-hover: var(--vp-border-strong);
+  --zk-shadow-raised:        var(--vp-shadow-1);
+  --zk-shadow-overlay:       var(--vp-shadow-2);
+  --zk-radius-card:          var(--vp-radius-md);
+  --zk-radius-control:       var(--vp-radius-sm);
+  --zk-radius-sheet:         var(--vp-radius-lg);
+}
+
+@media (max-width: 560px) {
+  :root { --vp-gutter: var(--zk-space-12); }
+}

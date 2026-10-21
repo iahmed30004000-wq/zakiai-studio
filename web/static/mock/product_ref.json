@@ -1,0 +1,260 @@
+{
+ "code": "kama",
+ "angles": {
+  "front": "angles/front.png",
+  "back": null,
+  "left": null,
+  "right": "angles/right.png",
+  "top": null,
+  "bottom": null,
+  "in_hand": null,
+  "label": null,
+  "box_front": null,
+  "with_box": null
+ },
+ "dims_cm": {
+  "h": 9.0,
+  "w": 3.2,
+  "d": 3.2
+ },
+ "label_text": "ماء الكمأة قطرة عينية",
+ "colors": [
+  "أبيض",
+  "أزرق"
+ ],
+ "visual": "",
+ "box_text": "",
+ "prompts": {
+  "right": "RIGHT-SIDE view of kama — (برومبت معدَّل بإيد المالك)\nPRODUCT REFERENCE SHEET — RIGHT-SIDE VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: RIGHT-SIDE view: pure side profile — the product rotated exactly 90° so its RIGHT side (as seen in the front view) faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors."
+ },
+ "locked": {
+  "front": true
+ },
+ "meta": {
+  "front": {
+   "w": 68,
+   "h": 240
+  },
+  "right": {
+   "w": 68,
+   "h": 224
+  }
+ },
+ "slots": [
+  {
+   "slot": "front",
+   "label": "أمام",
+   "label_en": "FRONT",
+   "pose_ar": "من قدّام بشكل مستقيم، الكاميرا بنص ارتفاع المنتج، الملصق بالنص وواضح. هي أول وضعية بتتولّد وباقي الوضعيات بتنبني عليها.",
+   "required": true,
+   "has_image": true,
+   "locked": true,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — FRONT VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nCamera/pose: FRONT view: straight-on, camera at the product's mid-height and perfectly level, the product facing the camera so its main label is centered and fully readable. Long lens, no perspective distortion.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — FRONT VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nCamera/pose: FRONT view: straight-on, camera at the product's mid-height and perfectly level, the product facing the camera so its main label is centered and fully readable. Long lens, no perspective distortion.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": {
+    "ok": false,
+    "expected": 0.356,
+    "actual": 0.283,
+    "diff_pct": 20
+   },
+   "needs_front": false,
+   "use_note": "بتنبعت مع كل لقطة وبتنركّب بالصور القريبة"
+  },
+  {
+   "slot": "back",
+   "label": "خلف",
+   "label_en": "BACK",
+   "pose_ar": "من ورا: المنتج مدوَّر 180° بالضبط عن الأمام، بنفس الارتفاع.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — BACK VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: BACK view: the product rotated exactly 180° from the front so its back faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — BACK VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: BACK view: the product rotated exactly 180° from the front so its back faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "left",
+   "label": "يسار",
+   "label_en": "LEFT-SIDE",
+   "pose_ar": "جنب يسار صافي (90°): الجنب الشمال للمنتج كما بالأمام يواجه الكاميرا.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — LEFT-SIDE VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: LEFT-SIDE view: pure side profile — the product rotated exactly 90° so its LEFT side (as seen in the front view) faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — LEFT-SIDE VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: LEFT-SIDE view: pure side profile — the product rotated exactly 90° so its LEFT side (as seen in the front view) faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "right",
+   "label": "يمين",
+   "label_en": "RIGHT-SIDE",
+   "pose_ar": "جنب يمين صافي (90°).",
+   "required": true,
+   "has_image": true,
+   "locked": false,
+   "prompt": {
+    "text": "RIGHT-SIDE view of kama — (برومبت معدَّل بإيد المالك)\nPRODUCT REFERENCE SHEET — RIGHT-SIDE VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: RIGHT-SIDE view: pure side profile — the product rotated exactly 90° so its RIGHT side (as seen in the front view) faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — RIGHT-SIDE VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: RIGHT-SIDE view: pure side profile — the product rotated exactly 90° so its RIGHT side (as seen in the front view) faces the camera; camera at mid-height, perfectly level, long lens.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": true
+   },
+   "check": {
+    "ok": true,
+    "expected": 0.356,
+    "actual": 0.304,
+    "diff_pct": 15
+   },
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "top",
+   "label": "فوق",
+   "label_en": "TOP",
+   "pose_ar": "من فوق بزاوية 90°: بنشوف راس المنتج، وواجهته باتجاه أسفل الصورة.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — TOP VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: TOP view: camera directly above (90° overhead) looking straight down at the top of the product; the product's front edge points to the bottom of the frame.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — TOP VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: TOP view: camera directly above (90° overhead) looking straight down at the top of the product; the product's front edge points to the bottom of the frame.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "bottom",
+   "label": "تحت",
+   "label_en": "BOTTOM",
+   "pose_ar": "من تحت: بنشوف قاعدة المنتج، وواجهته باتجاه أسفل الصورة.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — BOTTOM VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: BOTTOM view: camera directly below looking straight up at the base of the product (the product floats on an invisible support); the product's front edge points to the bottom of the frame.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — BOTTOM VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: BOTTOM view: camera directly below looking straight up at the base of the product (the product floats on an invisible support); the product's front edge points to the bottom of the frame.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "in_hand",
+   "label": "بيد (للحجم)",
+   "label_en": "SCALE-IN-HAND",
+   "pose_ar": "اختيارية: المنتج بيد وحدة وملصقه ظاهر، عشان حجمه الحقيقي ينثبّت بالنسبة لليد.",
+   "required": false,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — SCALE-IN-HAND VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: SCALE view: exactly one adult hand holds the product naturally at chest height, label facing the camera, fingers not covering the label, so the real size of the product relative to the hand is obvious. Camera level, medium close-up.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product and exactly one hand only; no other props, people, extra text, logos, watermarks or reflections; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — SCALE-IN-HAND VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: SCALE view: exactly one adult hand holds the product naturally at chest height, label facing the camera, fingers not covering the label, so the real size of the product relative to the hand is obvious. Camera level, medium close-up.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product and exactly one hand only; no other props, people, extra text, logos, watermarks or reflections; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "label",
+   "label": "الملصق قريب",
+   "label_en": "LABEL CLOSE-UP",
+   "pose_ar": "اختيارية: لقطة قريبة للملصق بشكل مسطّح، عشان الكلمات تطلع صح حرفياً.",
+   "required": false,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — LABEL CLOSE-UP VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: LABEL CLOSE-UP: camera perpendicular to the label, flat and parallel, the label area filling the frame; every printed word sharp, undistorted and exactly as given.\nFraming: the label area fills the frame, no cropping of the label.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — LABEL CLOSE-UP VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: LABEL CLOSE-UP: camera perpendicular to the label, flat and parallel, the label area filling the frame; every printed word sharp, undistorted and exactly as given.\nFraming: the label area fills the frame, no cropping of the label.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "box_front",
+   "label": "العلبة من قدّام",
+   "label_en": "BOX FRONT",
+   "pose_ar": "اختيارية: كرتونة المنتج لحالها من قدّام بشكل مستقيم، ونصها المطبوع واضح.",
+   "required": false,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — BOX FRONT VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nKeep the box's proportions realistic for a retail carton that holds this product. Never stretch, squash or redesign the box.\nColors: أبيض, أزرق.\nDo not add any text to the box.\nIDENTITY LOCK: use the attached FRONT-view image of the product to match its brand look, colors and graphics on the box. Only the object shown changes: here it is the retail box.\nCamera/pose: BOX FRONT view: the product's retail carton (outer box) alone, standing upright and photographed straight-on, camera at the box's mid-height and perfectly level, the box's front face centered and every printed word on it readable. Long lens, no perspective distortion.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one retail box only; no product bottle, hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — BOX FRONT VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nKeep the box's proportions realistic for a retail carton that holds this product. Never stretch, squash or redesign the box.\nColors: أبيض, أزرق.\nDo not add any text to the box.\nIDENTITY LOCK: use the attached FRONT-view image of the product to match its brand look, colors and graphics on the box. Only the object shown changes: here it is the retail box.\nCamera/pose: BOX FRONT view: the product's retail carton (outer box) alone, standing upright and photographed straight-on, camera at the box's mid-height and perfectly level, the box's front face centered and every printed word on it readable. Long lens, no perspective distortion.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one retail box only; no product bottle, hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "with_box",
+   "label": "المنتج مع علبته",
+   "label_en": "PRODUCT WITH BOX",
+   "pose_ar": "اختيارية: المنتج واقف جنب كرتونته، الاثنين ظاهرين وبحجمهم النسبي الحقيقي.",
+   "required": false,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "PRODUCT REFERENCE SHEET — PRODUCT WITH BOX VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nDo not add any text to the box.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: PRODUCT WITH ITS BOX: the product standing beside its retail carton, both fully visible and not overlapping, each at its real relative scale, the box front and the product's label both facing the camera; camera at mid-height and perfectly level.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product and its box only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "default": "PRODUCT REFERENCE SHEET — PRODUCT WITH BOX VIEW. Photorealistic studio product photo (not an illustration, not a 3D render).\nProduct: kama (eye care). Look (as defined by the owner): \"عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية\".\nTrue proportions: height 9 cm, width 3.2 cm, depth 3.2 cm (H:W:D = 9:3.2:3.2). Never stretch, squash or redesign the product.\nColors: أبيض, أزرق.\nLabel text — reproduce it letter for letter, with no extra or invented words: \"ماء الكمأة قطرة عينية\". Arabic text must stay right-to-left, sharp and undistorted.\nDo not add any text to the box.\nIDENTITY LOCK: use the attached FRONT-view image as the exact same product — identical shape, materials, colors, graphics, label layout and proportions. Only the viewing angle changes.\nCamera/pose: PRODUCT WITH ITS BOX: the product standing beside its retail carton, both fully visible and not overlapping, each at its real relative scale, the box front and the product's label both facing the camera; camera at mid-height and perfectly level.\nFraming (identical for every view of this product): square 1:1 canvas, the product centered and completely inside the frame, occupying 80% of the image height with equal margins, no cropping.\nLighting & background (identical for every view): soft even studio light from the front-left, only a very soft contact shadow, plain pure-white seamless background.\nRules: one product and its box only; no hands, props, people, extra text, logos, watermarks or reflections of other objects; sharp focus, true-to-life colors.",
+    "edited": false
+   },
+   "check": null,
+   "needs_front": true,
+   "use_note": ""
+  }
+ ],
+ "product": {
+  "name": "kama",
+  "category": "eye_care",
+  "file": "kama.json"
+ },
+ "prompt_gaps": [],
+ "visual_from_brief": true,
+ "brief_visual": "عبوة بحجم 30 مل مزودة بقطارة معقمة، بتصميم يعكس الجانب الطبيعي والفاخرة الصحية",
+ "missing": [
+  "زاوية: خلف",
+  "زاوية: يسار",
+  "زاوية: فوق",
+  "زاوية: تحت"
+ ],
+ "angle_labels": {
+  "front": "أمام",
+  "back": "خلف",
+  "left": "يسار",
+  "right": "يمين",
+  "top": "فوق",
+  "bottom": "تحت"
+ },
+ "slot_labels": {
+  "front": "أمام",
+  "back": "خلف",
+  "left": "يسار",
+  "right": "يمين",
+  "top": "فوق",
+  "bottom": "تحت",
+  "in_hand": "بيد (للحجم)",
+  "label": "الملصق قريب",
+  "box_front": "العلبة من قدّام",
+  "with_box": "المنتج مع علبته"
+ },
+ "can_composite": true
+}

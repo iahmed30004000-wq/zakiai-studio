@@ -1,0 +1,110 @@
+{
+  "name": "zaki-ui",
+  "version": "0.2.0",
+  "files": [
+    {
+      "file": "CHANGELOG.md",
+      "bytes": 2349
+    },
+    {
+      "file": "components.css",
+      "bytes": 29897
+    },
+    {
+      "file": "components.js",
+      "bytes": 11414
+    },
+    {
+      "file": "DECISIONS.md",
+      "bytes": 11201
+    },
+    {
+      "file": "demo.html",
+      "bytes": 40487
+    },
+    {
+      "file": "fonts.css",
+      "bytes": 7425
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-400-arabic.woff2",
+      "bytes": 33512
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-400-latin.woff2",
+      "bytes": 13944
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-500-arabic.woff2",
+      "bytes": 35884
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-500-latin.woff2",
+      "bytes": 14792
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-600-arabic.woff2",
+      "bytes": 35884
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-600-latin.woff2",
+      "bytes": 15092
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-700-arabic.woff2",
+      "bytes": 33628
+    },
+    {
+      "file": "fonts/ibm-plex-sans-arabic-700-latin.woff2",
+      "bytes": 14208
+    },
+    {
+      "file": "fonts/LICENSE.md",
+      "bytes": 932
+    },
+    {
+      "file": "icons.json",
+      "bytes": 5307
+    },
+    {
+      "file": "icons.svg",
+      "bytes": 23167
+    },
+    {
+      "file": "LICENSES.md",
+      "bytes": 1744
+    },
+    {
+      "file": "README.md",
+      "bytes": 4910
+    },
+    {
+      "file": "shell.css",
+      "bytes": 8703
+    },
+    {
+      "file": "shell.js",
+      "bytes": 9994
+    },
+    {
+      "file": "tokens.css",
+      "bytes": 7767
+    },
+    {
+      "file": "tokens.json",
+      "bytes": 10778
+    },
+    {
+      "file": "VERSION",
+      "bytes": 5
+    },
+    {
+      "file": "zaki-ui.all.css",
+      "bytes": 53983
+    },
+    {
+      "file": "zaki-ui.all.js",
+      "bytes": 21648
+    }
+  ]
+}

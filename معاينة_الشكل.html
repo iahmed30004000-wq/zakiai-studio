@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة الشكل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;600&family=Amiri:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #0c0f17; --ink: #eef1f6; --muted: #9aa3b5; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.7 "IBM Plex Sans Arabic", Tahoma, sans-serif; padding: 24px 16px 48px; }
+  h1 { font: 700 26px/1.3 "Reem Kufi", sans-serif; margin: 0 0 4px; }
+  .lead { color: var(--muted); margin: 0 0 24px; }
+  .opt { max-width: 1100px; margin: 0 auto 40px; }
+  .opt > h2 { font: 700 20px/1.4 "Reem Kufi", sans-serif; margin: 0 0 4px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .opt > p { color: var(--muted); margin: 0 0 12px; }
+  .badge { font: 600 12px "IBM Plex Sans Arabic"; padding: 3px 10px; border-radius: 99px; background: #f5c542; color: #3a2a00; }
+  .screen { border-radius: 18px; overflow: hidden; position: relative; min-height: 420px; display: grid; grid-template-columns: 220px 1fr; border: 1px solid #ffffff22; }
+  @media (max-width: 760px) { .screen { grid-template-columns: 1fr; } .side { display: none !important; } }
+  .side { padding: 18px 14px; display: flex; flex-direction: column; gap: 6px; position: relative; z-index: 1; }
+  .side .logo { margin-bottom: 14px; }
+  .side a { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; text-decoration: none; color: inherit; font-weight: 600; }
+  .main { padding: 22px; position: relative; z-index: 1; display: grid; gap: 16px; align-content: start; }
+  .hero { border-radius: 16px; padding: 20px; position: relative; overflow: hidden; min-height: 150px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .hero .k { font-size: 13px; opacity: .85; }
+  .hero .t { margin: 2px 0 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 12px; font-weight: 700; border: 0; cursor: pointer; font-family: inherit; font-size: 15px; width: fit-content; }
+  .steps { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+  @media (max-width: 760px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .st { border-radius: 12px; padding: 10px 8px; text-align: center; font-size: 12px; font-weight: 600; }
+  .st b { display: block; font-size: 18px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .card { border-radius: 14px; padding: 14px; }
+  .card small { opacity: .8; display: block; }
+  .pat { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* ── أ: ليالي الشرق ── */
+  .A { background: linear-gradient(180deg, #120a2a 0%, #1b0f3a 45%, #3a1440 100%); color: #f7f1ff; }
+  .A .side { background: #0b0720cc; border-inline-start: 1px solid #f5c54233; }
+  .A .logo { font: 32px/1 "Lalezar", sans-serif; color: #f5c542; letter-spacing: .5px; text-shadow: 3px 3px 0 #000; }
+  .A .side a.on { background: linear-gradient(90deg, #f5c54222, #ff4f9a22); color: #ffd86b; box-shadow: inset -3px 0 0 #f5c542; }
+  .A .hero { background: linear-gradient(180deg, #ff7a45 0%, #ff4f9a 45%, #5a1c7a 100%); }
+  .A .hero .t { font: 40px/1.1 "Lalezar", sans-serif; color: #fff; text-shadow: 4px 4px 0 #1a0b2e; }
+  .A .btn { background: #f5c542; color: #2a1600; box-shadow: 0 4px 0 #a37a12; }
+  .A .st { background: #ffffff10; border: 1px solid #ffffff1f; }
+  .A .st.done { background: #1fd1a522; border-color: #1fd1a5; color: #9ff5dd; }
+  .A .st.now { background: #f5c542; color: #2a1600; border-color: #f5c542; }
+  .A .card { background: #0b0720b3; border: 1px solid #f5c54240; }
+  .A .stars { color: #f5c542; letter-spacing: 2px; }
+  .A .passed { position: absolute; top: 14px; inset-inline-end: 14px; font: 22px "Lalezar"; color: #1fd1a5; text-shadow: 2px 2px 0 #000; transform: rotate(-4deg); }
+
+  /* ── ب: الإسلامي الكلاسيكي ── */
+  .B { background: #f6efe1; color: #2b2116; }
+  .B .side { background: #0f3b4a; color: #f6efe1; }
+  .B .logo { font: 700 26px/1.2 "Amiri", serif; color: #e2b857; }
+  .B .side a.on { background: #ffffff1a; color: #e2b857; }
+  .B .hero { background: #0f3b4a; color: #f6efe1; border-radius: 120px 120px 16px 16px; text-align: center; align-items: center; }
+  .B .hero .t { font: 700 30px/1.3 "Amiri", serif; color: #e2b857; }
+  .B .btn { background: #b88a2e; color: #fff8e8; }
+  .B .st { background: #fffaf0; border: 1px solid #d9c79f; }
+  .B .st.done { background: #e3efe6; border-color: #2f7a55; color: #1e5a3d; }
+  .B .st.now { background: #b88a2e; color: #fff8e8; border-color: #b88a2e; }
+  .B .card { background: #fffaf0; border: 1px solid #d9c79f; }
+
+  /* ── ج: GTA صريح ── */
+  .C { background: #0d0d0d; color: #fff; }
+  .C .side { background: #000; }
+  .C .logo { font: 34px/1 "Lalezar", sans-serif; color: #fff; text-shadow: 3px 3px 0 #ff2d8a; }
+  .C .side a.on { background: #ff2d8a; color: #000; }
+  .C .hero { background: linear-gradient(135deg, #00e0ff 0%, #ff2d8a 55%, #ffb400 100%); }
+  .C .hero .t { font: 46px/1 "Lalezar", sans-serif; color: #fff; text-shadow: 4px 4px 0 #000; -webkit-text-stroke: 1px #000; }
+  .C .btn { background: #000; color: #fff; border: 2px solid #fff; }
+  .C .st { background: #1c1c1c; border: 2px solid #333; }
+  .C .st.done { border-color: #00e0ff; color: #00e0ff; }
+  .C .st.now { background: #ffb400; color: #000; border-color: #ffb400; }
+  .C .card { background: #161616; border: 2px solid #2a2a2a; }
+  .note { max-width: 1100px; margin: 0 auto; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="girih" width="80" height="80" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke-width="1.2">
+        <path d="M40 4 L50 30 L76 40 L50 50 L40 76 L30 50 L4 40 L30 30 Z" />
+        <rect x="22" y="22" width="36" height="36" transform="rotate(45 40 40)" />
+        <rect x="22" y="22" width="36" height="36" />
+        <circle cx="40" cy="40" r="6" />
+        <path d="M0 0 L10 10 M80 0 L70 10 M0 80 L10 70 M80 80 L70 70" />
+      </g>
+    </pattern>
+  </defs>
+</svg>
+
+<h1>معاينة الشكل — اختار واحد</h1>
+<p class="lead">نفس الشاشة (الرئيسية) بثلاث أشكال. هي معاينة شكل بس — الصور الحقيقية والرسومات الكاملة بتنحط بعد ما تختار.</p>
+
+<!-- أ -->
+<section class="opt">
+  <h2>أ — «ليالي الشرق» <span class="badge">توصيتي</span></h2>
+  <p>روح GTA (سماء الغروب، خط عريض متل البوستر، «المهمة نجحت»، نجوم الجودة) + فن إسلامي (نجمة ثمانية ذهبية، أقواس، ذهب ولازوردي).</p>
+  <div class="screen A">
+    <svg class="pat" aria-hidden="true"><rect width="100%" height="100%" fill="url(#girih)" style="stroke:#f5c542;opacity:.10"/></svg>
+    <nav class="side">
+      <div class="logo">ڤيد پاترن</div>
+      <a class="on" href="#">◆ الرئيسية</a><a href="#">✦ مهمة جديدة</a><a href="#">❖ المكتبات</a><a href="#">⚙ المصنع</a><a href="#">★ الأداء</a>
+    </nav>
+    <div class="main">
+      <div class="hero">
+        <span class="passed">المهمة نجحت ✓</span>
+        <span class="k">المهمة الحالية · VARA — إزالة الشعر</span>
+        <div class="t">المرحلة ٥: الصور</div>
+        <button class="btn">كمّل المهمة ←</button>
+      </div>
+      <div class="steps">
+        <div class="st done"><b>١</b>المنتج</div><div class="st done"><b>٢</b>الفكرة</div><div class="st done"><b>٣</b>السيناريو</div>
+        <div class="st done"><b>٤</b>الصوت</div><div class="st now"><b>٥</b>الصور</div><div class="st"><b>٦</b>التحريك</div><div class="st"><b>٧</b>الإطلاق</div>
+      </div>
+      <div class="cards">
+        <div class="card"><small>بانتظارك</small>اختار صورة لـ ٣ لقطات</div>
+        <div class="card"><small>جودة السيناريو</small><span class="stars">★★★★☆</span></div>
+        <div class="card"><small>الإضافة</small>Flow جاهز · ElevenLabs واقف (تحقق)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ب -->
+<section class="opt">
+  <h2>ب — الإسلامي الكلاسيكي الهادئ</h2>
+  <p>بيج وفيروزي وذهبي، خط أميري، أقواس محراب. أنيق ومريح للعين، بس ما فيه روح اللعبة.</p>
+  <div class="screen B">
+    <svg class="pat" aria-hidden="true"><rect width="100%" height="100%" fill="url(#girih)" style="stroke:#b88a2e;opacity:.14"/></svg>
+    <nav class="side">
+      <div class="logo">ڤيد پاترن</div>
+      <a class="on" href="#">الرئيسية</a><a href="#">مهمة جديدة</a><a href="#">المكتبات</a><a href="#">المصنع</a><a href="#">الأداء</a>
+    </nav>
+    <div class="main">
+      <div class="hero">
+        <span class="k">الإعلان الحالي · VARA</span>
+        <div class="t">المرحلة الخامسة: الصور</div>
+        <button class="btn">كمّل ←</button>
+      </div>
+      <div class="steps">
+        <div class="st done"><b>١</b>المنتج</div><div class="st done"><b>٢</b>الفكرة</div><div class="st done"><b>٣</b>السيناريو</div>
+        <div class="st done"><b>٤</b>الصوت</div><div class="st now"><b>٥</b>الصور</div><div class="st"><b>٦</b>التحريك</div><div class="st"><b>٧</b>الإطلاق</div>
+      </div>
+      <div class="cards">
+        <div class="card"><small>بانتظارك</small>اختار صورة لـ ٣ لقطات</div>
+        <div class="card"><small>جودة السيناريو</small>٨ من ١٠</div>
+        <div class="card"><small>الإضافة</small>Flow جاهز</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ج -->
+<section class="opt">
+  <h2>ج — GTA صريح</h2>
+  <p>ألوان فاقعة (زهري وسماوي وأصفر)، أسود، خط ضخم. حماسي كتير، بس الطابع الإسلامي شبه غايب، وبيتعب العين بالشغل الطويل.</p>
+  <div class="screen C">
+    <nav class="side">
+      <div class="logo">ڤيد پاترن</div>
+      <a class="on" href="#">الرئيسية</a><a href="#">مهمة جديدة</a><a href="#">المكتبات</a><a href="#">المصنع</a><a href="#">الأداء</a>
+    </nav>
+    <div class="main">
+      <div class="hero">
+        <span class="k">MISSION · VARA</span>
+        <div class="t">الصور</div>
+        <button class="btn">كمّل ←</button>
+      </div>
+      <div class="steps">
+        <div class="st done"><b>١</b>المنتج</div><div class="st done"><b>٢</b>الفكرة</div><div class="st done"><b>٣</b>السيناريو</div>
+        <div class="st done"><b>٤</b>الصوت</div><div class="st now"><b>٥</b>الصور</div><div class="st"><b>٦</b>التحريك</div><div class="st"><b>٧</b>الإطلاق</div>
+      </div>
+      <div class="cards">
+        <div class="card"><small>بانتظارك</small>اختار صورة لـ ٣ لقطات</div>
+        <div class="card"><small>جودة السيناريو</small>★★★★☆</div>
+        <div class="card"><small>الإضافة</small>Flow جاهز</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<p class="note">ملاحظة: ما رح نستخدم صور أو شعارات GTA الرسمية (محمية بحقوق النشر). الروح بتنبني بالألوان والخط والحركة، والصور الحقيقية من مواقع صور مجانية مرخّصة.</p>
+</body>
+</html>

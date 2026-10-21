@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="ar-u-nu-latn" dir="rtl" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zakiai Systems — استوديو المحتوى</title>
+<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=58">
+<link rel="stylesheet" href="/theme.css?v=58">
+<link rel="stylesheet" href="/style.css?v=58">
+<link rel="stylesheet" href="/ornament.css?v=58">
+</head>
+<body class="zk">
+
+<zk-app-shell data-drawer="closed" id="appShell">
+
+<!-- ═════════ الترويسة (ثابتة) ═════════ -->
+<header slot="header" class="zk-header topbar" id="topbar">
+  <div class="zk-header__start">
+    <button class="zk-btn zk-btn--ghost zk-drawer-toggle" type="button" aria-label="القائمة"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-menu"></use></svg></button>
+    <a class="brand" href="#/home" aria-label="Zakiai Systems — الرئيسية">
+      <span class="logo"><img src="/img/art/logo.png" alt="" width="40" height="40"></span>
+      <span class="brand-text"><b>استوديو المحتوى</b><small>Zakiai Systems</small></span>
+    </a>
+  </div>
+
+  <div class="zk-header__badges tb-status" id="tbStatus" aria-label="حالة النظام">
+    <button class="chip" id="tbCrm" data-state="idle" type="button" title="مزامنة الـ OMS">
+      <span class="dot"></span><span class="chip-k">OMS</span><span class="chip-v" id="tbCrmV">…</span>
+    </button><span class="term-slot" data-term="oms"></span>
+    <button class="chip" id="tbQueue" data-state="idle" type="button" title="الطلبات الواردة بالطابور">
+      <span class="dot"></span><span class="chip-k">الطابور</span><span class="chip-v" id="tbQueueV">…</span>
+    </button>
+    <button class="chip" id="tbBackup" data-state="idle" type="button" title="آخر نسخة احتياطية">
+      <span class="dot"></span><span class="chip-k">نسخة</span><span class="chip-v" id="tbBackupV">…</span>
+    </button>
+  </div>
+
+  <div class="zk-header__end">
+    <button class="zk-btn zk-btn--primary" id="guideNextBtn" type="button" title="شو بعمل هلأ؟ — الخطوة الجاية بكبسة"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-arrow-left"></use></svg><span class="tb-lbl">شو بعمل هلأ؟</span></button>
+    <button class="zk-btn zk-btn--ghost" id="tourBtn" type="button" aria-label="الجولة التعريفية" title="الجولة التعريفية"><span aria-hidden="true">؟</span><span class="tb-lbl">الجولة</span></button>
+    <div class="zk-dropdown" id="appsDd">
+      <button class="zk-btn zk-btn--secondary" type="button" aria-haspopup="menu" aria-label="التطبيقات"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-rocket"></use></svg><span class="tb-lbl">التطبيقات</span></button>
+      <div class="zk-dropdown__menu" role="menu" hidden><zk-app-switcher id="appSwitcher"></zk-app-switcher></div>
+    </div>
+    <button class="zk-btn zk-btn--ghost" id="themeBtn" type="button" aria-label="بدّل الثيم (ليل / نهار)"><span id="themeGlyph" aria-hidden="true">☾</span><span class="tb-lbl" id="themeName">ليل</span></button>
+    <a class="zk-btn zk-btn--ghost tb-route" id="settingsBtn" href="#/settings" data-route="settings" aria-label="الإعدادات" title="الإعدادات"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-settings"></use></svg></a>
+    <button class="zk-btn zk-btn--ghost tb-jobs" id="tbJobs" type="button" aria-controls="drawer" aria-expanded="false">
+      <svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-time"></use></svg><span class="tb-lbl">المهام</span><span id="jobBadge" class="count" hidden></span>
+    </button>
+  </div>
+</header>
+
+<!-- ═════════ الشريط الجانبي ═════════ -->
+<nav slot="sidebar" class="zk-sidebar" id="nav" aria-label="التنقّل">
+  <div class="zk-nav-group" aria-expanded="true">
+    <button class="zk-nav-group__head" type="button">الأماكن<svg class="zk-icon zk-nav-group__caret" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-chevron-down"></use></svg></button>
+    <div class="zk-nav-group__items" id="mainNav">
+      <a class="zk-nav-item nav-item" href="#/home" data-route="home" data-tour="home"><span class="nav-glyph" aria-hidden="true">◆</span> الرئيسية</a>
+      <a class="zk-nav-item nav-item" href="#/mission/new?stage=1" data-route="mission" data-tour="mission" id="navMission"><span class="nav-glyph" aria-hidden="true">✦</span> المهمة</a>
+      <a class="zk-nav-item nav-item" href="#/library/patterns" data-route="library" data-tour="library"><span class="nav-glyph" aria-hidden="true">❖</span> المكتبات</a>
+      <a class="zk-nav-item nav-item" href="#/factory/api" data-route="factory" data-tour="factory"><span class="nav-glyph" aria-hidden="true">⚙</span> المصنع</a>
+      <a class="zk-nav-item nav-item" href="#/performance" data-route="performance"><span class="nav-glyph" aria-hidden="true">★</span> الأداء</a>
+      <button class="zk-nav-item nav-search" type="button" id="paletteBtn" aria-keyshortcuts="Control+K"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-search"></use></svg> بحث سريع <kbd dir="ltr">Ctrl+K</kbd></button>
+    </div>
+  </div>
+  <div class="zk-nav-group" aria-expanded="true" id="railGroup">
+    <button class="zk-nav-group__head" type="button">محطات المهمة الحالية<svg class="zk-icon zk-nav-group__caret" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-chevron-down"></use></svg></button>
+    <div class="zk-nav-group__items" id="railStations"><p class="hint rail-empty">افتح مهمة من «الرئيسية» لتشوف محطاتها هون.</p></div>
+  </div>
+</nav>
+<div class="zk-scrim" hidden></div>   <!-- جوال: كبسة برّا القائمة بتسكّرها -->
+
+<main slot="content" id="main">
+
+  <!-- ═════════ ◆ الرئيسية: خريطة المهمات (home.js) ═════════ -->
+  <section id="v-home" class="view" data-view="home">
+    <div class="page-head">
+      <div>
+        <h2>خريطة المهمات <span class="term-slot" data-term="mission"></span></h2>
+        <p class="hint">كل إعلان «مهمة» إلها 7 مراحل. كمّل من وين وقفت، أو ابدأ وحدة جديدة.</p>
+      </div>
+      <div class="row nowrap">
+        <a class="btn" href="#/mission/new?stage=1">✦ مهمة جديدة</a>
+        <button id="homeRefresh" class="btn ghost sm" type="button">تحديث</button>
+      </div>
+    </div>
+    <div id="homeHero"></div>
+    <div class="panel" id="homeWaitPanel">
+      <div class="row between"><h3>بانتظارك</h3><span class="count" id="homeWaitCount" hidden></span></div>
+      <div id="homeWait"></div>
+    </div>
+    <div class="panel">
+      <div class="row between"><h3>المهمات</h3><span class="hint" id="homeMissionCount"></span></div>
+      <div id="homeMissions"></div>
+    </div>
+    <div class="panel">
+      <div class="row between"><h3>طرق التوليد</h3><a class="btn ghost sm" href="#/factory/api">افتح المصنع ←</a></div>
+      <div id="homeMethods"></div>
+    </div>
+    <div class="panel" id="plLibPanel">
+      <h3>ملخص المكتبة</h3>
+      <div id="statCards" class="cards"></div>
+      <div id="catList" class="catlist"></div>
+    </div>
+  </section>
+
+  <!-- ═════════ ✦ المهمة: المراحل السبعة (mission.js) ═════════ -->
+  <section id="v-mission" class="view" data-view="mission"><div id="missionBody"></div></section>
+
+  <!-- ═════════ ❖ المكتبات (shell.js بيركّب الشاشات القديمة جوّا التبويبات) ═════════ -->
+  <section id="v-libs" class="view" data-view="libs">
+    <div class="page-head">
+      <div><h2>المكتبات</h2><p class="hint">رفوف شغلك: الأنماط، المنتجات، الشخصيات، الأصوات والآهات، والادعاءات الممنوعة.</p></div>
+    </div>
+    <div class="seg" id="libsTabs" role="tablist" aria-label="رفوف المكتبات">
+      <button type="button" data-tab="patterns" class="on">الأنماط</button>
+      <button type="button" data-tab="products">المنتجات</button>
+      <button type="button" data-tab="characters">الشخصيات</button>
+      <button type="button" data-tab="sounds">الأصوات والآهات</button>
+      <button type="button" data-tab="claims">الادعاءات الممنوعة</button>
+    </div>
+    <div id="libs-patterns" class="tabpane on"></div>
+    <div id="libs-products" class="tabpane"></div>
+    <div id="libs-characters" class="tabpane"></div>
+    <div id="libs-sounds" class="tabpane"></div>
+    <div id="libs-claims" class="tabpane"></div>
+  </section>
+
+  <!-- ═════════ ⚙ المصنع: طرق التوليد ═════════ -->
+  <section id="v-factory" class="view" data-view="factory">
+    <div class="page-head">
+      <div><h2>المصنع</h2><p class="hint">طرق التوليد التلاتة: API (مفاتيح ومزوّدين) · النماذج المحلية · الإضافة <span class="term-slot" data-term="extension"></span>. لكل طريقة: شغّالة؟ وشو آخر مشكلة؟</p></div>
+      <button id="facCheck" class="btn ghost sm" type="button">افحص الطرق</button>
+    </div>
+    <div id="facMethods"></div>
+    <div class="seg" id="facTabs" role="tablist" aria-label="طرق التوليد">
+      <button type="button" data-tab="api" class="on">API</button>
+      <button type="button" data-tab="local">النماذج المحلية</button>
+      <button type="button" data-tab="extension">الإضافة</button>
+    </div>
+    <div id="fac-api" class="tabpane on">
+      <div class="seg seg-sm" id="facApiTabs" role="tablist" aria-label="أقسام API">
+        <button type="button" data-tab="models" class="on">الاتصالات والموديلات</button>
+        <button type="button" data-tab="keys">المفاتيح</button>
+        <button type="button" data-tab="media">الصوت والصور</button>
+      </div>
+    </div>
+    <div id="fac-local" class="tabpane"></div>
+    <div id="fac-extension" class="tabpane"></div>
+  </section>
+
+  <!-- ══════ الشاشات القديمة تحت: مصدر بيتركّب جوّا الحاويات الجديدة (ما إلها عنصر بالقائمة) ══════ -->
+
+  <!-- ═════════ 2 · المكتبة ═════════ -->
+  <section id="v-library" class="view" data-view="library">
+    <div class="page-head">
+      <div><h2>الأنماط <span class="term-slot" data-term="pattern"></span></h2><p class="hint" id="libCount"></p></div>
+    </div>
+    <div class="seg" id="libTabs" role="tablist">
+      <button type="button" data-tab="patterns" class="on">الأنماط</button>
+      <button type="button" data-tab="coverage">التوزيع والفجوات</button>
+      <button type="button" data-tab="queue">مراجعة التصنيف <span class="count" id="rqCount" hidden></span></button>
+      <button type="button" data-tab="ingest">إضافة وحصاد</button>
+    </div>
+
+    <div id="lib-patterns" class="tabpane on">
+      <div class="row pe-libbar" id="peLibBar">
+        <a class="btn" href="#/pattern/new">＋ نمط جديد</a>
+        <button type="button" class="btn ghost" id="peImportBtn">استورد من Excel</button>
+        <button type="button" class="btn ghost sm" id="peArchBtn">الأرشيف <span class="count" id="peArchCount" hidden></span></button>
+      </div>
+      <div id="peTrBanner"></div>
+      <div id="peArchPanel" hidden></div>
+      <div class="filters" id="libFilters">
+        <input id="libSearch" type="search" placeholder="ابحث باسم النمط أو الإطار أو الفئة…" class="f-search">
+        <select id="fCategory" aria-label="الفئة"></select>
+        <select id="fFramework" aria-label="الإطار"></select>
+        <select id="fDialect" aria-label="اللهجة"></select>
+        <select id="fOrigin" aria-label="الأصل">
+          <option value="">كل الأصول</option>
+          <option value="mined">من فيديو</option>
+          <option value="authored">يدوي</option>
+          <option value="proven">من النتايج</option>
+        </select>
+        <select id="fEvidence" aria-label="قوة الدليل">
+          <option value="">كل درجات الدليل</option>
+          <option value="proven">دليل قوي</option>
+          <option value="weak">دليل ضعيف</option>
+          <option value="unproven">غير مثبت</option>
+        </select>
+        <select id="libSort" aria-label="الترتيب">
+          <option value="reuse">الأقوى أولاً</option>
+          <option value="evidence">حسب الدليل</option>
+          <option value="name">الاسم</option>
+          <option value="framework">الإطار</option>
+        </select>
+        <div class="seg seg-sm" id="libView">
+          <button type="button" data-view="grid" class="on">شبكة</button>
+          <button type="button" data-view="clusters">عناقيد</button>
+        </div>
+      </div>
+      <div id="patGrid"></div>
+    </div>
+
+    <div id="lib-coverage" class="tabpane"><div id="covBody"></div></div>
+    <div id="lib-queue" class="tabpane"><div id="rqBody"></div></div>
+    <div id="lib-ingest" class="tabpane"><div id="libIngest"></div></div>
+  </section>
+
+  <!-- ═════════ 3 · النمط ═════════ -->
+  <section id="v-pattern" class="view" data-view="pattern">
+    <div class="page-head">
+      <a href="#/library/patterns" class="btn ghost sm">← المكتبات</a>
+      <select id="patPick" aria-label="اختر نمطاً"></select>
+    </div>
+    <div id="patBody"></div>
+  </section>
+
+  <!-- ═════════ 4 · المنتجات ═════════ -->
+  <section id="v-products" class="view" data-view="products">
+    <div class="page-head"><div><h2>المنتجات</h2><p class="hint">البريف <span class="term-slot" data-term="brief"></span> ومقياس اكتماله، والمراجع البصرية للمنتج والشخصية.</p></div></div>
+    <div class="toolbar">
+      <select id="productPick" aria-label="المنتج"></select>
+      <input id="productName" placeholder="اسم الملف الجديد (إنجليزي، بدون مسافات)" hidden dir="ltr">
+      <button id="refreshProductsBtn" class="btn ghost sm" type="button">تحديث</button>
+      <button id="deleteProductBtn" class="btn danger sm" type="button">حذف</button>
+    </div>
+    <div class="seg" id="prodTabs">
+      <button type="button" data-tab="brief" class="on">البريف</button>
+      <button type="button" data-tab="refs">المراجع البصرية</button>
+    </div>
+
+    <div id="prod-brief" class="tabpane on">
+      <div class="panel" id="completeness"></div>
+
+      <details class="panel fold">
+        <summary>تعبئة تلقائية من نص</summary>
+        <p class="hint">الصق كل تفاصيل المنتج دفعة وحدة — بريف، رسالة، صفحة هبوط، أي شي — والحقول بتتعبّى لحالها. راجعها قبل الحفظ.</p>
+        <textarea id="pasteBox" rows="5" placeholder="الصق تفاصيل المنتج هون…"></textarea>
+        <div class="row end"><button id="parseBtn" class="btn ghost" type="button">عبّي الحقول</button></div>
+        <div id="parseStatus" class="status"></div>
+      </details>
+
+      <div id="productForm"></div>
+
+      <div class="actionbar">
+        <button id="saveProductBtn" class="btn" type="button">حفظ</button>
+        <button id="saveAsNewBtn" class="btn ghost" type="button">حفظ كمنتج جديد</button>
+        <button id="syncFactsBtn" class="btn ghost" type="button">مزامنة الحقائق من الـ OMS</button>
+        <button id="matchBtn" class="btn ghost" type="button">احفظ ثم روح للاستوديو ←</button>
+      </div>
+      <div id="genStatus" class="status"></div>
+    </div>
+
+    <div id="prod-refs" class="tabpane">
+      <div class="panel">
+        <h3>ملف المراجع للمنتج المختار</h3>
+        <p class="hint">
+          لكل منتج ملفه المستقل: صوره وبرومبتاته وأبعاده ما بتختلط بمنتج تاني. لكل وضعية صورة وجنبها برومبتها الجاهز.
+          اللي بينبعت للتوليد فعلياً: صورة «أمام» للمنتج، وللشخصية «أمام» و«ثلاثة أرباع» (و«يدين» بلقطات اليد). باقي الوضعيات مرجع للثبات.
+        </p>
+      </div>
+      <div id="prodRefSheet"></div>
+    </div>
+  </section>
+
+  <!-- ═════════ 5 · الاستوديو ═════════ -->
+  <section id="v-studio" class="view" data-view="studio">
+    <div class="page-head"><div><h2>الاستوديو</h2><p class="hint">منتج ← أنماط ← كتابة ← سيناريو ومراجعة ← موافقة ← اسم الإعلان وتصدير ← صوت وصور.</p></div></div>
+    <div class="steps" id="studioSteps">
+      <button type="button" class="step on" data-step="1"><i>1</i><span>المنتج والأنماط</span></button>
+      <button type="button" class="step" data-step="2"><i>2</i><span>الكتابة</span></button>
+      <button type="button" class="step" data-step="3"><i>3</i><span>السيناريو والمراجعة</span></button>
+      <button type="button" class="step" data-step="4"><i>4</i><span>الموافقة والتصدير</span></button>
+      <button type="button" class="step" data-step="5"><i>5</i><span>الصوت والصور</span></button>
+    </div>
+
+    <div id="st-1" class="stepview on">
+      <div class="panel">
+        <h3>1 · اختر المنتج</h3>
+        <div class="row">
+          <select id="genProduct" class="grow" aria-label="المنتج"></select>
+          <button id="genRefresh" class="btn ghost sm" type="button">تحديث</button>
+        </div>
+        <div id="genProductInfo" class="hint"></div>
+        <div id="genReadiness"></div>
+      </div>
+      <div class="panel">
+        <h3>2 · أفضل 3 أنماط ملاءمة</h3>
+        <div class="row">
+          <button id="analyzeBtn" class="btn" type="button">حلّل وطابق</button>
+          <span class="hint" id="matchMeta"></span>
+        </div>
+        <div id="matchResults" class="matchlist"></div>
+      </div>
+    </div>
+
+    <div id="st-2" class="stepview">
+      <div class="panel">
+        <h3>3 · كتابة السيناريو</h3>
+        <div class="task-grid">
+          <label>الاتصال<select id="genConn"></select></label>
+          <label>الموديل<select id="genModel"></select></label>
+          <label>عدد الهوكات (الافتتاحيات)<select id="genHooks"><option value="1">1 — الأساسي بس</option><option value="2">2</option><option value="3" selected>3 (الافتراضي)</option><option value="4">4</option><option value="5">5</option></select></label>
+        </div>
+        <p class="hint">الهوك هو افتتاحية الإعلان؛ كل سيناريو بيطلع بأكتر من هوك لاختبار أي افتتاحية بتبيع أكتر. اتركهم "تلقائي" فيستخدم إعداد مهمة الكتابة. الكتابة بتتوقف إذا البريف ناقص أو فيه ادعاءات ممنوعة.</p>
+        <div class="row">
+          <button id="genBestBtn" class="btn" type="button">ولّد بأفضل نمط</button>
+          <span class="hint" id="genPatternNote"></span>
+        </div>
+        <div id="genTabStatus" class="status"></div>
+      </div>
+      <details class="panel fold">
+        <summary>قارن بين موديلات</summary>
+        <p class="hint">نفس المنتج ونفس النمط، بموديلات مختلفة — وبتقارن المخرجات جنب بعض.</p>
+        <div id="cmpPicker" class="cmplist"></div>
+        <div class="row">
+          <button id="cmpAdd" class="btn ghost" type="button">＋ ضيف موديل للمقارنة</button>
+          <button id="cmpRun" class="btn" type="button">ولّد وقارن</button>
+        </div>
+        <div id="cmpStatus" class="status"></div>
+        <div id="cmpResults"></div>
+      </details>
+    </div>
+
+    <div id="st-3" class="stepview">
+      <div class="panel">
+        <div class="row">
+          <label class="grow">السيناريو
+            <select id="scriptPick" class="block"></select></label>
+          <label>النسخة
+            <select id="versionPick"></select></label>
+          <button id="scriptRefresh" class="btn ghost sm" type="button">تحديث</button>
+        </div>
+        <div id="scriptInfo" class="hint"></div>
+        <div id="scriptStatusBar"></div>
+      </div>
+      <div class="editor-split" id="scriptWork"></div>
+      <div class="panel" id="versionsPanel" hidden></div>
+    </div>
+
+    <div id="st-4" class="stepview">
+      <div class="panel" id="approvePanel"></div>
+      <div class="panel" id="adNamePanel"></div>
+    </div>
+
+    <div id="st-5" class="stepview">
+      <div id="mediaGate"></div>
+      <div class="seg" id="mediaTabs">
+        <button type="button" data-tab="voice" class="on">الفويس أوفر</button>
+        <button type="button" data-tab="images">الصور</button>
+      </div>
+      <div id="stepVoice" class="tabpane on"></div>
+      <div id="stepImages" class="tabpane"></div>
+    </div>
+  </section>
+
+  <!-- ═════════ 6 · الأداء ═════════ -->
+  <section id="v-performance" class="view" data-view="performance">
+    <div class="page-head"><div><h2>الأداء</h2><p class="hint">الأنماط حسب تكلفة الطلب المُسلَّم ودرجة الدليل.</p></div>
+      <button id="perfRefresh" class="btn ghost sm" type="button">تحديث</button></div>
+    <div class="seg" id="perfTabs">
+      <button type="button" data-tab="patterns" class="on">الأنماط</button>
+      <button type="button" data-tab="scripts">أحكام السيناريوهات</button>
+      <button type="button" data-tab="learning">التعلّم الأسبوعي</button>
+      <button type="button" data-tab="alerts">التنبيهات والمسودات <span class="count" id="alertCount" hidden></span></button>
+      <button type="button" data-tab="manual">تعليم يدوي</button>
+    </div>
+    <div id="perf-patterns" class="tabpane on"><div id="perfPatBody"></div></div>
+    <div id="perf-scripts" class="tabpane"><div id="perfScrBody"></div></div>
+    <div id="perf-learning" class="tabpane"><div id="perfLearnBody"></div></div>
+    <div id="perf-alerts" class="tabpane"><div id="perfAlertBody"></div></div>
+    <div id="perf-manual" class="tabpane"><div id="perfManualBody"></div></div>
+  </section>
+
+  <!-- ═════════ الإعدادات ═════════ -->
+  <section id="v-settings" class="view" data-view="settings">
+    <div class="page-head"><div><h2>الإعدادات</h2><p class="hint">المفاتيح والمزوّدين والصوت والصور صاروا بـ <a href="#/factory/api">المصنع ← API</a>.</p></div></div>
+    <div class="seg" id="setTabs">
+      <button type="button" data-tab="general" class="on">عام</button>
+      <button type="button" data-tab="crm">الـ OMS والطابور</button>
+      <button type="button" data-tab="ops">النسخ والجدولة والإنفاق</button>
+      <button type="button" data-tab="analysis">التحليل والقواعد</button>
+      <button type="button" data-tab="advanced">متقدّم — البرومبتات</button>
+    </div>
+
+    <!-- عام -->
+    <div id="set-general" class="tabpane on">
+      <div class="panel"><h3>الحالة الصحية</h3><div id="health" class="health"></div></div>
+      <div class="panel">
+        <h3>الاستهلاك والتكلفة</h3>
+        <div id="usageCards" class="cards"></div>
+        <div id="balanceBox"></div>
+        <div id="usageBreakdown"></div>
+        <p class="hint">
+          التكلفة <b>تقديرية</b> — محسوبة محلياً من توكنز كل نداء وجدول أسعار داخلي.
+          Anthropic ما بتوفّر استعلام رصيد عبر الـ API، فالرقم الرسمي بتشوفه بلوحة المزوّد.
+        </p>
+      </div>
+    </div>
+
+    <!-- الاتصالات والموديلات -->
+    <div id="set-models" class="tabpane">
+      <div class="panel">
+        <h3>الاتصالات</h3>
+        <p class="hint">
+          اربط مزوّد بمفتاحك مرة وحدة — والموديلات بتنجلب من عنده مباشرة، فبتضل محدّثة.
+          بعدين بتختار من هالموديلات لكل مهمة، أو بتتركها تلقائي.
+        </p>
+        <div class="task-grid">
+          <label>المزوّد<select id="connProvider"></select></label>
+          <label>اسم للاتصال<input id="connLabel" placeholder="مثلاً: Claude — حسابي"></label>
+          <label>Base URL<input id="connBase" placeholder="تلقائي حسب المزوّد" dir="ltr"></label>
+          <label>المفتاح<input id="connKey" type="password" autocomplete="off" dir="ltr" placeholder="sk-…"></label>
+        </div>
+        <p class="hint" id="connNote"></p>
+        <div class="row end"><button id="connAdd" class="btn" type="button">اربط واجلب الموديلات</button></div>
+        <div id="connStatus" class="status"></div>
+        <div id="connList"></div>
+      </div>
+      <div class="panel">
+        <h3>الموديل لكل مهمة</h3>
+        <p class="hint">اتركها "تلقائي" فيختار الأنسب من اتصالاتك، أو حدّد بنفسك.</p>
+        <div id="autoPicks"></div>
+        <div id="taskList" class="tasklist"></div>
+      </div>
+    </div>
+
+    <!-- المفاتيح -->
+    <div id="set-keys" class="tabpane">
+      <div class="panel">
+        <h3>مفتاح Anthropic API</h3>
+        <p class="hint">المفاتيح بتنحفظ بمخزن الأسرار بالنظام (Credential Manager) — الواجهة بتبعتها بس، وما بترجّعها أبداً؛ اللي بيظهر مقنّع.</p>
+        <div id="keyStatus" class="status"></div>
+        <div class="row">
+          <input id="apiKeyInput" type="password" placeholder="sk-ant-…" autocomplete="off" dir="ltr" class="grow">
+          <button id="saveKeyBtn" class="btn ghost" type="button">احفظ المفتاح</button>
+          <button id="clearKeyBtn" class="btn danger" type="button">امسح المحفوظ</button>
+        </div>
+        <p class="hint">
+          متغيّر البيئة (<code>ANTHROPIC_API_KEY</code>) بيغلب المحفوظ. الأمان الأعلى: مخزن الأسرار أو متغيّر البيئة، مش ملف الإعدادات.
+        </p>
+        <div id="keysStatus" class="status"></div>
+      </div>
+      <div class="panel">
+        <h3>حالة باقي المفاتيح</h3>
+        <p class="hint">مفاتيح الاتصالات بتنضاف من «الاتصالات والموديلات»، ومفاتيح الصوت والصور من «الصوت والصور» (هون بالمصنع)، والتفريغ من الإعدادات ← «التحليل والقواعد». هون ملخص حالتها.</p>
+        <div id="keyOverview"></div>
+      </div>
+      <div class="panel" id="fbPanel"></div>
+    </div>
+
+    <!-- CRM -->
+    <div id="set-crm" class="tabpane">
+      <div class="panel">
+        <h3>الاتصال بالـ OMS</h3>
+        <div id="crmState"></div>
+        <div class="task-grid">
+          <label>عنوان الـ OMS (Base URL)<input id="crmBase" dir="ltr" placeholder="https://…"></label>
+          <label>توكن القراءة vp:read — الأداء والحقائق والطابور وحالة الإطلاق (بيروح لمخزن الأسرار)<input id="crmToken" type="password" autocomplete="off" dir="ltr" placeholder="اتركه فاضي للإبقاء على المحفوظ"></label>
+          <label>توكن الإطلاق vp:launch — إنشاء طلب إطلاق وإلغاؤه قبل الموافقة فقط. ما بيقدر يوافق على فلوس<input id="crmLaunchToken" type="password" autocomplete="off" dir="ltr" placeholder="اتركه فاضي للإبقاء على المحفوظ"></label>
+        </div>
+        <div class="row end">
+          <button id="crmDelToken" class="btn danger" type="button">امسح توكن القراءة</button>
+          <button id="crmDelLaunchToken" class="btn danger" type="button">امسح توكن الإطلاق</button>
+          <button id="crmSync" class="btn ghost" type="button">زامن الآن</button>
+          <button id="crmSave" class="btn" type="button">احفظ الإعداد</button>
+        </div>
+        <div id="crmStatusMsg" class="status"></div>
+      </div>
+      <div class="panel">
+        <div class="row between"><h3>طابور الطلبات الواردة</h3>
+          <button id="queuePoll" class="btn ghost sm" type="button">افحص الآن</button></div>
+        <div id="queueBody"></div>
+      </div>
+    </div>
+
+    <!-- النسخ والجدولة والإنفاق -->
+    <div id="set-ops" class="tabpane">
+      <div class="panel">
+        <h3>النسخ الاحتياطي</h3>
+        <div id="backupBody"></div>
+        <div class="row">
+          <button id="backupRun" class="btn" type="button">شغّل نسخة الآن</button>
+          <button id="backupTest" class="btn ghost" type="button">اختبار استعادة</button>
+          <button id="backupKey" class="btn ghost" type="button">تصدير المفتاح</button>
+        </div>
+        <div id="backupMsg" class="status"></div>
+      </div>
+      <div class="panel">
+        <h3>الجدولة</h3>
+        <div id="schedBody"></div>
+      </div>
+      <div class="panel">
+        <h3>حدود الإنفاق</h3>
+        <p class="hint">لما الاستهلاك يوصل الحد، النداءات الجديدة بتنرفض. اترك الخانة فاضية لإلغاء الحد.</p>
+        <div class="task-grid">
+          <label>الحد اليومي (دولار)<input id="limDaily" type="number" min="0" step="0.5" dir="ltr"></label>
+          <label>الحد الشهري (دولار)<input id="limMonthly" type="number" min="0" step="1" dir="ltr"></label>
+        </div>
+        <div id="limState"></div>
+        <div class="row end"><button id="limSave" class="btn" type="button">احفظ الحدود</button></div>
+        <div id="limMsg" class="status"></div>
+      </div>
+    </div>
+
+    <!-- الصوت والصور -->
+    <div id="set-media" class="tabpane">
+      <div class="panel">
+        <h3>الفويس أوفر (TTS)</h3>
+        <div class="task-grid">
+          <label>المزوّد<select id="sTtsProvider"></select></label>
+          <label>الموديل<select id="sTtsModel"></select></label>
+          <label>الصوت<span class="row nowrap">
+            <select id="sTtsVoice" class="grow"></select>
+            <button class="btn ghost" id="sTtsFetch" type="button" title="اجلب الأصوات">⟳</button></span></label>
+          <label>المفتاح<input id="sTtsKey" type="password" autocomplete="off" dir="ltr"></label>
+        </div>
+        <h4 class="sub-h">خصائص الأداء الافتراضية</h4>
+        <div class="task-grid">
+          <label>الجنس<select id="sTtsGender"></select></label>
+          <label>العمر<select id="sTtsAge"></select></label>
+          <label>اللهجة<select id="sTtsDialect"></select></label>
+          <label>النبرة<select id="sTtsTone"></select></label>
+        </div>
+        <label class="hint block">تعليمة أداء حرة (برومبت الصوت)
+          <textarea id="sTtsInstructions" rows="2" placeholder="مثلاً: تكلمي كأنك بتنصحي صاحبتك، بدون مبالغة إعلانية"></textarea></label>
+        <p class="hint" id="sTtsNote"></p>
+        <div class="row end"><button class="btn ghost" id="sTtsSave" type="button">احفظ إعداد الصوت</button></div>
+        <div id="sTtsStatus" class="status"></div>
+      </div>
+      <div class="panel">
+        <h3>توليد الصور</h3>
+        <div class="task-grid">
+          <label>المزوّد<select id="sImgProvider"></select></label>
+          <label>الموديل — اكتب أي اسم<input id="sImgModel" list="sImgModels" placeholder="اسم الموديل" dir="ltr">
+            <datalist id="sImgModels"></datalist></label>
+          <label>المقاس<input id="sImgSize" list="sImgSizes" placeholder="1024x1536" dir="ltr">
+            <datalist id="sImgSizes"></datalist></label>
+          <label>المفتاح<input id="sImgKey" type="password" autocomplete="off" dir="ltr"></label>
+        </div>
+        <label class="hint block">ستايل بصري ثابت لكل الصور
+          <textarea id="sImgStyle" rows="2"></textarea></label>
+        <p class="hint" id="sImgNote"></p>
+        <div class="row end"><button class="btn ghost" id="sImgSave" type="button">احفظ إعداد الصور</button></div>
+        <div id="sImgStatus" class="status"></div>
+      </div>
+    </div>
+
+    <!-- التحليل والقواعد -->
+    <div id="set-analysis" class="tabpane">
+      <div class="panel">
+        <h3>تحليل الصوت (التفريغ)</h3>
+        <p class="hint">أي مزوّد بيرجّع توقيتات — التوقيتات إلزامية لربط الكلام بالمشاهد.</p>
+        <div class="task-grid" id="sttGrid">
+          <label>المزوّد<select id="sttProvider"></select></label>
+          <label>الموديل<input id="sttModel" list="sttModels" placeholder="اسم الموديل" dir="ltr">
+            <datalist id="sttModels"></datalist></label>
+          <label>اللغة (فاضي = كشف تلقائي)<input id="sttLang" placeholder="ar" dir="ltr"></label>
+          <label>المفتاح<input id="sttKey" type="password" autocomplete="off" dir="ltr"></label>
+        </div>
+        <p class="hint" id="sttNote"></p>
+        <div class="row end"><button id="sttSave" class="btn ghost" type="button">احفظ إعداد التفريغ</button></div>
+        <div id="sttStatus" class="status"></div>
+        <h4 class="sub-h">إعدادات Whisper المحلي</h4>
+        <div class="form">
+          <div class="field"><label>الجهاز</label><select data-set="WHISPER_DEVICE"></select></div>
+          <div class="field"><label>دقة الحساب</label><select data-set="WHISPER_COMPUTE"></select></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>حدود الاستدعاء</h3>
+        <div class="form">
+          <div class="field"><label>سقف مخرجات الموديل (توكن)</label>
+            <input type="number" data-set="MAX_OUTPUT_TOKENS" min="1000" step="1000" dir="ltr"></div>
+          <div class="field"><label>أقصى عدد لقطات تنبعت للتحليل</label>
+            <input type="number" data-set="MAX_FRAMES_PER_VIDEO" min="4" max="40" dir="ltr"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>كشف المشاهد و OCR</h3>
+        <div class="form">
+          <div class="field"><label>حساسية كشف المشهد — أقل = مشاهد أكتر</label>
+            <input type="number" data-set="SCENE_THRESHOLD" step="1" dir="ltr"></div>
+          <div class="field"><label>أقصر مشهد مقبول (ثانية)</label>
+            <input type="number" data-set="MIN_SCENE_SEC" step="0.1" dir="ltr"></div>
+          <div class="field"><label>حد ثقة OCR</label>
+            <input type="number" data-set="OCR_MIN_CONFIDENCE" step="0.05" min="0" max="1" dir="ltr"></div>
+          <div class="field"><label>OCR على الكرت</label>
+            <select data-set="OCR_USE_GPU"><option value="true">نعم</option><option value="false">لا</option></select></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>قواعد السيناريو</h3>
+        <div class="form">
+          <div class="field"><label>عدد المشاهد</label><input type="number" data-set="SCRIPT_SCENES" min="3" max="15" dir="ltr"></div>
+          <div class="field"><label>أقل مدة (ثانية)</label><input type="number" data-set="SCRIPT_MIN_SEC" dir="ltr"></div>
+          <div class="field"><label>أقصى مدة (ثانية)</label><input type="number" data-set="SCRIPT_MAX_SEC" dir="ltr"></div>
+        </div>
+      </div>
+      <div class="row end"><button id="saveSettingsBtn" class="btn" type="button">احفظ الإعدادات</button></div>
+      <div id="settingsStatus" class="status"></div>
+    </div>
+
+    <!-- متقدم: البرومبتات -->
+    <div id="set-advanced" class="tabpane">
+      <div class="panel">
+        <h3>برومبتات المنظومة</h3>
+        <p class="hint">
+          كل مرحلة بتشتغل ببرومبت نصي مفتوح. عدّله وبيسري من أول تشغيل جديد — بدون ما تلمس الكود.
+          وفي "رجّع الافتراضي" لكل واحد لو التعديل ما عجبك. قسم متقدّم: غيّر بحذر.
+        </p>
+        <div id="promptList" class="promptlist"></div>
+      </div>
+      <div class="panel" id="promptEditor" hidden>
+        <div class="row between top">
+          <div><h3 id="peTitle"></h3><p class="hint" id="peDesc"></p></div>
+          <span class="tag" id="peFile"></span>
+        </div>
+        <p class="hint" id="peRequired"></p>
+        <textarea id="peContent" rows="24" spellcheck="false" dir="auto" class="mono"></textarea>
+        <div class="row end">
+          <button id="peRestore" class="btn danger" type="button">رجّع الافتراضي</button>
+          <button id="peClose" class="btn ghost" type="button">سكّر</button>
+          <button id="peSave" class="btn" type="button">احفظ</button>
+        </div>
+        <div id="peStatus" class="status"></div>
+      </div>
+    </div>
+  </section>
+  <!-- ═════════ الشخصيات ═════════ -->
+  <section id="v-characters" class="view" data-view="characters">
+    <div class="page-head">
+      <div><h2>الشخصيات <span class="term-slot" data-term="character"></span></h2>
+        <p class="hint">مكتبة ثابتة من 50 شخصية (20 رجل و30 امرأة). الوجوه ما بتتولّد من جديد: كل توليد بيرفق ورقة الشخصية كمرجع، وكل سيناريو جديد بيبدأ باختيار جديد.</p></div>
+    </div>
+    <div id="chBody"></div>
+  </section>
+
+  <!-- ═════════ موديلات التحريك ═════════ -->
+  <section id="v-models" class="view" data-view="models">
+    <div class="page-head"><div><h2>موديلات التحريك المحلية <span class="term-slot" data-term="motion"></span></h2>
+      <p class="hint">سجل الموديلات المحلية اللي بتحرّك لقطاتك. كل موديل بأمر تشغيل خاص فيه، وبيتختار تلقائياً لكل لقطة حسب نوعها ومدتها والذاكرة.</p></div></div>
+    <div id="mmBody"></div>
+  </section>
+
+  <!-- ═════════ مكتبة الآهات ═════════ -->
+  <section id="v-ahat" class="view" data-view="ahat">
+    <div class="page-head"><div><h2>مكتبة الآهات <span class="term-slot" data-term="ahat"></span></h2>
+      <p class="hint">آهات بشرية فقط. المقطع ما بيدخل الفيديو إلا بعد ما تسمعه وتعتمده.</p></div></div>
+    <div id="ahExt"></div>
+    <div id="ahBody"></div>
+  </section>
+
+  <!-- ═════════ الإضافة (متعددة المواقع) ═════════ -->
+  <section id="v-extension" class="view" data-view="extension">
+    <div class="page-head"><div><h2>الإضافة <span class="term-slot" data-term="extension"></span></h2>
+      <p class="hint">إضافة كروم بتشتغل بحسابك المسجّل بنفسك وبتولّد الصوت والصور والتحريك والآهات والموسيقى من مواقع التوليد، وكل نتيجة بترجع لمكانها بالاستوديو.</p></div></div>
+    <div id="extBody"></div>
+  </section>
+
+  <!-- ═════════ الإنتاج: محطات الاستوديو ═════════ -->
+  <section id="v-production" class="view" data-view="production">
+    <div class="page-head">
+      <div>
+        <h2>الإنتاج <span class="term-slot" data-term="station"></span></h2>
+        <p class="hint">إحدى عشرة محطة. الصوت أولاً: مدته وتوقيت كلماته هم الساعة لكل لقطة. كل محطة بتنتظر اعتماد اللي قبلها.</p>
+      </div>
+      <label class="zk-field prod-pick"><span class="zk-field__label">السيناريو</span>
+        <select class="zk-select" id="prodPick"></select></label>
+    </div>
+    <div id="prodBody"></div>
+  </section>
+
+</main>
+
+</zk-app-shell>
+
+<!-- ═════════ درج المهام ═════════ -->
+<div id="scrim" class="scrim" hidden></div>
+<aside id="drawer" class="drawer" hidden aria-label="لوحة المهام">
+  <div class="drawer-head">
+    <h3>المهام</h3>
+    <div class="row nowrap">
+      <button id="jobsRefresh" class="btn ghost sm" type="button">تحديث</button>
+      <button id="drawerClose" class="icon-btn" type="button" aria-label="إغلاق">×</button>
+    </div>
+  </div>
+  <div id="jobList" class="joblist"></div>
+</aside>
+
+<!-- ═════════ نافذة عامة ═════════ -->
+<div id="modal" class="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <button id="modalClose" class="icon-btn modal-close" type="button" aria-label="إغلاق">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<script src="/vendor/zaki-ui/zaki-ui.all.js?v=58"></script>
+<script src="/app.js?v=58"></script>
+<script src="/studio.js?v=58"></script>
+<script src="/hooks.js?v=58"></script>
+<script src="/perf.js?v=58"></script>
+<script src="/settings.js?v=58"></script>
+<script src="/production.js?v=58"></script>
+<script src="/refslots.js?v=58"></script>
+<script src="/characters.js?v=58"></script>
+<script src="/productref.js?v=58"></script>
+<script src="/models.js?v=58"></script>
+<script src="/ext.js?v=58"></script>
+<script src="/claims.js?v=58"></script>
+<script src="/patedit.js?v=58"></script>
+<script src="/adsfb.js?v=58"></script>
+<script src="/ahat.js?v=58"></script>
+<script src="/shell.js?v=58"></script>
+<script src="/guide.js?v=58"></script>
+<script src="/ornament.js?v=58"></script>
+<script src="/home.js?v=58"></script>
+<script src="/mission.js?v=58"></script>
+<script src="/boot.js?v=58"></script>
+</body>
+</html>

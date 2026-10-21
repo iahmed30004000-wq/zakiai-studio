@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>خيارات Zakiai Systems</title>
+<style>
+  body { margin: 0; background: #0a1a2e; color: #e6f1f4; font: 15px/1.7 "Segoe UI", Tahoma, sans-serif; }
+  main { max-width: 38rem; margin: 2rem auto; padding: 0 1rem; display: grid; gap: 14px; }
+  label { display: grid; gap: 4px; color: #9fb6c2; }
+  input, button { font: inherit; padding: 10px; border-radius: 8px; border: 1px solid #486276; background: #0f2438; color: #e6f1f4; }
+  button { background: #36b5cc; color: #04182b; border-color: #36b5cc; font-weight: 600; }
+  p { color: #9fb6c2; margin: 0; } .ok { color: #4fb865; } .bad { color: #e65e52; } .warn { color: #e8973a; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; } td, th { border: 1px solid #486276; padding: 4px 8px; text-align: start; }
+  h2 { font-size: 16px; margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>خيارات مولّد وسائط Zakiai Systems</h1>
+  <p>الإضافة بتتصل بالاستوديو المحلي بس (localhost). التوكن بيقرا من الاستوديو: <b>المصنع ← الإضافة</b>. هو توكن اقتران محلي مش كلمة سر لأي موقع، والإضافة ما بتخزّن ولا بتدخل أي كلمة سر لأي موقع توليد — سجّل دخولك بنفسك.</p>
+  <label>عنوان الاستوديو<input id="url" dir="ltr" placeholder="http://localhost:8000"></label>
+  <label>توكن الاقتران (اختياري للتجربة السريعة)<input id="tok" type="password" autocomplete="off" dir="ltr"></label>
+  <label>رابط مشروع Flow ثابت (اختياري)<input id="flowProject" dir="ltr" placeholder="https://flow.google.com/project/…"></label>
+  <p>لو حطّيت رابط مشروع، كل تشغيل على Flow بيفتحه بدل ما يعمل مشروع جديد. افتح مشروع بـ Flow وانسخ رابطه من شريط العنوان.</p>
+  <button id="save">احفظ</button>
+  <p id="msg"></p>
+
+  <h2>الفحص الذاتي للمواقع</h2>
+  <p class="warn">المحدّدات الافتراضية تخمينية وغير مجرّبة على المواقع الحقيقية. الفحص بيفتح كل موقع بنفس التبويب الواحد ويتأكد إن صندوق الكتابة موجود، بدون أي توليد. بيشتغل لحاله مرة باليوم، وهون تقدر تشغّله يدوي. لو لقى تحقق أو طلب دخول بيسجّله فشل وبيكمّل بدون أي تجاوز.</p>
+  <button id="selftest">افحص المواقع هلأ</button>
+  <table id="stTable"><thead><tr><th>الموقع</th><th>النتيجة</th><th>اللي ناقص</th></tr></thead><tbody></tbody></table>
+  <p id="stAt"></p>
+
+  <h2>النسخة</h2>
+  <p id="ver"></p>
+  <button id="verBtn">تحقق من وجود نسخة أحدث</button>
+  <p id="verMsg"></p>
+</main>
+<script src="options.js"></script>
+</body>
+</html>

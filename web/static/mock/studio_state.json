@@ -1,0 +1,93 @@
+{
+ "script": "default",
+ "stations": [
+  {
+   "n": 1,
+   "key": "1",
+   "label": "البريف",
+   "state": "approved",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 2,
+   "key": "2",
+   "label": "السيناريو",
+   "state": "approved",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 3,
+   "key": "3",
+   "label": "الشخصية",
+   "state": "approved",
+   "updated_at": null,
+   "note": "راوٍ بلا شخصية — مكتبة الشخصيات لسا ما انبنت"
+  },
+  {
+   "n": 4,
+   "key": "4",
+   "label": "الفويس أوفر",
+   "state": "approved",
+   "updated_at": null,
+   "note": "اعتمد المالك الصوت"
+  },
+  {
+   "n": 5,
+   "key": "5",
+   "label": "الخط الزمني",
+   "state": "approved",
+   "updated_at": null,
+   "note": "الخط الزمني نظيف"
+  },
+  {
+   "n": 6,
+   "key": "6",
+   "label": "برومبتات اللقطات",
+   "state": "awaiting_choice",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 7,
+   "key": "7",
+   "label": "الصور",
+   "state": "not_started",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 8,
+   "key": "8",
+   "label": "فحص التطابق",
+   "state": "not_started",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 9,
+   "key": "9",
+   "label": "التحريك",
+   "state": "not_started",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 10,
+   "key": "10",
+   "label": "الآهات والمونتاج",
+   "state": "not_started",
+   "updated_at": null,
+   "note": ""
+  },
+  {
+   "n": 11,
+   "key": "11",
+   "label": "الإطلاق",
+   "state": "not_started",
+   "updated_at": null,
+   "note": ""
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "ok": true,
+ "main": "h1",
+ "requested": 3,
+ "max": 5,
+ "legacy": false,
+ "types": {
+  "question": "سؤال",
+  "number": "رقم",
+  "life_moment": "موقف من الحياة",
+  "contrarian": "ادعاء معاكس",
+  "visual_shock": "صدمة بصرية"
+ },
+ "hooks": [
+  {
+   "id": "h1",
+   "type": "question",
+   "type_label": "سؤال",
+   "spoken": "تعبانة من جفاف عينك؟",
+   "on_screen_text": "جفاف العين",
+   "visual": "وجه امرأة تفرك عينها قدام الشاشة",
+   "why": "سؤال مباشر بيلمس المشكلة",
+   "findings": [],
+   "ai": null,
+   "version": null
+  },
+  {
+   "id": "h2",
+   "type": "number",
+   "type_label": "رقم",
+   "spoken": "3 من 5 أشخاص عيونهم بتتعب من الشاشة",
+   "on_screen_text": "3 من 5",
+   "visual": "أرقام بتظهر فوق وجه متعب",
+   "why": "الرقم بيعطي مصداقية سريعة",
+   "findings": [],
+   "ai": {
+    "verdict": "ok",
+    "note": "رقم من البريف",
+    "fresh": true
+   },
+   "version": null,
+   "can_version": {
+    "ok": true,
+    "reason": ""
+   }
+  },
+  {
+   "id": "h3",
+   "type": "life_moment",
+   "type_label": "موقف من الحياة",
+   "spoken": "الساعة 12 بالليل وعينك لسا قدام الشاشة، حاسة بحرقة",
+   "on_screen_text": "حرقة العين",
+   "visual": "غرفة معتمة وشاشة لابتوب",
+   "why": "موقف مألوف",
+   "findings": [
+    {
+     "severity": "blocker",
+     "scene": 1,
+     "field": "voiceover",
+     "issue": "المشهد 1 مع هالهوك أسرع من الممكن نطقه (2.9 كلمة/ث)",
+     "evidence": "17 كلمة بـ6ث",
+     "fix": "اختصر الهوك",
+     "hook_id": "h3"
+    }
+   ],
+   "ai": null,
+   "version": null,
+   "can_version": {
+    "ok": false,
+    "reason": "الهوك فيه 1 مانع بالفحص — عدّله أو ولّد غيره"
+   }
+  }
+ ],
+ "version_of": null
+}

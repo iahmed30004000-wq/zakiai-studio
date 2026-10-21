@@ -1,0 +1,49 @@
+{
+ "items": [
+  {
+   "id": "hc_001",
+   "category": "supplements",
+   "source": "keyword: مكمل فيتامين د",
+   "url": "https://www.tiktok.com/@brand/video/7000000001",
+   "platform": "tiktok",
+   "status": "pending",
+   "note": "3.2 مليون مشاهدة"
+  },
+  {
+   "id": "hc_002",
+   "category": "supplements",
+   "source": "manual",
+   "url": "https://www.facebook.com/ads/library/?id=12345",
+   "platform": "facebook",
+   "status": "pending",
+   "note": ""
+  },
+  {
+   "id": "hc_003",
+   "category": "eye_care",
+   "source": "keyword: قطرة عين",
+   "url": "https://www.tiktok.com/@shop/video/7000000003",
+   "platform": "tiktok",
+   "status": "approved",
+   "note": "قيد الاستخراج"
+  },
+  {
+   "id": "hc_004",
+   "category": "hair_removal",
+   "source": "manual",
+   "url": "https://www.youtube.com/watch?v=abc",
+   "platform": "youtube",
+   "status": "extracted",
+   "note": ""
+  },
+  {
+   "id": "hc_005",
+   "category": "skincare",
+   "source": "keyword: سيروم",
+   "url": "https://www.tiktok.com/@x/video/7000000005",
+   "platform": "tiktok",
+   "status": "rejected",
+   "note": "جودة منخفضة"
+  }
+ ]
+}

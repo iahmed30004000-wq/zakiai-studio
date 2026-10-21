@@ -1,0 +1,89 @@
+# صناديق النماذج المحلية (كل نموذج بحاوية لحاله) — للسيرفر القوي بكرت NVIDIA.
+# ⚠ غير مجرَّب على كرت حقيقي — ينجرّب على السيرفر. الخطوات بالتفصيل: README_AR_نشر_السيرفر.md
+#
+# تشغيل:   docker network create vidpattern_net     (مرة وحدة بس)
+#          docker compose -f docker-compose.engines.yml up -d --build
+# فحص:     curl http://127.0.0.1:8101/health   و   curl http://127.0.0.1:8102/health
+#
+# قواعد الأمان:
+#   · المنافذ مربوطة بـ 127.0.0.1 بس (مش مفتوحة عالشبكة). وكل طلب بدّه توكن ENGINE_TOKEN من ملف .env.
+#   · الأوزان للقراءة فقط (:ro). الحاوية read_only مع tmpfs للمؤقت. مستخدم غير root، وكل الصلاحيات مسحوبة.
+#   · الصندوقين بيتشاركوا مجلد locks (قفل الكرت): شغلة وحدة عالكرت بكل لحظة، والتانية بتستنى وما بتنهار.
+#   · الصناديق ما بتحمّل شي من الإنترنت (وضع أوفلاين). لو بدك تمنع خروج الشبكة تماماً شوف القسم الأخير بالـ README.
+
+name: vidpattern-engines
+
+x-engine: &engine
+  restart: unless-stopped
+  init: true
+  read_only: true
+  user: "10001:10001"
+  cap_drop: [ALL]
+  security_opt:
+    - no-new-privileges:true
+  stop_grace_period: 30s
+  networks: [vidpattern_net]
+  volumes:
+    - ${ENGINE_WEIGHTS_DIR:-./models/engines}:/weights:ro     # الأوزان: قراءة فقط
+    - engine_locks:/locks                                      # قفل الكرت المشترك بين الصندوقين
+  tmpfs:
+    - /tmp:size=2g,mode=1777
+    - /outputs:size=4g,mode=0700,uid=10001,gid=10001           # فيديوهات مؤقتة؛ الخدمة بتنظّف القديم لحالها
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"]
+    interval: 30s
+    timeout: 5s
+    retries: 3
+    start_period: 40s
+  logging:
+    driver: json-file
+    options: {max-size: "10m", max-file: "3"}
+
+x-engine-env: &engine-env
+  ENGINE_TOKEN: ${ENGINE_TOKEN:?لازم تحط ENGINE_TOKEN بملف .env (شوف .env.example)}
+  IDLE_UNLOAD_MIN: ${IDLE_UNLOAD_MIN:-10}
+  MAX_SECONDS: ${MAX_SECONDS:-8}
+  MAX_PIXELS: ${MAX_PIXELS:-0}
+  ENGINE_OFFLOAD: ${ENGINE_OFFLOAD:-auto}
+  OUTPUT_KEEP_MIN: ${OUTPUT_KEEP_MIN:-120}
+
+services:
+  ltx:
+    <<: *engine
+    image: vidpattern/engine-ltx:local
+    build:
+      context: .
+      dockerfile: services/engine/Dockerfile.ltx
+    ports:
+      - "127.0.0.1:8101:8000"
+    environment:
+      <<: *engine-env
+      ENGINE_BACKEND: ltx
+      ENGINE_NAME: ltx
+
+  wan:
+    <<: *engine
+    image: vidpattern/engine-wan:local
+    build:
+      context: .
+      dockerfile: services/engine/Dockerfile.wan
+    ports:
+      - "127.0.0.1:8102:8000"
+    environment:
+      <<: *engine-env
+      ENGINE_BACKEND: wan
+      ENGINE_NAME: wan
+
+volumes:
+  engine_locks: {}
+
+networks:
+  vidpattern_net:
+    external: true       # بتنعمل مرة وحدة: docker network create vidpattern_net

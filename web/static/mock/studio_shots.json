@@ -1,0 +1,1353 @@
+{
+ "timeline": {
+  "schema": 1,
+  "script_id": null,
+  "script_hash": "mock",
+  "voice": {
+   "provider": "elevenlabs",
+   "model": "eleven_v3",
+   "voice_id": "v1",
+   "character_id": null,
+   "audio": "voice/x/full.mp3",
+   "duration_ms": 47000,
+   "approved_at": "2026-09-29T10:00:00+00:00",
+   "sha256": "",
+   "timing_source": "provider"
+  },
+  "words": [
+   {
+    "i": 0,
+    "text": "عينك",
+    "start_ms": 0,
+    "end_ms": 306,
+    "scene": 1
+   },
+   {
+    "i": 1,
+    "text": "بآخر",
+    "start_ms": 306,
+    "end_ms": 613,
+    "scene": 1
+   },
+   {
+    "i": 2,
+    "text": "النهار",
+    "start_ms": 613,
+    "end_ms": 1042,
+    "scene": 1
+   },
+   {
+    "i": 3,
+    "text": "وحسيت",
+    "start_ms": 1042,
+    "end_ms": 1409,
+    "scene": 1
+   },
+   {
+    "i": 4,
+    "text": "إنها،",
+    "start_ms": 1409,
+    "end_ms": 1777,
+    "scene": 1
+   },
+   {
+    "i": 5,
+    "text": "ثقيلة",
+    "start_ms": 1777,
+    "end_ms": 2145,
+    "scene": 1
+   },
+   {
+    "i": 6,
+    "text": "وحارقة",
+    "start_ms": 2145,
+    "end_ms": 2574,
+    "scene": 1
+   },
+   {
+    "i": 7,
+    "text": "قطرة",
+    "start_ms": 2574,
+    "end_ms": 2880,
+    "scene": 1
+   },
+   {
+    "i": 8,
+    "text": "ماء",
+    "start_ms": 2880,
+    "end_ms": 3125,
+    "scene": 1
+   },
+   {
+    "i": 9,
+    "text": "الكمأة،",
+    "start_ms": 3125,
+    "end_ms": 3615,
+    "scene": 1
+   },
+   {
+    "i": 10,
+    "text": "اللطيفة",
+    "start_ms": 3615,
+    "end_ms": 4106,
+    "scene": 1
+   },
+   {
+    "i": 11,
+    "text": "بتريّح",
+    "start_ms": 4106,
+    "end_ms": 4534,
+    "scene": 1
+   },
+   {
+    "i": 12,
+    "text": "عينك",
+    "start_ms": 4534,
+    "end_ms": 4841,
+    "scene": 1
+   },
+   {
+    "i": 13,
+    "text": "بدقايق",
+    "start_ms": 4841,
+    "end_ms": 5270,
+    "scene": 1
+   },
+   {
+    "i": 14,
+    "text": "جرّبها،",
+    "start_ms": 5270,
+    "end_ms": 5760,
+    "scene": 1
+   },
+   {
+    "i": 15,
+    "text": "وحسيت",
+    "start_ms": 6000,
+    "end_ms": 6424,
+    "scene": 2
+   },
+   {
+    "i": 16,
+    "text": "إنها",
+    "start_ms": 6424,
+    "end_ms": 6778,
+    "scene": 2
+   },
+   {
+    "i": 17,
+    "text": "ثقيلة",
+    "start_ms": 6778,
+    "end_ms": 7203,
+    "scene": 2
+   },
+   {
+    "i": 18,
+    "text": "وحارقة",
+    "start_ms": 7203,
+    "end_ms": 7698,
+    "scene": 2
+   },
+   {
+    "i": 19,
+    "text": "قطرة،",
+    "start_ms": 7698,
+    "end_ms": 8122,
+    "scene": 2
+   },
+   {
+    "i": 20,
+    "text": "ماء",
+    "start_ms": 8122,
+    "end_ms": 8405,
+    "scene": 2
+   },
+   {
+    "i": 21,
+    "text": "الكمأة",
+    "start_ms": 8405,
+    "end_ms": 8900,
+    "scene": 2
+   },
+   {
+    "i": 22,
+    "text": "اللطيفة",
+    "start_ms": 8900,
+    "end_ms": 9466,
+    "scene": 2
+   },
+   {
+    "i": 23,
+    "text": "بتريّح",
+    "start_ms": 9466,
+    "end_ms": 9961,
+    "scene": 2
+   },
+   {
+    "i": 24,
+    "text": "عينك،",
+    "start_ms": 9961,
+    "end_ms": 10386,
+    "scene": 2
+   },
+   {
+    "i": 25,
+    "text": "بدقايق",
+    "start_ms": 10386,
+    "end_ms": 10881,
+    "scene": 2
+   },
+   {
+    "i": 26,
+    "text": "جرّبها",
+    "start_ms": 10881,
+    "end_ms": 11376,
+    "scene": 2
+   },
+   {
+    "i": 27,
+    "text": "اليوم",
+    "start_ms": 11376,
+    "end_ms": 11800,
+    "scene": 2
+   },
+   {
+    "i": 28,
+    "text": "بسهولة",
+    "start_ms": 11800,
+    "end_ms": 12296,
+    "scene": 2
+   },
+   {
+    "i": 29,
+    "text": "وشوف،",
+    "start_ms": 12296,
+    "end_ms": 12720,
+    "scene": 2
+   },
+   {
+    "i": 30,
+    "text": "وحارقة",
+    "start_ms": 13000,
+    "end_ms": 13495,
+    "scene": 3
+   },
+   {
+    "i": 31,
+    "text": "قطرة",
+    "start_ms": 13495,
+    "end_ms": 13849,
+    "scene": 3
+   },
+   {
+    "i": 32,
+    "text": "ماء",
+    "start_ms": 13849,
+    "end_ms": 14132,
+    "scene": 3
+   },
+   {
+    "i": 33,
+    "text": "الكمأة",
+    "start_ms": 14132,
+    "end_ms": 14627,
+    "scene": 3
+   },
+   {
+    "i": 34,
+    "text": "اللطيفة،",
+    "start_ms": 14627,
+    "end_ms": 15264,
+    "scene": 3
+   },
+   {
+    "i": 35,
+    "text": "بتريّح",
+    "start_ms": 15264,
+    "end_ms": 15759,
+    "scene": 3
+   },
+   {
+    "i": 36,
+    "text": "عينك",
+    "start_ms": 15759,
+    "end_ms": 16112,
+    "scene": 3
+   },
+   {
+    "i": 37,
+    "text": "بدقايق",
+    "start_ms": 16112,
+    "end_ms": 16608,
+    "scene": 3
+   },
+   {
+    "i": 38,
+    "text": "جرّبها",
+    "start_ms": 16608,
+    "end_ms": 17103,
+    "scene": 3
+   },
+   {
+    "i": 39,
+    "text": "اليوم،",
+    "start_ms": 17103,
+    "end_ms": 17598,
+    "scene": 3
+   },
+   {
+    "i": 40,
+    "text": "بسهولة",
+    "start_ms": 17598,
+    "end_ms": 18093,
+    "scene": 3
+   },
+   {
+    "i": 41,
+    "text": "وشوف",
+    "start_ms": 18093,
+    "end_ms": 18447,
+    "scene": 3
+   },
+   {
+    "i": 42,
+    "text": "الفرق",
+    "start_ms": 18447,
+    "end_ms": 18871,
+    "scene": 3
+   },
+   {
+    "i": 43,
+    "text": "بنفسك",
+    "start_ms": 18871,
+    "end_ms": 19296,
+    "scene": 3
+   },
+   {
+    "i": 44,
+    "text": "تعبت،",
+    "start_ms": 19296,
+    "end_ms": 19720,
+    "scene": 3
+   },
+   {
+    "i": 45,
+    "text": "الكمأة",
+    "start_ms": 20000,
+    "end_ms": 20511,
+    "scene": 4
+   },
+   {
+    "i": 46,
+    "text": "اللطيفة",
+    "start_ms": 20511,
+    "end_ms": 21096,
+    "scene": 4
+   },
+   {
+    "i": 47,
+    "text": "بتريّح",
+    "start_ms": 21096,
+    "end_ms": 21607,
+    "scene": 4
+   },
+   {
+    "i": 48,
+    "text": "عينك",
+    "start_ms": 21607,
+    "end_ms": 21972,
+    "scene": 4
+   },
+   {
+    "i": 49,
+    "text": "بدقايق،",
+    "start_ms": 21972,
+    "end_ms": 22557,
+    "scene": 4
+   },
+   {
+    "i": 50,
+    "text": "جرّبها",
+    "start_ms": 22557,
+    "end_ms": 23068,
+    "scene": 4
+   },
+   {
+    "i": 51,
+    "text": "اليوم",
+    "start_ms": 23068,
+    "end_ms": 23506,
+    "scene": 4
+   },
+   {
+    "i": 52,
+    "text": "بسهولة",
+    "start_ms": 23506,
+    "end_ms": 24017,
+    "scene": 4
+   },
+   {
+    "i": 53,
+    "text": "وشوف",
+    "start_ms": 24017,
+    "end_ms": 24383,
+    "scene": 4
+   },
+   {
+    "i": 54,
+    "text": "الفرق،",
+    "start_ms": 24383,
+    "end_ms": 24894,
+    "scene": 4
+   },
+   {
+    "i": 55,
+    "text": "بنفسك",
+    "start_ms": 24894,
+    "end_ms": 25332,
+    "scene": 4
+   },
+   {
+    "i": 56,
+    "text": "تعبت",
+    "start_ms": 25332,
+    "end_ms": 25697,
+    "scene": 4
+   },
+   {
+    "i": 57,
+    "text": "من",
+    "start_ms": 25697,
+    "end_ms": 25917,
+    "scene": 4
+   },
+   {
+    "i": 58,
+    "text": "جفاف",
+    "start_ms": 25917,
+    "end_ms": 26282,
+    "scene": 4
+   },
+   {
+    "i": 59,
+    "text": "عينك،",
+    "start_ms": 26282,
+    "end_ms": 26720,
+    "scene": 4
+   },
+   {
+    "i": 60,
+    "text": "عينك",
+    "start_ms": 27000,
+    "end_ms": 27382,
+    "scene": 5
+   },
+   {
+    "i": 61,
+    "text": "بدقايق",
+    "start_ms": 27382,
+    "end_ms": 27916,
+    "scene": 5
+   },
+   {
+    "i": 62,
+    "text": "جرّبها",
+    "start_ms": 27916,
+    "end_ms": 28451,
+    "scene": 5
+   },
+   {
+    "i": 63,
+    "text": "اليوم",
+    "start_ms": 28451,
+    "end_ms": 28909,
+    "scene": 5
+   },
+   {
+    "i": 64,
+    "text": "بسهولة،",
+    "start_ms": 28909,
+    "end_ms": 29520,
+    "scene": 5
+   },
+   {
+    "i": 65,
+    "text": "وشوف",
+    "start_ms": 29520,
+    "end_ms": 29902,
+    "scene": 5
+   },
+   {
+    "i": 66,
+    "text": "الفرق",
+    "start_ms": 29902,
+    "end_ms": 30360,
+    "scene": 5
+   },
+   {
+    "i": 67,
+    "text": "بنفسك",
+    "start_ms": 30360,
+    "end_ms": 30818,
+    "scene": 5
+   },
+   {
+    "i": 68,
+    "text": "تعبت",
+    "start_ms": 30818,
+    "end_ms": 31200,
+    "scene": 5
+   },
+   {
+    "i": 69,
+    "text": "من،",
+    "start_ms": 31200,
+    "end_ms": 31505,
+    "scene": 5
+   },
+   {
+    "i": 70,
+    "text": "جفاف",
+    "start_ms": 31505,
+    "end_ms": 31887,
+    "scene": 5
+   },
+   {
+    "i": 71,
+    "text": "عينك",
+    "start_ms": 31887,
+    "end_ms": 32269,
+    "scene": 5
+   },
+   {
+    "i": 72,
+    "text": "بآخر",
+    "start_ms": 32269,
+    "end_ms": 32651,
+    "scene": 5
+   },
+   {
+    "i": 73,
+    "text": "النهار",
+    "start_ms": 32651,
+    "end_ms": 33185,
+    "scene": 5
+   },
+   {
+    "i": 74,
+    "text": "وحسيت،",
+    "start_ms": 33185,
+    "end_ms": 33720,
+    "scene": 5
+   },
+   {
+    "i": 75,
+    "text": "اليوم",
+    "start_ms": 34000,
+    "end_ms": 34463,
+    "scene": 6
+   },
+   {
+    "i": 76,
+    "text": "بسهولة",
+    "start_ms": 34463,
+    "end_ms": 35004,
+    "scene": 6
+   },
+   {
+    "i": 77,
+    "text": "وشوف",
+    "start_ms": 35004,
+    "end_ms": 35390,
+    "scene": 6
+   },
+   {
+    "i": 78,
+    "text": "الفرق",
+    "start_ms": 35390,
+    "end_ms": 35854,
+    "scene": 6
+   },
+   {
+    "i": 79,
+    "text": "بنفسك،",
+    "start_ms": 35854,
+    "end_ms": 36394,
+    "scene": 6
+   },
+   {
+    "i": 80,
+    "text": "تعبت",
+    "start_ms": 36394,
+    "end_ms": 36781,
+    "scene": 6
+   },
+   {
+    "i": 81,
+    "text": "من",
+    "start_ms": 36781,
+    "end_ms": 37012,
+    "scene": 6
+   },
+   {
+    "i": 82,
+    "text": "جفاف",
+    "start_ms": 37012,
+    "end_ms": 37399,
+    "scene": 6
+   },
+   {
+    "i": 83,
+    "text": "عينك",
+    "start_ms": 37399,
+    "end_ms": 37785,
+    "scene": 6
+   },
+   {
+    "i": 84,
+    "text": "بآخر،",
+    "start_ms": 37785,
+    "end_ms": 38248,
+    "scene": 6
+   },
+   {
+    "i": 85,
+    "text": "النهار",
+    "start_ms": 38248,
+    "end_ms": 38789,
+    "scene": 6
+   },
+   {
+    "i": 86,
+    "text": "وحسيت",
+    "start_ms": 38789,
+    "end_ms": 39252,
+    "scene": 6
+   },
+   {
+    "i": 87,
+    "text": "إنها",
+    "start_ms": 39252,
+    "end_ms": 39639,
+    "scene": 6
+   },
+   {
+    "i": 88,
+    "text": "ثقيلة",
+    "start_ms": 39639,
+    "end_ms": 40102,
+    "scene": 6
+   },
+   {
+    "i": 89,
+    "text": "وحارقة،",
+    "start_ms": 40102,
+    "end_ms": 40720,
+    "scene": 6
+   },
+   {
+    "i": 90,
+    "text": "الفرق",
+    "start_ms": 41000,
+    "end_ms": 41407,
+    "scene": 7
+   },
+   {
+    "i": 91,
+    "text": "بنفسك",
+    "start_ms": 41407,
+    "end_ms": 41813,
+    "scene": 7
+   },
+   {
+    "i": 92,
+    "text": "تعبت",
+    "start_ms": 41813,
+    "end_ms": 42152,
+    "scene": 7
+   },
+   {
+    "i": 93,
+    "text": "من",
+    "start_ms": 42152,
+    "end_ms": 42355,
+    "scene": 7
+   },
+   {
+    "i": 94,
+    "text": "جفاف،",
+    "start_ms": 42355,
+    "end_ms": 42762,
+    "scene": 7
+   },
+   {
+    "i": 95,
+    "text": "عينك",
+    "start_ms": 42762,
+    "end_ms": 43101,
+    "scene": 7
+   },
+   {
+    "i": 96,
+    "text": "بآخر",
+    "start_ms": 43101,
+    "end_ms": 43440,
+    "scene": 7
+   },
+   {
+    "i": 97,
+    "text": "النهار",
+    "start_ms": 43440,
+    "end_ms": 43914,
+    "scene": 7
+   },
+   {
+    "i": 98,
+    "text": "وحسيت",
+    "start_ms": 43914,
+    "end_ms": 44320,
+    "scene": 7
+   },
+   {
+    "i": 99,
+    "text": "إنها،",
+    "start_ms": 44320,
+    "end_ms": 44727,
+    "scene": 7
+   },
+   {
+    "i": 100,
+    "text": "ثقيلة",
+    "start_ms": 44727,
+    "end_ms": 45134,
+    "scene": 7
+   },
+   {
+    "i": 101,
+    "text": "وحارقة",
+    "start_ms": 45134,
+    "end_ms": 45608,
+    "scene": 7
+   },
+   {
+    "i": 102,
+    "text": "قطرة",
+    "start_ms": 45608,
+    "end_ms": 45947,
+    "scene": 7
+   },
+   {
+    "i": 103,
+    "text": "ماء",
+    "start_ms": 45947,
+    "end_ms": 46218,
+    "scene": 7
+   },
+   {
+    "i": 104,
+    "text": "الكمأة،",
+    "start_ms": 46218,
+    "end_ms": 46760,
+    "scene": 7
+   }
+  ],
+  "scenes": [
+   {
+    "n": 1,
+    "start_ms": 0,
+    "end_ms": 6000,
+    "word_range": [
+     0,
+     14
+    ],
+    "function": "beat 1",
+    "emotion": "curiosity",
+    "voiceover": "لطيفة للعين يومياً بسهولة وراحة مع الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة",
+    "shots": [
+     {
+      "id": "s1c1",
+      "start_ms": 0,
+      "end_ms": 2880,
+      "word_range": [
+       0,
+       7
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 1 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «عينك بآخر النهار وحسيت إنها، ثقيلة وحارقة قطرة». الشعور: curiosity. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s1c2",
+      "start_ms": 2880,
+      "end_ms": 6000,
+      "word_range": [
+       8,
+       14
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «ماء الكمأة، اللطيفة بتريّح عينك بدقايق جرّبها،». الشعور: curiosity. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   },
+   {
+    "n": 2,
+    "start_ms": 6000,
+    "end_ms": 13000,
+    "word_range": [
+     15,
+     29
+    ],
+    "function": "beat 2",
+    "emotion": "frustration",
+    "voiceover": "للعين يومياً بسهولة وراحة مع الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة لطيفة للعين",
+    "shots": [
+     {
+      "id": "s2c1",
+      "start_ms": 6000,
+      "end_ms": 8122,
+      "word_range": [
+       15,
+       19
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 2 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «وحسيت إنها ثقيلة وحارقة قطرة،». الشعور: frustration. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s2c2",
+      "start_ms": 8122,
+      "end_ms": 10386,
+      "word_range": [
+       20,
+       24
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «ماء الكمأة اللطيفة بتريّح عينك،». الشعور: frustration. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s2c3",
+      "start_ms": 10386,
+      "end_ms": 13000,
+      "word_range": [
+       25,
+       29
+      ],
+      "type": "hand_product",
+      "prompt_ar": "يد مع المنتج. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. يد ريم فقط (نفس البشرة: خمرية) — بدون وجه. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «بدقايق جرّبها اليوم بسهولة وشوف،». الشعور: frustration. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   },
+   {
+    "n": 3,
+    "start_ms": 13000,
+    "end_ms": 20000,
+    "word_range": [
+     30,
+     44
+    ],
+    "function": "beat 3",
+    "emotion": "relief",
+    "voiceover": "يومياً بسهولة وراحة مع الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة لطيفة للعين يومياً",
+    "shots": [
+     {
+      "id": "s3c1",
+      "start_ms": 13000,
+      "end_ms": 15264,
+      "word_range": [
+       30,
+       34
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 3 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «وحارقة قطرة ماء الكمأة اللطيفة،». الشعور: relief. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s3c2",
+      "start_ms": 15264,
+      "end_ms": 17598,
+      "word_range": [
+       35,
+       39
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «بتريّح عينك بدقايق جرّبها اليوم،». الشعور: relief. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s3c3",
+      "start_ms": 17598,
+      "end_ms": 20000,
+      "word_range": [
+       40,
+       44
+      ],
+      "type": "hand_product",
+      "prompt_ar": "يد مع المنتج. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. يد ريم فقط (نفس البشرة: خمرية) — بدون وجه. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «بسهولة وشوف الفرق بنفسك تعبت،». الشعور: relief. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   },
+   {
+    "n": 4,
+    "start_ms": 20000,
+    "end_ms": 27000,
+    "word_range": [
+     45,
+     59
+    ],
+    "function": "beat 4",
+    "emotion": "confidence",
+    "voiceover": "بسهولة وراحة مع الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة لطيفة للعين يومياً بسهولة",
+    "shots": [
+     {
+      "id": "s4c1",
+      "start_ms": 20000,
+      "end_ms": 22557,
+      "word_range": [
+       45,
+       49
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 4 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «الكمأة اللطيفة بتريّح عينك بدقايق،». الشعور: confidence. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s4c2",
+      "start_ms": 22557,
+      "end_ms": 24894,
+      "word_range": [
+       50,
+       54
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «جرّبها اليوم بسهولة وشوف الفرق،». الشعور: confidence. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s4c3",
+      "start_ms": 24894,
+      "end_ms": 27000,
+      "word_range": [
+       55,
+       59
+      ],
+      "type": "hand_product",
+      "prompt_ar": "يد مع المنتج. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. يد ريم فقط (نفس البشرة: خمرية) — بدون وجه. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «بنفسك تعبت من جفاف عينك،». الشعور: confidence. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   },
+   {
+    "n": 5,
+    "start_ms": 27000,
+    "end_ms": 34000,
+    "word_range": [
+     60,
+     74
+    ],
+    "function": "beat 5",
+    "emotion": "warm",
+    "voiceover": "وراحة مع الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة لطيفة للعين يومياً بسهولة وراحة",
+    "shots": [
+     {
+      "id": "s5c1",
+      "start_ms": 27000,
+      "end_ms": 29520,
+      "word_range": [
+       60,
+       64
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 5 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «عينك بدقايق جرّبها اليوم بسهولة،». الشعور: warm. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s5c2",
+      "start_ms": 29520,
+      "end_ms": 31505,
+      "word_range": [
+       65,
+       69
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «وشوف الفرق بنفسك تعبت من،». الشعور: warm. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s5c3",
+      "start_ms": 31505,
+      "end_ms": 34000,
+      "word_range": [
+       70,
+       74
+      ],
+      "type": "hand_product",
+      "prompt_ar": "يد مع المنتج. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. يد ريم فقط (نفس البشرة: خمرية) — بدون وجه. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «جفاف عينك بآخر النهار وحسيت،». الشعور: warm. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   },
+   {
+    "n": 6,
+    "start_ms": 34000,
+    "end_ms": 41000,
+    "word_range": [
+     75,
+     89
+    ],
+    "function": "beat 6",
+    "emotion": "excited",
+    "voiceover": "مع الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة لطيفة للعين يومياً بسهولة وراحة مع",
+    "shots": [
+     {
+      "id": "s6c1",
+      "start_ms": 34000,
+      "end_ms": 36394,
+      "word_range": [
+       75,
+       79
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 6 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «اليوم بسهولة وشوف الفرق بنفسك،». الشعور: excited. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s6c2",
+      "start_ms": 36394,
+      "end_ms": 38789,
+      "word_range": [
+       80,
+       85
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «تعبت من جفاف عينك بآخر، النهار». الشعور: excited. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s6c3",
+      "start_ms": 38789,
+      "end_ms": 41000,
+      "word_range": [
+       86,
+       89
+      ],
+      "type": "hand_product",
+      "prompt_ar": "يد مع المنتج. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. يد ريم فقط (نفس البشرة: خمرية) — بدون وجه. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «وحسيت إنها ثقيلة وحارقة،». الشعور: excited. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   },
+   {
+    "n": 7,
+    "start_ms": 41000,
+    "end_ms": 47000,
+    "word_range": [
+     90,
+     104
+    ],
+    "function": "beat 7",
+    "emotion": "urgent",
+    "voiceover": "الشاشة والتعب تحس بفرق بسيط خلال الدوام كامل قطرة لطيفة للعين يومياً بسهولة وراحة مع",
+    "shots": [
+     {
+      "id": "s7c1",
+      "start_ms": 41000,
+      "end_ms": 43914,
+      "word_range": [
+       90,
+       97
+      ],
+      "type": "medium",
+      "prompt_ar": "لقطة متوسطة. لقطة 7 0 قريبة على العبوة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. يغطّي الكلام: «الفرق بنفسك تعبت من جفاف، عينك بآخر النهار». الشعور: urgent. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     },
+     {
+      "id": "s7c2",
+      "start_ms": 43914,
+      "end_ms": 47000,
+      "word_range": [
+       98,
+       104
+      ],
+      "type": "close",
+      "prompt_ar": "لقطة قريبة. لقطة دخيلة تخدم الكلام بزاوية وإطار مختلفين عن اللقطة السابقة. الشخصية ريم، خمرية، بني داكن، لبس: بلوزة كحلية وحجاب بيج — نفس الوجه والملامح من الورقة المرجعية بالضبط. المنتج «ماء الكمأ» بمظهره الحقيقي من صورة المرجع — لا تغيّر العبوة ولا الألوان. يغطّي الكلام: «وحسيت إنها، ثقيلة وحارقة قطرة ماء الكمأة،». الشعور: urgent. عمودي 9:16. بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة.",
+      "prompt_model": "",
+      "refs": {
+       "character_id": "ch_f_001",
+       "product_ref": "kama"
+      },
+      "image": {
+       "candidates": [],
+       "chosen": null,
+       "upscaled": false,
+       "path_used": null
+      },
+      "product_check": null,
+      "face_check": null,
+      "motion": null,
+      "prompt_edited": false
+     }
+    ]
+   }
+  ],
+  "ambience": null,
+  "captions": null,
+  "checks_approved_by_owner": {}
+ },
+ "problems": []
+}

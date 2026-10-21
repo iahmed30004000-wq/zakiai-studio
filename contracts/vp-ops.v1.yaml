@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: VidPattern <-> Operations contract
+  version: "1"
+  description: |
+    Executed literally by BOTH sides. Any change = a new version (v2); v1 keeps working
+    until both sides have moved. Copy this file verbatim to both repositories.
+
+    Direction: every call goes from the device to the server. The server never calls the device.
+    No customer personal data in either direction.
+    Errors carry a stable machine `code` and an Arabic `message`.
+    Paths marked `x-proposed: true` are additions to the original text, pending owner approval.
+servers:
+  - url: https://{ops_host}
+    variables: { ops_host: { default: ops.example.com } }
+security:
+  - bearer: []
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+      description: |
+        Least-privilege tokens, stored in the Windows credential store on the device.
+          vp:read    aggregated performance, product facts, the queue
+          vp:launch  create launch requests, cancel them before approval, post queue results
+          vp:sync    (x-proposed) write the read-only library snapshot
+        NO token can approve spend, edit a budget or a cap. Approval endpoints answer 403 to vp:launch.
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum: [unauthorized, forbidden, not_found, duplicate_request, invalid_meta,
+                 video_invalid, checksum_mismatch, video_too_large, already_approved,
+                 cannot_cancel, rate_limited, server_error]
+        message: { type: string, description: Arabic, user-facing }
+    LaunchMeta:
+      type: object
+      required: [vp_id, product_id, store_id, country, mode, framework, pattern_id,
+                 hook_line, dialect, duration_sec, character_id, script_text,
+                 captions_srt, thumbnail]
+      properties:
+        vp_id:        { type: string, example: VP-kama-109-v2 }
+        product_id:   { type: string }
+        store_id:     { type: string }
+        country:      { type: string, description: ISO 3166-1 alpha-2, example: SY }
+        mode:         { type: string, enum: [active, test] }
+        framework:    { type: string, description: closed-list slug }
+        pattern_id:   { type: string }
+        hook_line:    { type: string }
+        dialect:      { type: string, description: closed-list slug }
+        duration_sec: { type: number, minimum: 45, maximum: 50 }
+        character_id: { type: string, nullable: true }
+        script_text:  { type: string }
+        captions_srt: { type: string }
+        thumbnail:    { type: string, description: base64 PNG or file part name }
+        checksum_sha256: { type: string, description: of the video file }
+    LaunchStatus:
+      type: string
+      enum: [received, preparing, awaiting_approval, launched, rejected, failed]
+      description: |
+        received -> preparing -> awaiting_approval -> launched; at any point rejected (with reason)
+        or failed (classified error). mode=active without a new budget may go
+        preparing -> launched directly when the account autonomy level allows it.
+    LaunchRequest:
+      type: object
+      required: [request_id, status]
+      properties:
+        request_id:  { type: string }
+        status:      { $ref: "#/components/schemas/LaunchStatus" }
+        reason:      { type: string, nullable: true }
+        error_code:  { type: string, nullable: true }
+        campaign_id: { type: string, nullable: true }
+        adset_id:    { type: string, nullable: true }
+        ad_id:       { type: string, nullable: true }
+        landing_page_id: { type: string, nullable: true }
+        ops_url:     { type: string, format: uri }
+paths:
+  /api/v1/vp/launch-requests:
+    post:
+      summary: Create a launch request (idempotent on vp_id + mode)
+      x-scope: vp:launch
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [video, meta]
+              properties:
+                video: { type: string, format: binary, description: "1080x1920, within Meta limits" }
+                meta:  { $ref: "#/components/schemas/LaunchMeta" }
+      responses:
+        "200":
+          description: Created, or the existing request when (vp_id, mode) was already sent
+          content: { application/json: { schema: { $ref: "#/components/schemas/LaunchRequest" } } }
+        "409": { description: duplicate_request with a different payload, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "422": { description: invalid_meta / video_invalid / checksum_mismatch }
+  /api/v1/vp/launch-requests/{id}:
+    get:
+      summary: Live request status
+      x-scope: vp:read
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/LaunchRequest" } } } }
+  /api/v1/vp/launch-requests/{id}/cancel:
+    post:
+      summary: Cancel before approval
+      x-scope: vp:launch
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200": { description: Cancelled }
+        "409": { description: cannot_cancel / already_approved }
+  /api/v1/vp/performance:
+    get:
+      summary: Aggregated per-ad performance (only ads carrying a VP field). No customer data.
+      x-scope: vp:read
+      parameters:
+        - { name: since, in: query, required: true, schema: { type: string, format: date-time } }
+      responses:
+        "200":
+          description: One row per (ad, date)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    type: array
+                    items:
+                      type: object
+                      required: [ad_name, date, spend, orders, delivered, collected]
+                      properties:
+                        ad_name: { type: string, example: "SY|kama|DawaCare|video|VP-kama-109-v2" }
+                        date: { type: string, format: date, description: cohort (order-placed) date }
+                        spend: { type: number }
+                        orders: { type: integer }
+                        delivered: { type: integer }
+                        collected: { type: integer }
+                        delivery_rate: { type: number }
+                        cost_per_delivered: { type: number, nullable: true }
+                        engagement: { type: number, nullable: true, description: "rate 0..1, not a count" }
+                        thumb_stop: { type: number, nullable: true }
+  /api/v1/vp/products/{id}/facts:
+    get:
+      summary: Commercial facts for a product (price, offer tiers, COD, delivery, guarantee, country, dialect)
+      x-scope: vp:read
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: country, in: query, required: false, schema: { type: string } }
+      responses:
+        "200": { description: OK }
+  /api/v1/vp/products/{id}/failure-reasons:
+    get:
+      summary: Aggregated failure/return reasons (counts only, no customer data) — used by fatigue drafts
+      x-proposed: true
+      x-scope: vp:read
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: country, in: query, required: false, schema: { type: string } }
+      responses:
+        "200": { description: "[{reason, count}]" }
+  /api/v1/vp/queue:
+    get:
+      summary: Pending agent/intelligence-center requests, oldest first
+      x-scope: vp:read
+      parameters:
+        - { name: status, in: query, schema: { type: string, default: pending } }
+      responses:
+        "200":
+          description: Requests waiting for the device
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string }
+                    type: { type: string, enum: [new_script, extract_ad_features, best_patterns] }
+                    payload: { type: object }
+                    status: { type: string, description: "shown by ops as 'waiting for device' until a result arrives" }
+  /api/v1/vp/queue/{id}/result:
+    post:
+      summary: Return the result as a DRAFT (never publishes, never spends). Idempotent per request id.
+      x-scope: vp:launch
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [draft, failed] }
+                draft: { type: object }
+                reason: { type: string }
+      responses:
+        "200": { description: Stored }
+  /api/v1/vp/queue/{id}/claim:
+    post:
+      summary: Claim a request so a second device does not execute it too
+      x-proposed: true
+      x-scope: vp:launch
+      parameters: [{ name: id, in: path, required: true, schema: { type: string } }]
+      responses:
+        "200": { description: Claimed }
+        "409": { description: Already claimed }
+  /api/v1/vp/library:
+    put:
+      summary: Read-only library snapshot for the intelligence center (no raw transcripts, no heavy assets)
+      x-proposed: true
+      x-scope: vp:sync
+      requestBody:
+        content: { application/json: { schema: { type: object } } }
+      responses:
+        "200": { description: Stored }

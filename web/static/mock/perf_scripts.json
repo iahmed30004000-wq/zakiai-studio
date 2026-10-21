@@ -1,0 +1,42 @@
+[
+ {
+  "script_file": "VARA__ad_109__20260913_1348.json",
+  "script_id": "VP-vara-3-v2",
+  "delivered": 210,
+  "spend": 2600.0,
+  "cost_per_delivered": 12.38,
+  "delivery_rate": 0.71,
+  "verdict": "winner",
+  "reason": "أرخص 22% من خط الأساس"
+ },
+ {
+  "script_file": "VARA__ad_109__20260913_1344.json",
+  "script_id": "VP-vara-2-v1",
+  "delivered": 90,
+  "spend": 1500.0,
+  "cost_per_delivered": 16.67,
+  "delivery_rate": 0.58,
+  "verdict": "loser",
+  "reason": "أغلى 31% من خط الأساس"
+ },
+ {
+  "script_file": "LUMI__ad_111__20260914_0900.json",
+  "script_id": "VP-lumi-1-v1",
+  "delivered": 12,
+  "spend": 400.0,
+  "cost_per_delivered": 33.3,
+  "delivery_rate": 0.5,
+  "verdict": "insufficient",
+  "reason": "12 طلب مُسلَّم فقط — الحد الأدنى 20"
+ },
+ {
+  "script_file": "KAMA__ad_108__20260912_1010.json",
+  "script_id": "VP-kama-1-v1",
+  "delivered": 55,
+  "spend": 800.0,
+  "cost_per_delivered": 14.5,
+  "delivery_rate": 0.66,
+  "verdict": "ok",
+  "reason": "ضمن ±10% من خط الأساس"
+ }
+]

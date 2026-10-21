@@ -1,0 +1,26 @@
+{
+ "products": [
+  {
+   "code": "kama",
+   "name": "kama",
+   "category": "eye_care",
+   "file": "kama.json",
+   "done": 2,
+   "required": 6,
+   "extra_done": 0,
+   "locked": 1,
+   "complete": false
+  },
+  {
+   "code": "vara",
+   "name": "VARA",
+   "category": "hair_removal",
+   "file": "vara.json",
+   "done": 0,
+   "required": 6,
+   "extra_done": 0,
+   "locked": 0,
+   "complete": false
+  }
+ ]
+}

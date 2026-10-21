@@ -1,0 +1,34 @@
+[
+ {
+  "file": "_template.json",
+  "is_template": true,
+  "product_name": "",
+  "category": "",
+  "market": null,
+  "dialect": ""
+ },
+ {
+  "file": "vara.json",
+  "is_template": false,
+  "product_name": "VARA",
+  "category": "hair_removal",
+  "market": "SY",
+  "dialect": "shami"
+ },
+ {
+  "file": "kama.json",
+  "is_template": false,
+  "product_name": "kama",
+  "category": "eye_care",
+  "market": null,
+  "dialect": "msa_simple"
+ },
+ {
+  "file": "lumi.json",
+  "is_template": false,
+  "product_name": "LUMI",
+  "category": "skincare",
+  "market": "SA",
+  "dialect": "gulf"
+ }
+]

@@ -1,0 +1,13 @@
+{
+  "provider": "fal",
+  "has_key": false,
+  "cap_usd": 15,
+  "models": [],
+  "price_note": "الأسعار تقديرية من صفحات fal.ai وبتتغيّر — تأكّد منها وعدّلها بسجل الموديلات.",
+  "privacy_note": "صورة اللقطة والبرومبت بينبعتوا لـ fal.ai (برّا جهازك). وما بينبعت أي شي تاني.",
+  "presets": [
+    {"key": "kling26", "name": "Kling 2.6 Pro (fal)", "endpoint": "fal-ai/kling-video/v2.6/pro/image-to-video", "cost_per_sec": 0.07, "durations": [5, 10], "strengths": ["product", "realism", "faces"], "note": "جودة عالية للناس والمنتجات. السعر التقديري 0.07$ للثانية بدون صوت.", "est_cost_4s": 0.35},
+    {"key": "hailuo02", "name": "Hailuo 02 Standard (fal)", "endpoint": "fal-ai/minimax/hailuo-02/standard/image-to-video", "cost_per_sec": 0.045, "durations": [6, 10], "strengths": ["product", "realism"], "note": "أرخص بشوي، حركة جيدة للمنتجات. السعر التقديري 0.045$ للثانية بدقة 768p.", "est_cost_4s": 0.27},
+    {"key": "grok", "name": "Grok Imagine Video (fal)", "endpoint": "xai/grok-imagine-video/image-to-video", "cost_per_sec": 0.07, "durations": [6], "strengths": ["product"], "note": "سعره قريب من Kling. السعر التقديري 0.07$ للثانية بدقة 720p.", "est_cost_4s": 0.42}
+  ]
+}

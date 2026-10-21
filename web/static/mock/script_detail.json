@@ -1,0 +1,608 @@
+{
+ "VARA__ad_109__20260913_1348.json": {
+  "title": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "framework": "pas",
+  "hook_line": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "cta_line": "اطلبيه هلق من الرابط تحت",
+  "core_angle": "نجرّب أربع مشاكل ونحلّها",
+  "total_duration_sec": 48,
+  "scenes": [
+   {
+    "scene_number": 1,
+    "purpose": "هوك",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "4 ورقات",
+    "voiceover": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+    "visual": "امرأة بمطبخ بيتها تحمل ورقة مشطوبة",
+    "emotion": "فضول",
+    "word_count": 6
+   },
+   {
+    "scene_number": 2,
+    "purpose": "مشكلة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "كل مرة نفس القصة: ألم وجروح وشعر بيرجع",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "قلق",
+    "word_count": 8
+   },
+   {
+    "scene_number": 3,
+    "purpose": "تحوّل",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "لحد ما جرّبت هالكريم بالصدفة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "أمل",
+    "word_count": 5
+   },
+   {
+    "scene_number": 4,
+    "purpose": "استخدام",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "5 دقايق",
+    "voiceover": "حطيتو خمس دقايق… وبس",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "ثقة",
+    "word_count": 4
+   },
+   {
+    "scene_number": 5,
+    "purpose": "إثبات",
+    "duration_sec": 8,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "قبل/بعد",
+    "voiceover": "شفت الفرق بعيني، بدون فلتر",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "اطمئنان",
+    "word_count": 5
+   },
+   {
+    "scene_number": 6,
+    "purpose": "عرض",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "35$",
+    "voiceover": "والسعر؟ أقل من كلفة جلسة وحدة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "رغبة",
+    "word_count": 6
+   },
+   {
+    "scene_number": 7,
+    "purpose": "دعوة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "اطلبي الآن",
+    "voiceover": "اطلبيه هلق من الرابط تحت",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "استعجال",
+    "word_count": 5
+   }
+  ],
+  "_meta": {
+   "product": "VARA",
+   "product_file": "vara.json",
+   "product_code": "vara",
+   "number": 3,
+   "version": 2,
+   "script_id": "VP-vara-3-v2",
+   "display_name": "#3 - VARA",
+   "pattern_id": "ad_109",
+   "generated_at": "20260913_1348",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5",
+   "status": "draft"
+  }
+ },
+ "VARA__ad_109__20260913_1344.json": {
+  "title": "أربع مشاكل بكريمات إزالة الشعر… حلّيناهم",
+  "framework": "pas",
+  "hook_line": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "cta_line": "اطلبيه هلق من الرابط تحت",
+  "core_angle": "نجرّب أربع مشاكل ونحلّها",
+  "total_duration_sec": 48,
+  "scenes": [
+   {
+    "scene_number": 1,
+    "purpose": "هوك",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "4 ورقات",
+    "voiceover": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+    "visual": "امرأة بمطبخ بيتها تحمل ورقة مشطوبة",
+    "emotion": "فضول",
+    "word_count": 6
+   },
+   {
+    "scene_number": 2,
+    "purpose": "مشكلة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "كل مرة نفس القصة: ألم وجروح وشعر بيرجع",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "قلق",
+    "word_count": 8
+   },
+   {
+    "scene_number": 3,
+    "purpose": "تحوّل",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "لحد ما جرّبت هالكريم بالصدفة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "أمل",
+    "word_count": 5
+   },
+   {
+    "scene_number": 4,
+    "purpose": "استخدام",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "5 دقايق",
+    "voiceover": "حطيتو خمس دقايق… وبس",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "ثقة",
+    "word_count": 4
+   },
+   {
+    "scene_number": 5,
+    "purpose": "إثبات",
+    "duration_sec": 8,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "قبل/بعد",
+    "voiceover": "شفت الفرق بعيني، بدون فلتر",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "اطمئنان",
+    "word_count": 5
+   },
+   {
+    "scene_number": 6,
+    "purpose": "عرض",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "35$",
+    "voiceover": "والسعر؟ أقل من كلفة جلسة وحدة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "رغبة",
+    "word_count": 6
+   },
+   {
+    "scene_number": 7,
+    "purpose": "دعوة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "اطلبي الآن",
+    "voiceover": "اطلبيه هلق من الرابط تحت",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "استعجال",
+    "word_count": 5
+   }
+  ],
+  "_meta": {
+   "product": "VARA",
+   "product_file": "vara.json",
+   "product_code": "vara",
+   "number": 2,
+   "version": 1,
+   "script_id": "VP-vara-2-v1",
+   "display_name": "#2 - VARA",
+   "pattern_id": "ad_109",
+   "generated_at": "20260913_1348",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5",
+   "status": "draft"
+  }
+ },
+ "KAMA__ad_108__20260912_1010.json": {
+  "title": "قطرة جدّتي اللي رجّعت النظر",
+  "framework": "pas",
+  "hook_line": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "cta_line": "اطلبيه هلق من الرابط تحت",
+  "core_angle": "نجرّب أربع مشاكل ونحلّها",
+  "total_duration_sec": 48,
+  "scenes": [
+   {
+    "scene_number": 1,
+    "purpose": "هوك",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "4 ورقات",
+    "voiceover": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+    "visual": "امرأة بمطبخ بيتها تحمل ورقة مشطوبة",
+    "emotion": "فضول",
+    "word_count": 6
+   },
+   {
+    "scene_number": 2,
+    "purpose": "مشكلة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "كل مرة نفس القصة: ألم وجروح وشعر بيرجع",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "قلق",
+    "word_count": 8
+   },
+   {
+    "scene_number": 3,
+    "purpose": "تحوّل",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "لحد ما جرّبت هالكريم بالصدفة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "أمل",
+    "word_count": 5
+   },
+   {
+    "scene_number": 4,
+    "purpose": "استخدام",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "5 دقايق",
+    "voiceover": "حطيتو خمس دقايق… وبس",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "ثقة",
+    "word_count": 4
+   },
+   {
+    "scene_number": 5,
+    "purpose": "إثبات",
+    "duration_sec": 8,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "قبل/بعد",
+    "voiceover": "شفت الفرق بعيني، بدون فلتر",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "اطمئنان",
+    "word_count": 5
+   },
+   {
+    "scene_number": 6,
+    "purpose": "عرض",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "35$",
+    "voiceover": "والسعر؟ أقل من كلفة جلسة وحدة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "رغبة",
+    "word_count": 6
+   },
+   {
+    "scene_number": 7,
+    "purpose": "دعوة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "اطلبي الآن",
+    "voiceover": "اطلبيه هلق من الرابط تحت",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "استعجال",
+    "word_count": 5
+   }
+  ],
+  "_meta": {
+   "product": "kama",
+   "product_file": "kama.json",
+   "product_code": "kama",
+   "number": 1,
+   "version": 1,
+   "script_id": "VP-kama-1-v1",
+   "display_name": "#1 - kama",
+   "pattern_id": "ad_108",
+   "generated_at": "20260913_1348",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5",
+   "status": "draft"
+  }
+ },
+ "LUMI__ad_111__20260914_0900.json": {
+  "title": "جربت السيروم 30 يوم وهاي النتيجة",
+  "framework": "pas",
+  "hook_line": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "cta_line": "اطلبيه هلق من الرابط تحت",
+  "core_angle": "نجرّب أربع مشاكل ونحلّها",
+  "total_duration_sec": 48,
+  "scenes": [
+   {
+    "scene_number": 1,
+    "purpose": "هوك",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "4 ورقات",
+    "voiceover": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+    "visual": "امرأة بمطبخ بيتها تحمل ورقة مشطوبة",
+    "emotion": "فضول",
+    "word_count": 6
+   },
+   {
+    "scene_number": 2,
+    "purpose": "مشكلة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "كل مرة نفس القصة: ألم وجروح وشعر بيرجع",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "قلق",
+    "word_count": 8
+   },
+   {
+    "scene_number": 3,
+    "purpose": "تحوّل",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "لحد ما جرّبت هالكريم بالصدفة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "أمل",
+    "word_count": 5
+   },
+   {
+    "scene_number": 4,
+    "purpose": "استخدام",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "5 دقايق",
+    "voiceover": "حطيتو خمس دقايق… وبس",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "ثقة",
+    "word_count": 4
+   },
+   {
+    "scene_number": 5,
+    "purpose": "إثبات",
+    "duration_sec": 8,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "قبل/بعد",
+    "voiceover": "شفت الفرق بعيني، بدون فلتر",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "اطمئنان",
+    "word_count": 5
+   },
+   {
+    "scene_number": 6,
+    "purpose": "عرض",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "35$",
+    "voiceover": "والسعر؟ أقل من كلفة جلسة وحدة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "رغبة",
+    "word_count": 6
+   },
+   {
+    "scene_number": 7,
+    "purpose": "دعوة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "اطلبي الآن",
+    "voiceover": "اطلبيه هلق من الرابط تحت",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "استعجال",
+    "word_count": 5
+   }
+  ],
+  "_meta": {
+   "product": "LUMI",
+   "product_file": "lumi.json",
+   "product_code": "lumi",
+   "number": 1,
+   "version": 1,
+   "script_id": "VP-lumi-1-v1",
+   "display_name": "#1 - LUMI",
+   "pattern_id": "ad_111",
+   "generated_at": "20260913_1348",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5",
+   "status": "draft"
+  }
+ },
+ "default": {
+  "title": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "framework": "pas",
+  "hook_line": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "cta_line": "اطلبيه هلق من الرابط تحت",
+  "core_angle": "نجرّب أربع مشاكل ونحلّها",
+  "total_duration_sec": 48,
+  "scenes": [
+   {
+    "scene_number": 1,
+    "purpose": "هوك",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "4 ورقات",
+    "voiceover": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+    "visual": "امرأة بمطبخ بيتها تحمل ورقة مشطوبة",
+    "emotion": "فضول",
+    "word_count": 6
+   },
+   {
+    "scene_number": 2,
+    "purpose": "مشكلة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "كل مرة نفس القصة: ألم وجروح وشعر بيرجع",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "قلق",
+    "word_count": 8
+   },
+   {
+    "scene_number": 3,
+    "purpose": "تحوّل",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "لحد ما جرّبت هالكريم بالصدفة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "أمل",
+    "word_count": 5
+   },
+   {
+    "scene_number": 4,
+    "purpose": "استخدام",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "5 دقايق",
+    "voiceover": "حطيتو خمس دقايق… وبس",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "ثقة",
+    "word_count": 4
+   },
+   {
+    "scene_number": 5,
+    "purpose": "إثبات",
+    "duration_sec": 8,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "قبل/بعد",
+    "voiceover": "شفت الفرق بعيني، بدون فلتر",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "اطمئنان",
+    "word_count": 5
+   },
+   {
+    "scene_number": 6,
+    "purpose": "عرض",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "35$",
+    "voiceover": "والسعر؟ أقل من كلفة جلسة وحدة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "رغبة",
+    "word_count": 6
+   },
+   {
+    "scene_number": 7,
+    "purpose": "دعوة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "اطلبي الآن",
+    "voiceover": "اطلبيه هلق من الرابط تحت",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "استعجال",
+    "word_count": 5
+   }
+  ],
+  "_meta": {
+   "product": "VARA",
+   "product_file": "vara.json",
+   "product_code": "vara",
+   "number": 3,
+   "version": 2,
+   "script_id": "VP-vara-3-v2",
+   "display_name": "#3 - VARA",
+   "pattern_id": "ad_109",
+   "generated_at": "20260913_1348",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5",
+   "status": "draft"
+  }
+ },
+ "VARA__ad_109__20260913_1348_v1.json": {
+  "title": "أربع مشاكل بكريمات إزالة الشعر… حلّيناهم",
+  "framework": "pas",
+  "hook_line": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "cta_line": "اطلبيه هلق من الرابط تحت",
+  "core_angle": "نجرّب أربع مشاكل ونحلّها",
+  "total_duration_sec": 48,
+  "scenes": [
+   {
+    "scene_number": 1,
+    "purpose": "هوك",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "4 ورقات",
+    "voiceover": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+    "visual": "امرأة بمطبخ بيتها تحمل ورقة مشطوبة",
+    "emotion": "فضول",
+    "word_count": 6
+   },
+   {
+    "scene_number": 2,
+    "purpose": "مشكلة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "كل مرة نفس القصة: ألم وجروح وشعر بيرجع",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "قلق",
+    "word_count": 8
+   },
+   {
+    "scene_number": 3,
+    "purpose": "تحوّل",
+    "duration_sec": 6,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "",
+    "voiceover": "لحد ما جرّبت هالكريم بالصدفة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "أمل",
+    "word_count": 5
+   },
+   {
+    "scene_number": 4,
+    "purpose": "استخدام",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "5 دقايق",
+    "voiceover": "حطيتو خمس دقايق… وبس",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "ثقة",
+    "word_count": 4
+   },
+   {
+    "scene_number": 5,
+    "purpose": "إثبات",
+    "duration_sec": 8,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "قبل/بعد",
+    "voiceover": "شفت الفرق بعيني، بدون فلتر",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "اطمئنان",
+    "word_count": 5
+   },
+   {
+    "scene_number": 6,
+    "purpose": "عرض",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "35$",
+    "voiceover": "والسعر؟ أقل من كلفة جلسة وحدة",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "رغبة",
+    "word_count": 6
+   },
+   {
+    "scene_number": 7,
+    "purpose": "دعوة",
+    "duration_sec": 7,
+    "shot_type": "لقطة وجه قريبة",
+    "on_screen_text": "اطلبي الآن",
+    "voiceover": "اطلبيه هلق من الرابط تحت",
+    "visual": "لقطة توضّح الخطوة بإضاءة طبيعية",
+    "emotion": "استعجال",
+    "word_count": 5
+   }
+  ],
+  "_meta": {
+   "product": "VARA",
+   "product_file": "vara.json",
+   "product_code": "vara",
+   "number": 2,
+   "version": 1,
+   "script_id": "VP-vara-2-v1",
+   "display_name": "#2 - VARA",
+   "pattern_id": "ad_109",
+   "generated_at": "20260913_1348",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5",
+   "status": "draft"
+  }
+ }
+}

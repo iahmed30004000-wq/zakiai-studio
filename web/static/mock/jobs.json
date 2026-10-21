@@ -1,0 +1,52 @@
+[
+ {
+  "id": "mj_1",
+  "kind": "generate",
+  "label": "توليد: VARA (نمط ad_109)",
+  "status": "running",
+  "error": null,
+  "created_at": "@now-4m",
+  "started_at": "@now-4m",
+  "finished_at": null
+ },
+ {
+  "id": "mj_2",
+  "kind": "voice",
+  "label": "فويس أوفر: VARA__ad_109__20260913_1348",
+  "status": "failed",
+  "error": "مفتاح TTS غير صالح",
+  "created_at": "@now-2h",
+  "started_at": "@now-2h",
+  "finished_at": "@now-2h"
+ },
+ {
+  "id": "mj_3",
+  "kind": "mine",
+  "label": "تشريح الأنماط",
+  "status": "done",
+  "error": null,
+  "created_at": "@now-1d",
+  "started_at": "@now-1d",
+  "finished_at": "@now-1d"
+ },
+ {
+  "id": "mj_4",
+  "kind": "extract",
+  "label": "استخراج: 108.mp4",
+  "status": "done",
+  "error": null,
+  "created_at": "@now-1d",
+  "started_at": "@now-1d",
+  "finished_at": "@now-1d"
+ },
+ {
+  "id": "mj_5",
+  "kind": "review",
+  "label": "تدقيق: VARA__ad_109__20260913_1344",
+  "status": "queued",
+  "error": null,
+  "created_at": "@now-1m",
+  "started_at": null,
+  "finished_at": null
+ }
+]

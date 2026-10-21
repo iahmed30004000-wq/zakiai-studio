@@ -1,0 +1,90 @@
+{
+ "slots": [
+  {
+   "slot": "front",
+   "label": "أمام",
+   "label_en": "FRONT",
+   "pose_ar": "وجه وكتفين من قدّام والنظر للكاميرا. أول وضعية بتتولّد وباقي الوضعيات بتنبني عليها.",
+   "required": true,
+   "has_image": true,
+   "locked": true,
+   "prompt": {
+    "text": "CHARACTER REFERENCE SHEET — FRONT. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nPose: Head-and-shoulders portrait, facing the camera straight-on with eyes to the lens, relaxed friendly neutral expression, camera at eye level (85mm look).\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "default": "CHARACTER REFERENCE SHEET — FRONT. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nPose: Head-and-shoulders portrait, facing the camera straight-on with eyes to the lens, relaxed friendly neutral expression, camera at eye level (85mm look).\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "edited": false
+   },
+   "needs_front": false,
+   "use_note": "بتنبعت مع لقطات الوجه"
+  },
+  {
+   "slot": "side",
+   "label": "جانب",
+   "label_en": "SIDE PROFILE",
+   "pose_ar": "وجه وكتفين من الجنب (90°).",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "CHARACTER REFERENCE SHEET — SIDE PROFILE. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Head-and-shoulders portrait in pure side profile (90°), looking straight ahead, same expression, camera at eye level (85mm look).\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "default": "CHARACTER REFERENCE SHEET — SIDE PROFILE. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Head-and-shoulders portrait in pure side profile (90°), looking straight ahead, same expression, camera at eye level (85mm look).\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "edited": false
+   },
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "three_quarter",
+   "label": "ثلاثة أرباع",
+   "label_en": "THREE-QUARTER",
+   "pose_ar": "من الوسط لفوق، الجسم مايل 45° والوجه نحو الكاميرا.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "CHARACTER REFERENCE SHEET — THREE-QUARTER. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Waist-up portrait, the body turned 45° from the camera and the face turned toward the lens (three-quarter view), camera at eye level.\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "default": "CHARACTER REFERENCE SHEET — THREE-QUARTER. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Waist-up portrait, the body turned 45° from the camera and the face turned toward the lens (three-quarter view), camera at eye level.\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "edited": false
+   },
+   "needs_front": true,
+   "use_note": "بتنبعت مع لقطات الوجه"
+  },
+  {
+   "slot": "full_body",
+   "label": "جسم كامل",
+   "label_en": "FULL BODY",
+   "pose_ar": "الجسم كامل واقف، من الراس للقدمين.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "CHARACTER REFERENCE SHEET — FULL BODY. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Full-body shot, standing relaxed and facing the camera, the entire body from head to feet inside the frame with the feet visible, camera at chest height.\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "default": "CHARACTER REFERENCE SHEET — FULL BODY. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Full-body shot, standing relaxed and facing the camera, the entire body from head to feet inside the frame with the feet visible, camera at chest height.\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "edited": false
+   },
+   "needs_front": true,
+   "use_note": ""
+  },
+  {
+   "slot": "hands",
+   "label": "يدين",
+   "label_en": "HANDS",
+   "pose_ar": "لقطة قريبة لليدين بنفس لون البشرة، عشان لقطات حمل المنتج.",
+   "required": true,
+   "has_image": false,
+   "locked": false,
+   "prompt": {
+    "text": "CHARACTER REFERENCE SHEET — HANDS. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Close-up of both hands, palms and backs shown naturally, relaxed and slightly open as if about to hold a small product; forearms in the outfit's sleeves; the same skin tone as the person's face.\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "default": "CHARACTER REFERENCE SHEET — HANDS. Photorealistic studio photo of the SAME person in every view of this sheet.\nPerson: 32-year-old woman, دافئة، واثقة.\nSkin: خمرية. Hair: بني داكن. Regional look: ملامح شامية.\nOutfit (identical in every view): بلوزة كحلية وحجاب بيج.\nIDENTITY LOCK: use the attached FRONT image as the exact same person — identical face and facial structure, skin tone, hairstyle, age and outfit. Do not redesign anything; only the pose and camera angle change.\nPose: Close-up of both hands, palms and backs shown naturally, relaxed and slightly open as if about to hold a small product; forearms in the outfit's sleeves; the same skin tone as the person's face.\nBackground & light (identical for every view): plain light-gray seamless background, soft even studio lighting, no shadow on the background.\nRules: one person only; no text, logos, watermarks, props or jewelry changes; natural skin texture, no beauty filters or retouching that alters identity.",
+    "edited": false
+   },
+   "needs_front": true,
+   "use_note": "بتنبعت مع لقطات اليد بالمنتج"
+  }
+ ],
+ "prompt_gaps": [],
+ "source": "synthetic",
+ "name": "ريم",
+ "countries": [
+  "SY"
+ ]
+}

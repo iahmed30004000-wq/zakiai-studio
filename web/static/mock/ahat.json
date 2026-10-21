@@ -1,0 +1,40 @@
+{
+ "tracks": [
+  {
+   "id": "ah_001",
+   "name": "آهة راحة",
+   "mood": "calm",
+   "duration_sec": 62.0,
+   "approved": true
+  },
+  {
+   "id": "ah_002",
+   "name": "آهة أمل",
+   "mood": "hopeful",
+   "duration_sec": 28.5,
+   "approved": true
+  },
+  {
+   "id": "ah_003",
+   "name": "تنفّس عميق",
+   "mood": "any",
+   "duration_sec": 12.0,
+   "approved": true
+  },
+  {
+   "id": "ah_004",
+   "name": "غير معتمد",
+   "mood": "tense",
+   "duration_sec": 40.0,
+   "approved": false
+  }
+ ],
+ "moods": {
+  "calm": "هادئ",
+  "warm": "دافئ",
+  "hopeful": "أمل",
+  "tense": "توتر خفيف",
+  "uplift": "انتعاش",
+  "any": "أي مزاج"
+ }
+}

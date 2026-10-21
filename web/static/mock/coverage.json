@@ -1,0 +1,173 @@
+{
+ "quota": 10,
+ "active_categories": [
+  "fragrance",
+  "hair_removal",
+  "eye_care",
+  "skincare",
+  "supplements"
+ ],
+ "matrix": [
+  {
+   "category": "fragrance",
+   "framework": "pas",
+   "dialect": "shami",
+   "count": 1
+  },
+  {
+   "category": "fragrance",
+   "framework": "authority_reveal",
+   "dialect": "shami",
+   "count": 1
+  },
+  {
+   "category": "fragrance",
+   "framework": "ugc_testimonial",
+   "dialect": "shami",
+   "count": 2
+  },
+  {
+   "category": "fragrance",
+   "framework": "demo_proof",
+   "dialect": "gulf",
+   "count": 1
+  },
+  {
+   "category": "fragrance",
+   "framework": "us_vs_them",
+   "dialect": "egyptian",
+   "count": 1
+  },
+  {
+   "category": "fragrance",
+   "framework": "us_vs_them",
+   "dialect": "msa_simple",
+   "count": 1
+  },
+  {
+   "category": "fragrance",
+   "framework": "the_hack",
+   "dialect": "gulf",
+   "count": 2
+  },
+  {
+   "category": "fragrance",
+   "framework": "pas",
+   "dialect": "shami",
+   "count": 1
+  },
+  {
+   "category": "hair_removal",
+   "framework": "pas",
+   "dialect": "gulf",
+   "count": 1
+  },
+  {
+   "category": "hair_removal",
+   "framework": "pas",
+   "dialect": "msa_simple",
+   "count": 2
+  },
+  {
+   "category": "hair_removal",
+   "framework": "ugc_testimonial",
+   "dialect": "msa_simple",
+   "count": 1
+  },
+  {
+   "category": "eye_care",
+   "framework": "authority_reveal",
+   "dialect": "gulf",
+   "count": 2
+  },
+  {
+   "category": "skincare",
+   "framework": "authority_reveal",
+   "dialect": "shami",
+   "count": 2
+  },
+  {
+   "category": "skincare",
+   "framework": "authority_reveal",
+   "dialect": "gulf",
+   "count": 1
+  },
+  {
+   "category": "skincare",
+   "framework": "ugc_testimonial",
+   "dialect": "gulf",
+   "count": 1
+  },
+  {
+   "category": "skincare",
+   "framework": "ugc_testimonial",
+   "dialect": "msa_simple",
+   "count": 2
+  },
+  {
+   "category": "skincare",
+   "framework": "demo_proof",
+   "dialect": "egyptian",
+   "count": 1
+  }
+ ],
+ "per_category": [
+  {
+   "category": "fragrance",
+   "label": "عطور",
+   "count": 10,
+   "quota_met": true,
+   "gap": 0
+  },
+  {
+   "category": "hair_removal",
+   "label": "إزالة الشعر",
+   "count": 4,
+   "quota_met": false,
+   "gap": 6
+  },
+  {
+   "category": "eye_care",
+   "label": "عناية بالعين",
+   "count": 2,
+   "quota_met": false,
+   "gap": 8
+  },
+  {
+   "category": "skincare",
+   "label": "عناية بالبشرة",
+   "count": 7,
+   "quota_met": false,
+   "gap": 3
+  },
+  {
+   "category": "supplements",
+   "label": "مكمّلات غذائية",
+   "count": 0,
+   "quota_met": false,
+   "gap": 10
+  }
+ ],
+ "gaps": [
+  {
+   "category": "hair_removal",
+   "label": "إزالة الشعر",
+   "missing": 6
+  },
+  {
+   "category": "eye_care",
+   "label": "عناية بالعين",
+   "missing": 8
+  },
+  {
+   "category": "skincare",
+   "label": "عناية بالبشرة",
+   "missing": 3
+  },
+  {
+   "category": "supplements",
+   "label": "مكمّلات غذائية",
+   "missing": 10
+  }
+ ]
+}

@@ -1,0 +1,142 @@
+{
+ "control": {
+  "command": "run",
+  "kind": "video",
+  "mode": "fast",
+  "site": "flow",
+  "step_mode": "all",
+  "only": [
+   "s1c2",
+   "s2c1",
+   "s2c3"
+  ],
+  "stop_code": null,
+  "stop_reason": "",
+  "position": {
+   "task_id": "s1c2",
+   "shot_id": "s1c2",
+   "step": "generating",
+   "site": "flow"
+  },
+  "warning": "وضع «أسرع»: احتمال إيقاف الحساب أعلى من «طبيعي»."
+ },
+ "queue": 3,
+ "next": "s1c2",
+ "modes": {
+  "natural": "طبيعي",
+  "fast": "أسرع",
+  "max": "أقصى"
+ },
+ "mode_warning": "أسرع: كتابة وانتظار أقصر. الموقع ممكن يحس إنه أتمتة، فاحتمال إيقاف الحساب أعلى من «طبيعي».",
+ "log": [
+  {
+   "step": "start",
+   "shot": "s1c2",
+   "msg": "لقطة s1c2 (video) — وضع fast"
+  },
+  {
+   "step": "attach",
+   "shot": "s1c2",
+   "msg": "1 مرجع"
+  },
+  {
+   "step": "type",
+   "shot": "s1c2",
+   "msg": "230 حرف"
+  },
+  {
+   "step": "click",
+   "shot": "s1c2",
+   "msg": "ضغط زر التوليد"
+  },
+  {
+   "step": "generating",
+   "shot": "s1c2",
+   "msg": "بانتظار الفيديو (دقيقتين تقريباً)"
+  }
+ ],
+ "kinds": {
+  "voice": 0,
+  "image": 0,
+  "video": 3,
+  "ahat": 1,
+  "music": 1
+ },
+ "sites": {
+  "gemini": {
+   "label": "جيميناي",
+   "kinds": [
+    "image"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "gemini.google.com"
+   ],
+   "newUrl": "https://gemini.google.com/app"
+  },
+  "chatgpt": {
+   "label": "شات جي بي تي",
+   "kinds": [
+    "image"
+   ],
+   "verified": true,
+   "adapter_version": 2,
+   "hosts": [
+    "chatgpt.com"
+   ],
+   "newUrl": "https://chatgpt.com/"
+  },
+  "aistudio": {
+   "label": "إيه آي ستوديو",
+   "kinds": [
+    "image"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "aistudio.google.com"
+   ],
+   "newUrl": "https://aistudio.google.com/"
+  },
+  "flow": {
+   "label": "فلو",
+   "kinds": [
+    "video",
+    "image"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "labs.google"
+   ],
+   "newUrl": "https://labs.google/fx/tools/flow"
+  },
+  "flowmusic": {
+   "label": "فلو ميوزك",
+   "kinds": [
+    "music"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "labs.google"
+   ],
+   "newUrl": "https://labs.google/fx/tools/music"
+  },
+  "elevenlabs": {
+   "label": "إيليفن لابز",
+   "kinds": [
+    "voice",
+    "ahat"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "elevenlabs.io"
+   ],
+   "newUrl": "https://elevenlabs.io/app/speech-synthesis"
+  }
+ },
+ "requests": []
+}

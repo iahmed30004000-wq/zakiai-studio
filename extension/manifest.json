@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "Zakiai Systems — مولّد الوسائط",
+  "version": "0.4.0",
+  "description": "بيسحب مهام استوديو Zakiai Systems (localhost) وبينفّذها بمواقع التوليد بحسابك المسجّل: صوت وصور وتحريك وآهات وموسيقى. وفيه «تجربة سريعة» بدون استوديو بتحفظ النتيجة بمجلد التنزيلات. تبويب واحد، مهمة بالمرة، وبيوقف عند أي تحقق أو تحذير. المحدّدات جزئياً تخمينية لحد ما تنفحص على المواقع الحقيقية.",
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms",
+    "downloads",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "http://127.0.0.1:8000/*",
+    "https://gemini.google.com/*",
+    "https://chatgpt.com/*",
+    "https://aistudio.google.com/*",
+    "https://flow.google.com/*",
+    "https://elevenlabs.io/*",
+    "https://flowmusic.app/*",
+    "https://www.flowmusic.app/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://chatgpt.com/*",
+        "https://aistudio.google.com/*",
+        "https://flow.google.com/*",
+        "https://elevenlabs.io/*",
+        "https://flowmusic.app/*",
+        "https://www.flowmusic.app/*"
+      ],
+      "js": [
+        "lib/pace.js",
+        "lib/detect.js",
+        "lib/adapters.js",
+        "lib/engine.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Zakiai Systems"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

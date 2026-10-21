@@ -1,0 +1,214 @@
+{
+ "characters": [
+  {
+   "id": "ch_f_001",
+   "name_ar": "ريم",
+   "gender": "f",
+   "age": 32,
+   "skin": "خمرية",
+   "hair": "بني داكن",
+   "persona": "دافئة، واثقة",
+   "wardrobe": {
+    "description": "بلوزة كحلية وحجاب بيج",
+    "palette": []
+   },
+   "categories": [
+    "eye_care"
+   ],
+   "market_look": {
+    "SY": "ملامح شامية"
+   },
+   "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "VOICE_ريم",
+    "model": "eleven_v3"
+   },
+   "sheet": {
+    "front": "sheet/front.png",
+    "side": "sheet/side.png",
+    "three_quarter": "sheet/three_quarter.png",
+    "full_body": "sheet/full_body.png",
+    "hands": "sheet/hands.png"
+   },
+   "source": "synthetic",
+   "consent": null,
+   "status": "ready",
+   "updated_at": "2026-09-30T09:00:00",
+   "missing": []
+  },
+  {
+   "id": "ch_f_002",
+   "name_ar": "لينا",
+   "gender": "f",
+   "age": 27,
+   "skin": "خمرية",
+   "hair": "بني داكن",
+   "persona": "دافئة، واثقة",
+   "wardrobe": {
+    "description": "بلوزة كحلية وحجاب بيج",
+    "palette": []
+   },
+   "categories": [
+    "skincare",
+    "eye_care"
+   ],
+   "market_look": {
+    "SY": "ملامح شامية"
+   },
+   "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "VOICE_لينا",
+    "model": "eleven_v3"
+   },
+   "sheet": {
+    "front": "sheet/front.png",
+    "side": "sheet/side.png",
+    "three_quarter": "sheet/three_quarter.png",
+    "full_body": "sheet/full_body.png",
+    "hands": "sheet/hands.png"
+   },
+   "source": "synthetic",
+   "consent": null,
+   "status": "ready",
+   "updated_at": "2026-09-30T09:00:00",
+   "missing": []
+  },
+  {
+   "id": "ch_f_003",
+   "name_ar": "هدى",
+   "gender": "f",
+   "age": 41,
+   "skin": "خمرية",
+   "hair": "بني داكن",
+   "persona": "جدّية",
+   "wardrobe": {
+    "description": "بلوزة كحلية وحجاب بيج",
+    "palette": []
+   },
+   "categories": [
+    "eye_care"
+   ],
+   "market_look": {
+    "SY": "ملامح شامية"
+   },
+   "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "VOICE_هدى",
+    "model": "eleven_v3"
+   },
+   "sheet": {
+    "front": "sheet/front.png",
+    "side": "sheet/side.png",
+    "three_quarter": "sheet/three_quarter.png",
+    "full_body": "sheet/full_body.png",
+    "hands": "sheet/hands.png"
+   },
+   "source": "synthetic",
+   "consent": null,
+   "status": "ready",
+   "updated_at": "2026-09-30T09:00:00",
+   "missing": []
+  },
+  {
+   "id": "ch_m_001",
+   "name_ar": "سامر",
+   "gender": "m",
+   "age": 35,
+   "skin": "خمرية",
+   "hair": "بني داكن",
+   "persona": "دافئة، واثقة",
+   "wardrobe": {
+    "description": "بلوزة كحلية وحجاب بيج",
+    "palette": []
+   },
+   "categories": [
+    "eye_care"
+   ],
+   "market_look": {
+    "SY": "ملامح شامية"
+   },
+   "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "VOICE_سامر",
+    "model": "eleven_v3"
+   },
+   "sheet": {
+    "front": "sheet/front.png",
+    "side": "sheet/side.png",
+    "three_quarter": "sheet/three_quarter.png",
+    "full_body": "sheet/full_body.png",
+    "hands": "sheet/hands.png"
+   },
+   "source": "synthetic",
+   "consent": null,
+   "status": "ready",
+   "updated_at": "2026-09-30T09:00:00",
+   "missing": []
+  },
+  {
+   "id": "ch_f_004",
+   "name_ar": "نور",
+   "gender": "f",
+   "age": 30,
+   "skin": "خمرية",
+   "hair": "بني داكن",
+   "persona": "دافئة، واثقة",
+   "wardrobe": {
+    "description": "بلوزة كحلية وحجاب بيج",
+    "palette": []
+   },
+   "categories": [
+    "eye_care"
+   ],
+   "market_look": {
+    "SY": "ملامح شامية"
+   },
+   "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "VOICE_نور",
+    "model": "eleven_v3"
+   },
+   "sheet": {
+    "front": null,
+    "side": null,
+    "three_quarter": null,
+    "full_body": null,
+    "hands": null
+   },
+   "source": "synthetic",
+   "consent": null,
+   "status": "draft",
+   "updated_at": "2026-09-30T09:00:00",
+   "missing": [
+    "ورقة مرجعية: أمام",
+    "ورقة مرجعية: جانب"
+   ]
+  }
+ ],
+ "summary": {
+  "total": 5,
+  "ready": {
+   "m": 1,
+   "f": 3
+  },
+  "target": {
+   "m": 20,
+   "f": 30
+  },
+  "remaining": {
+   "m": 19,
+   "f": 27
+  }
+ },
+ "views": {
+  "front": "أمام",
+  "side": "جانب",
+  "three_quarter": "ثلاثة أرباع",
+  "full_body": "جسم كامل",
+  "hands": "يدين"
+ },
+ "genders": {
+  "m": "رجل",
+  "f": "امرأة"
+ }
+}

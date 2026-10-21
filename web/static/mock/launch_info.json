@@ -1,0 +1,43 @@
+{
+ "vp_id": "VP-kama-109-v2",
+ "modes": {
+  "active": "منتج شغّال",
+  "test": "تست"
+ },
+ "status_labels": {
+  "received": "استُلم",
+  "preparing": "قيد التجهيز",
+  "awaiting_approval": "بانتظار موافقتك",
+  "launched": "انطلق",
+  "rejected": "مرفوض",
+  "failed": "فشل",
+  "cancelled": "أُلغي"
+ },
+ "problems": [
+  "ما في توكن vp:launch بالإعدادات"
+ ],
+ "records": {
+  "test": {
+   "request_id": "req_88",
+   "status": "awaiting_approval",
+   "sent_at": "2026-09-30T10:22:00+00:00",
+   "ops_url": "https://ops.example.com/requests/req_88",
+   "reason": null
+  }
+ },
+ "export": {
+  "file": "exports/VP-kama-109-v2.mp4",
+  "size": [
+   1080,
+   1920
+  ],
+  "duration_ms": 47000
+ },
+ "read_token_set": true,
+ "launch_token_set": false,
+ "cancellable": [
+  "received",
+  "preparing",
+  "awaiting_approval"
+ ]
+}

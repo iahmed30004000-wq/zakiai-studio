@@ -1,0 +1,123 @@
+{
+ "models": [
+  {
+   "id": "mm_001",
+   "name": "LTX محلي",
+   "max_sec": 5,
+   "vram_gb": 5.5,
+   "speed_sec_per_sec": 45,
+   "resolution": "704x1216",
+   "strengths": [
+    "product",
+    "realism",
+    "camera_motion"
+   ],
+   "limits": "",
+   "command": [
+    "python",
+    "ltx.py"
+   ],
+   "lipsync_command": null,
+   "lipsync": false,
+   "enabled": true,
+   "kind": "command",
+   "http": null
+  },
+  {
+   "id": "mm_002",
+   "name": "Wan صغير",
+   "max_sec": 5,
+   "vram_gb": 5,
+   "speed_sec_per_sec": 80,
+   "resolution": "480x832",
+   "strengths": [
+    "realism",
+    "faces"
+   ],
+   "limits": "بطيء",
+   "command": [
+    "python",
+    "wan.py"
+   ],
+   "lipsync_command": null,
+   "lipsync": false,
+   "enabled": true,
+   "kind": "command",
+   "http": null
+  },
+  {
+   "id": "mm_003",
+   "name": "Hunyuan",
+   "max_sec": 5,
+   "vram_gb": 24,
+   "speed_sec_per_sec": 300,
+   "resolution": "720x1280",
+   "strengths": [
+    "faces",
+    "realism"
+   ],
+   "limits": "",
+   "command": [
+    "python",
+    "hy.py"
+   ],
+   "lipsync_command": null,
+   "lipsync": false,
+   "enabled": true,
+   "kind": "command",
+   "http": null
+  },
+  {
+   "id": "mm_004",
+   "name": "LTX صندوق",
+   "kind": "http",
+   "max_sec": 5,
+   "vram_gb": 5.5,
+   "speed_sec_per_sec": 40,
+   "resolution": "480x864",
+   "strengths": [
+    "product",
+    "realism",
+    "camera_motion"
+   ],
+   "limits": "",
+   "command": null,
+   "lipsync_command": null,
+   "lipsync": false,
+   "enabled": true,
+   "http": {
+    "url": "http://127.0.0.1:8101",
+    "mode": "i2v",
+    "steps": 40,
+    "guidance": 3.0,
+    "token_secret": "engine_ltx",
+    "token_set": true
+   }
+  }
+ ],
+ "strengths": {
+  "faces": "وجوه",
+  "product": "منتج",
+  "camera_motion": "حركة كاميرا",
+  "realism": "واقعية",
+  "hand": "يد"
+ },
+ "vram_gb": 6.0,
+ "placeholders": [
+  "{image}",
+  "{prompt_file}",
+  "{prompt}",
+  "{seconds}",
+  "{width}",
+  "{height}",
+  "{out}"
+ ],
+ "kinds": {
+  "command": "أمر محلي",
+  "http": "صندوق نموذج (http)"
+ },
+ "http_modes": [
+  "i2v",
+  "t2v"
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "VARA__ad_109__20260913_1348.json": {
+  "verdict": "approve",
+  "summary": "سيناريو متماسك ولهجة شامية سليمة",
+  "scores": {
+   "arithmetic": 10,
+   "dialect": 9,
+   "claim_safety": 9,
+   "structure_fidelity": 8,
+   "coherence": 9,
+   "shootability": 8
+  },
+  "findings": []
+ },
+ "VARA__ad_109__20260913_1344.json": {
+  "verdict": "revise",
+  "summary": "موانع ادعاءات لازم تنصلّح",
+  "scores": {
+   "arithmetic": 10,
+   "dialect": 8,
+   "claim_safety": 3,
+   "structure_fidelity": 8,
+   "coherence": 7,
+   "shootability": 8
+  },
+  "findings": [
+   {
+    "scene": 5,
+    "field": "voiceover",
+    "severity": "blocker",
+    "issue": "ادّعاء نتيجة دائمة ممنوع",
+    "evidence": "«يمنع الشعر نهائياً»",
+    "fix": "استبدلها بصياغة «أنعم وأخف مع الاستمرار»"
+   },
+   {
+    "scene": 3,
+    "field": "visual",
+    "severity": "minor",
+    "issue": "وصف بصري عام",
+    "fix": "حدّد زاوية الكاميرا"
+   }
+  ]
+ }
+}

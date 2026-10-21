@@ -1,0 +1,60 @@
+# تطبيق VidPattern نفسه (الواجهة + الاستوديو). ⚠ غير مجرَّب — ينجرّب على السيرفر.
+#
+# تشغيل:   docker network create vidpattern_net     (مرة وحدة، نفس الشبكة تبع الصناديق)
+#          docker compose up -d --build
+# بعدها:   http://127.0.0.1:8000  (مربوط بـ 127.0.0.1 بس؛ للدخول عن بُعد استعمل نفق SSH، مش فتح المنفذ)
+#
+# · library/ = مكتبتك (قابلة للكتابة). models/ = النماذج الصغيرة (قراءة فقط).
+# · ما في أي مفتاح أو توكن بالصورة. توكن الصناديق بيجي من ENGINE_TOKEN بملف .env وقت التشغيل بس.
+# · بالتطبيق، عنوان صندوق LTX = http://ltx:8000 و Wan = http://wan:8000 (أسماء الحاويات على الشبكة المشتركة).
+
+name: vidpattern
+
+services:
+  app:
+    image: vidpattern/app:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    init: true
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"          # نفس مستخدم السيرفر عشان يكتب على library/
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ENGINE_TOKEN: ${ENGINE_TOKEN:-}                  # للاتصال بالصناديق (مش مخبّأ بالصورة)
+      VP_ALLOWED_HOSTS: ${VP_ALLOWED_HOSTS:-}          # أسماء إضافية مسموحة للدخول (الافتراضي: localhost و127.0.0.1 بس)
+      VP_ALLOWED_ORIGINS: ${VP_ALLOWED_ORIGINS:-}      # مصادر إضافية (بس لو في محوّل عكسي بيغيّر Host)
+      HOME: /tmp
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./library:/app/library                         # قابل للكتابة
+      - ./models:/app/models:ro                        # قراءة فقط
+      - ./settings.json:/app/settings.json             # إعدادات الواجهة (بلا مفاتيح)
+    tmpfs:
+      - /tmp:size=1g,mode=1777
+    networks: [vidpattern_net]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/', timeout=4).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+    # لو بدك النماذج المحلية داخل التطبيق (تفريغ الخلفية/التكبير) تشتغل على الكرت، شيل التعليق:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+networks:
+  vidpattern_net:
+    external: true

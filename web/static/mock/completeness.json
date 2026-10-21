@@ -1,0 +1,105 @@
+{
+ "vara.json": {
+  "score": 100,
+  "filled": 12,
+  "total": 12,
+  "missing": [],
+  "publish_missing": [],
+  "ready": true,
+  "publish_ready": true,
+  "forbidden_effective": [
+   "يمنع الشعر نهائياً",
+   "علاج طبي",
+   "نتيجة مضمونة 100%"
+  ],
+  "scarcity": {
+   "allowed": false,
+   "basis": "لا تاريخ انتهاء ولا مخزون فعلي مسجّل"
+  },
+  "offer_policy": "allowed"
+ },
+ "kama.json": {
+  "score": 42,
+  "filled": 5,
+  "total": 12,
+  "missing": [
+   "what_it_does",
+   "pain_points",
+   "objections",
+   "proof_assets",
+   "offer",
+   "guarantee",
+   "production_constraints"
+  ],
+  "publish_missing": [
+   "product_code",
+   "country",
+   "landing_page"
+  ],
+  "ready": false,
+  "publish_ready": false,
+  "forbidden_effective": [
+   "علاج الجلوكوما",
+   "يغني عن الطبيب"
+  ],
+  "scarcity": {
+   "allowed": false,
+   "basis": "لا بيانات"
+  },
+  "offer_policy": "allowed"
+ },
+ "lumi.json": {
+  "score": 83,
+  "filled": 10,
+  "total": 12,
+  "missing": [
+   "offer",
+   "guarantee"
+  ],
+  "publish_missing": [
+   "landing_page"
+  ],
+  "ready": false,
+  "publish_ready": false,
+  "forbidden_effective": [
+   "تبييض دائم"
+  ],
+  "scarcity": {
+   "allowed": true,
+   "basis": "مخزون فعلي 40 وحدة وتاريخ انتهاء 2026-10-15"
+  },
+  "offer_policy": "allowed"
+ },
+ "default": {
+  "score": 0,
+  "filled": 0,
+  "total": 12,
+  "missing": [
+   "category",
+   "dialect",
+   "core_promise",
+   "what_it_does",
+   "features",
+   "pain_points",
+   "objections",
+   "proof_assets",
+   "offer",
+   "guarantee",
+   "production_constraints",
+   "forbidden_claims"
+  ],
+  "publish_missing": [
+   "product_code",
+   "country",
+   "landing_page"
+  ],
+  "ready": false,
+  "publish_ready": false,
+  "forbidden_effective": [],
+  "scarcity": {
+   "allowed": false,
+   "basis": ""
+  },
+  "offer_policy": "allowed"
+ }
+}

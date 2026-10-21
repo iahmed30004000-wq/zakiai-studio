@@ -1,0 +1,21 @@
+{
+  "name": "vidpattern-advanced-montage-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "محرّك رندر المونتاج المتقدّم (Remotion) — تركيب AdVertical 1080x1920",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.530",
+    "@remotion/cli": "4.0.530",
+    "@remotion/renderer": "4.0.530",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.530"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}

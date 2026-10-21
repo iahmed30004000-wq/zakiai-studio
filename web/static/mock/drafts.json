@@ -1,0 +1,21 @@
+[
+ {
+  "id": "dr_1",
+  "title": "نسخة جديدة من VP-vara-3 (تعافي من الإرهاق)",
+  "status": "pending",
+  "kind": "fatigue",
+  "product": "VARA",
+  "pattern_id": "ad_109",
+  "created_at": "@now-1d",
+  "summary": "هوك جديد مع نفس بنية النمط والإثبات"
+ },
+ {
+  "id": "dr_2",
+  "title": "مسودة لـ LUMI بنمط شهادة",
+  "status": "pending",
+  "kind": "watch",
+  "product": "LUMI",
+  "pattern_id": "ad_111",
+  "created_at": "@now-3h"
+ }
+]

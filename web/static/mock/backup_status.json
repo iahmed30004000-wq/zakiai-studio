@@ -1,0 +1,16 @@
+{
+ "last": {
+  "at": "@now-2d",
+  "ok": true,
+  "path": "D:\\Backups\u000bidpattern6-09-27",
+  "files": 214
+ },
+ "days_since": 2,
+ "alert": false,
+ "alert_reasons": [],
+ "configured": true,
+ "dir": "D:\\Backups\u000bidpattern",
+ "include_source_videos": false,
+ "key_exported": true,
+ "keep": 30
+}

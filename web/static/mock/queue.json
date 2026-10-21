@@ -1,0 +1,24 @@
+{
+ "pending_count": 2,
+ "last_poll": {
+  "at": "@now-10m",
+  "ok": true,
+  "skipped": null
+ },
+ "items": [
+  {
+   "id": "q1",
+   "product": "VARA",
+   "country": "SY",
+   "status": "pending",
+   "received_at": "@now-40m"
+  },
+  {
+   "id": "q2",
+   "product": "LUMI",
+   "country": "SA",
+   "status": "pending",
+   "received_at": "@now-2h"
+  }
+ ]
+}

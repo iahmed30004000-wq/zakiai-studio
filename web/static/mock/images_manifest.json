@@ -1,0 +1,118 @@
+{
+ "VARA__ad_109__20260913_1348.json": {
+  "total_shots": 9,
+  "provider": "openai",
+  "model": "gpt-image-2",
+  "durations_from": "voice",
+  "refs": [
+   {
+    "kind": "character",
+    "label": "ممثلة الإعلان"
+   }
+  ],
+  "scenes": [
+   {
+    "scene": 1,
+    "duration_sec": 7,
+    "shot_count": 3,
+    "shots": [
+     {
+      "index": 1,
+      "role": "hero",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     },
+     {
+      "index": 2,
+      "role": "insert",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     },
+     {
+      "index": 3,
+      "role": "detail",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     }
+    ]
+   },
+   {
+    "scene": 2,
+    "duration_sec": 7,
+    "shot_count": 3,
+    "shots": [
+     {
+      "index": 1,
+      "role": "hero",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     },
+     {
+      "index": 2,
+      "role": "insert",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     },
+     {
+      "index": 3,
+      "role": "detail",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     }
+    ]
+   },
+   {
+    "scene": 3,
+    "duration_sec": 7,
+    "shot_count": 3,
+    "shots": [
+     {
+      "index": 1,
+      "role": "hero",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     },
+     {
+      "index": 2,
+      "role": "insert",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     },
+     {
+      "index": 3,
+      "role": "detail",
+      "duration_sec": 2.0,
+      "version": 1,
+      "prompt": "Close-up of a woman holding a crossed-out paper in a kitchen, soft daylight, vertical",
+      "covers_vo": "أربع ورقات عالمراية",
+      "file": null
+     }
+    ]
+   }
+  ]
+ }
+}

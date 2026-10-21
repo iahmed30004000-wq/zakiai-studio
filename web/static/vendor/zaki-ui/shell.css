@@ -1,0 +1,325 @@
+/*
+ * zaki-ui shell — the frame every Zaki app sits in.
+ *
+ * A header across the top, a sidebar beside the content, and on a phone
+ * the sidebar becomes a drawer. Extracted from the operations shell; the
+ * behaviour that needs a keyboard lives in shell.js.
+ *
+ * NO SHADOW DOM. The custom elements here work on their light DOM, so this
+ * stylesheet reaches inside them and the consumer's own CSS does too. A
+ * shadow root would encapsulate the very tokens the package exists to
+ * share, and every app would need a second copy of them piped in.
+ *
+ * Every value is a token. Logical properties throughout, because the
+ * default direction is RTL and a second stylesheet for the other way round
+ * is the one that goes stale.
+ */
+
+zk-app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'header header'
+    'sidebar content';
+  min-block-size: 100vh;
+  background-color: var(--zk-color-surface-page);
+  color: var(--zk-color-text);
+  font-family: var(--zk-font-sans);
+  line-height: var(--zk-leading-body);
+  font-variant-numeric: tabular-nums;
+}
+
+zk-app-shell > [slot='header'] {
+  grid-area: header;
+}
+
+zk-app-shell > [slot='sidebar'] {
+  grid-area: sidebar;
+}
+
+zk-app-shell > [slot='content'] {
+  grid-area: content;
+  /*
+   * `min-inline-size: 0` is the whole reason a grid child stops forcing
+   * the page wider than the screen: without it a long table or an
+   * unbreakable order number pushes the column out and the page scrolls
+   * sideways at 360px. This one line is the 360px rule.
+   */
+  min-inline-size: 0;
+  padding: var(--zk-space-16);
+  overflow-x: hidden;
+}
+
+/* ═══ header ═══════════════════════════════════════════════════════════ */
+
+.zk-header {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  padding: var(--zk-space-8) var(--zk-space-12);
+  background-color: var(--zk-color-surface-card);
+  border-block-end: 1px solid var(--zk-color-border);
+}
+
+/* Follows the direction on its own: `start` is the right in RTL. */
+.zk-header__start {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+}
+
+.zk-header__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--zk-space-6);
+  margin-inline: auto;
+}
+
+.zk-header__end {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+}
+
+.zk-header__title {
+  margin: 0;
+  font-size: var(--zk-text-16);
+  font-weight: var(--zk-weight-semibold);
+  color: var(--zk-color-text-heading);
+}
+
+/* ═══ sidebar ══════════════════════════════════════════════════════════ */
+
+.zk-sidebar {
+  inline-size: calc(var(--zk-space-32) * 8);
+  max-inline-size: 80vw;
+  block-size: 100%;
+  overflow-y: auto;
+  padding: var(--zk-space-8);
+  background-color: var(--zk-color-surface-sidebar);
+  border-inline-end: 1px solid var(--zk-color-border);
+}
+
+.zk-sidebar::-webkit-scrollbar {
+  inline-size: var(--zk-space-6);
+}
+
+.zk-sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--zk-color-scrollbar-sidebar);
+  border-radius: var(--zk-radius-full);
+}
+
+.zk-sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--zk-color-scrollbar-sidebar-hover);
+}
+
+.zk-nav-group {
+  margin-block-end: var(--zk-space-4);
+}
+
+/*
+ * THE GROUP HOLDING THE CURRENT PAGE OPENS ITSELF AND CANNOT BE SHUT.
+ *
+ * Fifty screens in one scroll means hunting for the one you want, so the
+ * groups collapse — but collapsing the one you are standing in hides where
+ * you are, and then the sidebar stops answering the question it exists
+ * for. `data-current` disables the toggle rather than hiding it, so the
+ * control is visibly inert instead of mysteriously unresponsive.
+ */
+.zk-nav-group__head {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-6);
+  inline-size: 100%;
+  min-block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-8);
+  font: inherit;
+  font-size: var(--zk-text-12);
+  font-weight: var(--zk-weight-semibold);
+  text-align: start;
+  color: var(--zk-color-text-faint);
+  background: none;
+  border: 0;
+  border-radius: var(--zk-radius-control);
+  cursor: pointer;
+}
+
+.zk-nav-group__head:hover {
+  color: var(--zk-color-text-sidebar);
+}
+
+.zk-nav-group[data-current='true'] .zk-nav-group__head {
+  color: var(--zk-color-text-sidebar);
+  cursor: default;
+}
+
+.zk-nav-group__caret {
+  margin-inline-start: auto;
+  transition: transform var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+.zk-nav-group[aria-expanded='false'] .zk-nav-group__caret {
+  transform: rotate(-90deg);
+}
+
+.zk-nav-group__items[hidden] {
+  display: none;
+}
+
+.zk-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  min-block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-10);
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text-sidebar);
+  text-decoration: none;
+  border-radius: var(--zk-radius-control);
+}
+
+.zk-nav-item:hover {
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-sunken);
+}
+
+.zk-nav-item[aria-current='page'] {
+  color: var(--zk-color-brand);
+  background-color: var(--zk-color-brand-soft);
+  font-weight: var(--zk-weight-medium);
+}
+
+/*
+ * A COUNT WHEN THERE IS ONE, A DOT WHEN THERE IS ONLY «SOMETHING».
+ *
+ * A count answers «is it worth opening». A dot only says that it is not
+ * empty, and a dot where a count was available is a number somebody threw
+ * away.
+ */
+.zk-nav-item__count {
+  margin-inline-start: auto;
+  font-size: var(--zk-text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--zk-color-text-muted);
+}
+
+.zk-nav-item__dot {
+  margin-inline-start: auto;
+  inline-size: var(--zk-space-8);
+  block-size: var(--zk-space-8);
+  border-radius: var(--zk-radius-full);
+  background-color: var(--zk-color-warning);
+}
+
+/* ═══ the drawer, on a phone ═══════════════════════════════════════════ */
+
+.zk-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zk-z-nav);
+  background-color: color-mix(in srgb, var(--zk-color-surface-page) 60%, transparent);
+}
+
+.zk-scrim[hidden] {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  zk-app-shell {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'header'
+      'content';
+  }
+
+  zk-app-shell > [slot='sidebar'] {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: calc(var(--zk-z-nav) + 1);
+    transform: translateX(100%);
+    transition: transform var(--zk-duration-base) var(--zk-ease-standard);
+  }
+
+  /* `start` is the right edge in RTL, so the drawer slides off to the
+     right there and to the left in LTR — one rule, both directions. */
+  [dir='ltr'] zk-app-shell > [slot='sidebar'] {
+    transform: translateX(-100%);
+  }
+
+  zk-app-shell[data-drawer='open'] > [slot='sidebar'] {
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 769px) {
+  .zk-drawer-toggle,
+  .zk-scrim {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  zk-app-shell > [slot='sidebar'] {
+    transition: none;
+  }
+}
+
+/* ═══ app switcher ═════════════════════════════════════════════════════ */
+
+zk-app-switcher {
+  display: block;
+}
+
+.zk-apps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zk-space-2);
+  padding: var(--zk-space-4);
+}
+
+.zk-app {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  min-block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-10);
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text);
+  text-decoration: none;
+  border-radius: var(--zk-radius-control);
+}
+
+.zk-app:hover {
+  background-color: var(--zk-color-surface-sunken);
+}
+
+.zk-app[aria-current='true'] {
+  color: var(--zk-color-brand);
+  background-color: var(--zk-color-brand-soft);
+}
+
+/*
+ * «UNAVAILABLE» IS THE DEFAULT, NOT THE EXCEPTION.
+ *
+ * The studio runs on the owner's own machine. It is off more often than it
+ * is on, and an entry that looks live until it is clicked teaches people
+ * the menu lies. So a link is dimmed and labelled until something answers,
+ * and the word is there for a reader who cannot see the dimming.
+ */
+.zk-app[data-state='unavailable'] {
+  color: var(--zk-color-text-faint);
+  cursor: not-allowed;
+}
+
+.zk-app[data-state='checking'] {
+  color: var(--zk-color-text-muted);
+}
+
+.zk-app__state {
+  margin-inline-start: auto;
+  font-size: var(--zk-text-12);
+  color: var(--zk-color-text-faint);
+}

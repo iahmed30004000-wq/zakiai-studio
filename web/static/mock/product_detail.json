@@ -1,0 +1,186 @@
+{
+ "vara.json": {
+  "product_name": "VARA",
+  "product_code": "vara",
+  "category": "hair_removal",
+  "country": "SY",
+  "dialect": "shami",
+  "landing_page": "vara-lp-1",
+  "price": "35$",
+  "price_positioning": "متوسط",
+  "offer": "اشتري 2 والتوصيل مجاني",
+  "no_offer": false,
+  "guarantee": "استرجاع خلال 14 يوم",
+  "no_guarantee": false,
+  "scarcity_deadline": "",
+  "stock_units": "",
+  "core_promise": "شعر ناعم بلا ألم وبلا جروح خلال دقائق",
+  "what_it_does": "كريم بيذيب الشعر من الجذور بتركيبة لطيفة",
+  "features": [
+   "بدون رائحة قوية",
+   "مناسب للبشرة الحساسة",
+   "نتيجة بـ 5 دقائق"
+  ],
+  "target_audience": "نساء 20–40 يبحثن عن حل منزلي",
+  "pain_points": [
+   "ألم الشمع",
+   "جروح الشفرة",
+   "شعر بيرجع بسرعة"
+  ],
+  "objections": [
+   "هل بيحرق البشرة؟",
+   "هل نتيجته بتدوم؟"
+  ],
+  "proof_assets": [
+   "فيديو تجربة بدون مونتاج",
+   "صور قبل وبعد بموافقة"
+  ],
+  "differentiator": "تركيبة بزيت طبيعي",
+  "production_constraints": "تصوير بيت عادي، بلا استوديو",
+  "forbidden_claims": [
+   "يمنع الشعر نهائياً"
+  ],
+  "market_claims_evidence": [],
+  "brand_tone": "دافئة وصادقة",
+  "product_visual": "عبوة وردية مع غطاء أبيض",
+  "previously_used_patterns": [],
+  "_provenance": {
+   "price": {
+    "source": "crm",
+    "at": "@now-3h"
+   },
+   "offer": {
+    "source": "crm",
+    "at": "@now-3h"
+   },
+   "guarantee": {
+    "source": "crm",
+    "at": "@now-3h"
+   },
+   "country": {
+    "source": "crm",
+    "at": "@now-3h"
+   }
+  }
+ },
+ "kama.json": {
+  "product_name": "kama",
+  "product_code": "",
+  "category": "eye_care",
+  "country": "",
+  "dialect": "msa_simple",
+  "landing_page": "",
+  "price": "",
+  "price_positioning": "متوسط",
+  "offer": "",
+  "no_offer": false,
+  "guarantee": "",
+  "no_guarantee": false,
+  "scarcity_deadline": "",
+  "stock_units": "",
+  "core_promise": "راحة للعين من أول استخدام",
+  "what_it_does": "",
+  "features": [
+   "قطرة طبيعية"
+  ],
+  "target_audience": "",
+  "pain_points": [],
+  "objections": [],
+  "proof_assets": [],
+  "differentiator": "",
+  "production_constraints": "",
+  "forbidden_claims": [],
+  "market_claims_evidence": [],
+  "brand_tone": "",
+  "product_visual": "",
+  "previously_used_patterns": [],
+  "_provenance": {}
+ },
+ "lumi.json": {
+  "product_name": "LUMI",
+  "product_code": "lumi",
+  "category": "skincare",
+  "country": "SA",
+  "dialect": "gulf",
+  "landing_page": "",
+  "price": "120 ر.س",
+  "price_positioning": "متوسط",
+  "offer": "",
+  "no_offer": true,
+  "guarantee": "",
+  "no_guarantee": false,
+  "scarcity_deadline": "",
+  "stock_units": "",
+  "core_promise": "شعر ناعم بلا ألم وبلا جروح خلال دقائق",
+  "what_it_does": "كريم بيذيب الشعر من الجذور بتركيبة لطيفة",
+  "features": [
+   "بدون رائحة قوية",
+   "مناسب للبشرة الحساسة",
+   "نتيجة بـ 5 دقائق"
+  ],
+  "target_audience": "نساء 20–40 يبحثن عن حل منزلي",
+  "pain_points": [
+   "ألم الشمع",
+   "جروح الشفرة",
+   "شعر بيرجع بسرعة"
+  ],
+  "objections": [
+   "هل بيحرق البشرة؟",
+   "هل نتيجته بتدوم؟"
+  ],
+  "proof_assets": [
+   "فيديو تجربة بدون مونتاج",
+   "صور قبل وبعد بموافقة"
+  ],
+  "differentiator": "تركيبة بزيت طبيعي",
+  "production_constraints": "تصوير بيت عادي، بلا استوديو",
+  "forbidden_claims": [
+   "يمنع الشعر نهائياً"
+  ],
+  "market_claims_evidence": [],
+  "brand_tone": "دافئة وصادقة",
+  "product_visual": "عبوة وردية مع غطاء أبيض",
+  "previously_used_patterns": [],
+  "_provenance": {
+   "price": {
+    "source": "crm",
+    "at": "@now-3h"
+   },
+   "country": {
+    "source": "crm",
+    "at": "@now-3h"
+   }
+  }
+ },
+ "_template.json": {
+  "product_name": "",
+  "product_code": "",
+  "category": "",
+  "country": "",
+  "dialect": "",
+  "landing_page": "",
+  "price": "",
+  "price_positioning": "",
+  "offer": "",
+  "no_offer": false,
+  "guarantee": "",
+  "no_guarantee": false,
+  "scarcity_deadline": "",
+  "stock_units": "",
+  "core_promise": "",
+  "what_it_does": "",
+  "features": [],
+  "target_audience": "",
+  "pain_points": [],
+  "objections": [],
+  "proof_assets": [],
+  "differentiator": "",
+  "production_constraints": "",
+  "forbidden_claims": [],
+  "market_claims_evidence": [],
+  "brand_tone": "",
+  "product_visual": "",
+  "previously_used_patterns": [],
+  "_provenance": {}
+ }
+}

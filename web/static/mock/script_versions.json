@@ -1,0 +1,44 @@
+{
+ "VARA__ad_109__20260913_1348.json": {
+  "versions": [
+   {
+    "version": 1,
+    "script_id": "VP-vara-3-v1",
+    "created_at": "@now-5d",
+    "file": "VARA__ad_109__20260913_1348_v1.json",
+    "status": "needs_owner"
+   },
+   {
+    "version": 2,
+    "script_id": "VP-vara-3-v2",
+    "created_at": "@now-4d",
+    "file": "VARA__ad_109__20260913_1348.json",
+    "status": "approved"
+   }
+  ],
+  "diffs": [
+   {
+    "from": 1,
+    "to": 2,
+    "changes": [
+     {
+      "scene": 5,
+      "field": "voiceover",
+      "before": "يمنع رجوع الشعر نهائياً",
+      "after": "الشعر بيرجع أنعم وأخف مع الاستمرار"
+     },
+     {
+      "scene": 6,
+      "field": "on_screen_text",
+      "before": "35$ بس",
+      "after": "35$"
+     }
+    ]
+   }
+  ]
+ },
+ "default": {
+  "versions": [],
+  "diffs": []
+ }
+}

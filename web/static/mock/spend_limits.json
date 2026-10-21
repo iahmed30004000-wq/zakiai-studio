@@ -1,0 +1,9 @@
+{
+ "daily_usd": 5,
+ "monthly_usd": 80,
+ "spent_today_usd": 1.32,
+ "spent_month_usd": 17.4,
+ "blocked": false,
+ "reason": null,
+ "note": "الإنفاق تقديري (توكنز × جدول الأسعار) لنداءات الموديلات فقط. فاضي أو صفر = بلا حد."
+}

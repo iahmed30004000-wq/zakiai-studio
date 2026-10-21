@@ -1,0 +1,19 @@
+# ما بدنا هدول بالصور: ضخمين أو بيانات المالك أو أسرار
+.env
+.env.*
+!.env.example
+.git
+.claude
+**/__pycache__
+**/*.pyc
+library
+models
+third_party
+services/openmontage
+tests
+_handoff
+files.zip
+*.docx
+*.log
+last_raw_response.txt
+node_modules

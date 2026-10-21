@@ -1,0 +1,20 @@
+{
+ "entries": {},
+ "results": {
+  "winner": "ناجح",
+  "ok": "متوسط",
+  "loser": "فاشل",
+  "untested": "ما انجرّب"
+ },
+ "metrics": [
+  "spend",
+  "revenue",
+  "roas",
+  "ctr",
+  "views",
+  "orders",
+  "cpm",
+  "hook_rate"
+ ],
+ "scoreboard": {}
+}

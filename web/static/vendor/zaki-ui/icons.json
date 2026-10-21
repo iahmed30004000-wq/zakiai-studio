@@ -1,0 +1,256 @@
+{
+  "name": "zaki-ui icons",
+  "from": "@remixicon/react",
+  "fromVersion": "4.9.0",
+  "licence": "Remix Icon License 1.0",
+  "usage": "<svg class=\"zk-icon\" aria-hidden=\"true\"><use href=\"icons.svg#zk-check\"></use></svg>",
+  "count": 47,
+  "groups": {
+    "state": [
+      {
+        "name": "check",
+        "id": "zk-check",
+        "remix": "RiCheckLine"
+      },
+      {
+        "name": "close",
+        "id": "zk-close",
+        "remix": "RiCloseLine"
+      },
+      {
+        "name": "error-warning",
+        "id": "zk-error-warning",
+        "remix": "RiErrorWarningLine"
+      },
+      {
+        "name": "alert",
+        "id": "zk-alert",
+        "remix": "RiAlertLine"
+      },
+      {
+        "name": "information",
+        "id": "zk-information",
+        "remix": "RiInformationLine"
+      },
+      {
+        "name": "loader",
+        "id": "zk-loader",
+        "remix": "RiLoader4Line"
+      },
+      {
+        "name": "lock",
+        "id": "zk-lock",
+        "remix": "RiLockLine"
+      },
+      {
+        "name": "lock-unlock",
+        "id": "zk-lock-unlock",
+        "remix": "RiLockUnlockLine"
+      }
+    ],
+    "nav": [
+      {
+        "name": "arrow-up",
+        "id": "zk-arrow-up",
+        "remix": "RiArrowUpLine"
+      },
+      {
+        "name": "arrow-down",
+        "id": "zk-arrow-down",
+        "remix": "RiArrowDownLine"
+      },
+      {
+        "name": "arrow-left",
+        "id": "zk-arrow-left",
+        "remix": "RiArrowLeftLine"
+      },
+      {
+        "name": "arrow-right",
+        "id": "zk-arrow-right",
+        "remix": "RiArrowRightLine"
+      },
+      {
+        "name": "chevron-up",
+        "id": "zk-chevron-up",
+        "remix": "RiArrowUpSLine"
+      },
+      {
+        "name": "chevron-down",
+        "id": "zk-chevron-down",
+        "remix": "RiArrowDownSLine"
+      },
+      {
+        "name": "chevron-left",
+        "id": "zk-chevron-left",
+        "remix": "RiArrowLeftSLine"
+      },
+      {
+        "name": "chevron-right",
+        "id": "zk-chevron-right",
+        "remix": "RiArrowRightSLine"
+      },
+      {
+        "name": "external-link",
+        "id": "zk-external-link",
+        "remix": "RiExternalLinkLine"
+      },
+      {
+        "name": "menu",
+        "id": "zk-menu",
+        "remix": "RiMenuLine"
+      }
+    ],
+    "action": [
+      {
+        "name": "refresh",
+        "id": "zk-refresh",
+        "remix": "RiRefreshLine"
+      },
+      {
+        "name": "search",
+        "id": "zk-search",
+        "remix": "RiSearchLine"
+      },
+      {
+        "name": "filter",
+        "id": "zk-filter",
+        "remix": "RiFilter3Line"
+      },
+      {
+        "name": "settings",
+        "id": "zk-settings",
+        "remix": "RiSettings3Line"
+      },
+      {
+        "name": "edit",
+        "id": "zk-edit",
+        "remix": "RiPencilLine"
+      },
+      {
+        "name": "delete",
+        "id": "zk-delete",
+        "remix": "RiDeleteBinLine"
+      },
+      {
+        "name": "copy",
+        "id": "zk-copy",
+        "remix": "RiFileCopyLine"
+      },
+      {
+        "name": "download",
+        "id": "zk-download",
+        "remix": "RiDownloadLine"
+      },
+      {
+        "name": "upload",
+        "id": "zk-upload",
+        "remix": "RiUploadLine"
+      },
+      {
+        "name": "eye",
+        "id": "zk-eye",
+        "remix": "RiEyeLine"
+      },
+      {
+        "name": "eye-off",
+        "id": "zk-eye-off",
+        "remix": "RiEyeOffLine"
+      }
+    ],
+    "media": [
+      {
+        "name": "play",
+        "id": "zk-play",
+        "remix": "RiPlayLine"
+      },
+      {
+        "name": "pause",
+        "id": "zk-pause",
+        "remix": "RiPauseLine"
+      },
+      {
+        "name": "stop",
+        "id": "zk-stop",
+        "remix": "RiStopLine"
+      },
+      {
+        "name": "volume",
+        "id": "zk-volume",
+        "remix": "RiVolumeUpLine"
+      },
+      {
+        "name": "mic",
+        "id": "zk-mic",
+        "remix": "RiMicLine"
+      },
+      {
+        "name": "image",
+        "id": "zk-image",
+        "remix": "RiImageLine"
+      },
+      {
+        "name": "film",
+        "id": "zk-film",
+        "remix": "RiFilmLine"
+      },
+      {
+        "name": "scissors",
+        "id": "zk-scissors",
+        "remix": "RiScissorsLine"
+      },
+      {
+        "name": "music",
+        "id": "zk-music",
+        "remix": "RiMusic2Line"
+      }
+    ],
+    "subject": [
+      {
+        "name": "user",
+        "id": "zk-user",
+        "remix": "RiUserLine"
+      },
+      {
+        "name": "group",
+        "id": "zk-group",
+        "remix": "RiGroupLine"
+      },
+      {
+        "name": "bar-chart",
+        "id": "zk-bar-chart",
+        "remix": "RiBarChartLine"
+      },
+      {
+        "name": "database",
+        "id": "zk-database",
+        "remix": "RiDatabase2Line"
+      },
+      {
+        "name": "cloud",
+        "id": "zk-cloud",
+        "remix": "RiCloudLine"
+      },
+      {
+        "name": "inbox",
+        "id": "zk-inbox",
+        "remix": "RiInboxLine"
+      },
+      {
+        "name": "time",
+        "id": "zk-time",
+        "remix": "RiTimeLine"
+      },
+      {
+        "name": "history",
+        "id": "zk-history",
+        "remix": "RiHistoryLine"
+      },
+      {
+        "name": "rocket",
+        "id": "zk-rocket",
+        "remix": "RiRocketLine"
+      }
+    ]
+  },
+  "missing": []
+}

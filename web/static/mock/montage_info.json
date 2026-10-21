@@ -1,0 +1,120 @@
+{
+ "ahat": {
+  "mood": "hopeful",
+  "mood_label": "أمل",
+  "approved_count": 3,
+  "total": 4,
+  "moods": {
+   "calm": "هادئ",
+   "warm": "دافئ",
+   "hopeful": "أمل",
+   "tense": "توتر خفيف",
+   "uplift": "انتعاش",
+   "any": "أي مزاج"
+  },
+  "suggestions": [
+   {
+    "track": {
+     "id": "ah_002",
+     "name": "آهة أمل",
+     "mood": "hopeful",
+     "duration_sec": 28.5,
+     "approved": true
+    },
+    "score": 55,
+    "reasons": [
+     "مزاجه أمل مطابق لمزاج السيناريو",
+     "بيتكرر مرة"
+    ]
+   },
+   {
+    "track": {
+     "id": "ah_003",
+     "name": "تنفّس عميق",
+     "mood": "any",
+     "duration_sec": 12.0,
+     "approved": true
+    },
+    "score": 15,
+    "reasons": [
+     "صالح لأي مزاج",
+     "قصير: بيتكرر كتير"
+    ]
+   },
+   {
+    "track": {
+     "id": "ah_001",
+     "name": "آهة راحة",
+     "mood": "calm",
+     "duration_sec": 62.0,
+     "approved": true
+    },
+    "score": -10,
+    "reasons": [
+     "مزاجه هادئ مختلف عن أمل",
+     "أطول من الفيديو (بلا تكرار)"
+    ]
+   }
+  ]
+ },
+ "ambience": null,
+ "render": {
+  "preview": {
+   "file": "timelines/x/render/preview.mp4",
+   "duration_ms": 47000,
+   "ahat": false,
+   "size": [
+    540,
+    960
+   ],
+   "captions": 21
+  }
+ },
+ "duration_ms": 47000,
+ "cues": 21,
+ "cue_sample": [
+  {
+   "start_ms": 0,
+   "end_ms": 1777,
+   "text": "عينك بآخر النهار وحسيت إنها،"
+  },
+  {
+   "start_ms": 1777,
+   "end_ms": 3615,
+   "text": "ثقيلة وحارقة قطرة ماء الكمأة،"
+  },
+  {
+   "start_ms": 3615,
+   "end_ms": 6000,
+   "text": "اللطيفة بتريّح عينك بدقايق جرّبها،"
+  },
+  {
+   "start_ms": 6000,
+   "end_ms": 8122,
+   "text": "وحسيت إنها ثقيلة وحارقة قطرة،"
+  },
+  {
+   "start_ms": 8122,
+   "end_ms": 10386,
+   "text": "ماء الكمأة اللطيفة بتريّح عينك،"
+  },
+  {
+   "start_ms": 10386,
+   "end_ms": 12970,
+   "text": "بدقايق جرّبها اليوم بسهولة وشوف،"
+  }
+ ],
+ "safe_bottom": 0.22,
+ "sizes": {
+  "preview": [
+   540,
+   960
+  ],
+  "final": [
+   1080,
+   1920
+  ]
+ },
+ "can_final": true,
+ "clips_ready": true
+}

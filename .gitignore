@@ -1,0 +1,40 @@
+# ── أسرار ومفاتيح: ما بتنرفع أبداً ──────────────────────────────────────────
+settings.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/
+
+# ── بيانات التشغيل (مكتبتك الخاصة: أنماط، سيناريوهات، صور، أصوات، قواعد بيانات) ─────
+# بتنحفظ بنظام النسخ الاحتياطي المشفّر (backup.py) مش بجيت هب
+library/
+uploads/
+products/*
+!products/_template.json
+*.db
+*.db-journal
+
+# ── أوزان النماذج ونسخ خارجية كبيرة (بتنزّل من مصادرها الأصلية؛ شوف models/README.md و third_party/README.md) ──
+models/*
+!models/README.md
+third_party/*
+!third_party/README.md
+services/openmontage/
+**/node_modules/
+_handoff/
+
+# ── ملفات مؤقتة ووسائط ────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log
+*.tmp
+*.mp4
+*.mp3
+*.wav
+*.webm
+*.mov
+files.zip
+last_raw_response.txt

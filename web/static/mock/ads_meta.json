@@ -1,0 +1,9 @@
+{
+  "status": {"configured": true, "app_id": "123456789012345", "redirect_uri": "http://localhost:8000/api/ads/meta/callback", "connected": true,
+             "user_name": "أحمد (محاكاة)", "expires_at": "2026-12-20T10:00:00+00:00", "days_left": 52, "expired": false, "expiring_soon": false,
+             "scope": "ads_read", "graph_version": "v26.0"},
+  "accounts": [{"id": "act_5550001", "account_id": "5550001", "name": "متجر صحة بلس", "currency": "USD", "status_code": 1, "status": "شغّال"}],
+  "preview": {"account": "act_5550001", "matched": 1, "total": 2, "ads": [
+    {"ad_id": "610001", "ad_name": "SY|vara|page|video|VP-vara-3-v1", "effective_status": "ACTIVE", "created": "2026-10-12", "campaign_id": "1200", "campaign_name": "اختبار VARA", "adset_name": "مجموعة", "spend": 12.35, "script_id": "VP-vara-3-v1"},
+    {"ad_id": "610002", "ad_name": "اعلان قديم", "effective_status": "PAUSED", "created": "2026-09-01", "campaign_id": "1200", "campaign_name": "اختبار VARA", "adset_name": "مجموعة", "spend": null, "script_id": null}]}
+}

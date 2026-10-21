@@ -1,0 +1,1058 @@
+/*
+ * zaki-ui components — seven of them, as CSS with semantic classes.
+ *
+ * These are the seven the discovery table found carrying NO import from the
+ * app or the framework, which is why they are first: their behaviour is
+ * already independent of React, so what is left is to say it in CSS and a
+ * little plain JavaScript.
+ *
+ * ── EVERY VALUE COMES FROM A TOKEN ──
+ *
+ * Not one colour, spacing step, radius, size or duration is written here.
+ * A test reads this file and fails on a hex, an `rgb(`, or a bare `px`
+ * outside a border width. The point is not tidiness: the studio and
+ * operations must be able to drift apart in a hundred ways and never in
+ * their palette.
+ *
+ * ── RTL IS THE DEFAULT, SO THE PROPERTIES ARE LOGICAL ──
+ *
+ * `margin-inline-start`, `padding-inline`, `inset-inline`. Physical
+ * `left`/`right` would need a second stylesheet for the other direction,
+ * and the second one is always the one that goes stale.
+ *
+ * Load order: tokens.css, then fonts.css, then this.
+ */
+
+/* ═══ shared ═══════════════════════════════════════════════════════════ */
+
+/*
+ * BORDER-BOX, OR `inline-size: 100%` MEANS «100% PLUS THE PADDING».
+ *
+ * Operations never had to say this: Tailwind's preflight sets it for the
+ * whole page. A package that ships no reset inherits the browser default
+ * instead, and every control with a width of 100% and any padding grows
+ * wider than the box it is in.
+ *
+ * Found by measuring the rendered demo, not by reading: a textarea sat ten
+ * pixels past the inline edge of its column. One element overhanging is
+ * how a page comes to scroll sideways at 360px.
+ *
+ * Scoped under `.zk` so the package cannot change the box model of a
+ * consumer's own page — the studio has its own CSS and did not ask for a
+ * reset.
+ */
+.zk,
+.zk *,
+.zk *::before,
+.zk *::after {
+  box-sizing: border-box;
+}
+
+
+.zk-icon {
+  width: var(--zk-space-16);
+  height: var(--zk-space-16);
+  flex: none;
+  fill: currentColor;
+}
+
+/*
+ * THE FOCUS RING IS THE PRODUCT'S, AND IT IS `:focus-visible` ONLY.
+ *
+ * A ring on every mouse click reads as an error — the person did nothing
+ * wrong, they clicked a button. `:focus-visible` is the browser's own
+ * judgement of «this person is using a keyboard», and it is better at it
+ * than any rule written here.
+ */
+.zk :where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--zk-focus-width) solid var(--zk-color-focus);
+  outline-offset: var(--zk-focus-offset);
+}
+
+/* ═══ field — input, select, textarea ══════════════════════════════════ */
+
+.zk-field {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.zk-field__label {
+  display: block;
+  margin-block-end: var(--zk-space-6);
+  font-size: var(--zk-text-12);
+  font-weight: var(--zk-weight-medium);
+  color: var(--zk-color-text-heading);
+}
+
+.zk-input,
+.zk-select,
+.zk-textarea {
+  inline-size: 100%;
+  min-inline-size: 0;
+  /*
+   * 44px under a finger, 40px under a mouse — and STATED, not left to
+   * padding. The product's own note: padding alone made the height a
+   * by-product of the font size, and a row of controls came out four
+   * heights.
+   */
+  block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-12);
+  font: inherit;
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border-input);
+  border-radius: var(--zk-radius-card);
+  transition: border-color var(--zk-duration-base) var(--zk-ease-standard),
+    box-shadow var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+.zk-textarea {
+  block-size: auto;
+  min-block-size: calc(var(--zk-tap-min) * 2);
+  padding-block: var(--zk-space-8);
+  line-height: var(--zk-leading-body);
+  resize: vertical;
+}
+
+@media (pointer: fine) {
+  .zk-input,
+  .zk-select {
+    block-size: var(--zk-control-h);
+  }
+}
+
+.zk-input::placeholder,
+.zk-textarea::placeholder {
+  color: var(--zk-color-text-faint);
+}
+
+.zk-input:hover:not(:disabled),
+.zk-select:hover:not(:disabled),
+.zk-textarea:hover:not(:disabled) {
+  border-color: var(--zk-color-border-strong);
+}
+
+.zk-input:focus,
+.zk-select:focus,
+.zk-textarea:focus {
+  outline: none;
+  border-color: var(--zk-color-brand);
+  box-shadow: 0 0 0 var(--zk-focus-width) var(--zk-color-brand-soft);
+}
+
+.zk-input:disabled,
+.zk-select:disabled,
+.zk-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*
+ * THE ERROR STATE IS NOT THE COLOUR.
+ *
+ * A red border alone is invisible to a reader who cannot tell red from
+ * grey, so the state is `aria-invalid` — which the border follows — and
+ * the sentence under it is what actually says what is wrong.
+ */
+.zk-input[aria-invalid='true'],
+.zk-select[aria-invalid='true'],
+.zk-textarea[aria-invalid='true'] {
+  border-color: var(--zk-color-error);
+}
+
+.zk-input[aria-invalid='true']:focus,
+.zk-select[aria-invalid='true']:focus,
+.zk-textarea[aria-invalid='true']:focus {
+  border-color: var(--zk-color-error);
+  box-shadow: 0 0 0 var(--zk-focus-width) var(--zk-color-error-soft);
+}
+
+.zk-field__error,
+.zk-field__hint {
+  margin-block-start: var(--zk-space-4);
+  font-size: var(--zk-text-12);
+  line-height: var(--zk-leading-note);
+}
+
+.zk-field__error {
+  color: var(--zk-color-error);
+}
+
+.zk-field__hint {
+  color: var(--zk-color-text-muted);
+}
+
+/* ═══ tabs ═════════════════════════════════════════════════════════════ */
+
+/*
+ * IT SCROLLS RATHER THAN WRAPS. A strip that wraps to two rows moves the
+ * content under it every time a count changes.
+ */
+.zk-tabs {
+  display: flex;
+  gap: var(--zk-space-4);
+  overflow-x: auto;
+  border-block-end: 1px solid var(--zk-color-border);
+}
+
+.zk-tab {
+  flex: none;
+  white-space: nowrap;
+  padding-inline: var(--zk-space-12);
+  padding-block: var(--zk-space-10);
+  font: inherit;
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text-muted);
+  background: none;
+  border: 0;
+  border-block-end: var(--zk-focus-width) solid transparent;
+  cursor: pointer;
+  transition: color var(--zk-duration-base) var(--zk-ease-standard),
+    border-color var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+.zk-tab:hover {
+  color: var(--zk-color-text-heading);
+}
+
+.zk-tab[aria-selected='true'] {
+  color: var(--zk-color-brand);
+  border-block-end-color: var(--zk-color-brand);
+  font-weight: var(--zk-weight-semibold);
+}
+
+/*
+ * A COUNT, NEVER A DOT. A count answers «is it worth opening»; a dot only
+ * says «something».
+ */
+.zk-tab__count {
+  margin-inline-start: var(--zk-space-6);
+  font-size: var(--zk-text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--zk-color-text-faint);
+}
+
+/* ═══ rows — a table on a desk, cards in a hand ════════════════════════ */
+
+.zk-rows {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--zk-text-14);
+}
+
+.zk-rows th {
+  padding: var(--zk-space-10) var(--zk-space-12);
+  text-align: start;
+  font-size: var(--zk-text-12);
+  font-weight: var(--zk-weight-semibold);
+  color: var(--zk-color-text-muted);
+  background-color: var(--zk-color-surface-sunken);
+  border-block-end: 1px solid var(--zk-color-border);
+}
+
+.zk-rows td {
+  padding: var(--zk-space-10) var(--zk-space-12);
+  color: var(--zk-color-text);
+  border-block-end: 1px solid var(--zk-color-border);
+  line-height: var(--zk-leading-table);
+}
+
+.zk-rows tbody tr:hover td {
+  background-color: var(--zk-color-surface-sunken);
+}
+
+/* A row that needs looking at, marked by more than colour: it carries a
+   bar on the inline edge as well, for a reader who cannot see the tint. */
+.zk-rows tr[data-alert='true'] td {
+  background-color: var(--zk-color-error-soft);
+}
+
+.zk-rows tr[data-alert='true'] td:first-child {
+  box-shadow: inset var(--zk-focus-width) 0 0 0 var(--zk-color-error);
+}
+
+.zk-rows__numeric {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * ON A PHONE A TABLE BECOMES A LIST OF CARDS.
+ *
+ * Not a horizontally scrolling table: a warehouse reads this one-handed,
+ * and a column you have to swipe to is a column nobody reads. Each cell
+ * grows its own label from `data-label`, so the markup is one table and
+ * the reader gets whichever shape fits.
+ */
+@media (max-width: 640px) {
+  .zk-rows thead {
+    display: none;
+  }
+
+  .zk-rows tbody tr {
+    display: block;
+    margin-block-end: var(--zk-space-8);
+    padding: var(--zk-space-8);
+    background-color: var(--zk-color-surface-card);
+    border: 1px solid var(--zk-color-border);
+    border-radius: var(--zk-radius-card);
+  }
+
+  .zk-rows td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--zk-space-8);
+    padding: var(--zk-space-4) 0;
+    border: 0;
+  }
+
+  .zk-rows td::before {
+    content: attr(data-label);
+    color: var(--zk-color-text-muted);
+    font-size: var(--zk-text-12);
+  }
+
+  /* A column the desk needs and a hand does not. */
+  .zk-rows [data-desk-only='true'] {
+    display: none;
+  }
+}
+
+/* ═══ modal ════════════════════════════════════════════════════════════ */
+
+.zk-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zk-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--zk-space-16);
+  background-color: color-mix(in srgb, var(--zk-color-surface-page) 60%, transparent);
+}
+
+.zk-modal[hidden] {
+  display: none;
+}
+
+.zk-modal__panel {
+  inline-size: 100%;
+  max-inline-size: var(--zk-size-dialog);
+  max-block-size: 90vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-sheet);
+  box-shadow: var(--zk-shadow-overlay);
+}
+
+.zk-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--zk-space-8);
+  padding: var(--zk-space-16);
+  border-block-end: 1px solid var(--zk-color-border);
+}
+
+.zk-modal__title {
+  margin: 0;
+  font-size: var(--zk-text-16);
+  font-weight: var(--zk-weight-semibold);
+  color: var(--zk-color-text-heading);
+}
+
+.zk-modal__body {
+  padding: var(--zk-space-16);
+  overflow-y: auto;
+}
+
+.zk-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--zk-tap-min);
+  block-size: var(--zk-tap-min);
+  color: var(--zk-color-text-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--zk-radius-control);
+  cursor: pointer;
+}
+
+.zk-modal__close:hover {
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-sunken);
+}
+
+/* ═══ toast ════════════════════════════════════════════════════════════ */
+
+.zk-toasts {
+  position: fixed;
+  inset-block-end: var(--zk-space-16);
+  inset-inline-start: var(--zk-space-16);
+  z-index: var(--zk-z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--zk-space-8);
+  pointer-events: none;
+}
+
+.zk-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  max-inline-size: var(--zk-size-toast);
+  padding: var(--zk-space-10) var(--zk-space-12);
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-card);
+  box-shadow: var(--zk-shadow-overlay);
+  pointer-events: auto;
+}
+
+.zk-toast[data-tone='success'] {
+  border-color: var(--zk-color-success);
+  color: var(--zk-color-success);
+  background-color: var(--zk-color-success-soft);
+}
+
+.zk-toast[data-tone='error'] {
+  border-color: var(--zk-color-error-border);
+  color: var(--zk-color-error);
+  background-color: var(--zk-color-error-soft);
+}
+
+.zk-toast[data-tone='warning'] {
+  border-color: var(--zk-color-warning);
+  color: var(--zk-color-warning);
+  background-color: var(--zk-color-warning-soft);
+}
+
+/* ═══ skeleton ═════════════════════════════════════════════════════════ */
+
+.zk-skeleton {
+  display: block;
+  block-size: var(--zk-space-12);
+  background-color: var(--zk-color-surface-raised);
+  border-radius: var(--zk-radius-control);
+  animation: zk-pulse calc(var(--zk-duration-base) * 8) var(--zk-ease-standard) infinite;
+}
+
+@keyframes zk-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/*
+ * WITHOUT THE ANIMATION IT IS STILL A SKELETON.
+ *
+ * What the movement adds is «this is loading»; what the block does is hold
+ * the space so the page does not jump when the answer arrives. The second
+ * is the half that matters, and it survives.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .zk-skeleton {
+    animation: none;
+  }
+}
+
+/* ═══ page header ══════════════════════════════════════════════════════ */
+
+.zk-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--zk-space-8);
+  margin-block-end: var(--zk-space-16);
+}
+
+.zk-page-header__title {
+  margin: 0;
+  font-size: var(--zk-text-20);
+  font-weight: var(--zk-weight-semibold);
+  color: var(--zk-color-text-heading);
+}
+
+/*
+ * A HEADER'S DESCRIPTION IS TEXT, NOT MARKUP.
+ *
+ * Two screens in the product printed `<code>` and `<strong>` at a seller
+ * because a description was typed as a string containing tags and rendered
+ * as one. There is nothing to enforce that here, so it is said: put words
+ * in it.
+ */
+.zk-page-header__description {
+  margin: var(--zk-space-4) 0 0;
+  max-inline-size: var(--zk-measure);
+  font-size: var(--zk-text-13);
+  line-height: var(--zk-leading-note);
+  color: var(--zk-color-text-muted);
+}
+
+/* ═══ button ═══════════════════════════════════════════════════════════ */
+
+.zk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--zk-space-6);
+  min-block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-16);
+  font: inherit;
+  font-size: var(--zk-text-14);
+  font-weight: var(--zk-weight-medium);
+  border: 1px solid transparent;
+  border-radius: var(--zk-radius-card);
+  cursor: pointer;
+  transition: background-color var(--zk-duration-base) var(--zk-ease-standard),
+    border-color var(--zk-duration-base) var(--zk-ease-standard),
+    color var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+@media (pointer: fine) {
+  .zk-btn {
+    min-block-size: var(--zk-control-h);
+  }
+}
+
+.zk-btn--primary {
+  color: var(--zk-color-brand-on);
+  background-color: var(--zk-color-brand);
+}
+
+.zk-btn--primary:hover:not(:disabled) {
+  background-color: var(--zk-color-brand-hover);
+}
+
+.zk-btn--secondary {
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-card);
+  border-color: var(--zk-color-border-input);
+}
+
+.zk-btn--secondary:hover:not(:disabled) {
+  border-color: var(--zk-color-brand);
+  color: var(--zk-color-brand);
+}
+
+.zk-btn--ghost {
+  color: var(--zk-color-text-muted);
+  background: none;
+}
+
+.zk-btn--ghost:hover:not(:disabled) {
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-sunken);
+}
+
+.zk-btn--danger {
+  color: var(--zk-color-error);
+  background-color: var(--zk-color-error-soft);
+  border-color: var(--zk-color-error-border);
+}
+
+.zk-btn--danger:hover:not(:disabled) {
+  border-color: var(--zk-color-error);
+}
+
+.zk-btn:active:not(:disabled) {
+  /* A press is felt, not announced: the surface dips rather than jumps. */
+  transform: translateY(1px);
+}
+
+.zk-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*
+ * LOADING IS A STATE, NOT A REPLACEMENT.
+ *
+ * The label stays — a button that becomes a spinner has thrown away the
+ * only thing that said what it was doing — and `aria-busy` is what a
+ * screen reader hears. The button is disabled while busy too, so a second
+ * press cannot send a second request.
+ */
+.zk-btn[aria-busy="true"] {
+  cursor: progress;
+}
+
+.zk-btn[aria-busy="true"] .zk-loader {
+  animation: zk-spin calc(var(--zk-duration-base) * 5) linear infinite;
+}
+
+@keyframes zk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zk-btn[aria-busy="true"] .zk-loader {
+    animation-duration: calc(var(--zk-duration-base) * 20);
+  }
+
+  .zk-btn:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ═══ card ═════════════════════════════════════════════════════════════ */
+
+.zk-card {
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-card);
+  box-shadow: var(--zk-shadow-raised);
+}
+
+.zk-card__body {
+  padding: var(--zk-space-16);
+}
+
+.zk-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--zk-space-8);
+  padding: var(--zk-space-12) var(--zk-space-16);
+  border-block-end: 1px solid var(--zk-color-border);
+}
+
+/* ═══ badge · status chip · health chip ════════════════════════════════ */
+
+.zk-badge,
+.zk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--zk-space-6);
+  padding: var(--zk-space-4) var(--zk-space-10);
+  font-size: var(--zk-text-12);
+  font-weight: var(--zk-weight-semibold);
+  border: 1px solid transparent;
+  border-radius: var(--zk-radius-full);
+  white-space: nowrap;
+}
+
+.zk-badge {
+  color: var(--zk-color-text-muted);
+  background-color: var(--zk-color-surface-sunken);
+  border-color: var(--zk-color-border);
+}
+
+/*
+ * A TONE IS NEVER THE ONLY SIGNAL.
+ *
+ * Each chip carries a word, and the colour agrees with the word rather
+ * than replacing it. A reader who cannot tell the green from the amber
+ * still reads «جيّد» and «مقبول».
+ */
+.zk-chip[data-tone="good"] {
+  color: var(--zk-color-success);
+  background-color: var(--zk-color-success-soft);
+  border-color: var(--zk-color-success);
+}
+
+.zk-chip[data-tone="ok"] {
+  color: var(--zk-color-warning);
+  background-color: var(--zk-color-warning-soft);
+  border-color: var(--zk-color-warning);
+}
+
+.zk-chip[data-tone="bad"] {
+  color: var(--zk-color-error);
+  background-color: var(--zk-color-error-soft);
+  border-color: var(--zk-color-error-border);
+}
+
+.zk-chip[data-tone="unknown"] {
+  color: var(--zk-color-text-muted);
+  background-color: var(--zk-color-surface-sunken);
+  border-color: var(--zk-color-border);
+}
+
+.zk-chip__why {
+  margin-inline-start: var(--zk-space-6);
+  font-weight: var(--zk-weight-regular);
+  color: var(--zk-color-text-muted);
+}
+
+/* ═══ empty state ══════════════════════════════════════════════════════ */
+
+/*
+ * AN EMPTY LIST SAYS WHY IT IS EMPTY. «لا يوجد» is the answer that sends
+ * somebody to ask a colleague; the reason underneath is the component.
+ */
+.zk-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--zk-space-6);
+  padding: var(--zk-space-24) var(--zk-space-16);
+  text-align: center;
+  color: var(--zk-color-text-muted);
+}
+
+.zk-empty__title {
+  font-size: var(--zk-text-14);
+  font-weight: var(--zk-weight-semibold);
+  color: var(--zk-color-text-heading);
+}
+
+.zk-empty__why {
+  max-inline-size: var(--zk-measure);
+  font-size: var(--zk-text-13);
+  line-height: var(--zk-leading-note);
+}
+
+/* ═══ money ════════════════════════════════════════════════════════════ */
+
+/*
+ * TABULAR FIGURES. A column of numbers with proportional digits is ragged
+ * — a 1 is narrower than a 7 — so totals do not line up and the eye cannot
+ * scan down. On a screen that is entirely numbers this is the single most
+ * useful typographic decision there is.
+ *
+ * The digits themselves are the caller's business: CSS cannot force 0-9,
+ * and a rule that pretended to would be worse than none.
+ */
+.zk-money {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.zk-money[data-tone="in"] {
+  color: var(--zk-color-success);
+}
+
+.zk-money[data-tone="out"] {
+  color: var(--zk-color-error);
+}
+
+.zk-money__currency {
+  margin-inline-start: var(--zk-space-4);
+  font-size: var(--zk-text-12);
+  color: var(--zk-color-text-muted);
+}
+
+/* ═══ progress and task ════════════════════════════════════════════════ */
+
+.zk-progress {
+  inline-size: 100%;
+  block-size: var(--zk-space-6);
+  background-color: var(--zk-color-surface-raised);
+  border-radius: var(--zk-radius-full);
+  overflow: hidden;
+}
+
+.zk-progress__bar {
+  block-size: 100%;
+  inline-size: 0;
+  background-color: var(--zk-color-brand);
+  border-radius: var(--zk-radius-full);
+  transition: inline-size var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+/*
+ * A BAR WITH NO NUMBER IS A BAR NOBODY TRUSTS. «جارٍ» for four minutes and
+ * «3 من 9» for four minutes are different experiences.
+ */
+.zk-task {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zk-space-6);
+  padding: var(--zk-space-10) var(--zk-space-12);
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-card);
+}
+
+.zk-task__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--zk-space-8);
+  font-size: var(--zk-text-13);
+}
+
+.zk-task__count {
+  font-variant-numeric: tabular-nums;
+  color: var(--zk-color-text-muted);
+}
+
+/* ═══ tooltip ══════════════════════════════════════════════════════════ */
+
+/*
+ * A HINT, NEVER THE ONLY PLACE SOMETHING IS SAID. It does not appear on a
+ * touch device — there is no hover there — and a tooltip that needs a long
+ * press is a secret. Anything a person must know belongs in the page.
+ */
+.zk-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.zk-tooltip__bubble {
+  position: absolute;
+  inset-block-end: calc(100% + var(--zk-space-6));
+  inset-inline-start: 50%;
+  transform: translateX(50%);
+  z-index: var(--zk-z-toast);
+  max-inline-size: var(--zk-size-toast);
+  padding: var(--zk-space-6) var(--zk-space-10);
+  font-size: var(--zk-text-12);
+  line-height: var(--zk-leading-note);
+  color: var(--zk-color-text);
+  background-color: var(--zk-color-surface-raised);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-control);
+  box-shadow: var(--zk-shadow-overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--zk-duration-fast) var(--zk-ease-standard);
+}
+
+.zk-tooltip:hover .zk-tooltip__bubble,
+.zk-tooltip:focus-within .zk-tooltip__bubble {
+  opacity: 1;
+}
+
+/* ═══ dropdown ═════════════════════════════════════════════════════════ */
+
+.zk-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.zk-dropdown__menu {
+  position: absolute;
+  inset-block-start: calc(100% + var(--zk-space-4));
+  inset-inline-start: 0;
+  z-index: var(--zk-z-dock);
+  min-inline-size: var(--zk-size-toast);
+  max-block-size: calc(var(--zk-tap-min) * 6);
+  overflow-y: auto;
+  padding: var(--zk-space-4);
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-card);
+  box-shadow: var(--zk-shadow-overlay);
+}
+
+.zk-dropdown__menu[hidden] {
+  display: none;
+}
+
+.zk-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  inline-size: 100%;
+  min-block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-10);
+  font: inherit;
+  font-size: var(--zk-text-14);
+  text-align: start;
+  color: var(--zk-color-text);
+  background: none;
+  border: 0;
+  border-radius: var(--zk-radius-control);
+  cursor: pointer;
+}
+
+.zk-dropdown__item:hover,
+.zk-dropdown__item[data-active="true"] {
+  background-color: var(--zk-color-surface-sunken);
+}
+
+.zk-dropdown__item[aria-selected="true"] {
+  color: var(--zk-color-brand);
+  background-color: var(--zk-color-brand-soft);
+}
+
+/* ═══ toolbar ══════════════════════════════════════════════════════════ */
+
+.zk-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--zk-space-8);
+  padding: var(--zk-space-8);
+  background-color: var(--zk-color-surface-card);
+  border: 1px solid var(--zk-color-border);
+  border-radius: var(--zk-radius-card);
+}
+
+.zk-toolbar__gap {
+  flex: 1 1 auto;
+}
+
+/* ═══ switch and checkbox ══════════════════════════════════════════════ */
+
+/*
+ * THE TICK BOX IS TINTED, because a browser paints an untinted one in its
+ * own colour — and on a dark palette that is a white square. The one
+ * property that tints a native control is `accent-color`, so the native
+ * control is kept and given it: a hand-built box would lose the keyboard
+ * behaviour the native one has for free.
+ */
+.zk-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  min-block-size: var(--zk-tap-min);
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text);
+  cursor: pointer;
+}
+
+.zk-checkbox input {
+  inline-size: var(--zk-space-20);
+  block-size: var(--zk-space-20);
+  flex: none;
+  accent-color: var(--zk-color-brand);
+  cursor: inherit;
+}
+
+.zk-checkbox:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.zk-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--zk-space-8);
+  min-block-size: var(--zk-tap-min);
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text);
+  cursor: pointer;
+}
+
+.zk-switch__track {
+  position: relative;
+  inline-size: calc(var(--zk-space-20) * 2);
+  block-size: var(--zk-space-20);
+  flex: none;
+  background-color: var(--zk-color-surface-raised);
+  border: 1px solid var(--zk-color-border-input);
+  border-radius: var(--zk-radius-full);
+  transition: background-color var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+.zk-switch__thumb {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--zk-space-16);
+  block-size: var(--zk-space-16);
+  margin: var(--zk-space-2);
+  background-color: var(--zk-color-text);
+  border-radius: var(--zk-radius-full);
+  transition: inset-inline-start var(--zk-duration-base) var(--zk-ease-standard);
+}
+
+.zk-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zk-switch input:checked ~ .zk-switch__track {
+  background-color: var(--zk-color-brand);
+  border-color: var(--zk-color-brand);
+}
+
+.zk-switch input:checked ~ .zk-switch__track .zk-switch__thumb {
+  inset-inline-start: var(--zk-space-20);
+  background-color: var(--zk-color-brand-on);
+}
+
+.zk-switch input:focus-visible ~ .zk-switch__track {
+  outline: var(--zk-focus-width) solid var(--zk-color-focus);
+  outline-offset: var(--zk-focus-offset);
+}
+
+/* ═══ stepper ══════════════════════════════════════════════════════════ */
+
+/*
+ * SIX STATES, AND EACH CARRIES A COLOUR **AND** AN ICON **AND** A WORD.
+ *
+ * A pipeline told only in colour is unreadable to a colour-blind reader
+ * and unreadable to anybody in sunlight. `awaiting_choice` and `failed`
+ * are the two that stop the line, and they have to be distinguishable at a
+ * glance from `running`, which does not.
+ */
+.zk-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zk-space-2);
+}
+
+.zk-step {
+  display: flex;
+  align-items: center;
+  gap: var(--zk-space-10);
+  min-block-size: var(--zk-tap-min);
+  padding-inline: var(--zk-space-10);
+  font-size: var(--zk-text-14);
+  color: var(--zk-color-text);
+  border-inline-start: var(--zk-focus-width) solid var(--zk-color-border);
+}
+
+.zk-step__state {
+  margin-inline-start: auto;
+  font-size: var(--zk-text-12);
+  color: var(--zk-color-text-muted);
+}
+
+.zk-step[data-state="not_started"] {
+  color: var(--zk-color-text-faint);
+}
+
+.zk-step[data-state="running"] {
+  border-inline-start-color: var(--zk-color-brand);
+  color: var(--zk-color-brand);
+}
+
+.zk-step[data-state="awaiting_choice"] {
+  border-inline-start-color: var(--zk-color-warning);
+  color: var(--zk-color-warning);
+}
+
+.zk-step[data-state="approved"] {
+  border-inline-start-color: var(--zk-color-success);
+  color: var(--zk-color-success);
+}
+
+.zk-step[data-state="failed"] {
+  border-inline-start-color: var(--zk-color-error);
+  color: var(--zk-color-error);
+}
+
+/* Ran, and its answer is older than what it was computed from. */
+.zk-step[data-state="stale"] {
+  border-inline-start-color: var(--zk-color-text-faint);
+  color: var(--zk-color-text-muted);
+}
+
+.zk-step[data-state="running"] .zk-loader {
+  animation: zk-spin calc(var(--zk-duration-base) * 5) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zk-step[data-state="running"] .zk-loader {
+    animation: none;
+  }
+}

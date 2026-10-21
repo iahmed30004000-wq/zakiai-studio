@@ -1,0 +1,426 @@
+{
+ "groups": [
+  {
+   "key": "basic",
+   "label": "الأساسيات"
+  },
+  {
+   "key": "hook",
+   "label": "الهوك (أول ثواني)"
+  },
+  {
+   "key": "entry",
+   "label": "دخول المنتج والإثبات"
+  },
+  {
+   "key": "cta",
+   "label": "الدعوة للشراء (CTA)"
+  },
+  {
+   "key": "pacing",
+   "label": "الإيقاع"
+  },
+  {
+   "key": "visual",
+   "label": "اللغة البصرية"
+  },
+  {
+   "key": "arc",
+   "label": "المشاعر والمشاهد"
+  },
+  {
+   "key": "why",
+   "label": "ليش بيشتغل وحدوده"
+  }
+ ],
+ "fields": [
+  {
+   "path": "pattern_name",
+   "label": "اسم النمط",
+   "type": "text",
+   "group": "basic",
+   "required": true,
+   "max": 160,
+   "hint": "اسم قصير بيعبّر عن فكرة النمط."
+  },
+  {
+   "path": "one_line_summary",
+   "label": "ملخص بسطر",
+   "type": "textarea",
+   "group": "basic",
+   "max": 600,
+   "hint": "شو بيعمل النمط وليش بيقنع، بجملة أو جملتين."
+  },
+  {
+   "path": "framework",
+   "label": "الإطار",
+   "type": "select",
+   "group": "basic",
+   "required": true,
+   "options": "frameworks",
+   "hint": "هيكل الإقناع الأساسي."
+  },
+  {
+   "path": "framework_secondary",
+   "label": "إطار ثانوي (اختياري)",
+   "type": "select",
+   "group": "basic",
+   "options": "frameworks"
+  },
+  {
+   "path": "product_category",
+   "label": "فئة المنتج",
+   "type": "select",
+   "group": "basic",
+   "required": true,
+   "options": "categories"
+  },
+  {
+   "path": "dialect_or_language",
+   "label": "اللهجة",
+   "type": "select",
+   "group": "basic",
+   "options": "dialects"
+  },
+  {
+   "path": "dialect_sub",
+   "label": "لهجة فرعية (اختياري)",
+   "type": "select",
+   "group": "basic",
+   "options": "dialect_subs"
+  },
+  {
+   "path": "target_audience",
+   "label": "الجمهور المستهدف",
+   "type": "textarea",
+   "group": "basic",
+   "max": 600
+  },
+  {
+   "path": "reusability_score",
+   "label": "قابلية الاستخدام (0–10)",
+   "type": "int",
+   "group": "basic",
+   "min": 0,
+   "max": 10,
+   "hint": "قديش بيصلح النمط لمنتجات تانية. 7 وفوق = قوي."
+  },
+  {
+   "path": "production_complexity",
+   "label": "تعقيد الإنتاج",
+   "type": "select",
+   "group": "basic",
+   "options": "complexity"
+  },
+  {
+   "path": "hook.type",
+   "label": "نوع الهوك",
+   "type": "text",
+   "group": "hook",
+   "required": true,
+   "max": 200,
+   "hint": "مثال: سؤال صادم، ادعاء معاكس، رقم، موقف من الحياة."
+  },
+  {
+   "path": "hook.duration_sec",
+   "label": "مدة الهوك (ثانية)",
+   "type": "number",
+   "group": "hook",
+   "min": 0,
+   "max": 60
+  },
+  {
+   "path": "hook.mechanism",
+   "label": "كيف بيشتغل الهوك",
+   "type": "textarea",
+   "group": "hook",
+   "max": 1200
+  },
+  {
+   "path": "hook.transferable_template",
+   "label": "قالب قابل للنقل",
+   "type": "textarea",
+   "group": "hook",
+   "max": 800,
+   "hint": "الهوك كقالب بفراغات بين [ ] بتتعبّى لكل منتج."
+  },
+  {
+   "path": "product_entry_sec",
+   "label": "ثانية دخول المنتج",
+   "type": "number",
+   "group": "entry",
+   "min": 0,
+   "max": 300
+  },
+  {
+   "path": "product_entry_style",
+   "label": "كيف بيدخل المنتج",
+   "type": "textarea",
+   "group": "entry",
+   "max": 800
+  },
+  {
+   "path": "proof_mechanism",
+   "label": "آلية الإثبات",
+   "type": "text",
+   "group": "entry",
+   "max": 300
+  },
+  {
+   "path": "objection_handled",
+   "label": "الاعتراضات اللي بيعالجها",
+   "type": "list",
+   "group": "entry"
+  },
+  {
+   "path": "cta.type",
+   "label": "نوع الـ CTA",
+   "type": "text",
+   "group": "cta",
+   "max": 300
+  },
+  {
+   "path": "cta.placement_sec",
+   "label": "ثانية ظهور الـ CTA",
+   "type": "number",
+   "group": "cta",
+   "min": 0,
+   "max": 300
+  },
+  {
+   "path": "cta.wording_style",
+   "label": "صياغة الـ CTA",
+   "type": "textarea",
+   "group": "cta",
+   "max": 800
+  },
+  {
+   "path": "pacing.total_duration_sec",
+   "label": "المدة الكلية (ثانية)",
+   "type": "number",
+   "group": "pacing",
+   "min": 0,
+   "max": 600
+  },
+  {
+   "path": "pacing.cut_rhythm",
+   "label": "إيقاع القطع",
+   "type": "textarea",
+   "group": "pacing",
+   "max": 600
+  },
+  {
+   "path": "pacing.words_per_second",
+   "label": "كلمات بالثانية",
+   "type": "number",
+   "group": "pacing",
+   "min": 0,
+   "max": 10
+  },
+  {
+   "path": "visual_language.shot_types",
+   "label": "أنواع اللقطات",
+   "type": "list",
+   "group": "visual"
+  },
+  {
+   "path": "visual_language.setting",
+   "label": "المكان والأجواء",
+   "type": "text",
+   "group": "visual",
+   "max": 400
+  },
+  {
+   "path": "visual_language.production_style",
+   "label": "أسلوب الإنتاج",
+   "type": "text",
+   "group": "visual",
+   "max": 400
+  },
+  {
+   "path": "visual_language.text_overlay_style",
+   "label": "أسلوب النص عالشاشة",
+   "type": "text",
+   "group": "visual",
+   "max": 400
+  },
+  {
+   "path": "visual_language.talent",
+   "label": "الأشخاص بالفيديو",
+   "type": "text",
+   "group": "visual",
+   "max": 400
+  },
+  {
+   "path": "emotional_arc",
+   "label": "مسار المشاعر",
+   "type": "list",
+   "group": "arc",
+   "hint": "كلمة لكل مرحلة، بالترتيب."
+  },
+  {
+   "path": "why_it_works",
+   "label": "ليش بيشتغل",
+   "type": "list",
+   "group": "why"
+  },
+  {
+   "path": "weak_points",
+   "label": "نقاط الضعف",
+   "type": "list",
+   "group": "why"
+  },
+  {
+   "path": "best_for",
+   "label": "بيناسب",
+   "type": "list",
+   "group": "why"
+  },
+  {
+   "path": "avoid_for",
+   "label": "ما بيناسب",
+   "type": "list",
+   "group": "why"
+  }
+ ],
+ "scene_fields": [
+  {
+   "key": "function",
+   "label": "وظيفة المشهد",
+   "type": "text",
+   "required": true,
+   "max": 400
+  },
+  {
+   "key": "duration_sec",
+   "label": "المدة (ثانية)",
+   "type": "number",
+   "min": 0,
+   "max": 300
+  },
+  {
+   "key": "shot_type",
+   "label": "نوع اللقطة",
+   "type": "text",
+   "max": 300
+  },
+  {
+   "key": "vo_intent",
+   "label": "الهدف من الصوت",
+   "type": "text",
+   "max": 500
+  },
+  {
+   "key": "on_screen_text_role",
+   "label": "دور النص عالشاشة",
+   "type": "text",
+   "max": 400
+  },
+  {
+   "key": "emotion",
+   "label": "الإحساس",
+   "type": "text",
+   "max": 120
+  }
+ ],
+ "options": {
+  "frameworks": {
+   "pas": "مشكلة ← تضخيم ← حل",
+   "us_vs_them": "نحن مقابل هم",
+   "authority_reveal": "كشف السلطة",
+   "ugc_testimonial": "شهادة مستخدم",
+   "the_hack": "الحيلة",
+   "demo_proof": "إثبات بالعرض",
+   "ingredient_reveal": "كشف المكوّنات",
+   "story": "قصة",
+   "countdown_ranked": "ترتيب تنازلي",
+   "offer_bundle": "حزمة العرض"
+  },
+  "categories": {
+   "fragrance": "عطور",
+   "skincare": "عناية بالبشرة",
+   "hair_removal": "إزالة الشعر",
+   "hair_care": "عناية بالشعر",
+   "makeup": "مكياج",
+   "eye_care": "عناية بالعين",
+   "ear_care": "عناية بالأذن",
+   "oral_care": "عناية بالفم والأسنان",
+   "supplements": "مكمّلات غذائية",
+   "joint_pain": "مفاصل وآلام",
+   "wellness_device": "أجهزة صحية",
+   "home_kitchen": "أدوات منزلية ومطبخ",
+   "cleaning": "تنظيف",
+   "gadgets": "أدوات وإلكترونيات",
+   "apparel": "ملابس",
+   "accessories": "إكسسوارات",
+   "other": "أخرى"
+  },
+  "dialects": {
+   "shami": "شامي",
+   "egyptian": "مصري",
+   "gulf": "خليجي",
+   "iraqi": "عراقي",
+   "maghrebi": "مغاربي",
+   "hassani": "حساني",
+   "msa_simple": "فصحى مبسطة",
+   "none": "بلا كلام"
+  },
+  "dialect_subs": {
+   "jordanian": "أردني",
+   "syrian": "سوري",
+   "lebanese": "لبناني",
+   "palestinian": "فلسطيني",
+   "saudi": "سعودي",
+   "emirati": "إماراتي",
+   "kuwaiti": "كويتي",
+   "qatari": "قطري",
+   "tunisian": "تونسي",
+   "moroccan": "مغربي",
+   "algerian": "جزائري",
+   "libyan": "ليبي"
+  },
+  "complexity": {
+   "low": "بسيطة",
+   "medium": "متوسطة",
+   "high": "عالية"
+  }
+ },
+ "dialect_sub_parent": {
+  "jordanian": "shami",
+  "syrian": "shami",
+  "lebanese": "shami",
+  "palestinian": "shami",
+  "saudi": "gulf",
+  "emirati": "gulf",
+  "kuwaiti": "gulf",
+  "qatari": "gulf",
+  "tunisian": "maghrebi",
+  "moroccan": "maghrebi",
+  "algerian": "maghrebi",
+  "libyan": "maghrebi"
+ },
+ "limits": {
+  "max_scenes": 30,
+  "min_scenes_new": 3,
+  "max_list_items": 30
+ },
+ "category_groups": {
+  "fragrance": "beauty",
+  "skincare": "beauty",
+  "hair_removal": "beauty",
+  "hair_care": "beauty",
+  "makeup": "beauty",
+  "eye_care": "health",
+  "ear_care": "health",
+  "oral_care": "health",
+  "supplements": "health",
+  "joint_pain": "health",
+  "wellness_device": "health",
+  "home_kitchen": "home",
+  "cleaning": "home",
+  "gadgets": "home",
+  "apparel": "fashion",
+  "accessories": "fashion",
+  "other": "other"
+ }
+}

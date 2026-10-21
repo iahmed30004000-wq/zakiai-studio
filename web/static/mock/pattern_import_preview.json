@@ -1,0 +1,66 @@
+{
+ "token": "0123456789abcdef",
+ "filename": "patterns.xlsx",
+ "counts": {
+  "ok": 2,
+  "warn": 1,
+  "error": 1
+ },
+ "notes": [
+  "أعمدة مش معروفة وانتجاهلت: عمود غريب"
+ ],
+ "rows": [
+  {
+   "row": 2,
+   "name": "كشف المكوّن السري",
+   "status": "ok",
+   "errors": [],
+   "warnings": [],
+   "similar": []
+  },
+  {
+   "row": 3,
+   "name": "مقارنة قبل وبعد",
+   "status": "ok",
+   "errors": [],
+   "warnings": [],
+   "similar": []
+  },
+  {
+   "row": 4,
+   "name": "شهادة جارة",
+   "status": "warn",
+   "errors": [],
+   "warnings": [
+    "بيشبه نمط موجود 78%: «شهادة مستخدم عفوية»"
+   ],
+   "similar": [
+    {
+     "pattern_id": "ad_106",
+     "pattern_name": "شهادة مستخدم عفوية",
+     "score": 0.78,
+     "same_name": false
+    }
+   ]
+  },
+  {
+   "row": 5,
+   "name": "عرض محدود",
+   "status": "error",
+   "errors": [
+    {
+     "field": "framework",
+     "label": "الإطار",
+     "msg": "«ندرة» مش من القائمة — اختر من القائمة المنسدلة"
+    },
+    {
+     "field": "scene_blueprint",
+     "label": "المشاهد",
+     "msg": "لازم 3 مشاهد على الأقل"
+    }
+   ],
+   "warnings": [],
+   "similar": []
+  }
+ ]
+}

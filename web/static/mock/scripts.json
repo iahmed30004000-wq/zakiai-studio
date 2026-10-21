@@ -1,0 +1,50 @@
+[
+ {
+  "file": "VARA__ad_109__20260913_1348.json",
+  "title": "أربع ورقات عالمراية… وشطبناهن وحدة وحدة",
+  "product": "VARA",
+  "product_file": "vara.json",
+  "number": 3,
+  "display_name": "#3 - VARA",
+  "pattern_id": "ad_109",
+  "duration": 48,
+  "scenes": 7,
+  "generated_at": "20260913_13480"
+ },
+ {
+  "file": "VARA__ad_109__20260913_1344.json",
+  "title": "أربع مشاكل بكريمات إزالة الشعر… حلّيناهم",
+  "product": "VARA",
+  "product_file": "vara.json",
+  "number": 2,
+  "display_name": "#2 - VARA",
+  "pattern_id": "ad_109",
+  "duration": 48,
+  "scenes": 7,
+  "generated_at": "20260913_13481"
+ },
+ {
+  "file": "KAMA__ad_108__20260912_1010.json",
+  "title": "قطرة جدّتي اللي رجّعت النظر",
+  "product": "kama",
+  "product_file": "kama.json",
+  "number": 1,
+  "display_name": "#1 - kama",
+  "pattern_id": "ad_108",
+  "duration": 48,
+  "scenes": 7,
+  "generated_at": "20260913_13482"
+ },
+ {
+  "file": "LUMI__ad_111__20260914_0900.json",
+  "title": "جربت السيروم 30 يوم وهاي النتيجة",
+  "product": "LUMI",
+  "product_file": "lumi.json",
+  "number": 1,
+  "display_name": "#1 - LUMI",
+  "pattern_id": "ad_111",
+  "duration": 48,
+  "scenes": 7,
+  "generated_at": "20260913_13483"
+ }
+]

@@ -1,0 +1,20 @@
+{
+ "configured": true,
+ "token_set": true,
+ "base_url": "https://crm.example.local",
+ "connected": true,
+ "last_sync": {
+  "at": "@now-3h",
+  "ok": true,
+  "error": null,
+  "rows": 184
+ },
+ "pending_queue": 4,
+ "last_backup": {
+  "at": "@now-2d",
+  "ok": true,
+  "path": "D:\\Backups\\vidpattern"
+ },
+ "days_since_backup": 2,
+ "backup_alert": false
+}

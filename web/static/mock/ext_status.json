@@ -1,0 +1,133 @@
+{
+ "control": {
+  "command": "stop",
+  "kind": "image",
+  "mode": "natural",
+  "site": "gemini",
+  "step_mode": "one_by_one",
+  "only": null,
+  "stop_code": "verification",
+  "stop_reason": "ظهر تحقق (كابتشا أو «أنت مش روبوت») — حلّه بنفسك ثم اضغط «كمّل»",
+  "position": {
+   "task_id": "s2c1",
+   "shot_id": "s2c1",
+   "step": "generating",
+   "site": "gemini"
+  },
+  "warning": ""
+ },
+ "queue": 14,
+ "next": "s2c1",
+ "modes": {
+  "natural": "طبيعي",
+  "fast": "أسرع",
+  "max": "أقصى"
+ },
+ "mode_warning": "",
+ "log": [
+  {
+   "step": "start",
+   "shot": "s2c1",
+   "msg": "لقطة s2c1 (close) — وضع natural"
+  },
+  {
+   "step": "attach",
+   "shot": "s2c1",
+   "msg": "3 مرجع"
+  },
+  {
+   "step": "type",
+   "shot": "s2c1",
+   "msg": "412 حرف — وضع natural"
+  },
+  {
+   "step": "stop",
+   "shot": "s2c1",
+   "msg": "verification: ظهر تحقق"
+  }
+ ],
+ "kinds": {
+  "voice": 7,
+  "image": 14,
+  "video": 3,
+  "ahat": 1,
+  "music": 1
+ },
+ "sites": {
+  "gemini": {
+   "label": "جيميناي",
+   "kinds": [
+    "image"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "gemini.google.com"
+   ],
+   "newUrl": "https://gemini.google.com/app"
+  },
+  "chatgpt": {
+   "label": "شات جي بي تي",
+   "kinds": [
+    "image"
+   ],
+   "verified": true,
+   "adapter_version": 2,
+   "hosts": [
+    "chatgpt.com"
+   ],
+   "newUrl": "https://chatgpt.com/"
+  },
+  "aistudio": {
+   "label": "إيه آي ستوديو",
+   "kinds": [
+    "image"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "aistudio.google.com"
+   ],
+   "newUrl": "https://aistudio.google.com/"
+  },
+  "flow": {
+   "label": "فلو",
+   "kinds": [
+    "video",
+    "image"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "labs.google"
+   ],
+   "newUrl": "https://labs.google/fx/tools/flow"
+  },
+  "flowmusic": {
+   "label": "فلو ميوزك",
+   "kinds": [
+    "music"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "labs.google"
+   ],
+   "newUrl": "https://labs.google/fx/tools/music"
+  },
+  "elevenlabs": {
+   "label": "إيليفن لابز",
+   "kinds": [
+    "voice",
+    "ahat"
+   ],
+   "verified": false,
+   "adapter_version": 1,
+   "hosts": [
+    "elevenlabs.io"
+   ],
+   "newUrl": "https://elevenlabs.io/app/speech-synthesis"
+  }
+ },
+ "requests": []
+}

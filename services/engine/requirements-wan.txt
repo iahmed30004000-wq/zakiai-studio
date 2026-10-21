@@ -1,0 +1,14 @@
+# صندوق Wan2.2-TI2V-5B — إصدارات مثبّتة. torch/torchvision جايين من صورة pytorch الأساسية، مش من هون.
+# ⚠ الأرقام مكتوبة من المعروف وقت الكتابة ولسا ما انبنت بصورة حقيقية — لو تعارضت إصدارات وقت البناء بالسيرفر عدّلها هون.
+fastapi==0.115.14
+uvicorn==0.35.0
+python-multipart==0.0.20
+filelock==3.18.0
+pillow==11.3.0
+diffusers==0.35.1
+transformers==4.55.4
+accelerate==1.10.1
+safetensors==0.6.2
+sentencepiece==0.2.1
+ftfy==6.3.1
+protobuf==5.29.5

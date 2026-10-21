@@ -1,0 +1,55 @@
+{
+ "results": [
+  {
+   "site": "elevenlabs",
+   "kind": "voice",
+   "ok": true,
+   "adapter_version": 1,
+   "missing": [],
+   "checked_at": "@now-3h"
+  },
+  {
+   "site": "elevenlabs",
+   "kind": "ahat",
+   "ok": true,
+   "adapter_version": 1,
+   "missing": [],
+   "checked_at": "@now-3h"
+  },
+  {
+   "site": "chatgpt",
+   "kind": "image",
+   "ok": true,
+   "adapter_version": 2,
+   "missing": [],
+   "checked_at": "@now-3h"
+  },
+  {
+   "site": "gemini",
+   "kind": "image",
+   "ok": true,
+   "adapter_version": 1,
+   "missing": [],
+   "checked_at": "@now-1d"
+  },
+  {
+   "site": "aistudio",
+   "kind": "image",
+   "ok": false,
+   "adapter_version": 1,
+   "missing": [
+    "composer",
+    "button[aria-label*=Run i]"
+   ],
+   "checked_at": "@now-3h"
+  },
+  {
+   "site": "flow",
+   "kind": "video",
+   "ok": true,
+   "adapter_version": 1,
+   "missing": [],
+   "checked_at": "@now-2d"
+  }
+ ]
+}

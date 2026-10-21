@@ -1,0 +1,19 @@
+[
+ {
+  "id": "al_1",
+  "ad_name": "SY|vara|vara-lp-1|video|VP-vara-3-v2",
+  "script_id": "VP-vara-3-v2",
+  "type": "fatigue",
+  "since": "@now-2d",
+  "detail": "ارتفعت تكلفة الطلب المُسلَّم 38% خلال 5 أيام مع هبوط التفاعل",
+  "draft_id": "dr_1"
+ },
+ {
+  "id": "al_2",
+  "ad_name": "SA|lumi|lumi-lp|video|VP-lumi-1-v1",
+  "script_id": "VP-lumi-1-v1",
+  "type": "watch",
+  "since": "@now-1d",
+  "detail": "نسبة التسليم أقل من متوسط المنتج"
+ }
+]

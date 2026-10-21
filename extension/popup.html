@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Zakiai Systems</title>
+<style>
+  :root { color-scheme: dark; --bg: #0a1a2e; --card: #0f2438; --text: #e6f1f4; --muted: #9fb6c2; --brand: #36b5cc; --on: #04182b; --warn: #e8973a; --bad: #e65e52; --ok: #4fb865; --line: #486276; }
+  body { margin: 0; width: 25rem; background: var(--bg); color: var(--text); font: 14px/1.6 "Segoe UI", Tahoma, sans-serif; }
+  main { padding: 12px; display: grid; gap: 10px; }
+  h1 { font-size: 15px; margin: 0; }
+  h2 { font-size: 13px; margin: 0; color: var(--muted); font-weight: 600; }
+  label { display: grid; gap: 4px; color: var(--muted); font-size: 12px; }
+  select, button, input, textarea { font: inherit; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); min-height: 40px; box-sizing: border-box; width: 100%; }
+  textarea { min-height: 3.5rem; resize: vertical; }
+  button.primary { background: var(--brand); color: var(--on); border-color: var(--brand); font-weight: 600; }
+  button:disabled { opacity: .5; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; } .row > * { flex: 1 1 auto; width: auto; }
+  .warn { color: var(--warn); font-size: 12px; margin: 0; }
+  .badge { display: inline-block; background: transparent; border: 1px solid var(--warn); color: var(--warn); border-radius: 999px; padding: 0 8px; font-size: 11px; }
+  .stop { border: 1px solid var(--bad); border-radius: 8px; padding: 8px; color: var(--bad); }
+  .upd { border: 1px solid var(--brand); border-radius: 8px; padding: 8px; color: var(--brand); font-size: 12px; }
+  .ok { color: var(--ok); }
+  .tasks { max-height: 7rem; overflow: auto; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; display: grid; gap: 4px; font-size: 12px; }
+  .tasks label { display: flex; flex-direction: row; align-items: center; gap: 6px; color: var(--text); }
+  .tasks input { width: auto; min-height: 0; }
+  details { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+  #log { font-size: 11px; color: var(--muted); max-height: 7rem; overflow: auto; margin: 0; padding-inline-start: 16px; }
+  a { color: var(--brand); }
+  .tabs { display: flex; gap: 6px; } .tabs button { min-height: 34px; padding: 4px 8px; } .tabs button.on { background: var(--brand); color: var(--on); border-color: var(--brand); font-weight: 600; }
+  .pane[hidden] { display: none; } .pane { display: grid; gap: 10px; }
+  #qHist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 12rem; overflow: auto; }
+  #qHist li { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 12px; display: grid; gap: 2px; }
+  #qHist .st-done { color: var(--ok); } #qHist .st-stopped, #qHist .st-error { color: var(--bad); } #qHist .st-running { color: var(--brand); }
+  #qHist button { min-height: 28px; padding: 2px 8px; width: auto; font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Zakiai Systems — مولّد الوسائط</h1>
+  <p class="warn">أتمتة واجهات المواقع بتخالف شروطها عادة وبتعرّض حسابك للإيقاف. بتشتغل بتبويب واحد ومهمة بالمرة، وبتوقف عند أي تحقق أو تحذير — وما بتتجاوز شي.</p>
+  <div id="updBox" class="upd" hidden></div>
+  <div class="tabs">
+    <button id="tabQuick" class="on" type="button">تجربة سريعة</button>
+    <button id="tabStudio" type="button">مهام الاستوديو</button>
+  </div>
+
+  <section id="quickPane" class="pane">
+    <p class="warn">جرّب موقع من غير استوديو ولا سيناريو: بتكتب البرومبت، والنتيجة بتنحفظ بمجلد التنزيلات (Zakiai ← اسم الموقع).</p>
+    <div class="row">
+      <label>نوع الشغل
+        <select id="qKind">
+          <option value="image">صورة</option>
+          <option value="video">تحريك (فيديو)</option>
+          <option value="voice">صوت</option>
+          <option value="ahat">آهة / مؤثر</option>
+          <option value="music">موسيقى</option>
+        </select>
+      </label>
+      <label>الموقع<select id="qSite"></select></label>
+    </div>
+    <p class="warn" id="qBadge"></p>
+    <label>البرومبت<textarea id="qPrompt" placeholder="مثال: زجاجة عطر على رمل الصحراء وقت الغروب"></textarea></label>
+    <div class="row">
+      <label>نسبة الفريم (Flow)<select id="qAspect"><option value="9:16">9:16 عمودي</option><option value="16:9">16:9 أفقي</option><option value="1:1">1:1 مربّع</option></select></label>
+      <label>السرعة<select id="qMode"><option value="natural">طبيعي</option><option value="fast">أسرع</option><option value="max">أقصى</option></select></label>
+    </div>
+    <label>صور مرجعية (اختياري، حتى 4)<input id="qRefs" type="file" accept="image/*" multiple></label>
+    <p class="warn" id="qNote"></p>
+    <div class="row">
+      <button class="primary" id="qGo" type="button">جرّب</button>
+      <button id="qOpen" type="button">افتح الموقع بس</button>
+      <button id="qCancel" type="button">إلغاء</button>
+    </div>
+    <div id="qStatus" class="warn"></div>
+    <h2>آخر التجارب</h2>
+    <ul id="qHist"></ul>
+    <button id="qClear" type="button">امسح السجل</button>
+  </section>
+
+  <section id="studioPane" class="pane" hidden>
+  <div id="studioNote" class="stop" hidden></div>
+  <button id="toQuick" type="button" hidden>روح للتجربة السريعة</button>
+  <label>السيناريو<select id="script"></select></label>
+  <div class="row">
+    <label>نوع الشغل
+      <select id="kind">
+        <option value="voice">صوت مشهد</option>
+        <option value="image">صورة لقطة</option>
+        <option value="video">تحريك لقطة</option>
+        <option value="ahat">آهة / مؤثر</option>
+        <option value="music">موسيقى</option>
+      </select>
+    </label>
+    <label>الموقع<select id="site"></select></label>
+  </div>
+  <p class="warn" id="siteBadge"></p>
+  <div class="row">
+    <label>السرعة<select id="mode"><option value="natural">طبيعي</option><option value="fast">أسرع</option><option value="max">أقصى</option></select></label>
+    <label>طريقة الشغل<select id="stepMode"><option value="all">الكل مرة وحدة</option><option value="one_by_one">لقطة لقطة مع مراجعة</option></select></label>
+  </div>
+  <p class="warn">كل ما زادت السرعة زاد احتمال إن الموقع يلاحظ الأتمتة ويوقف حسابك. الطبيعي هو الأكثر أماناً.</p>
+  <p class="warn" id="modeWarn"></p>
+  <details>
+    <summary>مهام معيّنة فقط (اختياري — فاضي = الكل)</summary>
+    <div id="tasks" class="tasks"></div>
+  </details>
+  <div id="stopBox" class="stop" hidden></div>
+  <div class="row">
+    <button class="primary" id="start">ابدأ</button>
+    <button id="resume" hidden>كمّل</button>
+  </div>
+  <div class="row">
+    <button id="pause">إيقاف مؤقت</button>
+    <button id="cancel">إلغاء</button>
+  </div>
+  <details>
+    <summary>إعادة لقطة / مشهد (مع تعديل البرومبت)</summary>
+    <div style="display:grid;gap:6px;margin-top:6px">
+      <label>رقم اللقطة أو المشهد (مثل s1c1 أو scene_2)<input id="retryId" dir="ltr" list="retryList"><datalist id="retryList"></datalist></label>
+      <label>برومبت جديد (اختياري)<textarea id="retryPrompt"></textarea></label>
+      <button id="retry">أعد التوليد (بعدها اضغط ابدأ)</button>
+    </div>
+  </details>
+  <div id="status" class="warn"></div>
+  <ul id="log"></ul>
+  </section>
+  <div class="row">
+    <button id="selftest">فحص المواقع (بدون توليد)</button>
+  </div>
+  <a href="options.html" target="_blank">الخيارات (عنوان الاستوديو والتوكن والفحص)</a>
+</main>
+<script src="lib/adapters.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

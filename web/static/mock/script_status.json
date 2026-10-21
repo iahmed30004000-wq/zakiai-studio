@@ -1,0 +1,56 @@
+{
+ "VARA__ad_109__20260913_1348.json": {
+  "status": "approved",
+  "blockers": [],
+  "rounds": 2,
+  "approved": true,
+  "reason": "اجتاز جولتين مراجعة بلا موانع",
+  "max_rounds": 2,
+  "reviewed": true
+ },
+ "VARA__ad_109__20260913_1344.json": {
+  "status": "needs_owner",
+  "blockers": [
+   {
+    "scene": 5,
+    "issue": "ادّعاء «يمنع الشعر نهائياً» ممنوع بالبريف"
+   },
+   {
+    "scene": 6,
+    "issue": "السعر 35$ ما بيطابق بيانات الـ OMS"
+   }
+  ],
+  "rounds": 2,
+  "approved": false,
+  "reason": "انتهت جولات المراجعة والموانع لسا قائمة — قرار المالك",
+  "max_rounds": 2,
+  "reviewed": true
+ },
+ "KAMA__ad_108__20260912_1010.json": {
+  "status": "draft",
+  "blockers": [],
+  "rounds": 0,
+  "approved": false,
+  "reason": "لم تبدأ المراجعة",
+  "max_rounds": 2,
+  "reviewed": false
+ },
+ "LUMI__ad_111__20260914_0900.json": {
+  "status": "reviewing",
+  "blockers": [],
+  "rounds": 1,
+  "approved": false,
+  "reason": "قيد حلقة المراجعة",
+  "max_rounds": 2,
+  "reviewed": true
+ },
+ "default": {
+  "status": "draft",
+  "blockers": [],
+  "rounds": 0,
+  "approved": false,
+  "reason": "لم تبدأ المراجعة",
+  "max_rounds": 2,
+  "reviewed": false
+ }
+}
