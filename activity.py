@@ -58,6 +58,7 @@ _R = [
     ("PUT", r"/api/ads/meta/token", "settings", "حفظ مفتاح فيسبوك للإعلانات"),
     # ── الآهات والموسيقى
     ("POST", r"/api/ahat", "upload", "رفع آهة أو موسيقى للمكتبة"),
+    ("POST", r"/api/ahat/generate", "create", "توليد آهة أو موسيقى بنموذج من مكتبة النماذج"),
     ("DELETE", r"/api/ahat/(?P<tid>[^/]+)", "delete", "حذف آهة من المكتبة ({tid})"),
     ("POST", r"/api/ahat/(?P<tid>[^/]+)/approve", "approve", "اعتماد آهة ({tid})"),
     ("POST", r"/api/ahat/(?P<tid>[^/]+)/revoke", "approve", "سحب اعتماد آهة ({tid})"),
@@ -177,6 +178,9 @@ _R = [
     ("POST", r"/api/review/(?P<file>[^/]+)/local", "generate", "فحص السيناريو {file} محلياً"),
     ("PUT", r"/api/scripts/(?P<file>[^/]+)", "edit", "حفظ تعديل السيناريو {file}"),
     ("POST", r"/api/scripts/(?P<file>[^/]+)/approve", "approve", "اعتماد السيناريو {file}"),
+    ("POST", r"/api/scripts/(?P<file>[^/]+)/approve-local", "approve", "موافقة بالفحص الحسابي بس على السيناريو {file} (بلا مراجعة ذكاء)"),
+    ("POST", r"/api/scripts/manual", "create", "كتابة سيناريو بإيدك (مهمة موجّهة)"),
+    ("POST", r"/api/scripts/manual/from-voice", "create", "سيناريو من تسجيل صوتك (مهمة موجّهة)"),
     ("POST", r"/api/scripts/(?P<file>[^/]+)/review-loop", "generate", "مراجعة وإعادة كتابة السيناريو {file}"),
     ("POST", r"/api/scripts/(?P<file>[^/]+)/hooks", "create", "توليد أو إضافة هوك للسيناريو {file}"),
     ("POST", r"/api/scripts/(?P<file>[^/]+)/hooks/select", "approve", "اختيار الهوك الأساسي للسيناريو {file}"),
@@ -216,11 +220,32 @@ _R = [
     ("POST", r"/api/studio/(?P<file>[^/]+)/placements", "create", "ربط إعلان بمكان ({file})"),
     ("PUT", r"/api/studio/(?P<file>[^/]+)/placements/(?P<pid>[^/]+)", "edit", "تعديل مكان إعلان ({file})"),
     ("DELETE", r"/api/studio/(?P<file>[^/]+)/placements/(?P<pid>[^/]+)", "delete", "حذف مكان إعلان ({file})"),
+    # ── المشروع الحر (يدوي)
+    ("POST", r"/api/free/projects", "create", "إنشاء مشروع حر جديد"),
+    ("PUT", r"/api/studio/(?P<file>[^/]+)/free/structure", "edit", "تعديل مشاهد ولقطات المشروع الحر {file}"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/free/import", "edit", "استيراد مشاهد للمشروع الحر {file}"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/free/media", "upload", "رفع صور وفيديوهات للمشروع الحر {file}"),
+    ("PUT", r"/api/studio/(?P<file>[^/]+)/free/montage", "edit", "ضبط مونتاج المشروع الحر {file} (الكتابة والموسيقى والمؤثرات)"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/voice/upload", "upload", "رفع تسجيل صوتك لمحطة الصوت ({file})"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/free/voice/upload", "upload", "رفع تسجيل صوتك للمشروع الحر {file}"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/free/voice/realign", "edit", "إعادة تقسيم صوت المشروع الحر {file} على المشاهد"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/free/voice/tts", "generate", "صوت بالذكاء لمشاهد المشروع الحر {file}"),
+    ("DELETE", r"/api/studio/(?P<file>[^/]+)/free/voice", "delete", "حذف صوت المشروع الحر {file}"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/shots/(?P<shot>[^/]+)/upload", "upload", "رفع صورة أو فيديو للقطة {shot} ({file})"),
+    # ── مكتبة النماذج
+    ("POST", r"/api/model-library/models", "create", "إضافة نموذج لمكتبة النماذج"),
+    ("PUT", r"/api/model-library/models/(?P<mid>[^/]+)", "edit", "تعديل نموذج بمكتبة النماذج ({mid})"),
+    ("DELETE", r"/api/model-library/models/(?P<mid>[^/]+)", "delete", "حذف نموذج من مكتبة النماذج ({mid})"),
+    ("PUT", r"/api/model-library/tasks/(?P<task>[^/]+)/default", "edit", "تثبيت النموذج الافتراضي لمهمة «{task}» بمكتبة النماذج"),
+    ("PUT", r"/api/model-library/box", "edit", "ضبط صندوق الأوزان بمكتبة النماذج"),
+    ("POST", r"/api/model-library/models/(?P<mid>[^/]+)/test/inputs", "upload", "رفع ملف لتجربة نموذج ({mid})"),
+    ("POST", r"/api/model-library/models/(?P<mid>[^/]+)/try", "generate", "تجربة نموذج بمكتبة النماذج ({mid})"),
     # ── الإضافة (من الواجهة أو من الإضافة نفسها)
     ("POST", r"/api/studio/(?P<file>[^/]+)/ext/control", "generate", "ضبط تشغيل الإضافة للسيناريو {file}"),
     ("POST", r"/api/studio/(?P<file>[^/]+)/ext/retry", "generate", "إعادة مهمة بالإضافة ({file})"),
     ("POST", r"/api/studio/(?P<file>[^/]+)/ext/result", "upload", "تسليم نتيجة من الإضافة ({file})"),
     ("POST", r"/api/studio/(?P<file>[^/]+)/ext/requests", "create", "طلب آهة أو موسيقى بالإضافة ({file})"),
+    ("POST", r"/api/studio/(?P<file>[^/]+)/sounds/(?P<rid>[^/]+)/generate", "create", "توليد طلب آهة أو موسيقى بنموذج من مكتبة النماذج ({file})"),
     ("DELETE", r"/api/studio/(?P<file>[^/]+)/ext/requests/(?P<rid>[^/]+)", "delete", "حذف طلب آهة أو موسيقى ({file})"),
     # ── الحسابات نفسها (الأحداث الخاصة بتنسجّل صراحة من مساراتها؛ تغيير كلمة السر هون)
     ("POST", r"/api/auth/password", "account", "غيّر كلمة سره"),
@@ -230,7 +255,7 @@ _R = [
 SILENT = [
     ("POST", r"/api/claims/try"), ("POST", r"/api/ext/diag"), ("POST", r"/api/ext/selftest"),
     ("POST", r"/api/studio/[^/]+/ext/log"), ("POST", r"/api/studio/[^/]+/ext/stop"),
-    ("POST", r"/api/pattern-lib/similar"), ("POST", r"/api/motion/models/[^/]+/probe"),
+    ("POST", r"/api/pattern-lib/similar"), ("POST", r"/api/motion/models/[^/]+/probe"), ("POST", r"/api/model-library/probe"),
     ("POST", r"/api/auth/(login|logout|setup)"), ("POST", r"/api/accounts"), ("PUT", r"/api/accounts/[^/]+/active"),
     ("POST", r"/api/accounts/[^/]+/reset"),
 ]
@@ -243,6 +268,12 @@ def _clean(name: str, v: str) -> str:
     v = re.sub(r"\.json$", "", v or "")
     if name in ("view", "slot", "angle"):
         return SLOT_AR.get(v, v)
+    if name == "task":                                         # مهام مكتبة النماذج بالعربي
+        try:
+            from model_library import TASK_LABELS
+            return TASK_LABELS.get(v, v)
+        except Exception:                                      # noqa: BLE001
+            return v
     return v if len(v) <= 48 else v[:45] + "…"
 
 

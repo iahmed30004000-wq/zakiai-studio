@@ -1,0 +1,17 @@
+# الصندوق العام (diffusers + spandrel) — إصدارات مثبّتة. torch/torchvision جايين من صورة pytorch الأساسية، مش من هون.
+# ⚠ الأرقام انقرت من PyPI وقت الكتابة (2026-10-22) وتواقيع pipelines اتفحصت على diffusers 0.36.0، بس ما انبنت بصورة حقيقية —
+#   لو تعارضت إصدارات وقت البناء بالسيرفر عدّلها هون. نماذج أحدث (مثلاً Qwen-Image-Edit-2511 أو FLUX.2) بتحتاج diffusers أحدث.
+fastapi==0.115.14
+uvicorn==0.35.0
+python-multipart==0.0.20
+filelock==3.18.0
+pillow==11.3.0
+diffusers==0.36.0
+transformers==4.57.6
+accelerate==1.12.0
+safetensors==0.7.0
+sentencepiece==0.2.1
+ftfy==6.3.1
+protobuf==5.29.5
+spandrel==0.4.2
+einops==0.8.1

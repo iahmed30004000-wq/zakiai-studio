@@ -36,7 +36,7 @@ from web.auth_gate import AuthGate  # noqa: E402
 app.add_middleware(AuthGate)          # حسابات الموظفين: كل /api/* بدها دخول (راجع web/auth_gate.py) — بتشتغل بعد LocalGuard
 app.add_middleware(LocalGuard)        # Host/Origin: يسكّر النفق ومواقع غريبة (راجع web/guard.py) — الأخير المضاف بيشتغل أول
 
-from web import routes_pipeline, routes_crm, routes_ops, routes_studio, routes_characters, routes_motion, routes_montage, routes_ext, routes_claims, routes_hooks, routes_hooks_bank, routes_patterns, routes_placements, routes_presets, routes_auth, routes_ads  # noqa: E402
+from web import routes_pipeline, routes_crm, routes_ops, routes_studio, routes_characters, routes_motion, routes_montage, routes_ext, routes_claims, routes_hooks, routes_hooks_bank, routes_patterns, routes_placements, routes_presets, routes_auth, routes_ads, routes_free, routes_model_library  # noqa: E402
 STATIC_DIR = Path(__file__).parent / "static"
 UPLOAD_DIR = ROOT / "library" / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -355,6 +355,7 @@ def api_scripts() -> list[dict]:
             "status": meta.get("status"),
             "script_id": meta.get("script_id"),
             "version": meta.get("version"),
+            "mode": "free" if meta.get("mode") == "free" else "guided",      # مشروع حر (يدوي) أو مهمة موجّهة
         })
     # الأحدث أولاً ضمن كل منتج
     return sorted(out, key=lambda s: (s["product"], -(s["number"] or 0)))
@@ -380,6 +381,8 @@ async def save_script(filename: str, payload: dict) -> dict:
         raise HTTPException(404, "السيناريو غير موجود")
 
     script = json.loads(path.read_text(encoding="utf-8"))
+    if (script.get("_meta") or {}).get("mode") == "free":
+        raise HTTPException(409, "المشروع الحر بيتعدّل من شاشته (المشاهد واللقطات) مش من محرّر السيناريو")
     before = json.loads(json.dumps(script))
     for key in ("title", "hook_line", "cta_line"):
         if key in payload:
@@ -458,7 +461,7 @@ VOICE_DIR = Path(config.LIBRARY_DIR) / "voice"
 @app.get("/api/tts")
 def get_tts() -> dict:
     import tts
-    cfg = tts.tts_config()
+    cfg = tts.tts_config(library=False)               # صفحة الإعدادات = الطريقة الحالية؛ نماذج المكتبة من «مكتبة النماذج»
     key = cfg["api_key"]
     return {
         "current": {**{k: v for k, v in cfg.items() if k != "api_key"},
@@ -1315,7 +1318,7 @@ async def no_cache_static(request, call_next):
     return response
 
 
-for _r in (routes_pipeline.router, routes_crm.router, routes_ops.router, routes_studio.router, routes_characters.router, routes_motion.router, routes_montage.router, routes_ext.router, routes_claims.router, routes_hooks.router, routes_hooks_bank.router, routes_patterns.router, routes_placements.router, routes_presets.router, routes_auth.router, routes_ads.router):
+for _r in (routes_pipeline.router, routes_crm.router, routes_ops.router, routes_studio.router, routes_characters.router, routes_motion.router, routes_montage.router, routes_ext.router, routes_claims.router, routes_hooks.router, routes_hooks_bank.router, routes_patterns.router, routes_placements.router, routes_presets.router, routes_auth.router, routes_ads.router, routes_free.router, routes_model_library.router):
     app.include_router(_r)
 
 @app.get("/icons.svg", include_in_schema=False)

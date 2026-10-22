@@ -91,22 +91,63 @@ def target_size(params: dict, image: Path | None, max_pixels: int, multiple: int
     return fit_resolution(w, h, max_pixels, multiple)
 
 
+def _frame_rgb(f) -> tuple[int, int, bytes]:
+    """إطار واحد ← (عرض، ارتفاع، بايتات RGB). بيقبل صورة PIL أو مصفوفة numpy (H,W,3) uint8 أو float بين 0 و1 (Wan بيرجّع هيك افتراضياً)."""
+    if hasattr(f, "convert"):
+        im = f.convert("RGB")
+        return im.size[0], im.size[1], im.tobytes()
+    import numpy as np
+    a = np.asarray(f)
+    if a.dtype != np.uint8:
+        a = (np.clip(a, 0.0, 1.0) * 255).round().astype(np.uint8)
+    if a.ndim != 3 or a.shape[2] != 3:
+        raise RuntimeError("شكل الإطار غير مدعوم (لازم صورة ملوّنة)")
+    return int(a.shape[1]), int(a.shape[0]), a.tobytes()
+
+
 def encode_mp4(frames, fps: int, out: Path) -> None:
-    """إطارات PIL ← mp4 (h264) بـ ffmpeg عبر pipe. بدون ملفات مؤقتة."""
+    """إطارات (PIL أو numpy) ← mp4 (h264) بـ ffmpeg عبر pipe. بدون ملفات مؤقتة."""
     frames = list(frames)
     if not frames:
         raise RuntimeError("النموذج ما طلّع إطارات")
-    w, h = frames[0].size
+    w, h, first = _frame_rgb(frames[0])
     cmd = ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}",
            "-r", str(int(fps)), "-i", "-", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "17",
            "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
-        for f in frames:
-            p.stdin.write(f.convert("RGB").tobytes())
+        p.stdin.write(first)
+        for f in frames[1:]:
+            p.stdin.write(_frame_rgb(f)[2])
         p.stdin.close()
     except BrokenPipeError:
         pass
     err = p.stderr.read().decode("utf-8", "replace")
     if p.wait() != 0:
         raise RuntimeError("ffmpeg فشل بتحويل الإطارات لفيديو: " + err[-200:])
+
+
+def write_wav(audio, sample_rate: int, out: Path) -> None:
+    """صوت ← WAV (16-bit PCM) بمكتبة wave العادية. بيقبل مصفوفة numpy أو tensor بشكل (قنوات، عينات) أو (عينات،) أو (عينات، قنوات).
+    لو الذروة تجاوزت 1 بنصغّر الصوت كله بنفس النسبة (بدل ما تنقص الذروة وتتشوّه)؛ وأكتر من قناتين بنأخد أول اتنتين."""
+    import wave
+    import numpy as np
+    if hasattr(audio, "detach"):
+        audio = audio.detach().float().cpu().numpy()
+    a = np.nan_to_num(np.asarray(audio, dtype=np.float32), nan=0.0, posinf=0.0, neginf=0.0)
+    if a.ndim == 1:
+        a = a[None, :]
+    if a.ndim != 2 or a.size == 0:
+        raise RuntimeError("شكل الصوت غير مدعوم")
+    if a.shape[0] > 8 and a.shape[1] <= 8:            # (عينات، قنوات) ← (قنوات، عينات)
+        a = a.T
+    a = a[:2]
+    peak = float(np.max(np.abs(a)))
+    if peak > 1.0:
+        a = a / peak
+    pcm = (np.clip(a, -1.0, 1.0).T * 32767.0).round().astype("<i2")            # (عينات، قنوات): بتتكتب متداخلة
+    with wave.open(str(out), "wb") as w:
+        w.setnchannels(int(pcm.shape[1]))
+        w.setsampwidth(2)
+        w.setframerate(int(sample_rate))
+        w.writeframes(pcm.tobytes())

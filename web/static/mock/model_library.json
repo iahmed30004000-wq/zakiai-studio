@@ -1,0 +1,361 @@
+{
+  "tasks": [
+    {
+      "task": "image",
+      "label": "الصور",
+      "default": "ml_001",
+      "fallback_builtin": true,
+      "can_fallback": true,
+      "builtin": {
+        "label": "UnoRouter — بوابة · gpt-image-2",
+        "ok": true
+      },
+      "models": [
+        {
+          "name": "FLUX.1 schnell على السيرفر",
+          "task": "image",
+          "link": "std",
+          "enabled": true,
+          "template": "std-image-any",
+          "licence": {
+            "id": "Apache-2.0",
+            "commercial": "yes",
+            "confirmed_by_owner": false,
+            "note": ""
+          },
+          "caps": {
+            "refs": false
+          },
+          "params": {
+            "width": 768,
+            "height": 1344
+          },
+          "note": "",
+          "uses_gpu": false,
+          "timeout_sec": 300,
+          "std": {
+            "url": "http://127.0.0.1:8000/v1",
+            "model": "flux-schnell",
+            "token_secret": null,
+            "response_format": null,
+            "size": "768x1344"
+          },
+          "id": "ml_001",
+          "created_at": "2026-10-22T08:08:53+00:00",
+          "updated_at": "2026-10-22T08:08:53+00:00",
+          "usable": true,
+          "unusable_reason": "",
+          "licence_label": "تجارية ✓",
+          "token_set": false,
+          "stats": {
+            "attempts": 12,
+            "ok": 11,
+            "failed": 1,
+            "avg_seconds": 14.2
+          }
+        }
+      ]
+    },
+    {
+      "task": "motion",
+      "label": "التحريك",
+      "default": null,
+      "fallback_builtin": false,
+      "can_fallback": false,
+      "builtin": {
+        "label": "سجل موديلات التحريك",
+        "ok": null
+      },
+      "models": [
+        {
+          "id": "mm_001",
+          "name": "Wan2.2 5B (محلي)",
+          "kind": "command",
+          "enabled": true,
+          "max_sec": 5,
+          "vram_gb": 6,
+          "lipsync": false
+        },
+        {
+          "id": "mm_002",
+          "name": "LTX عبر الصندوق",
+          "kind": "http",
+          "enabled": true,
+          "max_sec": 8,
+          "vram_gb": 12,
+          "lipsync": false
+        }
+      ]
+    },
+    {
+      "task": "voice",
+      "label": "الصوت",
+      "default": null,
+      "fallback_builtin": false,
+      "can_fallback": false,
+      "builtin": {
+        "label": "ElevenLabs · eleven_v3",
+        "ok": true
+      },
+      "models": [
+        {
+          "name": "Chatterbox (يحكي عربي)",
+          "task": "voice",
+          "link": "std",
+          "enabled": false,
+          "template": "chatterbox-voice",
+          "licence": {
+            "id": "MIT",
+            "commercial": "yes",
+            "confirmed_by_owner": false,
+            "note": ""
+          },
+          "caps": {
+            "arabic": true
+          },
+          "params": {
+            "voice": "ahmad",
+            "language": "ar"
+          },
+          "note": "",
+          "uses_gpu": false,
+          "timeout_sec": 300,
+          "std": {
+            "url": "http://127.0.0.1:8000/v1",
+            "model": "chatterbox",
+            "token_secret": null,
+            "response_format": "mp3",
+            "size": null
+          },
+          "id": "ml_002",
+          "created_at": "2026-10-22T08:08:53+00:00",
+          "updated_at": "2026-10-22T08:08:53+00:00",
+          "usable": false,
+          "unusable_reason": "معطّل",
+          "licence_label": "تجارية ✓",
+          "token_set": false,
+          "stats": null
+        }
+      ]
+    },
+    {
+      "task": "stt",
+      "label": "التفريغ (كلام لنص)",
+      "default": "ml_003",
+      "fallback_builtin": true,
+      "can_fallback": true,
+      "builtin": {
+        "label": "Whisper محلي (على كرتك) · large-v3",
+        "ok": true
+      },
+      "models": [
+        {
+          "name": "Speaches (Whisper)",
+          "task": "stt",
+          "link": "std",
+          "enabled": true,
+          "template": "speaches-stt",
+          "licence": {
+            "id": "MIT",
+            "commercial": "yes",
+            "confirmed_by_owner": false,
+            "note": ""
+          },
+          "caps": {
+            "arabic": true,
+            "word_timing": true
+          },
+          "params": {
+            "language": "ar"
+          },
+          "note": "",
+          "uses_gpu": false,
+          "timeout_sec": 600,
+          "std": {
+            "url": "http://127.0.0.1:8000/v1",
+            "model": "Systran/faster-whisper-large-v3",
+            "token_secret": null,
+            "response_format": null,
+            "size": null
+          },
+          "id": "ml_003",
+          "created_at": "2026-10-22T08:08:53+00:00",
+          "updated_at": "2026-10-22T08:08:53+00:00",
+          "usable": true,
+          "unusable_reason": "",
+          "licence_label": "تجارية ✓",
+          "token_set": false,
+          "stats": null
+        }
+      ]
+    },
+    {
+      "task": "lipsync",
+      "label": "مزامنة الشفاه",
+      "default": null,
+      "fallback_builtin": false,
+      "can_fallback": false,
+      "builtin": {
+        "label": "أمر المزامنة بموديل التحريك المختار",
+        "ok": null
+      },
+      "models": []
+    },
+    {
+      "task": "upscale",
+      "label": "التكبير",
+      "default": null,
+      "fallback_builtin": true,
+      "can_fallback": true,
+      "builtin": {
+        "label": "Real-ESRGAN (محلي)",
+        "ok": true
+      },
+      "models": []
+    },
+    {
+      "task": "bgremove",
+      "label": "تفريغ الخلفية",
+      "default": null,
+      "fallback_builtin": true,
+      "can_fallback": true,
+      "builtin": {
+        "label": "BiRefNet (محلي)",
+        "ok": true
+      },
+      "models": [
+        {
+          "name": "تفريغ خلفية بأمر",
+          "task": "bgremove",
+          "link": "command",
+          "enabled": false,
+          "template": null,
+          "licence": {
+            "id": "مجهولة",
+            "commercial": "unknown",
+            "confirmed_by_owner": false,
+            "note": ""
+          },
+          "caps": {
+            "alpha": true
+          },
+          "params": {},
+          "note": "",
+          "uses_gpu": true,
+          "timeout_sec": 300,
+          "command": {
+            "argv": [
+              "python",
+              "bg.py",
+              "{image}",
+              "{out}"
+            ],
+            "cwd": null,
+            "output_glob": null,
+            "env": {}
+          },
+          "id": "ml_004",
+          "created_at": "2026-10-22T08:08:53+00:00",
+          "updated_at": "2026-10-22T08:08:53+00:00",
+          "usable": false,
+          "unusable_reason": "معطّل",
+          "licence_label": "⚠ غير معروفة",
+          "token_set": null,
+          "stats": null
+        }
+      ]
+    },
+    {
+      "task": "music",
+      "label": "الموسيقى",
+      "default": null,
+      "fallback_builtin": false,
+      "can_fallback": false,
+      "builtin": {
+        "label": "الإضافة (طلبات الآهات والموسيقى)",
+        "ok": null
+      },
+      "models": []
+    },
+    {
+      "task": "sfx",
+      "label": "المؤثرات",
+      "default": null,
+      "fallback_builtin": false,
+      "can_fallback": false,
+      "builtin": {
+        "label": "الإضافة (طلبات الآهات والموسيقى)",
+        "ok": null
+      },
+      "models": []
+    }
+  ],
+  "box": {
+    "url": null,
+    "token_secret": null
+  },
+  "problem": null,
+  "gpu": {
+    "vram_gb": 5.1,
+    "busy": false,
+    "lock_enabled": true,
+    "box_gpu": {
+      "free_gb": 21.4,
+      "total_gb": 24.0
+    }
+  },
+  "links": [
+    {
+      "id": "weights",
+      "label": "أوزان على السيرفر",
+      "open": true,
+      "tasks": [
+        "image",
+        "upscale",
+        "music",
+        "sfx"
+      ]
+    },
+    {
+      "id": "app",
+      "label": "برنامج نموذج (Gradio)",
+      "open": true,
+      "tasks": [
+        "image",
+        "voice",
+        "stt",
+        "lipsync",
+        "upscale",
+        "bgremove",
+        "music",
+        "sfx"
+      ]
+    },
+    {
+      "id": "std",
+      "label": "سيرفر بواجهة OpenAI",
+      "open": true,
+      "tasks": [
+        "image",
+        "voice",
+        "stt"
+      ]
+    },
+    {
+      "id": "command",
+      "label": "أمر تشغيل",
+      "open": true,
+      "tasks": [
+        "image",
+        "voice",
+        "stt",
+        "lipsync",
+        "upscale",
+        "bgremove",
+        "music",
+        "sfx"
+      ]
+    }
+  ],
+  "path": "library/model_library.json"
+}

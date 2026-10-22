@@ -126,10 +126,14 @@ function renderOtherStation(body, n, st) {
 /* ───────── المحطة 4: الفويس أوفر + بوابة المدة ───────── */
 async function renderVoiceStation(body) {
   const file = PRD.file;
-  const [v, tts] = await Promise.all([soft(`/api/studio/${enc(file)}/voice`), soft("/api/tts")]);
+  const [v, tts, lib] = await Promise.all([soft(`/api/studio/${enc(file)}/voice`), soft("/api/tts"), soft("/api/model-library/choices?task=voice")]);
   const T = tts.data;
-  const cur = T ? T.current : {};
-  const provs = T ? Object.entries(T.providers) : [];
+  /* نماذج الصوت اللي ربطتها بمكتبة النماذج (الصالحة بس): بتطلع أول القائمة، والافتراضي بينختار لحاله */
+  const L = lib.data ? lib.data.models.filter((m) => m.usable) : [];
+  const libProv = Object.fromEntries(L.map((m) => [`lib:${m.id}`, { label: `★ ${m.name} (من المكتبة)`, models: [m.name], voices: m.voice ? [m.voice] : [] }]));
+  const PROV = T ? { ...libProv, ...T.providers } : {};
+  const cur = T ? { ...T.current, ...(lib.data && libProv[`lib:${lib.data.default}`] ? { provider: `lib:${lib.data.default}`, model: "", voice: "" } : {}) } : {};
+  const provs = T ? Object.entries(PROV) : [];
 
   body.innerHTML = `
     <div class="panel"><h3>توليد الصوت</h3>
@@ -142,17 +146,40 @@ async function renderVoiceStation(body) {
       <div class="row end"><button class="zk-btn zk-btn--primary" id="pvGo" type="button">ولّد الصوت وافحص المدة</button></div>
       <div id="pvStatus" class="status"></div>
     </div>
+    <div class="panel" id="pvUpload"><h3>🎙 أو ارفع تسجيلك</h3>
+      <p class="hint">سجّل السيناريو بصوتك (المدة بين ${esc(45)} و${esc(50)} ثانية) وارفعه: بيتفرّغ وبيتقصّ على المشاهد لحاله وبيقلك قديش طابق النص المكتوب. بعدين بتسمعه وبتعتمده بنفس الزر.</p>
+      <div class="row"><label class="zk-field" style="flex:1 1 16rem"><span class="zk-field__label">ملف التسجيل (صوت، أو فيديو فيه صوتك)</span>
+        <input type="file" id="pvFile" accept=".mp3,.wav,.m4a,.ogg,.opus,.flac,.aac,.webm,.mp4,.mov,.m4v,.mkv"></label>
+        <button class="zk-btn zk-btn--secondary" id="pvUp" type="button">ارفع وفرّغ</button></div>
+      <div id="pvUpStatus" class="status"></div>
+    </div>
     <div id="extPanel"></div>
     <div id="pvResult"></div>`;
   drawExtPanel();
+  $("#pvUp").addEventListener("click", async (ev) => {
+    const btn = ev.currentTarget, st = $("#pvUpStatus"), f = $("#pvFile").files[0];
+    if (!f) { setStatus(st, "اختار ملف التسجيل أول", "err"); return; }
+    btn.disabled = true; btn.setAttribute("aria-busy", "true");
+    setStatus(st, "عم يرفع التسجيل…");
+    try {
+      const fd = new FormData();
+      fd.append("file", f, f.name);
+      const r = await api(`/api/studio/${enc(file)}/voice/upload`, { method: "POST", body: fd });
+      refreshJobsSoon();
+      setStatus(st, "عم يفرّغ تسجيلك ويقسّمه على المشاهد… (دقيقة أو أكتر حسب طوله وموديل التفريغ)");
+      const j = await waitForJob(r.job_id);
+      if (j.status === "done") setStatus(st, "خلص", "ok"); else setStatus(st, j.error || "فشل — شوف لوحة المهام", "err");
+    } catch (e) { setStatus(st, e.message, "err"); }
+    finally { await loadProdState(); renderRail(); await renderStation(4); }
+  });
 
   if (T) {
     const sync = () => {
-      const p = T.providers[$("#pvProv").value] || {};
+      const p = PROV[$("#pvProv").value] || {};
       $("#pvModel").innerHTML = (p.models || []).map((m) => `<option value="${esc(m)}" ${m === cur.model ? "selected" : ""}>${esc(m)}</option>`).join("");
       const vs = p.voices || [];
       $("#pvVoice").innerHTML = vs.length ? vs.map((x) => `<option value="${esc(x)}" ${x === cur.voice ? "selected" : ""}>${esc(x)}</option>`).join("")
-        : `<option value="${esc(cur.voice ?? "")}">${esc(cur.voice || "اضبط الصوت من الإعدادات")}</option>`;
+        : `<option value="${esc(cur.voice ?? "")}">${esc(cur.voice || ($("#pvProv").value.startsWith("lib:") ? "صوت النموذج الافتراضي" : "اضبط الصوت من الإعدادات"))}</option>`;
     };
     sync();
     $("#pvProv").addEventListener("change", sync);
@@ -181,8 +208,9 @@ function renderVoiceResult(file, v) {
   if (!v.data) { box.innerHTML = `<div class="panel"><p class="empty">ما في صوت مولّد بعد.</p></div>`; return; }
   const { manifest: m, gate, approved, approved_reason: why } = v.data;
   box.innerHTML = `<div class="panel">
-    <div class="row between"><h3>النتيجة — ${esc(m.provider)} · ${esc(m.model)}</h3>
+    <div class="row between"><h3>${m.source === "upload" ? "النتيجة — من تسجيلك" : `النتيجة — ${esc(m.provider)} · ${esc(m.model)}`}</h3>
       <span class="tag ${gate.ok ? "ok" : "danger"}">${gate.ok ? "المدة ضمن المدى" : "المدة خارج المدى"}</span></div>
+    ${m.source === "upload" ? `<p class="hint">مطابقة النص المكتوب مع المسموع: <b class="num">${esc(Math.round((m.coverage || 0) * 100))}%</b>${m.asr ? ` · التفريغ: <bdi dir="ltr">${esc([m.asr.provider, m.asr.model].filter(Boolean).join(" "))}</bdi>` : ""}</p>` : ""}
     <div class="gate ${gate.ok ? "ok" : "bad"}"><b>${esc(gate.total_sec)}ث</b><span>${esc(gate.message)}</span></div>
     <audio controls preload="none" src="/api/studio/${enc(file)}/voice/audio" class="wide-audio"></audio>
     <div class="scroll-x"><table class="tbl stack">
@@ -192,7 +220,7 @@ function renderVoiceResult(file, v) {
         <td data-label="الفعلي" class="num">${esc(s.duration_sec)}ث</td>
         <td data-label="المخطّط" class="num">${esc(s.planned_sec)}ث</td>
         <td data-label="وسم الشعور">${esc(s.emotion_tag || "—")}</td>
-        <td data-label="توقيت الكلمات"><span class="tag ${s.timing_source === "estimated" ? "warn" : "ok"}">${s.timing_source === "estimated" ? "تقديري" : "من المزوّد"}</span></td>
+        <td data-label="توقيت الكلمات"><span class="tag ${s.timing_source === "estimated" ? "warn" : "ok"}">${s.timing_source === "estimated" ? "تقديري" : s.timing_source === "stt" ? "من التفريغ" : "من المزوّد"}</span></td>
       </tr>`).join("")}</tbody></table></div>
     ${(m.scenes || []).some((s) => s.timing_source === "estimated")
       ? `<p class="status warn">توقيت بعض الكلمات تقديري (المزوّد ما رجّع توقيتاً). حدود اللقطات رح تكون تقريبية — الأفضل ElevenLabs.</p>` : ""}
@@ -548,6 +576,24 @@ function drawImageStation(body, tl, info) {
     try { await api(`/api/studio/${enc(file)}/shots/${enc(el.dataset.shot)}/choose`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: el.dataset.choose }) }); await refresh(); }
     catch (e) { toast(e.message, "err"); }
   }));
+  const upImg = document.createElement("input");                       // رفع صورة من المالك للقطة (بدل التوليد)
+  upImg.type = "file"; upImg.hidden = true; upImg.accept = ".png,.jpg,.jpeg,.webp";
+  body.appendChild(upImg);
+  let upShot = "";
+  $$("[data-upshot]", body).forEach((btn) => btn.addEventListener("click", () => { upShot = btn.dataset.upshot; upImg.click(); }));
+  upImg.addEventListener("change", async () => {
+    const f = upImg.files[0], id = upShot;
+    upImg.value = "";
+    if (!f || !id) return;
+    const st = $("#imStatus"); setStatus(st, `عم يرفع صورتك للقطة ${id}…`);
+    try {
+      const fd = new FormData();
+      fd.append("file", f, f.name);
+      await api(`/api/studio/${enc(file)}/shots/${enc(id)}/upload`, { method: "POST", body: fd });
+      toast("انضافت صورتك واتختارت للقطة", "ok");
+      await refresh();
+    } catch (e) { setStatus(st, e.message, "err"); }
+  });
   $$("[data-comp]", body).forEach((btn) => btn.addEventListener("click", async () => {
     const id = btn.dataset.comp, card = btn.closest(".imshot");
     try {
@@ -588,6 +634,7 @@ function imageShotCard(tl, sh, ref) {
     </div>
     <div class="row">
       <button class="zk-btn zk-btn--ghost sm" data-regen="${esc(sh.id)}" type="button">${cands.length ? "خيارات جديدة" : "ولّد"}</button>
+      <button class="zk-btn zk-btn--ghost sm" data-upshot="${esc(sh.id)}" type="button" title="صورة من عندك بدل التوليد (png أو jpg أو webp): بتنضاف وبتنختار للقطة">⬆ ارفع صورة</button>
       <button class="zk-btn zk-btn--ghost sm" data-extretry="${esc(sh.id)}" data-defprompt="${esc(sh.prompt_ar || "")}" type="button" title="مهمة جديدة للإضافة مع إمكانية تعديل البرومبت">${zkIcon("refresh")} أعد بالإضافة</button>
       ${canComp ? `<label class="hint">أفقي <input class="cx" type="range" min="10" max="90" value="50"></label>
         <label class="hint">عمودي <input class="cy" type="range" min="10" max="90" value="72"></label>
@@ -742,6 +789,7 @@ function drawMotion(body, d) {
               ${s.ranked.map((m) => `<option value="${esc(m.id)}">${esc(m.name)}${m.est_cost_usd ? ` ($${esc(m.est_cost_usd)})` : m.path === "api" ? "" : " (مجاني)"} — ${esc(m.matched.map((x) => ({ faces: "وجوه", product: "منتج", camera_motion: "كاميرا", realism: "واقعية", hand: "يد" }[x] || x)).join("، ") || "بلا تطابق")} · ~${esc(fmtEta(m.eta_sec))}${m.face_rate && m.face_rate.checks >= 3 ? ` · حفظ الوجه ${Math.round(m.face_rate.rate * 100)}٪ (${m.face_rate.checks} فحوص)` : ""}</option>`).join("")}</select></label>
           <button class="zk-btn zk-btn--secondary sm" data-run="${esc(s.id)}" type="button" ${s.has_image && d.models ? "" : "disabled"}>${s.candidates.length ? "خيارات جديدة" : "حرّك"}</button>
           <button class="zk-btn zk-btn--ghost sm" data-extretry="${esc(s.id)}" data-defprompt="${esc(s.motion_desc || "")}" type="button" ${s.has_image ? "" : "disabled"} title="مهمة جديدة لـ Flow بالإضافة مع إمكانية تعديل وصف الحركة">${zkIcon("refresh")} أعد بـ Flow (الإضافة)</button>
+          <button class="zk-btn zk-btn--ghost sm" data-upclip="${esc(s.id)}" type="button" title="فيديو من عندك بدل التوليد (mp4 أو mov أو webm): مدته بتتظبط على مدة اللقطة (قص، أو مط حتى 15٪)">⬆ ارفع فيديو</button>
         </div>
         ${s.excluded.length ? `<details><summary class="hint">موديلات مستبعدة (${s.excluded.length})</summary><ul class="why">${s.excluded.map((e) => `<li><b>${esc(e.name)}</b>: ${esc(e.reason)}</li>`).join("")}</ul></details>` : ""}
         <div class="vidrow">${s.candidates.map((c) => `
@@ -776,6 +824,25 @@ function drawMotion(body, d) {
     const id = b.dataset.run, m = $(`[data-model="${id}"]`, body).value;
     runJob(`/api/studio/${enc(file)}/motion/run?shot=${enc(id)}&n=${n()}${m ? `&model=${enc(m)}` : ""}`, `بيحرّك ${id}`);
   }));
+  const upVid = document.createElement("input");                       // رفع فيديو من المالك للقطة (بدل التوليد)
+  upVid.type = "file"; upVid.hidden = true; upVid.accept = ".mp4,.mov,.m4v,.webm,.mkv";
+  body.appendChild(upVid);
+  let upClip = "";
+  $$("[data-upclip]", body).forEach((btn) => btn.addEventListener("click", () => { upClip = btn.dataset.upclip; upVid.click(); }));
+  upVid.addEventListener("change", async () => {
+    const f = upVid.files[0], id = upClip;
+    upVid.value = "";
+    if (!f || !id) return;
+    const s = $("#mvStatus"); setStatus(s, `عم يرفع الفيديو للقطة ${id} ويضبط مدته… (بياخد وقت للفيديوهات الكبيرة)`);
+    try {
+      const fd = new FormData();
+      fd.append("file", f, f.name);
+      const r = await api(`/api/studio/${enc(file)}/shots/${enc(id)}/upload`, { method: "POST", body: fd });
+      (r.warnings || []).forEach((w) => toast(w));
+      toast("انضاف فيديوك واتختار للقطة", "ok");
+      await refresh();
+    } catch (e) { setStatus(s, e.message, "err"); }
+  });
   $$("[data-desc]", body).forEach((ta) => ta.addEventListener("change", async () => {
     try { await api(`/api/studio/${enc(file)}/shots/${enc(ta.dataset.desc)}/motion-desc`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ desc: ta.value }) }); toast("انحفظ", "ok"); }
     catch (e) { toast(e.message, "err"); }

@@ -119,7 +119,7 @@ $("#connProvider").addEventListener("change", syncConnProvider);
 $("#connAdd").addEventListener("click", async () => {
   const st = $("#connStatus"), btn = $("#connAdd");
   const key = $("#connKey").value.trim();
-  if (!key) { setStatus(st, "الصق المفتاح أول", "err"); return; }
+  if (!key && !$("#connBase").value.trim() && $("#connProvider").value !== "ollama") { setStatus(st, "الصق المفتاح أول (بدون مفتاح بس لو العنوان محلي: 127.0.0.1 أو اسم صندوق على السيرفر)", "err"); return; }
   btn.disabled = true; btn.textContent = "جاري الجلب…";
   setStatus(st, "");
   try {

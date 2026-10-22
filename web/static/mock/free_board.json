@@ -1,0 +1,84 @@
+{
+  "file": "free__20261022_0900__demo.json",
+  "title": "إعلان القطرة — تجريبي",
+  "product_file": "",
+  "product": "",
+  "source": "images",
+  "rev": 3,
+  "next_scene": 4,
+  "next_shot": 6,
+  "length_ms": 15000,
+  "scenes": [
+    {
+      "n": 1, "key": "c001", "start_ms": 0, "end_ms": 3000, "word_range": null, "function": null, "emotion": "فضول",
+      "voiceover": "ليش عيونك بتتعب آخر النهار؟", "visual": "وجه امرأة بتفرك عيونها", "voice": null,
+      "shots": [
+        {
+          "id": "f001", "start_ms": 0, "end_ms": 3000, "word_range": null, "type": "close", "prompt_ar": "", "prompt_model": "",
+          "refs": { "character_id": null, "product_ref": null },
+          "image": { "candidates": [{ "path": "img/c1.png", "provider": "upload", "model": "owner" }], "chosen": "img/c1.png", "source": "img/c1.png", "upscaled": false, "path_used": "upload" },
+          "product_check": null, "face_check": null, "motion": null, "text": "عيونك تعبانة؟", "still_motion": "zoom_in", "trim_in_ms": 0, "keep_audio": false
+        }
+      ]
+    },
+    {
+      "n": 2, "key": "c002", "start_ms": 3000, "end_ms": 8000, "word_range": null, "function": null, "emotion": "",
+      "voiceover": "هاي القطرة بتغيّر كل شي. جرّبها لأسبوع واحد.", "visual": "عبوة القطرة على طاولة خشب", "voice": null,
+      "shots": [
+        {
+          "id": "f002", "start_ms": 3000, "end_ms": 5000, "word_range": null, "type": "medium", "prompt_ar": "", "prompt_model": "",
+          "refs": { "character_id": null, "product_ref": null },
+          "image": { "candidates": [{ "path": "img/c2.png", "provider": "upload", "model": "owner" }], "chosen": "img/c2.png", "source": "img/c2.png", "upscaled": false, "path_used": "upload" },
+          "product_check": null, "face_check": null, "motion": null, "text": "", "still_motion": "zoom_out", "trim_in_ms": 0, "keep_audio": false
+        },
+        {
+          "id": "f003", "start_ms": 5000, "end_ms": 8000, "word_range": null, "type": "hand_product", "prompt_ar": "", "prompt_model": "",
+          "refs": { "character_id": null, "product_ref": null },
+          "image": { "candidates": [], "chosen": null, "upscaled": false, "path_used": null },
+          "product_check": null, "face_check": null, "motion": null, "text": "جرّبها لأسبوع", "still_motion": "zoom_in", "trim_in_ms": 0, "keep_audio": false
+        }
+      ]
+    },
+    {
+      "n": 3, "key": "c003", "start_ms": 8000, "end_ms": 12000, "word_range": null, "function": null, "emotion": "",
+      "voiceover": "", "visual": "", "voice": null,
+      "shots": [
+        {
+          "id": "f004", "start_ms": 8000, "end_ms": 12000, "word_range": null, "type": "wide", "prompt_ar": "", "prompt_model": "",
+          "refs": { "character_id": null, "product_ref": null },
+          "image": { "candidates": [{ "path": "img/c3.png", "provider": "upload", "model": "video-poster" }], "chosen": "img/c3.png", "source": "img/c3.png", "upscaled": false, "path_used": "upload" },
+          "product_check": null, "face_check": null,
+          "motion": { "model_id": "upload", "prompt": "", "duration_ms": 4000, "clip": "clips/f004_up.mp4", "lipsync": false },
+          "motion_candidates": [{ "clip": "clips/f004_up.mp4", "model_id": "upload", "model_name": "رفع يدوي", "path": "upload", "duration_ms": 4000, "fit": "upload" }],
+          "text": "", "still_motion": "zoom_in", "trim_in_ms": 1000, "keep_audio": true
+        }
+      ]
+    },
+    {
+      "n": 4, "key": "c004", "start_ms": 12000, "end_ms": 15000, "word_range": null, "function": null, "emotion": "",
+      "voiceover": "اطلبها هلأ والدفع عند الاستلام.", "visual": "نتيجة أخيرة: عيون مرتاحة وابتسامة", "voice": null,
+      "shots": [
+        {
+          "id": "f005", "start_ms": 12000, "end_ms": 15000, "word_range": null, "type": "close", "prompt_ar": "", "prompt_model": "",
+          "refs": { "character_id": null, "product_ref": null },
+          "image": { "candidates": [], "chosen": null, "upscaled": false, "path_used": null },
+          "product_check": null, "face_check": null, "motion": null, "text": "اطلبها الآن", "still_motion": "zoom_in", "trim_in_ms": 0, "keep_audio": false
+        }
+      ]
+    }
+  ],
+  "ambience": null,
+  "voice": { "info": null, "scenes_with_voice": 0, "has_source": false },
+  "sfx": [],
+  "captions_opts": { "voice": true, "shot_text": true },
+  "render": {
+    "preview": { "file": "timelines/free__20261022_0900__demo/render/preview.mp4", "at": "2026-10-22T08:20:00+00:00", "size": [540, 960], "duration_ms": 15000, "fingerprint": "demo", "cues": { "voice": 0, "text": 3 }, "music": false, "sfx": 0, "exists": true, "stale": false },
+    "final": { "file": "exports/FREE-202610220900-ab12.mp4", "at": "2026-10-22T08:10:00+00:00", "size": [1080, 1920], "duration_ms": 14000, "fingerprint": "old", "cues": { "voice": 0, "text": 2 }, "music": false, "sfx": 0, "exists": true, "stale": true }
+  },
+  "readiness": { "scenes": 4, "shots": 5, "length_ms": 15000, "no_media": ["f003", "f005"], "ready": false },
+  "advisories": [
+    { "kind": "pace", "scene": 2, "message": "مشهد 2: الكلام أسرع من الممكن نطقه (2.4 كلمة/ث) — مدّد المشهد أو اختصر" }
+  ],
+  "validation": { "ok": true, "errors": [], "warnings": [{ "code": "shot_no_media", "scene": 2, "shot": "f003", "message": "لقطة f003 بلا صورة أو فيديو" }] },
+  "limits": { "scenes": 40, "shots": 8, "min_shot_ms": 500, "max_shot_ms": 60000, "max_total_ms": 300000 }
+}

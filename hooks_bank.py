@@ -110,7 +110,7 @@ def derived(results: dict | None = None) -> list[dict]:
             versions[(str(hi.get("base")), str(hi.get("hook_id")))] = {"file": f.name, "script_id": (s.get("_meta") or {}).get("script_id")}
     out, cache = [], {}
     for f, s in scripts:
-        if hook_versions.is_version(s):
+        if hook_versions.is_version(s) or (s.get("_meta") or {}).get("mode") == "free":    # المشروع الحر ما بيدخل بنك الهوكات
             continue
         meta = s.get("_meta") or {}
         sid = meta.get("script_id") or None

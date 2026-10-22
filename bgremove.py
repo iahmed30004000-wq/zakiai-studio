@@ -24,8 +24,33 @@ class BgRemoveError(Exception):
     """رسالة عربية جاهزة للعرض."""
 
 
+def _library_model() -> dict | None:
+    """نموذج تفريغ خلفية مربوط بمكتبة النماذج (افتراضي) وجاهز؟"""
+    try:
+        import model_library
+        return model_library.pick("bgremove").model
+    except Exception:                                  # noqa: BLE001 — خطأ مكتبة ما بيوقف الطريقة المحلية
+        return None
+
+
 def available() -> bool:
-    return (MODEL_DIR / "model.safetensors").exists()
+    return (MODEL_DIR / "model.safetensors").exists() or _library_model() is not None
+
+
+def _via_library(src: Path, dest: Path, size: tuple) -> dict | None:
+    """بيجرّب نموذج المكتبة (النتيجة لازم PNG شفاف — model_run بيتأكد). None = كمّل بـ BiRefNet المحلي."""
+    import model_run
+    import numpy as np
+    from PIL import Image
+    res, note = model_run.run_via_library("bgremove", model_run.RunRequest(task="bgremove", image=src, out=dest), error_cls=BgRemoveError)
+    if res is None:
+        if note:
+            print(f"[i] {note}", flush=True)
+        return None
+    with Image.open(dest) as out:
+        alpha = np.asarray(out.convert("RGBA").getchannel("A"))
+    return {"path": str(dest), "device": "library", "size": list(size), "subject_pct": round(float((alpha > 127).mean() * 100), 1),
+            "model": res.model_name, "logged": True}
 
 
 def _load(device: str):
@@ -79,6 +104,10 @@ def remove_background(src, dest=None, size: int = SIZE) -> dict:
         img.load()
     except Exception:
         raise BgRemoveError("الملف مش صورة صالحة")
+    dest = Path(dest) if dest else src.with_name(src.stem + "_nobg.png")
+    lib = _via_library(src, dest, img.size)
+    if lib is not None:
+        return lib
     import torch
     device = "cuda" if torch.cuda.is_available() else "cpu"
     try:
@@ -93,7 +122,6 @@ def remove_background(src, dest=None, size: int = SIZE) -> dict:
             raise
     out = img.convert("RGBA")
     out.putalpha(mask)
-    dest = Path(dest) if dest else src.with_name(src.stem + "_nobg.png")
     dest.parent.mkdir(parents=True, exist_ok=True)
     out.save(dest, "PNG", optimize=True)
     import numpy as np

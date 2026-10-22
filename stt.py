@@ -332,8 +332,41 @@ _DISPATCH = {
 }
 
 
-def transcribe(audio_path: Path) -> dict:
+def _via_library(audio: Path, language: str | None, via: str | None) -> dict | None:
+    """نموذج تفريغ من مكتبة النماذج (الافتراضي أو lib:ml_x). None = كمّل بالطريقة الحالية."""
+    import model_library
+    import model_run
+    sel = via or ""
+    if not sel:
+        saved = str((_settings().get("STT") or {}).get("provider") or "")
+        sel = saved if saved.startswith(model_library.LIB_PREFIX) else ""
+
+    def accept(res):
+        d = res.data or {}
+        return None if (d.get("segments") or d.get("words")) else "ما رجّع توقيتات (التوقيتات إلزامية لربط الكلام بالمشاهد)"
+
+    res, note = model_run.run_via_library("stt", model_run.RunRequest(task="stt", audio=audio, language=language), sel or None,
+                                          error_cls=STTError, accept=accept)
+    if res is None:
+        if note:
+            print(f"[i] {note}", flush=True)
+        return None
+    d = res.data
+    words = d.get("words") or []
+    return {"language": d.get("language") or language or "ar", "language_confidence": 0, "words": words,
+            "segments": d.get("segments") or _words_to_segments(words), "full_text": d.get("text") or "",
+            "provider": f"lib:{res.model_id}", "model": res.model_name, "logged": True}
+
+
+def transcribe(audio_path: Path, language: str | None = None, via: str | None = None) -> dict:
+    """language (اختياري): بيغلب لغة الإعدادات لهالمرة بس (مثلاً «ar» لتسجيل المالك). النداءات القديمة ما بتتغيّر.
+    via (اختياري): lib:ml_x لنموذج تفريغ من مكتبة النماذج، أو اسم مزوّد حالي. بلا via: افتراضي المكتبة (لو في) وإلا الطريقة الحالية."""
+    lib = _via_library(Path(audio_path), language, via)
+    if lib is not None:
+        return lib
     cfg = stt_config()
+    if language:
+        cfg["language"] = language
     fn = _DISPATCH.get(cfg["kind"])
     if not fn:
         raise STTError(f"مزوّد تفريغ غير مدعوم: {cfg['provider']}")

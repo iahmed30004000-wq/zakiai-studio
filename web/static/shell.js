@@ -96,9 +96,9 @@ async function methodStatus(force) {
   if (!force && METHODS.data && Date.now() - METHODS.at < METHOD_TTL) return METHODS.data;
   if (METHODS.pending) return METHODS.pending;
   METHODS.pending = (async () => {
-    const [health, conns, tts, img, mm, self, scr] = await Promise.all([
+    const [health, conns, tts, img, mm, self, scr, mlib] = await Promise.all([
       soft("/api/health"), soft("/api/connections"), soft("/api/tts"), soft("/api/imagegen"),
-      soft("/api/motion-models"), soft("/api/ext/selftest"), soft("/api/scripts"),
+      soft("/api/motion-models"), soft("/api/ext/selftest"), soft("/api/scripts"), soft("/api/model-library"),
     ]);
     const plog = await soft("/api/production-log?limit=1");
     const bp = (plog.data && plog.data.stats && plog.data.stats.by_path) || {};
@@ -123,14 +123,15 @@ async function methodStatus(force) {
       line: conns.data || health.data ? `${nConn} اتصال${apiKey ? " · مفتاح Anthropic مضبوط" : ""}${hist(["api"])}${cost.api ? ` · صرفت $${cost.api}` : ""}` : "الحالة غير متاحة",
       problem: apiProblems[0] || "",
     };
-    /* النماذج المحلية */
+    /* مكتبة النماذج: نماذج المكتبة المفعّلة + موديلات التحريك */
     const models = mm.data ? (mm.data.models || []) : null;
     const on = models ? models.filter((m) => m.enabled !== false) : [];
+    const libOn = mlib.data ? mlib.data.tasks.filter((t) => t.task !== "motion").reduce((n, t) => n + t.models.filter((m) => m.enabled).length, 0) : 0;
     const local = {
-      key: "local", name: "النماذج المحلية", hash: "#/factory/local",
-      state: !models ? "idle" : on.length ? "ok" : "warn",
-      line: models ? `${on.length} موديل مفعّل من ${models.length}${mm.data.vram_gb != null ? ` · ذاكرة حرة ${mm.data.vram_gb} GB` : ""}${hist(["command", "http"])}` : "السجل غير متاح",
-      problem: models && !on.length ? "سجل الموديلات فاضي — أضف موديل تحريك" : "",
+      key: "local", name: "مكتبة النماذج", hash: "#/factory/local",
+      state: !models && !mlib.data ? "idle" : mlib.data && mlib.data.problem ? "danger" : on.length || libOn ? "ok" : "warn",
+      line: models || mlib.data ? `${libOn} نموذج مفعّل بالمكتبة · ${on.length} موديل تحريك${models && mm.data.vram_gb != null ? ` · ذاكرة حرة ${mm.data.vram_gb} GB` : ""}${hist(["command", "http", "std", "app"])}` : "السجل غير متاح",
+      problem: mlib.data && mlib.data.problem ? mlib.data.problem : models && !on.length && !libOn ? "سجل الموديلات فاضي — أضف موديل تحريك أو اربط نموذج بالمكتبة" : "",
     };
     /* الإضافة: نتائج الفحص الذاتي + حالة آخر سيناريو */
     const res = self.data ? (self.data.results || []) : null;

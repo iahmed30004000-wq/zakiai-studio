@@ -34,21 +34,21 @@ def test_models_js_parses_with_node_check():
 def test_kind_selector_and_http_fields_exist_with_hints():
     for needle in ('id="mfKind"', 'value="command"', 'value="http"', 'id="mfUrl"', 'id="mfMode"', 'value="i2v"', 'value="t2v"',
                    'id="mfSteps"', 'id="mfGuid"', 'id="mfTokName"', 'id="mfTokVal"', 'id="mfProbe"', 'id="mfProbeOut"',
-                   'id="mfCmdBox"', 'id="mfHttpBox"', "نوع التشغيل", "افحص الصندوق", "آخر المحاولات"):
+                   'id="mfCmdBox"', 'id="mfHttpBox"', 'id="mfModel"', "نوع التشغيل", "افحص الصندوق", "آخر المحاولات"):
         assert needle in JS, needle
     # كل حقل جديد إله سطر شرح مع مثال
     http_box = JS[JS.index('id="mfHttpBox"'):JS.index('id="mfProbe"')]
-    assert http_box.count('class="zk-field"') == 6
-    assert http_box.count('<span class="hint">') >= 6
+    assert http_box.count('class="zk-field"') == 7                      # +1: اسم النموذج بالصندوق العام (mfModel)
+    assert http_box.count('<span class="hint">') >= 7
     assert "مثال" in http_box and "http://127.0.0.1:8101" in http_box
     assert 'type="password"' in JS and 'autocomplete="new-password"' in JS            # التوكن ما بينعرض
-    for ltr in ('id="mfUrl" dir="ltr"', 'id="mfSteps" type="number" min="1" max="200" dir="ltr"', 'id="mfTokName" dir="ltr"'):
+    for ltr in ('id="mfUrl" dir="ltr"', 'id="mfModel" dir="ltr"', 'id="mfSteps" type="number" min="1" max="200" dir="ltr"', 'id="mfTokName" dir="ltr"'):
         assert ltr in JS, ltr
 
 
 def test_save_sends_kind_and_http_block_and_token_separately():
     assert "kind: k" in JS and "body.http = {" in JS and 'k === "command") body.command' in JS
-    assert "token_secret: $(\"#mfTokName\").value" in JS
+    assert "token_secret: $(\"#mfTokName\").value, model: $(\"#mfModel\").value" in JS
     assert "/api/motion/models/${enc(r.id)}/token" in JS and "/api/motion/models/${enc(m.id)}/probe" in JS
     body_line = [ln for ln in JS.splitlines() if "body.http = {" in ln][0]
     assert "mfTokVal" not in body_line                                  # التوكن مش جزء من جسم السجل

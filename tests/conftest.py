@@ -33,6 +33,13 @@ def _image_provider_takes_refs(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def _model_library_isolated(monkeypatch, tmp_path_factory):
+    """مكتبة النماذج (library/model_library.json) ملف المالك الحقيقي — الاختبارات ما بتلمسه ولا بتتأثر فيه: كل اختبار بملف مؤقت فاضي.
+    اختبارات المكتبة نفسها بتشير لملفها بنفس المتغيّر (VP_MODEL_LIBRARY) أو بتحذفه لتفحص المسار الافتراضي."""
+    monkeypatch.setenv("VP_MODEL_LIBRARY", str(tmp_path_factory.mktemp("modellib") / "model_library.json"))
+
+
+@pytest.fixture(autouse=True)
 def _auth_gate_off(monkeypatch):
     """حارس الدخول (web/auth_gate.py) بيطفا بالاختبارات: كلها بتنادي مسارات بلا حسابات. اختبارات الحارس والحسابات بتشغّله صراحة."""
     try:

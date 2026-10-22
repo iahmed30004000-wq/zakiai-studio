@@ -97,7 +97,8 @@ class DiffusersVideoBackend(Backend):
 
         kwargs = dict(prompt=params.get("prompt") or "", negative_prompt=params.get("negative_prompt") or self.default_negative,
                       width=w, height=h, num_frames=frames, num_inference_steps=steps, guidance_scale=guidance,
-                      generator=gen, callback_on_step_end=on_step, callback_on_step_end_tensor_inputs=["latents"])
+                      generator=gen, callback_on_step_end=on_step, callback_on_step_end_tensor_inputs=["latents"],
+                      output_type="pil")                # Wan بيرجّع numpy افتراضياً؛ بنثبّتها PIL (تحقّقت من تواقيع diffusers 0.36)
         kwargs.update(self._call_kwargs(mode, img, w, h, frames, fps))
         try:
             with torch.inference_mode():

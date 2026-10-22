@@ -92,7 +92,7 @@ def _inherited_voice_defaults(out_dir: Path) -> dict:
     out = {}
     for k in ("provider", "model", "voice"):
         v = str(m.get(k) or "")
-        if v and v not in ("web", "mixed") and not v.startswith("extension:"):
+        if v and v not in ("web", "mixed", "upload", "owner") and not v.startswith("extension:"):
             out[k] = v
     return out
 
@@ -146,13 +146,16 @@ def generate(path: Path, overrides: dict, scene: int | None = None,
         log(f"  [..] مشهد {n}…" + (f" [{tag}]" if tag else ""))
         t_tts = time.time()
         try:
-            r = tts.speak(text, target, ov, want_timing=True)
+            with tts.log_context(Path(path).stem, f"scene_{n}"):
+                r = tts.speak(text, target, ov, want_timing=True)
         except tts.TTSError as e:
-            production_log.record("voice", "failed", script_stem=Path(path).stem, shot_id=f"scene_{n}", model_name=cfg["provider"],
-                                  model_id=cfg.get("model"), path="api", seconds=time.time() - t_tts, error=str(e))
+            if not getattr(e, "logged", False):                    # نموذج المكتبة: model_run سجّل المحاولة
+                production_log.record("voice", "failed", script_stem=Path(path).stem, shot_id=f"scene_{n}", model_name=cfg["provider"],
+                                      model_id=cfg.get("model"), path="api", seconds=time.time() - t_tts, error=str(e))
             raise
-        production_log.record("voice", "ok", script_stem=Path(path).stem, shot_id=f"scene_{n}", model_name=cfg["provider"],
-                              model_id=cfg.get("model"), path="api", seconds=time.time() - t_tts)
+        if not r.get("logged"):
+            production_log.record("voice", "ok", script_stem=Path(path).stem, shot_id=f"scene_{n}", model_name=cfg["provider"],
+                                  model_id=cfg.get("model"), path="api", seconds=time.time() - t_tts)
         planned = float(sc.get("duration_sec") or 0)
         drift = round(r["duration_sec"] - planned, 2)
         r.update({"scene": n, "planned_sec": planned, "drift_sec": drift, "text": text,
@@ -220,6 +223,8 @@ def generate(path: Path, overrides: dict, scene: int | None = None,
 
 
 def main() -> None:
+    import job_signals
+    job_signals.install()
     ap = argparse.ArgumentParser(description="توليد الفويس أوفر")
     ap.add_argument("script", help="مسار ملف السيناريو")
     ap.add_argument("--provider")

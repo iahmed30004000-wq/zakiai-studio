@@ -80,7 +80,8 @@ ENGINE_MAX_SIDE = 2048                 # حد الصندوق لأبعاد الص
 OOM_MARK = "الذاكرة ما كفّت"
 _DOCKER_NAME_RX = re.compile(r"[a-z][a-z0-9_-]{0,62}")
 _SECRET_NAME_RX = re.compile(r"[A-Za-z0-9_.-]{1,64}")
-HTTP_KEYS = ("url", "mode", "steps", "guidance", "token_secret")
+HTTP_KEYS = ("url", "mode", "steps", "guidance", "token_secret", "model")
+_ENGINE_MODEL_RX = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,119}")        # اسم مجلد الأوزان بالصندوق العام (نفس قاعدة الصندوق)
 
 
 class MotionError(Exception):
@@ -125,43 +126,17 @@ def _save_models(models: list[dict]) -> None:
 
 
 def _host_allowed(host: str) -> bool:
-    if host == "localhost":
-        return True
-    try:
-        return ipaddress.ip_address(host).is_loopback            # 127.x.x.x و ::1 بس
-    except ValueError:
-        pass
-    return bool(_DOCKER_NAME_RX.fullmatch(host))                 # اسم docker بلا نقاط (ltx، wan)
+    import net_allow
+    return net_allow.host_allowed(host)
 
 
 def validate_engine_url(url) -> str:
-    """قائمة سماح صارمة لعنوان صندوق النموذج. بترجّع العنوان المنظَّف (http://host:port) أو بترمي MotionError."""
-    if not isinstance(url, str) or not url.strip():
-        raise MotionError("عنوان الصندوق مطلوب (مثال: http://127.0.0.1:8101)")
-    u = url.strip()
-    if re.search(r"[\s\x00-\x1f\x7f\\]", u):
-        raise MotionError("عنوان الصندوق فيه رموز غير مسموحة")
+    """قائمة سماح صارمة لعنوان صندوق النموذج (net_allow). بترجّع العنوان المنظَّف (http://host:port) أو بترمي MotionError."""
+    import net_allow
     try:
-        p = urlsplit(u)
-        port = p.port
-    except ValueError:
-        raise MotionError("عنوان الصندوق غير صالح") from None
-    if p.scheme != "http":
-        raise MotionError("عنوان الصندوق لازم يبدأ بـ http:// (الصناديق بتحكي داخلياً، https وغيره ممنوع)")
-    if "@" in p.netloc or p.username or p.password:
-        raise MotionError("ممنوع اسم مستخدم أو كلمة سر داخل عنوان الصندوق")
-    if p.query or p.fragment or "?" in u or "#" in u:
-        raise MotionError("عنوان الصندوق بدون ? أو # (التوكن بحقل مستقل)")
-    if p.path not in ("", "/"):
-        raise MotionError("عنوان الصندوق بدون مسار (مثال: http://127.0.0.1:8101)")
-    host = (p.hostname or "").lower()
-    if not host or not _host_allowed(host):
-        raise MotionError("المضيف مش مسموح: بس 127.0.0.1 أو localhost أو اسم صندوق docker بدون نقاط (مثل ltx أو wan)")
-    if port is None:
-        raise MotionError("لازم تكتب رقم المنفذ بالعنوان (مثال: :8101)")
-    if not 1 <= port <= 65535:
-        raise MotionError("رقم المنفذ خارج المعقول")
-    return f"http://{'[' + host + ']' if ':' in host else host}:{port}"
+        return net_allow.validate(url, subject="عنوان الصندوق", example="http://127.0.0.1:8101")
+    except net_allow.NetAllowError as e:
+        raise MotionError(str(e)) from None
 
 
 def _clean_http(raw, existing: dict | None) -> dict:
@@ -195,6 +170,13 @@ def _clean_http(raw, existing: dict | None) -> dict:
         out["token_secret"] = ts.strip()
     else:
         raise MotionError("اسم مفتاح التوكن: حروف إنجليزية وأرقام و _ - . بس (حتى 64)")
+    mdl = h.get("model")                                 # الصندوق العام (ENGINE_BACKEND=diffusers): أي مجلد أوزان بيشغّله؛ فاضي = صندوق بنموذج ثابت (ltx/wan)
+    if mdl in (None, ""):
+        out["model"] = None
+    elif isinstance(mdl, str) and _ENGINE_MODEL_RX.fullmatch(mdl.strip()) and ".." not in mdl:
+        out["model"] = mdl.strip()
+    else:
+        raise MotionError("اسم نموذج الصندوق: حروف إنجليزية وأرقام و _ - . بس (اسم مجلد الأوزان)")
     return out
 
 
@@ -287,7 +269,8 @@ def delete_model(model_id: str) -> None:
 
 # ── الذاكرة المتاحة ─────────────────────────────────────────────────────
 def available_vram_gb() -> float:
-    """الذاكرة الحرة بكرت الشاشة (GB). لو ما انقرأت: القيمة المضبوطة GPU_VRAM_GB (افتراضي ٦)."""
+    """الذاكرة الحرة بكرت الشاشة (GB): كرت هالجهاز (torch)، وإلا كرت صندوق الأوزان على السيرفر (الكرت كله: الصندوق بيفرّغ نموذجه قبل
+    ما غيره يشتغل، فالنموذج المحمّل هلأ ما بيستبعد غيره)، وإلا القيمة المضبوطة GPU_VRAM_GB (افتراضي ٦)."""
     try:
         import torch
         if torch.cuda.is_available():
@@ -295,7 +278,20 @@ def available_vram_gb() -> float:
             return round(free / 1024 ** 3, 1)
     except Exception:
         pass
+    box = _box_vram_gb()
+    if box is not None:
+        return box
     return float(getattr(config, "GPU_VRAM_GB", 6))
+
+
+def _box_vram_gb() -> float | None:
+    """كرت صندوق الأوزان على السيرفر (الكرت كله، GB) أو None لو ما في صندوق مضبوط/ما ردّ."""
+    try:
+        import link_engine
+        g = link_engine.gpu_info()
+        return round(g["total_gb"], 1) if g else None
+    except Exception:                                    # noqa: BLE001 — الصندوق مش مربوط/واقف: نكمّل بالقيمة المضبوطة
+        return None
 
 
 # ── الاختيار التلقائي ───────────────────────────────────────────────────
@@ -344,6 +340,7 @@ def rank_models(shot: dict, models: list[dict] | None = None, vram_gb: float | N
         except Exception:                              # noqa: BLE001 — التعلّم تحسين مش شرط
             face_rates = {}
     ranked, excluded = [], []
+    lib_lip = bool(talking and _library_lipsync())      # مزامنة من المكتبة: بتخلّي كل الموديلات مناسبة للقطات الكلام
     for m in models:
         if not m.get("enabled", True):
             excluded.append({"model": m, "reason": "معطّل"})
@@ -353,7 +350,7 @@ def rank_models(shot: dict, models: list[dict] | None = None, vram_gb: float | N
             excluded.append({"model": m, "reason": f"أقصى مدة {m['max_sec']:g}ث أقصر من اللقطة ({dur:.1f}ث)"})
         elif m.get("vram_gb", 0) > vram:
             excluded.append({"model": m, "reason": f"بيحتاج {m['vram_gb']:g}GB وعندك {vram:g}GB حرة"})
-        elif talking and not m.get("lipsync"):
+        elif talking and not (m.get("lipsync") or lib_lip):
             excluded.append({"model": m, "reason": "لقطة كلام على الكاميرا وما بيدعم مزامنة شفاه"})
         else:
             matched = [s for s in need if s in m.get("strengths", [])]
@@ -618,6 +615,8 @@ def _run_http(m: dict, img: Path | None, prompt: str, seconds: float, w: int, h:
     for k in ("steps", "guidance"):
         if cfg.get(k) is not None:
             params[k] = cfg[k]
+    if cfg.get("model"):                               # الصندوق العام: أي نموذج بيشغّل (مجلد أوزانه)
+        params["model"] = cfg["model"]
     if negative:                                       # الصندوق بيقبله (ALLOWED_PARAMS)؛ بدونه بياخد سلبي الباكند الافتراضي
         params["negative_prompt"] = negative[:1900]
     files = None
@@ -823,8 +822,26 @@ def probe(model_id: str) -> dict:
         mode = cfg.get("mode") or "i2v"
         if h.get("tasks") and mode not in h["tasks"]:
             return {"ok": False, "reason": f"الصندوق ما بيدعم الوضع {mode} (بيدعم: {', '.join(h['tasks'])})"}
+        want = cfg.get("model")
+        if want:                                       # الصندوق العام: النموذج لازم يكون موجود وسليم وبيدعم الوضع
+            if not h.get("api"):
+                return {"ok": False, "reason": "هاد صندوق بنموذج ثابت (ltx/wan) — اسم النموذج بيشتغل مع الصندوق العام بس"}
+            try:
+                listing = _engine_call(sess, "GET", base, "/models", timeout=8).json()
+            except TechnicalError as e:
+                return {"ok": False, "reason": str(e)}
+            except Exception:
+                return {"ok": False, "reason": "رد قائمة نماذج الصندوق غير مفهوم"}
+            found = next((x for x in (listing.get("models") or []) if isinstance(x, dict) and x.get("name") == want), None)
+            if not found:
+                return {"ok": False, "reason": f"النموذج «{want}» مش موجود بمجلد أوزان الصندوق"}
+            if not found.get("ok"):
+                return {"ok": False, "reason": f"النموذج «{want}» مرفوض: {found.get('reason') or 'غير صالح'}"}
+            if mode not in (found.get("tasks") or []):
+                return {"ok": False, "reason": f"النموذج «{want}» ما بيدعم الوضع {mode} (بيدعم: {'، '.join(found.get('tasks') or [])})"}
         return {"ok": True, "backend": h.get("backend"), "loaded": bool(h.get("loaded")), "queued": int(h.get("queued") or 0),
-                "running": int(h.get("running") or 0), "gpu_busy": bool(h.get("gpu_busy")), "url": base}
+                "running": int(h.get("running") or 0), "gpu_busy": bool(h.get("gpu_busy")), "url": base,
+                "loaded_model": h.get("loaded_model"), "gpu": h.get("gpu") if isinstance(h.get("gpu"), dict) else None}
     finally:
         sess.close()
 
@@ -910,6 +927,28 @@ def _check_face(ch: dict, video: Path, stem: str, shot_id: str, cand: dict, chec
     return {**r, "at": _now()}
 
 
+def _library_lipsync() -> dict | None:
+    """نموذج مزامنة الشفاه الافتراضي من مكتبة النماذج (مفعّل ورخصته تسمح)، أو None. بيخدم أي موديل تحريك ما إله أمر مزامنة بسجله."""
+    try:
+        import model_library
+        return model_library.pick("lipsync").model
+    except Exception:                                # noqa: BLE001 — مكتبة تالفة ما بتوقف الترتيب: بنكمّل بدونها
+        return None
+
+
+def _pinned_default() -> str | None:
+    try:
+        import model_library
+        return model_library.task_config("motion")["default"]
+    except Exception:                                    # noqa: BLE001 — مكتبة تالفة: الترتيب التلقائي المعتاد
+        return None
+
+
+def _primary(ranked: list[dict], pin: str | None) -> dict:
+    """الموديل الأساسي: المثبّت لو هو بالمرتّبين (يعني مناسب للقطة وجاهز)، وإلا الأعلى ترتيباً."""
+    return next((r["model"] for r in ranked if r["model"]["id"] == pin), None) or ranked[0]["model"]
+
+
 def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1, log=print, fallback: bool = True,
              face_check=None) -> dict:
     path = Path(script_path)
@@ -938,7 +977,7 @@ def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1,
             reason = next(e["reason"] for e in rk["excluded"] if e["model"]["id"] == model_id)
             raise MotionError(f"الموديل «{m['name']}» ما بيناسب اللقطة: {reason}")
     elif rk["ranked"]:
-        m = rk["ranked"][0]["model"]
+        m = _primary(rk["ranked"], _pinned_default())      # الموديل المثبّت بمكتبة النماذج أول، لو مناسب للقطة وجاهز
     else:
         raise MotionError("ما في موديل مناسب: " + "؛ ".join(f"{e['model']['name']}: {e['reason']}" for e in rk["excluded"]) if rk["excluded"] else "سجل الموديلات فاضي")
     # سلسلة البدائل: الأساسي أول، وبعده المرتّبين حسب الأفضلية (كلهم مناسبين للقطة أصلاً)
@@ -1058,9 +1097,22 @@ def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1,
     return {"shot": shot_id, "model": used["id"], "made": made, "fallbacks": fallbacks}
 
 
+def _run_library_lipsync(lib: dict, video: Path, audio: Path, out: Path, stem: str, sh: dict, log) -> None:
+    """مزامنة بنموذج المكتبة. أي فشل = MotionError بسببه (بلا بديل: تغيير نموذج المزامنة بنص الشغلة بيخرّب الناتج، والقرار للمالك)."""
+    import model_run
+    req = model_run.RunRequest(task="lipsync", out=out, video=video, audio=audio, script_stem=stem, shot_id=sh["id"], log=log)
+    try:
+        model_run.run(lib, req)
+    except model_run.RunError as e:
+        raise MotionError(f"مزامنة الشفاه بنموذج «{lib['name']}» فشلت: {e}") from None
+
+
 def _lipsync(stem: str, sh: dict, m: dict, video: Path, out_dir: Path, log) -> tuple[Path, bool]:
+    lib = None
     if not m.get("lipsync_command"):
-        raise MotionError(f"الموديل «{m['name']}» ما إله أمر مزامنة شفاه")
+        lib = _library_lipsync()                    # الأمر الخاص بالموديل أولى؛ وإلا الافتراضي من مكتبة النماذج
+        if lib is None:
+            raise MotionError(f"الموديل «{m['name']}» ما إله أمر مزامنة شفاه، وما في نموذج مزامنة افتراضي بمكتبة النماذج")
     import voice_studio
     man = voice_studio.load_manifest(stem)
     aud = ((man or {}).get("combined") or {}).get("path")
@@ -1073,8 +1125,11 @@ def _lipsync(stem: str, sh: dict, m: dict, video: Path, out_dir: Path, log) -> t
     if r.returncode != 0:
         raise MotionError("فشل استخراج مقطع الصوت للمزامنة")
     out = video.with_name(video.stem + "_lip.mp4")
-    _run_cmd(_fill(m["lipsync_command"], {"video": video, "audio": seg, "out": out}),
-             int(getattr(config, "MOTION_TIMEOUT_SEC", 3600)), log)
+    if lib is not None:
+        _run_library_lipsync(lib, video, seg, out, stem, sh, log)
+    else:
+        _run_cmd(_fill(m["lipsync_command"], {"video": video, "audio": seg, "out": out}),
+                 int(getattr(config, "MOTION_TIMEOUT_SEC", 3600)), log)
     if not out.exists():
         raise TechnicalError("موديل المزامنة ما كتب الخرج", "bad_output")
     fit_duration(out, out.with_name(out.stem + "_fit.mp4"), sh["end_ms"] - sh["start_ms"])
@@ -1094,6 +1149,39 @@ def run_all(script_path, model_id: str | None = None, n: int = 1, log=print, fal
             failed.append({"shot": sid, "error": str(e)})
             log(f"  [!] {sid}: {e}")
     return {"done": done, "failed": failed}
+
+
+# ── فيديو من المالك (بدل التوليد) ────────────────────────────────────────
+def add_upload(script_path, shot_id: str, raw: Path) -> dict:
+    """فيديو من المالك للقطة كمرشّح model_id=upload — بنفس شرط التحريك (المحطة 9 مسموح تبدأ). مدته بتتظبط على مدة اللقطة بالضبط:
+    قص لو أطول، تمديد لو أقصر بحدود 15%، وإلا رفض برسالة عربية. الاختيار بعدها بـ choose(clip). بيرجّع اللقطة."""
+    path = Path(script_path)
+    stem = path.stem
+    ok, why = studio_state.can_start(stem, 9)
+    if not ok:
+        raise MotionError(why)
+    tl = _load(stem)
+    _sc, sh = _shot(tl, shot_id)
+    dur_ms = sh["end_ms"] - sh["start_ms"]
+    out_dir = clips_dir(stem)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    final = out_dir / f"{shot_id}_{int(time.time() * 1000)}_up.mp4"
+    try:
+        fit = fit_duration(Path(raw), final, dur_ms)
+    except MotionError as e:
+        final.unlink(missing_ok=True)
+        raise MotionError(str(e).replace("الموديل أنتج", "الفيديو اللي رفعته مدته").replace("الموديل ما رجّع فيديو صالح", "الملف مش فيديو صالح"))
+    tl = _load(stem)
+    _sc, sh = _shot(tl, shot_id)
+    sh.setdefault("motion_candidates", []).append({
+        "clip": _rel(stem, final), "model_id": "upload", "model_name": "رفع يدوي", "path": "upload", "duration_ms": dur_ms,
+        "fit": fit["how"], "source_sec": fit["source_sec"], "lipsync": False, "took_sec": 0.0, "at": _now()})
+    timeline.save(stem, tl)
+    try:
+        studio_state.set_state(stem, 9, "awaiting_choice", "بانتظار اختيارك لحركة كل لقطة")
+    except studio_state.StationBlocked as e:
+        raise MotionError(str(e))
+    return sh
 
 
 # ── الاختيار والاعتماد ──────────────────────────────────────────────────
@@ -1142,6 +1230,8 @@ def approve(script_path) -> dict:
 
 
 def main() -> None:
+    import job_signals
+    job_signals.install()                       # إلغاء المهمة على لينكس = SystemExit فيشتغل finally وبنبعت DELETE للصندوق
     ap = argparse.ArgumentParser(description="تحريك اللقطات بموديل محلي")
     ap.add_argument("action", choices=["run"])
     ap.add_argument("script")

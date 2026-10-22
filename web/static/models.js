@@ -100,13 +100,13 @@ function probeSummary(p) {
 function renderModelForm() {
   const isNew = MM.sel === "new";
   const m = isNew ? { name: "", kind: "command", max_sec: 5, vram_gb: 6, speed_sec_per_sec: 60, resolution: "", strengths: [], limits: "", command: null, lipsync_command: null, enabled: true,
-    http: { url: "", mode: "i2v", steps: null, guidance: null, token_secret: null },
+    http: { url: "", mode: "i2v", steps: null, guidance: null, token_secret: null, model: null },
     api: { provider: "fal", endpoint: "", input: { prompt: "{prompt}", image_url: "{image}", duration: "{duration_str}" }, durations: [5, 10], cost_per_sec: null } }
     : MM.models.find((x) => x.id === MM.sel);
   const box = $("#mmForm");
   if (!m) { box.innerHTML = ""; return; }
   const kind = m.kind || "command";
-  const hp = m.http || { url: "", mode: "i2v", steps: null, guidance: null, token_secret: null };
+  const hp = m.http || { url: "", mode: "i2v", steps: null, guidance: null, token_secret: null, model: null };
   const ap = m.api || { provider: "fal", endpoint: "", input: { prompt: "{prompt}", image_url: "{image}", duration: "{duration_str}" }, durations: [5, 10], cost_per_sec: null };
   const cmdText = (c) => (c ? JSON.stringify(c, null, 1) : "");
   const nv = (v) => (v == null ? "" : v);
@@ -158,6 +158,9 @@ function renderModelForm() {
         <label class="zk-field"><span class="zk-field__label">عنوان الصندوق</span>
           <input class="zk-input" id="mfUrl" dir="ltr" autocomplete="off" value="${esc(hp.url)}" placeholder="http://127.0.0.1:8101">
           <span class="hint">مثال: <code>http://127.0.0.1:8101</code> لـ LTX، و<code>http://127.0.0.1:8102</code> لـ Wan. مسموح بس عنوان على نفس الجهاز، ولازم رقم المنفذ.</span></label>
+        <label class="zk-field"><span class="zk-field__label">اسم النموذج بالصندوق العام (اختياري)</span>
+          <input class="zk-input" id="mfModel" dir="ltr" autocomplete="off" value="${esc(nv(hp.model))}" placeholder="Wan2.2-TI2V-5B-Diffusers">
+          <span class="hint">اسم مجلد الأوزان بالصندوق العام (<code>http://engine:8000</code>). اتركه فاضي للصناديق القديمة بنموذج ثابت (ltx وwan). الأسهل: «مكتبة النماذج» ← التحريك ← «＋ من صندوق الأوزان».</span></label>
         <label class="zk-field"><span class="zk-field__label">الوضع</span>
           <select class="zk-select" id="mfMode">
             <option value="i2v" ${hp.mode !== "t2v" ? "selected" : ""}>صورة لفيديو (الأغلب)</option>
@@ -225,7 +228,7 @@ function renderModelForm() {
         body.api = { provider: "fal", endpoint: $("#mfApiEp").value.trim(), input: inp, durations: durs, cost_per_sec: cost === "" ? null : Number(cost) };
         body.max_sec = Math.max(...durs);
       } else if (k === "command") body.command = parse("#mfCmd");
-      else body.http = { url: $("#mfUrl").value, mode: $("#mfMode").value, steps: $("#mfSteps").value, guidance: $("#mfGuid").value, token_secret: $("#mfTokName").value };
+      else body.http = { url: $("#mfUrl").value, mode: $("#mfMode").value, steps: $("#mfSteps").value, guidance: $("#mfGuid").value, token_secret: $("#mfTokName").value, model: $("#mfModel").value };
       const r = isNew ? await api("/api/motion-models", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
         : await api(`/api/motion-models/${enc(m.id)}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const tok = k === "http" ? $("#mfTokVal").value.trim() : "";

@@ -339,6 +339,8 @@ def used_from_scripts(product_key: str, exclude_stem: str | None = None) -> tupl
             s = json.loads(f.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             continue
+        if (s.get("_meta") or {}).get("mode") == "free":          # المشروع الحر ما بيمنع تكرار شي على الكاتب
+            continue
         owner = (s.get("_meta") or {}).get("product")
         hook = (s.get("hook_line") or "").strip()
 

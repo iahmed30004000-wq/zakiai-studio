@@ -157,8 +157,96 @@ def build(script: dict, voice: dict, *, script_hash: str = "", audio_rel: str = 
 
 
 # ── التحقق ──────────────────────────────────────────────────────────────
+# المشروع الحر (mode == "free"): بلا قيد 7 مشاهد ولا 45–50 ث ولا حدود كلمات — اللقطات هي الساعة.
+FREE_MAX_SCENES = 40
+FREE_MAX_SHOTS = 8
+FREE_MIN_SHOT_MS = 500
+FREE_MAX_SHOT_MS = 60_000
+FREE_MAX_TOTAL_MS = 300_000
+
+
+def is_free(tl: dict | None) -> bool:
+    return bool(tl) and tl.get("mode") == "free"
+
+
+def _validate_free(tl: dict) -> dict:
+    """خط زمني حر: مشاهد 0–40، لقطات 1–8 بالمشهد، لقطة 0.5–60ث، المجموع ≤ 300ث، كل شي متصل بالـ ms ومعرّفات فريدة."""
+    errors: list[dict] = []
+    warnings: list[dict] = []
+
+    def err(code, msg, scene=None, shot=None):
+        errors.append({"code": code, "scene": scene, "shot": shot, "message": msg})
+
+    def warn(code, msg, scene=None, shot=None):
+        warnings.append({"code": code, "scene": scene, "shot": shot, "message": msg})
+
+    scenes = tl.get("scenes") or []
+    if not scenes:
+        warn("no_scenes", "ما في مشاهد بعد — ضيف مشهد أو استورد نص")
+    if len(scenes) > FREE_MAX_SCENES:
+        err("scene_count", f"عدد المشاهد {len(scenes)} أكتر من الحد ({FREE_MAX_SCENES})")
+
+    seen_keys: set = set()
+    seen_ids: set = set()
+    prev_end = 0
+    shots_total = 0
+    for sc in scenes:
+        n = sc.get("n")
+        key = sc.get("key")
+        if not key or key in seen_keys:
+            err("scene_key", f"مشهد {n}: معرّف المشهد ناقص أو مكرّر", n)
+        seen_keys.add(key)
+        if sc.get("start_ms") != prev_end:
+            err("scene_gap", f"مشهد {n}: فجوة/تداخل مع المشهد السابق", n)
+        prev_end = sc.get("end_ms", prev_end)
+
+        shots = sc.get("shots") or []
+        if not 1 <= len(shots) <= FREE_MAX_SHOTS:
+            err("shot_count", f"مشهد {n}: {len(shots)} لقطات، المسموح 1–{FREE_MAX_SHOTS}", n)
+            continue
+        cursor = sc.get("start_ms")
+        for sh in shots:
+            sid = sh.get("id")
+            if not sid or sid in seen_ids:
+                err("shot_id", f"لقطة {sid}: معرّف ناقص أو مكرّر", n, sid)
+            seen_ids.add(sid)
+            a, b = sh.get("start_ms"), sh.get("end_ms")
+            if a != cursor:
+                err("shot_gap", f"لقطة {sid}: فجوة أو تداخل مع اللي قبلها", n, sid)
+            if a is None or b is None or b <= a:
+                err("shot_zero", f"لقطة {sid}: مدة صفر أو سالبة", n, sid)
+                cursor = b if b is not None else cursor
+                continue
+            dur = b - a
+            cursor = b
+            shots_total += dur
+            if dur < FREE_MIN_SHOT_MS:
+                err("shot_short", f"لقطة {sid}: {dur / 1000:.1f}ث أقصر من الحد ({FREE_MIN_SHOT_MS / 1000:.1f}ث)", n, sid)
+            if dur > FREE_MAX_SHOT_MS:
+                err("shot_long", f"لقطة {sid}: {dur / 1000:.0f}ث أطول من الحد ({FREE_MAX_SHOT_MS // 1000}ث)", n, sid)
+            im, mo = sh.get("image") or {}, sh.get("motion")
+            if not (im.get("chosen") or (mo or {}).get("clip")):
+                warn("shot_no_media", f"لقطة {sid}: بلا صورة أو فيديو", n, sid)
+            if mo and mo.get("duration_ms") not in (None, dur):
+                warn("motion_duration", f"لقطة {sid}: مدة الفيديو ≠ مدة اللقطة (بيتجمّد آخر كادر أو بيتقصّ)", n, sid)
+        if cursor != sc.get("end_ms"):
+            err("scene_end", f"مشهد {n}: لقطاته ما بتنتهي بنهاية المشهد", n)
+        v = sc.get("voice") or {}
+        if v.get("duration_ms") and v["duration_ms"] > (sc.get("end_ms", 0) - sc.get("start_ms", 0)) + 150:
+            warn("voice_long", f"مشهد {n}: الصوت أطول من المشهد (بيتقصّ)", n)
+
+    total = tl.get("length_ms") or 0
+    if scenes and shots_total != total:
+        err("sum_mismatch", f"مجموع مدد اللقطات {shots_total}ms ≠ طول الفيديو {total}ms")
+    if total > FREE_MAX_TOTAL_MS:
+        err("total_long", f"الفيديو {total / 1000:.0f}ث أطول من الحد ({FREE_MAX_TOTAL_MS // 1000}ث)")
+    return {"ok": not errors, "errors": errors, "warnings": warnings}
+
+
 def validate(tl: dict) -> dict:
     """{ok, errors:[{code, scene, shot, message}], warnings:[…]} — كل الرسائل عربي."""
+    if is_free(tl):
+        return _validate_free(tl)
     errors: list[dict] = []
     warnings: list[dict] = []
 

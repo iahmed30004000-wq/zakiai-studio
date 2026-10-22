@@ -46,5 +46,18 @@
   "duration": 48,
   "scenes": 7,
   "generated_at": "20260913_13483"
+ },
+ {
+  "file": "free__20261022_0900__demo.json",
+  "title": "إعلان القطرة — تجريبي",
+  "product": "",
+  "product_file": "",
+  "number": null,
+  "display_name": "✎ إعلان القطرة — تجريبي",
+  "pattern_id": null,
+  "duration": 15,
+  "scenes": 4,
+  "generated_at": "20260901_00000",
+  "mode": "free"
  }
 ]

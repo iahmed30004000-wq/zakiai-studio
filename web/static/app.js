@@ -207,6 +207,289 @@ async function mockBankWrite(path, method, body) {
   return { ok: true };
 }
 
+/* المشروع الحر بالمحاكاة: لوحة بالذاكرة بتتعدّل مع الحفظ والاستيراد والرفع والتوليد (متل الخادم، بس بلا ملفات) */
+const MOCK_IMGS = ["img/c1.png", "img/c2.png", "img/c3.png"];
+function mockFreeShot(b, over) {
+  b.next_shot = (b.next_shot || 20) + 1;
+  return { id: `f${String(b.next_shot).padStart(3, "0")}`, start_ms: 0, end_ms: 3000, word_range: null, type: "medium", prompt_ar: "", prompt_model: "",
+    refs: { character_id: null, product_ref: null }, image: { candidates: [], chosen: null, upscaled: false, path_used: null }, product_check: null,
+    face_check: null, motion: null, text: "", still_motion: "zoom_in", trim_in_ms: 0, keep_audio: false, ...over };
+}
+function mockFreeScene(b, over) {
+  b.next_scene = (b.next_scene || 20) + 1;
+  return { n: 0, key: `c${String(b.next_scene).padStart(3, "0")}`, start_ms: 0, end_ms: 0, word_range: null, function: null, emotion: "", voiceover: "",
+    visual: "", voice: null, shots: [], ...over };
+}
+const mockFreeImg = (n) => MOCK_IMGS[n % MOCK_IMGS.length];
+function mockFreeSetImage(sh, rel) {
+  sh.image = { candidates: [...((sh.image || {}).candidates || []), { path: rel, provider: "mock", model: "mock" }], chosen: rel, source: rel, upscaled: false, path_used: "upload" };
+}
+async function mockFreeBoard(file) {
+  mockState.free = mockState.free || {};
+  if (!mockState.free[file]) mockState.free[file] = { ...(await mockFile("free_board")), file };
+  return mockState.free[file];
+}
+function mockFreeFinish(b) {                                   // نفس حساب الخادم: مواقع اللقطات من مددها + الجاهزية
+  let t = 0;
+  b.scenes.forEach((sc, i) => {
+    sc.n = i + 1; sc.start_ms = t;
+    sc.shots.forEach((sh) => { const d = sh.end_ms - sh.start_ms; sh.start_ms = t; sh.end_ms = t + d; t += d; });
+    sc.end_ms = t;
+  });
+  b.length_ms = t;
+  const shots = b.scenes.flatMap((sc) => sc.shots);
+  const no = shots.filter((sh) => !((sh.image || {}).chosen || (sh.motion || {}).clip)).map((sh) => sh.id);
+  b.readiness = { scenes: b.scenes.length, shots: shots.length, length_ms: t, no_media: no, ready: !!shots.length && !no.length };
+  b.validation = { ok: true, errors: [], warnings: [] };
+  return JSON.parse(JSON.stringify(b));
+}
+function mockFreeApply(b, p) {
+  if (Number(p.rev) !== b.rev) throw new ApiError("في تعديل أحدث من هالنسخة — حدّث الصفحة وعيد التعديل", 409, "في تعديل أحدث من هالنسخة — حدّث الصفحة وعيد التعديل");
+  const oldS = new Map(b.scenes.map((s) => [s.key, s])), oldH = new Map(b.scenes.flatMap((s) => s.shots).map((h) => [h.id, h]));
+  const scenes = (p.scenes || []).map((r) => {
+    const sc = r.key && oldS.get(r.key) ? oldS.get(r.key) : mockFreeScene(b);
+    ["voiceover", "visual", "emotion"].forEach((k) => { if (k in r) sc[k] = r[k]; });
+    sc.shots = (r.shots || []).map((x) => {
+      const sh = x.id && oldH.get(x.id) ? oldH.get(x.id) : mockFreeShot(b);
+      const dur = Math.round(Number(x.duration_ms) || 3000);
+      if (dur < 500 || dur > 60000) throw new ApiError(`المدة ${dur / 1000}ث خارج الحد`, 400, `المدة ${dur / 1000}ث خارج الحد`);
+      sh.end_ms = sh.start_ms + dur;
+      ["text", "type", "still_motion"].forEach((k) => { if (x[k]) sh[k] = x[k]; });
+      sh.text = x.text ?? sh.text; sh.trim_in_ms = x.trim_in_ms || 0; sh.keep_audio = !!x.keep_audio;
+      return sh;
+    });
+    if (!sc.shots.length) throw new ApiError("لازم لقطة وحدة على الأقل", 400, "لازم لقطة وحدة على الأقل");
+    return sc;
+  });
+  b.scenes = scenes;
+  if ("title" in p) b.title = p.title || "مشروع حر";
+  if ("product_file" in p) b.product_file = p.product_file || "";
+  b.rev += 1;
+  mockFreeDirty(b);
+}
+const mockFreeDirty = (b) => { Object.values(b.render || {}).forEach((r) => { r.stale = true; }); };     // أي تعديل بعد التصدير ← «قديم»
+function mockFreeVoice(b, source) {                                    // صوت وهمي لمشاهد فيها كلام (أو كل المشاهد لو ما في كلام) + ملخص بالشكل الحقيقي
+  const withText = b.scenes.filter((s) => String(s.voiceover || "").trim());
+  const targets = source === "tts" || withText.length ? withText : b.scenes;
+  targets.forEach((s) => {
+    s.voice = { audio: `timelines/mock/voice/${s.key}.wav`, duration_ms: s.shots.reduce((a, h) => a + (h.end_ms - h.start_ms), 0), source, words: [], text: String(s.voiceover || "").trim() };
+  });
+  const up = source === "upload";
+  b.voice = { info: { source, mode: "by_text", at: new Date().toISOString(), coverage: up ? 0.83 : null, fit: true,
+    warnings: up ? ["المطابقة ضعيفة لمشهد وحد — مثال تحذير تجريبي."] : [], asr: up ? { provider: "whisper-local", model: "large-v3", language: "ar" } : null },
+    scenes_with_voice: targets.length, has_source: up || !!(b.voice && b.voice.has_source) };
+  mockFreeDirty(b);
+}
+async function mockFreeHook(path, method, q, raw, body) {
+  let m;
+  if (path === "/api/free/projects" && method === "POST") {
+    const g = (k) => (raw && raw.get ? raw.get(k) || "" : "");
+    mockState.freeN = (mockState.freeN || 0) + 1;
+    const file = `free__20261022_0900__new${mockState.freeN}.json`;
+    const b = { ...(await mockFile("free_board")), file, title: g("title") || "مشروع حر", product_file: g("product_file"), rev: 1, scenes: [], source: "blank" };
+    const paras = g("text").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+    (paras.length ? paras : [""]).forEach((t) => {               // نفس الخادم: سطر «صورة: …» بيصير وصف الصورة، والباقي الكلام
+      const lines = t.split("\n"), vis = lines.find((l) => /^\s*صورة\s*[:：]/.test(l));
+      const sc = mockFreeScene(b, { voiceover: lines.filter((l) => l !== vis)[0] || "", visual: vis ? vis.replace(/^\s*صورة\s*[:：]\s*/, "") : "" });
+      sc.shots.push(mockFreeShot(b)); b.scenes.push(sc);
+    });
+    mockState.free = mockState.free || {};
+    mockState.free[file] = b;
+    return { file, stem: file.replace(/\.json$/, ""), warnings: [] };
+  }
+  if ((m = /^\/api\/studio\/([^/]+)\/free\/(structure|import|media)$/.exec(path)) && (method === "PUT" || method === "POST")) {
+    const b = await mockFreeBoard(decodeURIComponent(m[1]));
+    if (m[2] === "structure") { mockFreeApply(b, body || {}); return mockFreeFinish(b); }
+    if (raw && raw.get && raw.get("replace") === "true") b.scenes = [];
+    if (m[2] === "import") {
+      const paras = String((raw && raw.get && raw.get("text")) || "فقرة من ملف Excel").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+      paras.forEach((t) => { const sc = mockFreeScene(b, { voiceover: t.split("\n")[0] }); sc.shots.push(mockFreeShot(b)); b.scenes.push(sc); });
+      b.rev += 1;
+      mockFreeDirty(b);
+      return { board: mockFreeFinish(b), warnings: [] };
+    }
+    const files = raw && raw.getAll ? raw.getAll("files") : [];
+    if (b.scenes.length === 1 && !b.scenes[0].voiceover && !b.scenes[0].visual && !b.scenes[0].shots[0].image.chosen) b.scenes = [];
+    files.forEach((f, i) => {
+      const sc = mockFreeScene(b), sh = mockFreeShot(b);
+      if (/\.(mp4|mov|webm)$/i.test(f.name || "")) {
+        sh.motion = { model_id: "upload", prompt: "", duration_ms: 3000, clip: `clips/${sh.id}_up.mp4`, lipsync: false };
+        sh.keep_audio = true;
+      }
+      mockFreeSetImage(sh, mockFreeImg(i));
+      sc.shots.push(sh); b.scenes.push(sc);
+    });
+    b.rev += 1;
+    mockFreeDirty(b);
+    return { board: mockFreeFinish(b), warnings: [] };
+  }
+  if ((m = /^\/api\/studio\/([^/]+)\/free\/voice\/(upload|tts|realign)$/.exec(path)) && method === "POST") {
+    const b = await mockFreeBoard(decodeURIComponent(m[1]));
+    mockFreeVoice(b, m[2] === "tts" ? "tts" : "upload");
+    if (m[2] === "realign") return { result: { voiced: b.voice.scenes_with_voice, mode: "by_text", coverage: 0.83, warnings: [] }, board: mockFreeFinish(b) };
+    return m[2] === "tts" ? { job_id: "mock-job", scenes: b.voice.scenes_with_voice } : { job_id: "mock-job" };
+  }
+  if ((m = /^\/api\/studio\/([^/]+)\/free\/voice$/.exec(path)) && method === "DELETE") {
+    const b = await mockFreeBoard(decodeURIComponent(m[1]));
+    b.scenes.forEach((s) => { s.voice = null; });
+    b.voice = { info: null, scenes_with_voice: 0, has_source: !!(b.voice && b.voice.has_source) };
+    mockFreeDirty(b);
+    return mockFreeFinish(b);
+  }
+  if ((m = /^\/api\/studio\/([^/]+)\/free\/montage$/.exec(path)) && method === "PUT") {
+    const b = await mockFreeBoard(decodeURIComponent(m[1])), p = body || {};
+    if (p.captions) b.captions_opts = { ...(b.captions_opts || {}), ...p.captions };
+    if ("music" in p) b.ambience = p.music ? { track_id: p.music.track_id, approved: true, duck_db: p.music.level_db } : null;
+    if ("sfx" in p) b.sfx = (p.sfx || []).map((e) => ({ track_id: e.track_id, at_ms: e.at_ms, gain_db: e.gain_db }));
+    mockFreeDirty(b);
+    return mockFreeFinish(b);
+  }
+  if ((m = /^\/api\/studio\/([^/]+)\/montage\/render$/.exec(path)) && method === "POST" && mockState.free && mockState.free[decodeURIComponent(m[1])]) {
+    const b = mockState.free[decodeURIComponent(m[1])], mode = q.get("mode") || "preview";
+    mockFreeFinish(b);
+    b.render = { ...(b.render || {}), [mode]: { file: `exports/mock-${mode}.mp4`, at: new Date().toISOString(), size: mode === "final" ? [1080, 1920] : [540, 960],
+      duration_ms: b.length_ms, fingerprint: "mock", exists: true, stale: false } };
+    return { job_id: "mock-job" };
+  }
+  if ((m = /^\/api\/studio\/([^/]+)\/(?:shots\/([^/]+)\/(upload|choose|motion\/choose|prompt)|(images\/generate|motion\/run))$/.exec(path))) {
+    const file = decodeURIComponent(m[1]);
+    if (!mockState.free || !mockState.free[file]) return undefined;                 // مو مشروع حر ← المحاكاة العادية
+    const b = mockState.free[file];
+    const id = m[2] || q.get("shot"), sh = b.scenes.flatMap((s) => s.shots).find((h) => h.id === id);
+    const act = m[3] || m[4];
+    if (!sh) throw new ApiError("لقطة غير موجودة", 404, "لقطة غير موجودة");
+    if (act === "upload") {
+      const f = raw && raw.get ? raw.get("file") : null;
+      if (f && /\.(mp4|mov|webm)$/i.test(f.name || "")) { sh.motion = { model_id: "upload", prompt: "", duration_ms: sh.end_ms - sh.start_ms, clip: `clips/${sh.id}_up.mp4`, lipsync: false }; sh.keep_audio = true; }
+      else sh.motion = null;
+      mockFreeSetImage(sh, mockFreeImg(b.scenes.flatMap((s) => s.shots).indexOf(sh)));
+      mockFreeDirty(b);
+      return { shot: sh, warnings: [] };
+    }
+    if (act === "prompt") { sh.prompt_ar = `${(body || {}).prompt_ar || ""}. بدون أي كتابة.`; return { shot: sh, problems: [] }; }
+    if (act === "choose") { const p = (body || {}).path; sh.image = { ...sh.image, chosen: p, source: p }; return { shot: sh }; }
+    if (act === "motion/choose") { sh.motion = { model_id: "mm_001", prompt: "", duration_ms: sh.end_ms - sh.start_ms, clip: (body || {}).clip, lipsync: false }; return { shot: sh }; }
+    if (act === "images/generate") {
+      const n = ((sh.image || {}).candidates || []).length;
+      sh.image = { ...sh.image, candidates: [...(sh.image.candidates || []), { path: mockFreeImg(n + 1), provider: "mock", model: "mock" }] };
+      return { job_id: "mock-job" };
+    }
+    if (act === "motion/run") { sh.motion_candidates = [...(sh.motion_candidates || []), { clip: `clips/${sh.id}_ai${(sh.motion_candidates || []).length}.mp4`, model_id: "mm_001", model_name: "تجريبي" }]; return { job_id: "mock-job" }; }
+  }
+  return undefined;
+}
+
+/* ── مكتبة النماذج (محاكاة): مكتبة بالذاكرة من mock/model_library.json، وكل مسارات /api/model-library ── */
+const MOCK_COM_LABEL = { yes: "تجارية ✓", conditional: "⚠ راجع الشروط", unknown: "⚠ رخصة غير معروفة", no: "✗ ممنوعة تجارياً" };
+function mockLibGate(m) {
+  const l = m.licence;
+  if (!m.enabled) return [false, "معطّل"];
+  if (l.commercial === "no") return [false, `رخصته (${l.id}) بتمنع الاستخدام التجاري — ما بنفعّله`];
+  if ((l.commercial === "conditional" || l.commercial === "unknown") && !l.confirmed_by_owner) return [false, `رخصته (${l.id}) محتاجة مراجعتك — أكّد إنك راجعتها قبل التفعيل`];
+  return [true, ""];
+}
+function mockLibFix(m) {
+  [m.usable, m.unusable_reason] = mockLibGate(m);
+  m.licence_label = MOCK_COM_LABEL[m.licence.commercial];
+  return m;
+}
+async function mockLibHook(path, method, body, raw, q) {
+  if (!path.startsWith("/api/model-library")) return undefined;
+  if (!mockState.lib) mockState.lib = await mockFile("model_library");
+  const lib = mockState.lib, bad = (msg, code = 400) => { throw new ApiError(msg, code, msg); };
+  const taskOf = (t) => lib.tasks.find((x) => x.task === t);
+  const find = (id) => { for (const t of lib.tasks) { const m = t.models.find((x) => x.id === id); if (m) return [t, m]; } return [null, null]; };
+  let m;
+  if (path === "/api/model-library" && method === "GET") { lib.tasks.forEach((t) => { if (t.task !== "motion") t.models.forEach(mockLibFix); }); return lib; }
+  if (path === "/api/model-library/templates") return mockFile("model_templates");
+  if (path === "/api/model-library/app/inspect") {                    // قراءة برنامج Gradio (نفس شكل الخادم، من نقاط برنامج وهمي)
+    const all = await mockFile("model_app");
+    const r = all[(q && q.get("task")) || "default"] || all.default;
+    const u = (q && q.get("url")) || r.url;
+    return /^http:\/\/(127\.0\.0\.1|localhost|[a-z][a-z0-9_-]*):\d+$/.test(u) ? { ...r, url: u } : { ok: false, reason: "config", message: "المضيف مش مسموح: بس 127.0.0.1 أو localhost أو اسم صندوق docker", endpoints: [], suggested: null };
+  }
+  if (path === "/api/model-library/box") {                            // صندوق الأوزان: حالة وقائمة نماذج (PUT بيغيّر العنوان بالذاكرة)
+    if (!mockState.libBox) mockState.libBox = await mockFile("model_box");
+    const bx = mockState.libBox;
+    if (method === "PUT") {
+      const b = body || {};
+      bx.box.url = b.url || null; bx.url = bx.box.url; bx.configured = !!b.url;
+      if (b.token) bx.token_set = true;
+      return { box: bx.box, token_set: bx.token_set };
+    }
+    return bx;
+  }
+  if (path === "/api/model-library/choices") {                       // قوائم الاختيار بمحطات الإنتاج (نفس شكل الخادم)
+    const t = taskOf((q && q.get("task")) || "voice");
+    if (!t || t.task === "motion") bad("مهمة غير معروفة");
+    return { task: t.task, default: t.default, models: t.models.map((x) => { mockLibFix(x); return { id: x.id, name: x.name, usable: x.usable, reason: x.unusable_reason, voice: (x.params || {}).voice || "", refs: !!(x.caps && (x.caps.refs || x.caps.edit)) }; }) };
+  }
+  if (path === "/api/model-library/probe") return { ok: true, reason: "", message: "السيرفر شغّال — 2 موديل", models: ["flux-schnell", "whisper-large-v3"] };
+  if (path === "/api/model-library/models" && method === "POST") {
+    const b = body || {};
+    const t = taskOf(b.task);
+    if (!t || b.task === "motion") bad("المهمة غير صالحة");
+    if (!String(b.name || "").trim()) bad("اسم النموذج مطلوب");
+    mockState.libN = (mockState.libN || 4) + 1;
+    const l = b.licence || {};
+    const nm = { id: `ml_${String(mockState.libN).padStart(3, "0")}`, name: b.name.trim(), task: b.task, link: b.link, enabled: !!b.enabled, template: b.template || null,
+      licence: { id: l.id || "غير معروف", commercial: l.commercial || "unknown", confirmed_by_owner: !!l.confirmed_by_owner, note: l.note || "", ...(l.confirmed_by_owner ? { confirmed_by: "سارة (تجربة)", confirmed_at: new Date().toISOString() } : {}) },
+      caps: b.caps || {}, params: b.params || {}, uses_gpu: !!b.uses_gpu, timeout_sec: b.timeout_sec || 300, note: "", created_at: new Date().toISOString(), updated_at: new Date().toISOString(), stats: null,
+      token_set: b.link === "std" ? !!b.token : null };
+    if (b.link === "std") nm.std = { url: b.std.url, model: b.std.model, size: b.std.size || null, response_format: b.std.response_format || null, token_secret: b.token ? `modellib.${nm.id}.token` : null };
+    else nm.command = { argv: b.command.argv, cwd: b.command.cwd || null, output_glob: b.command.output_glob || null, env: b.command.env || {} };
+    if (nm.enabled && mockLibGate(nm)[0] === false) bad(mockLibGate(nm)[1]);
+    t.models.push(mockLibFix(nm));
+    return { model: nm };
+  }
+  if ((m = /^\/api\/model-library\/models\/([^/]+)$/.exec(path))) {
+    const [t, mod] = find(decodeURIComponent(m[1]));
+    if (!mod) bad("النموذج مش موجود", 404);
+    if (method === "DELETE") { t.models = t.models.filter((x) => x !== mod); if (t.default === mod.id) t.default = null; return { ok: true }; }
+    if (method === "PUT") {
+      const b = body || {};
+      const prev = { enabled: mod.enabled };
+      ["name", "enabled", "caps", "params", "uses_gpu", "timeout_sec"].forEach((k) => { if (k in b) mod[k] = b[k]; });
+      if (b.licence) Object.assign(mod.licence, b.licence, b.licence.confirmed_by_owner ? { confirmed_by: "سارة (تجربة)" } : {});
+      if (b.std) Object.assign(mod.std, b.std);
+      if (b.command) Object.assign(mod.command, b.command);
+      if ("token" in b) { mod.token_set = !!String(b.token).trim(); if (mod.std) mod.std.token_secret = mod.token_set ? `modellib.${mod.id}.token` : null; }
+      if (mod.enabled && mockLibGate(mod)[0] === false) { mod.enabled = prev.enabled; bad(mockLibGate({ ...mod, enabled: true })[1] || "ما بنقدر نفعّله"); }
+      return { model: mockLibFix(mod) };
+    }
+  }
+  if ((m = /^\/api\/model-library\/tasks\/([^/]+)\/default$/.exec(path)) && method === "PUT") {
+    const t = taskOf(decodeURIComponent(m[1]));
+    if (!t) bad("مهمة غير معروفة");
+    const b = body || {};
+    if ("model_id" in b) {
+      if (b.model_id && t.task !== "motion") {
+        const mod = t.models.find((x) => x.id === b.model_id);
+        if (!mod) bad("النموذج مش موجود لهالمهمة", 404);
+        if (!mockLibGate(mod)[0]) bad(`ما بنقدر نجعله الافتراضي: ${mockLibGate(mod)[1]}`);
+      }
+      t.default = b.model_id || null;
+    }
+    if ("fallback_builtin" in b) t.fallback_builtin = !!b.fallback_builtin;
+    return { task: t.task, default: t.default, fallback_builtin: t.fallback_builtin };
+  }
+  if ((m = /^\/api\/model-library\/models\/([^/]+)\/test\/inputs$/.exec(path)) && method === "POST") return { ok: true, name: raw && raw.get ? raw.get("name") : "" };
+  if ((m = /^\/api\/model-library\/models\/([^/]+)\/try$/.exec(path)) && method === "POST") {
+    const [, mod] = find(decodeURIComponent(m[1]));
+    if (!mod) bad("النموذج مش موجود", 404);
+    mockState.libTests = mockState.libTests || {};
+    const kind = { image: "image", upscale: "image", bgremove: "image", voice: "audio", music: "audio", sfx: "audio", lipsync: "video" }[mod.task] || null;
+    mockState.libTests[mod.id] = { ok: true, at: new Date().toISOString(), task: mod.task, model: mod.name, seconds: 3.4, kind, file: kind ? "result" : null, info: {},
+      ...(mod.task === "stt" ? { data: { text: "مرحبا بكم في تجربة التفريغ", language: "ar", words: 5, word_timing: true, segments: 1 } } : {}) };
+    return { job_id: "mock-job" };
+  }
+  if ((m = /^\/api\/model-library\/models\/([^/]+)\/test$/.exec(path))) {
+    const last = (mockState.libTests || {})[decodeURIComponent(m[1])] || null;
+    return { last, has_file: !!(last && last.file) };
+  }
+  return undefined;
+}
+
 async function mockApi(url, opts) {
   const u = new URL(url, location.origin);
   const path = u.pathname;
@@ -215,6 +498,7 @@ async function mockApi(url, opts) {
   let m;
 
   if (method === "GET") {
+    if (path.startsWith("/api/model-library")) { const lr = await mockLibHook(path, method, null, null, q); if (lr !== undefined) return lr; }
     if (path === "/api/crm/status") return mockFile("crm_status");
     if (path === "/api/stats") return mockFile("stats");
     if (path === "/api/taxonomy") return mockFile("taxonomy");
@@ -285,6 +569,7 @@ async function mockApi(url, opts) {
     if (/^\/api\/characters\/[^/]+\/identity$/.test(path)) return mockFile("character_identity");
     if (path === "/api/presets") return mockFile("presets");
     if (path === "/api/auth/me") return mockFile("auth_me");
+    if (path === "/api/tts") return mockFile("tts");
     if (path === "/api/accounts") return mockFile("accounts");
     if (/^\/api\/activity$/.test(path)) return mockFile("activity");
     if (/^\/api\/product-refs\/[^/]+$/.test(path)) return mockFile("product_ref");
@@ -302,6 +587,9 @@ async function mockApi(url, opts) {
     if (path === "/api/ext/selftest") return mockFile("ext_selftest");
     if (path === "/api/ext/download") return NOMOCK;
     if (path === "/api/ext/token") return mockFile("ext_token");
+    if ((m = /^\/api\/studio\/([^/]+)\/free\/board$/.exec(path))) return mockFreeFinish(await mockFreeBoard(decodeURIComponent(m[1])));
+    if (path === "/api/scenes/template.xlsx") return NOMOCK;
+    if (/^\/api\/scripts\/manual\/result\/[0-9a-f]{32}$/.test(path)) return { file: "VARA__ad_109__20260913_1344.json", ok: true, reason: "", voice: { scenes: 7, total_sec: 47.2, coverage: 0.93, ok: true } };
     if (path === "/api/scripts") return mockFile("scripts");
     if ((m = /^\/api\/scripts\/([^/]+)\/(status|versions|ad-name)$/.exec(path))) {
       const file = decodeURIComponent(m[1]);
@@ -360,6 +648,11 @@ async function mockApi(url, opts) {
   let body = null;
   if (typeof opts?.body === "string") { try { body = JSON.parse(opts.body); } catch { body = null; } }
   await new Promise((r) => setTimeout(r, 250));
+  const freeRes = await mockFreeHook(path, method, q, opts?.body, body);
+  if (freeRes !== undefined) return freeRes;
+  const libRes = await mockLibHook(path, method, body, opts?.body);
+  if (libRes !== undefined) return libRes;
+  if (path === "/api/ahat/generate" || /^\/api\/studio\/[^/]+\/sounds\/[^/]+\/generate$/.test(path)) return { job_id: "mock-job" };      // توليد صوت بنموذج المكتبة (محاكاة)
   if (path === "/api/characters" && method === "POST") { const d = await mockFile("characters"); return d.characters[0]; }
   if ((m = /^\/api\/characters\/([^/]+)(\/retire|\/sheet\/[^/]+|\/consent)?$/.exec(path)) && method !== "GET") { const d = await mockFile("characters"); return d.characters[0]; }
   if (/^\/api\/characters\/[^/]+\/identity(\/rebuild)?$/.test(path) && method !== "GET") return mockFile("character_identity");
@@ -389,6 +682,10 @@ async function mockApi(url, opts) {
   if (/^\/api\/studio\/[^/]+\/voice\/approve$/.test(path) && method === "POST") return { approved: true, timeline_ok: true, errors: [], warnings: [] };
   if (/^\/api\/studio\/[^/]+\/voice$/.test(path) && method === "POST") return { job_id: "mock-job" };
   if (/^\/api\/studio\/[^/]+\/timeline\/boundary$/.test(path) && method === "PUT") return mockFile("studio_timeline");
+  if (path === "/api/scripts/manual" && method === "POST") return { file: "VARA__ad_109__20260913_1344.json", warnings: [], status: "draft", approved: false, reviewed: false };
+  if (path === "/api/scripts/manual/from-voice" && method === "POST") return { job_id: "mock-job", token: "a".repeat(32), by: "سارة" };
+  if (/^\/api\/studio\/[^/]+\/voice\/upload$/.test(path) && method === "POST") return { job_id: "mock-job" };
+  if ((m = /^\/api\/scripts\/([^/]+)\/approve-local$/.exec(path))) { mockState.approved.add(decodeURIComponent(m[1])); return { ok: true, approved: true, status: "approved" }; }
   if ((m = /^\/api\/scripts\/([^/]+)\/approve$/.exec(path))) {
     const file = decodeURIComponent(m[1]);
     const st = (await mockFile("script_status"))[file];

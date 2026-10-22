@@ -10,6 +10,8 @@
 
 from __future__ import annotations
 
+import contextlib
+import contextvars
 import json
 import os
 import subprocess
@@ -18,6 +20,18 @@ from pathlib import Path
 import requests
 
 import config
+
+_LOG_CTX: contextvars.ContextVar = contextvars.ContextVar("vp_tts_log_ctx", default=None)
+
+
+@contextlib.contextmanager
+def log_context(script_stem: str | None, shot_id: str | None):
+    """سياق سجل الإنتاج لنداءات speak بنموذج من مكتبة النماذج (model_run بيسجّل محاولته بنفسه، فبنعطيه السيناريو والمشهد)."""
+    tok = _LOG_CTX.set({"script_stem": script_stem, "shot_id": shot_id})
+    try:
+        yield
+    finally:
+        _LOG_CTX.reset(tok)
 
 TTS_PRESETS = {
     "elevenlabs": {
@@ -105,8 +119,39 @@ def _settings() -> dict:
     return settings_io.load()
 
 
-def tts_config(overrides: dict | None = None) -> dict:
+def _library_pick(overrides: dict | None):
+    """(Pick|None، خطأ|None) لمهمة الصوت. lib:ml_x صريح (بالنداء أو بالإعدادات) أو افتراضي المكتبة.
+    model/voice بلا مزوّد = المزوّد الحالي بالإعدادات (مش افتراضي المكتبة): صوت الشخصية بيضل الغالب."""
+    import model_library
+    ov = overrides or {}
+    sel = str(ov.get("provider") or "")
+    if not sel and (ov.get("model") or ov.get("voice")):
+        sel = "builtin"
+    if not sel:
+        saved = str((_settings().get("TTS") or {}).get("provider") or "")
+        sel = saved if saved.startswith(model_library.LIB_PREFIX) else ""
+    try:
+        return model_library.pick("voice", sel or None), None
+    except model_library.ModelLibraryError as e:
+        return None, str(e)
+
+
+def _library_cfg(m: dict, overrides: dict | None) -> dict:
+    p = m.get("params") or {}
+    ov = overrides or {}
+    return {"provider": f"lib:{m['id']}", "kind": "library", "model": m["name"], "voice": str(ov.get("voice") or p.get("voice") or ""),
+            "base_url": "", "api_key": "library", "speed": float(ov.get("speed") or p.get("speed") or 1.0), "stability": 0.5, "similarity": 0.75,
+            "style": 0.0, "instructions": str(p.get("instructions") or ""), "gender": "", "age": "", "dialect": "", "tone": "", "lib_id": m["id"]}
+
+
+def tts_config(overrides: dict | None = None, *, library: bool = True) -> dict:
+    """إعداد الصوت الفعّال. library=False: الطريقة الحالية بالإعدادات بس (صفحة الإعدادات)؛ غير هيك lib:ml_x أو افتراضي المكتبة بيغلبوها."""
     saved = _settings()
+    lib_err = None
+    if library:
+        pk, lib_err = _library_pick(overrides)
+        if pk is not None and pk.model:
+            return _library_cfg(pk.model, overrides)
     entry = {**(saved.get("TTS") or {}), **{k: v for k, v in (overrides or {}).items() if v}}
     provider = entry.get("provider") or "elevenlabs"
     preset = TTS_PRESETS.get(provider, TTS_PRESETS["elevenlabs"])
@@ -115,7 +160,7 @@ def tts_config(overrides: dict | None = None) -> dict:
     if not key and preset.get("env_key"):
         key = os.environ.get(preset["env_key"], "")
 
-    return {
+    cfg = {
         "provider": provider,
         "kind": preset["kind"],
         "model": entry.get("model") or preset["models"][0],
@@ -132,6 +177,9 @@ def tts_config(overrides: dict | None = None) -> dict:
         "dialect": entry.get("dialect") or "",
         "tone": entry.get("tone") or "",
     }
+    if lib_err:
+        cfg["library_error"] = lib_err                    # اختار نموذج مكتبة مش موجود/معطّل: speak بيفشل بالرسالة (مش بنشتغل بغيره بصمت)
+    return cfg
 
 
 def list_voices(provider: str, api_key: str, base_url: str = "") -> list[dict]:
@@ -404,9 +452,39 @@ def estimate_words(text: str, duration: float) -> list[dict]:
     return out
 
 
+def _speak_library(cfg: dict, text: str, out_path: Path, want_timing: bool) -> dict:
+    """صوت من نموذج بمكتبة النماذج. توقيت الكلمات من التفريغ (word_timing) لأن النماذج المفتوحة ما بترجّعه عادةً.
+    ما في رجوع تلقائي لمزوّد تاني: تغيير الصوت بنص الفيديو بيخرّبه — الفشل بيطلع برسالته."""
+    import model_library
+    import model_run
+    import word_timing
+    m = model_library.get(cfg["lib_id"])
+    if not m:
+        raise TTSError("النموذج المطلوب مش موجود بمكتبة النماذج")
+    ctx = _LOG_CTX.get() or {}
+    req = model_run.RunRequest(task="voice", text=text, out=Path(out_path), params={"voice": cfg["voice"], "speed": cfg["speed"]},
+                               script_stem=ctx.get("script_stem"), shot_id=ctx.get("shot_id"))
+    try:
+        res = model_run.run(m, req)
+    except model_run.RunError as e:
+        err = TTSError(f"«{m['name']}»: {e}")
+        err.logged = True                                  # model_run سجّل المحاولة
+        raise err from None
+    duration = audio_duration(Path(out_path)) or round(float(res.info.get("duration_sec") or 0), 2)
+    result = {"path": str(out_path), "duration_sec": duration, "provider": cfg["provider"], "model": cfg["model"], "voice": cfg["voice"], "logged": True}
+    if want_timing:
+        words, src = word_timing.words_for(Path(out_path), text, duration)
+        result["words"], result["timing_source"] = words, src
+    return result
+
+
 def speak(text: str, out_path: Path, overrides: dict | None = None,
           want_timing: bool = False) -> dict:
     cfg = tts_config(overrides)
+    if cfg.get("library_error"):
+        raise TTSError(cfg["library_error"])
+    if cfg["kind"] == "library":
+        return _speak_library(cfg, text, out_path, want_timing)
     cfg["want_timing"] = bool(want_timing)
     if not cfg["api_key"]:
         raise TTSError(f"ما في مفتاح لمزوّد {cfg['provider']} — حطّه من الإعدادات")

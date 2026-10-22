@@ -79,6 +79,9 @@ def can_start(stem: str, n: int) -> tuple[bool, str]:
         return False, "محطة غير معروفة"
     if n == 1:
         return True, ""
+    import studio_gate
+    if studio_gate.is_free(stem):                     # المشروع الحر: بلا ترتيب إجباري بين المحطات
+        return True, ""
     prev = load(stem)["stations"][str(n - 1)]["state"]
     if prev != "approved":
         return False, (f"محطة «{STATIONS[n][1]}» ما بتبدأ قبل اعتماد «{STATIONS[n - 1][1]}» "
@@ -137,6 +140,12 @@ def derive_early(stem: str, script_path) -> dict:
     def put(n, state, note):
         if st["stations"][str(n)]["state"] != state:
             set_state(stem, n, state, note)
+
+    import studio_gate
+    if studio_gate.mode_of(script) == "free":         # المشروع الحر: ما في بريف ولا مراجعة ولا شخصية تنتظر
+        for n in (1, 2, 3):
+            put(n, "approved", "مشروع حر")
+        return summary(stem)
 
     b = review_script.load_brief(script)
     if b is not None and brief.completeness(b)["ready"]:

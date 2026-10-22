@@ -13,7 +13,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -310,6 +310,106 @@ def script_versions_endpoint(file: str) -> dict:
     import script_versions
     path = _script_path(file)
     return {"versions": script_versions.list_versions(path), "diffs": script_versions.diffs(path)}
+
+
+def _ms(fn, *a, **k):
+    """بينفّذ ويحوّل أخطاء السيناريو اليدوي لرسائل HTTP عربية."""
+    import manual_script
+    import voice_upload
+    try:
+        return fn(*a, **k)
+    except manual_script.ManualScriptError as e:
+        raise HTTPException(e.status, str(e))
+    except voice_upload.VoiceUploadError as e:
+        raise HTTPException(e.status, str(e))
+
+
+@router.post("/scripts/manual")
+async def create_manual_script(product_file: str = Form(...), pattern_id: str = Form(...), title: str = Form(""), text: str = Form(""),
+                               split_sentences: bool = Form(False), file: UploadFile | None = File(None)) -> dict:
+    """سيناريو بإيدك للمهمة الموجّهة: نص (كل فقرة مشهد) أو Excel (سطر لكل مشهد) — 7 مشاهد بالضبط. بيرجّع {file, warnings, …حالة المراجعة}."""
+    import manual_script
+    import review_loop
+    import scene_import
+    import accounts
+    has_file = bool(file is not None and (file.filename or ""))
+    if has_file and (text or "").strip():
+        raise HTTPException(400, "اختار نص أو ملف Excel، مش الاتنين مع بعض")
+    xlsx = None
+    if has_file:
+        xlsx = await file.read(scene_import.MAX_BYTES + 1)
+        if len(xlsx) > scene_import.MAX_BYTES:
+            raise HTTPException(413, f"الملف أكبر من {scene_import.MAX_BYTES // (1024 * 1024)} ميغا")
+    rows, warnings = _ms(manual_script.rows_from, text, xlsx, split_sentences)
+    path = _ms(manual_script.create, product_file, pattern_id, rows, title=title, by=accounts.who("owner"))
+    return {"file": path.name, "warnings": warnings, **review_loop.status(path)}
+
+
+@router.post("/scripts/manual/from-voice")
+async def create_manual_script_from_voice(product_file: str = Form(...), pattern_id: str = Form(...), file: UploadFile = File(...),
+                                          language: str = Form("")) -> dict:
+    """ابدأ من تسجيل صوتك: بيتفرّغ وبيصير سيناريو 7 مشاهد وبيتوافق عليه حسابياً وصوتك بينقصّ على المشاهد — كمهمة خلفية.
+    بيرجّع {job_id, token}؛ بعد ما تخلص المهمة GET /api/scripts/manual/result/<token> بيعطي اسم السيناريو."""
+    import accounts
+    import manual_script
+    import media_io
+    import uuid
+    import voice_upload
+    from fastapi.concurrency import run_in_threadpool
+    from web import jobs
+    _ms(manual_script._product, product_file)
+    _ms(manual_script._pattern, pattern_id)
+    kind = media_io.kind_of(file.filename)
+    if kind not in ("audio", "video"):
+        raise HTTPException(400, "لازم ملف صوت (mp3, wav, m4a, ogg…) أو فيديو فيه صوتك")
+    token = uuid.uuid4().hex
+    d = manual_script.jobs_dir() / token
+    d.mkdir(parents=True, exist_ok=True)
+    dest = d / f"upload{Path(file.filename or '').suffix.lower()}"
+    try:
+        await media_io.stream_to(file, dest, media_io.MAX_AUDIO_BYTES if kind == "audio" else media_io.MAX_VIDEO_BYTES)
+        info = await run_in_threadpool(media_io.probe_av, dest)
+    except media_io.MediaError as e:
+        import shutil
+        shutil.rmtree(d, ignore_errors=True)
+        raise HTTPException(e.status, str(e))
+    if not info["has_audio"] or info["duration_sec"] > voice_upload.MAX_SOURCE_SEC:
+        import shutil
+        shutil.rmtree(d, ignore_errors=True)
+        raise HTTPException(400, "الملف ما فيه صوت" if not info["has_audio"] else f"التسجيل أطول من {int(voice_upload.MAX_SOURCE_SEC // 60)} دقايق — قسّمه")
+    cmd = ["manual_script.py", "from-voice", "--product", product_file, "--pattern", pattern_id, "--audio", str(dest), "--token", token]
+    if language.strip():
+        cmd += ["--language", language.strip()]
+    return {"job_id": jobs.create_job("voice", "سيناريو من تسجيل صوتك", cmd), "token": token, "by": accounts.who("owner")}
+
+
+@router.get("/scripts/manual/result/{token}")
+def manual_voice_result(token: str) -> dict:
+    """نتيجة «ابدأ من تسجيلك» بعد ما تخلص المهمة: {file, ok, reason, voice}."""
+    import manual_script
+    if not re.fullmatch(r"[0-9a-f]{32}", token or ""):
+        raise HTTPException(400, "رمز غير صالح")
+    f = manual_script.jobs_dir().parent / f"manual_voice_{token}.json"
+    if not f.exists():
+        raise HTTPException(404, "لسا ما في نتيجة")
+    return json.loads(f.read_text(encoding="utf-8"))
+
+
+@router.post("/scripts/{file}/approve-local")
+def approve_script_local(file: str, payload: dict | None = None) -> dict:
+    """موافقتك بالفحص الحسابي والادعاءات بس (لما مراجعة الذكاء مش متاحة): أي مانع بيوقف. لو في مراجعة ذكاء فيها موانع بيطلب تأكيد."""
+    import review_loop
+    import studio_gate
+    path = _script_path(file)
+    if studio_gate.is_free(path):
+        raise HTTPException(409, "المشروع الحر ما بيحتاج موافقة — هاد للمهمة الموجّهة")
+    try:
+        st = review_loop.approve_local(path, by=__import__("accounts").who("owner"), confirm=bool((payload or {}).get("confirm")))
+    except review_loop.ConfirmNeeded as e:
+        raise HTTPException(409, {"code": "needs_confirm", "message": str(e)})
+    except review_loop.ApprovalError as e:
+        raise HTTPException(409, str(e))
+    return {"ok": True, **st}
 
 
 @router.post("/scripts/{file}/approve")

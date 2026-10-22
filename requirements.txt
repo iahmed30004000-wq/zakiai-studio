@@ -21,3 +21,4 @@ kornia>=0.8
 einops>=0.8
 spandrel>=0.4
 faster-whisper>=1.0
+filelock>=3.12                 # قفل الكرت المشترك مع صناديق الأوزان (gpu_lease.py) — بيشتغل بس لما VP_GPU_LOCK_DIR مضبوط

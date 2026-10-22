@@ -57,9 +57,13 @@ def assign_types(tl: dict) -> None:
             prev = t
 
 
-def _words_of(tl: dict, sh: dict) -> str:
-    a, b = sh["word_range"]
-    return " ".join(w["text"] for w in tl["words"][a:b + 1])
+def _words_of(tl: dict, sh: dict, scene: dict | None = None) -> str:
+    wr = sh.get("word_range")
+    if wr:
+        a, b = wr
+        return " ".join(w["text"] for w in tl["words"][a:b + 1])
+    # مشروع حر: بلا كلمات موقّتة — نص اللقطة، وإلا كلام المشهد
+    return (sh.get("text") or (scene or {}).get("voiceover") or "").strip()
 
 
 def _who(ch: dict | None, stype: str) -> str:
@@ -74,7 +78,7 @@ def _who(ch: dict | None, stype: str) -> str:
 def compose(tl: dict, scene: dict, sh: dict, script_scene: dict, product: str, ch: dict | None,
             first: bool) -> str:
     stype = sh["type"]
-    words = _words_of(tl, sh)
+    words = _words_of(tl, sh, scene)
     parts = [f"{TYPE_LABEL.get(stype, stype)}"]
     visual = (script_scene.get("visual") or "").strip()
     if first and visual:

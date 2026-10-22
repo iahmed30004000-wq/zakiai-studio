@@ -44,6 +44,8 @@ MIN_AUDIO_SEC = 0.3
 SECONDS_RANGE = {"ahat": (0.5, 30.0), "music": (5.0, 300.0)}
 SECONDS_DEFAULT = {"ahat": 2.0, "music": 30.0}
 DRIFT_WARN = 0.6                                                   # نفس عتبة generate_voice
+LOCAL_STALE_SEC = 180                                              # طلب «local» (بيتولّد بنموذج المكتبة) بلا نبضة من 3 دقايق = المولّد وقع أو انقتل (ويندوز: قتل مباشر): بيرجع ينتظر لحاله
+LOCAL_BEAT_SEC = 30.0                                              # المولّد (sound_gen) بينبض كل هالمدة طول التوليد، فالتوليد الطويل ما بيعتبر واقع
 
 # وسم الإحساس بالعربي (مقابل مفاتيح tts.emotion_tag الإنجليزية)
 EMOTION_AR = {"curious": "فضولي", "excited": "متحمس", "empathetic": "متعاطف",
@@ -89,14 +91,35 @@ def overrides_path(stem: str) -> Path:
 
 
 # ── طلبات الآهات والموسيقى ──────────────────────────────────────────────
+def _age_sec(iso) -> float:
+    try:
+        return (datetime.now(timezone.utc) - datetime.fromisoformat(str(iso))).total_seconds()
+    except (TypeError, ValueError):
+        return float("inf")
+
+
 def _requests(stem: str) -> list[dict]:
     d = _load_json(requests_path(stem), {"requests": []})
     r = d.get("requests") if isinstance(d, dict) else None
-    return r if isinstance(r, list) else []
+    rows = r if isinstance(r, list) else []
+    for x in rows:                                                   # المولّد وقع وسبب الطلب «local» عالق: بيرجع ينتظر (بالذاكرة؛ بيتثبّت مع أول كتابة)
+        if isinstance(x, dict) and x.get("status") == "local" and _age_sec(x.get("local_at")) > LOCAL_STALE_SEC:
+            x["status"] = "pending"
+            x.pop("local_at", None)
+            x.pop("local_id", None)
+    return rows
 
 
 def _save_requests(stem: str, rows: list[dict]) -> None:
     _dump_json(requests_path(stem), {"requests": rows})
+
+
+def _req_lock(stem: str):
+    """قفل ملف طلبات السيناريو: قراءة→تعديل→كتابة ذرّية بين عمليات الاستوديو (الخادم والمهام الخلفية عمليات مختلفة). ما بنداخل قفلين (ويندوز)."""
+    import filelock
+    p = requests_path(stem)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    return filelock.FileLock(str(p) + ".lock", timeout=20)
 
 
 def list_requests(stem: str) -> list[dict]:
@@ -130,24 +153,26 @@ def add_request(stem: str, kind: str, prompt: str, name: str = "", mood: str = "
     if not lo <= seconds <= hi:
         raise ExtError(f"المدة لهالنوع بين {lo:g} و{hi:g} ثانية")
     name = str(name or "").strip()[:80] or prompt[:40]
-    rows = _requests(stem)
-    if sum(1 for r in rows if r.get("status") == "pending") >= MAX_REQUESTS:
-        raise ExtError(f"عندك {MAX_REQUESTS} طلب معلّق — خلّص أو احذف منهم أول")
-    nums = [int(m.group(1)) for r in rows if (m := re.fullmatch(r"req_(\d+)", str(r.get("id", ""))))]
-    row = {"id": f"req_{(max(nums) + 1 if nums else 1):03d}", "kind": kind, "prompt": prompt, "name": name,
-           "mood": mood, "seconds": seconds, "status": "pending", "track_id": None, "site": None,
-           "created_at": _now(), "done_at": None}
-    rows.append(row)
-    _save_requests(stem, rows)
+    with _req_lock(stem):
+        rows = _requests(stem)
+        if sum(1 for r in rows if r.get("status") == "pending") >= MAX_REQUESTS:
+            raise ExtError(f"عندك {MAX_REQUESTS} طلب معلّق — خلّص أو احذف منهم أول")
+        nums = [int(m.group(1)) for r in rows if (m := re.fullmatch(r"req_(\d+)", str(r.get("id", ""))))]
+        row = {"id": f"req_{(max(nums) + 1 if nums else 1):03d}", "kind": kind, "prompt": prompt, "name": name,
+               "mood": mood, "seconds": seconds, "status": "pending", "track_id": None, "site": None,
+               "created_at": _now(), "done_at": None}
+        rows.append(row)
+        _save_requests(stem, rows)
     return row
 
 
 def delete_request(stem: str, rid: str) -> None:
     rid = _norm_id(rid)
-    rows = _requests(stem)
-    if not any(r.get("id") == rid for r in rows):
-        raise ExtError("الطلب غير موجود")
-    _save_requests(stem, [r for r in rows if r.get("id") != rid])
+    with _req_lock(stem):
+        rows = _requests(stem)
+        if not any(r.get("id") == rid for r in rows):
+            raise ExtError("الطلب غير موجود")
+        _save_requests(stem, [r for r in rows if r.get("id") != rid])
     for kind in REQUEST_KINDS:
         _clear_retry(stem, kind, rid)
 
@@ -644,6 +669,8 @@ def _receive_request(path: Path, kind: str, task_id: str, data: bytes, site: str
     r = next((x for x in rows if x.get("id") == task_id and x.get("kind") == kind), None)
     if not r:
         raise ExtError("الطلب غير موجود")
+    if r.get("status") == "local":
+        raise ExtError("هالطلب عم يتولّد بنموذج من مكتبة النماذج هلأ — استنى يخلص أو احذفه")
     if r.get("status") != "pending":
         raise ExtError("هالطلب خلص من قبل — أعد المحاولة منه إذا بدك نسخة تانية")
     _check_blob(data, MAX_AUDIO_BYTES, "الصوت")
@@ -657,10 +684,78 @@ def _receive_request(path: Path, kind: str, task_id: str, data: bytes, site: str
         raise ExtError(str(e))
     t.update(source=f"extension:{site}", kind=kind, request_id=task_id, from_script=stem)
     ahat._write(t)                                                   # غير معتمدة: بتنتظر سمع المالك
-    r.update(status="done", track_id=t["id"], site=site, done_at=_now())
-    _save_requests(stem, rows)
+    with _req_lock(stem):                                            # التحويل أخد ثواني: نعيد قراءة الطلبات (ما نكتب فوق تعديل غيرنا)
+        rows = _requests(stem)
+        r = next((x for x in rows if x.get("id") == task_id and x.get("kind") == kind), None)
+        if r is None or r.get("status") != "pending":
+            raise ExtError("الطلب اتغيّر أثناء الرفع (انحذف أو بلّش يتولّد بنموذج المكتبة) — المقطع دخل مكتبة الأصوات بس الطلب ما اتقفل")
+        r.update(status="done", track_id=t["id"], site=site, done_at=_now())
+        _save_requests(stem, rows)
     ext_bridge.append_log(stem, {"step": "result", "shot": task_id, "msg": f"وصل {'موسيقى' if kind == 'music' else 'مؤثر'} {dur:.1f}ث من {site}"})
     return {"kind": kind, "request": task_id, "track_id": t["id"], "duration_sec": t["duration_sec"], "approved": False}
+
+
+def _find_request(rows: list[dict], rid: str) -> dict | None:
+    return next((x for x in rows if x.get("id") == _norm_id(rid) and x.get("kind") in REQUEST_KINDS), None)
+
+
+def complete_request(stem: str, rid: str, track_id: str, site: str, hold: str | None = None) -> dict:
+    """يقفل طلب آهة/موسيقى بمقطع دخل المكتبة (غير معتمد) — لتوليد النماذج (sound_gen.py)؛ الإضافة بتقفل طلبها بـ _receive_request.
+    hold (رمز mark_local): لو انعطى، الطلب لازم لسا «local» بنفس الرمز — غير هيك (اتعدّل بإعادة المحاولة، أو انحذف وانضاف غيره بنفس الرقم) ما بنكتب فوقه."""
+    with _req_lock(stem):
+        rows = _requests(stem)
+        r = _find_request(rows, rid)
+        if not r:
+            raise ExtError("الطلب غير موجود")
+        if hold is not None and not (r.get("status") == "local" and r.get("local_id") == hold):
+            raise ExtError("الطلب اتغيّر أثناء التوليد (اتعدّل أو انحذف) — المقطع دخل مكتبة الأصوات بس الطلب ما اتقفل")
+        r.update(status="done", track_id=track_id, site=site, done_at=_now())
+        r.pop("local_at", None)
+        r.pop("local_id", None)
+        _save_requests(stem, rows)
+    return r
+
+
+def mark_local(stem: str, rid: str) -> dict:
+    """يعلّم طلب معلّق «عم يتولّد بنموذج المكتبة» (status=local + رمز local_id + نبضة local_at) فالإضافة ما تاخده بنفس الوقت.
+    ExtError لو مش معلّق (انحذف، خلص، أو شغّال أصلاً)."""
+    import uuid
+    with _req_lock(stem):
+        rows = _requests(stem)
+        r = _find_request(rows, rid)
+        if not r:
+            raise ExtError("الطلب غير موجود")
+        if r.get("status") == "local":
+            raise ExtError("هالطلب عم يتولّد بنموذج المكتبة هلأ — استنى يخلص")
+        if r.get("status") != "pending":
+            raise ExtError("هالطلب خلص من قبل — اطلب نسخة جديدة إذا بدك")
+        r.update(status="local", local_at=_now(), local_id=uuid.uuid4().hex[:12])
+        _save_requests(stem, rows)
+    return dict(r)
+
+
+def touch_local(stem: str, rid: str, hold: str) -> bool:
+    """نبضة المولّد: بتجدّد local_at طالما الطلب لسا «local» بنفس الرمز. False = الطلب تغيّر (المولّد بيوقف النبض)."""
+    with _req_lock(stem):
+        rows = _requests(stem)
+        r = _find_request(rows, rid)
+        if r is None or r.get("status") != "local" or r.get("local_id") != hold:
+            return False
+        r["local_at"] = _now()
+        _save_requests(stem, rows)
+    return True
+
+
+def release_local(stem: str, rid: str, hold: str | None = None) -> None:
+    """التوليد فشل أو انلغى: الطلب بيرجع ينتظر. أي حالة غير local (انحذف أو خلص)، أو «local» برمز تاني (توليد تاني)، بتضل متل ما هي."""
+    with _req_lock(stem):
+        rows = _requests(stem)
+        r = _find_request(rows, rid)
+        if r is not None and r.get("status") == "local" and (hold is None or r.get("local_id") == hold):
+            r["status"] = "pending"
+            r.pop("local_at", None)
+            r.pop("local_id", None)
+            _save_requests(stem, rows)
 
 
 # ── نقطة الاستقبال الموحّدة ─────────────────────────────────────────────
@@ -739,7 +834,10 @@ def retry(script_path, task_id: str, kind: str, prompt: str | None = None) -> di
                 raise ExtError(f"الوصف أطول من {MAX_REQUEST_PROMPT} حرف")
             r["prompt"] = prompt
         r.update(status="pending", done_at=None)
-        _save_requests(stem, rows)
+        r.pop("local_at", None)
+        r.pop("local_id", None)
+        with _req_lock(stem):
+            _save_requests(stem, [x if x.get("id") != r["id"] else r for x in _requests(stem)])
         _set_retry(stem, kind, task_id, None)
     else:
         _set_retry(stem, kind, task_id, prompt)

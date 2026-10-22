@@ -21,6 +21,18 @@ async function loadAhat() {
       </div>
       <div class="row end"><button class="zk-btn zk-btn--primary" id="ahAdd" type="button">ارفع</button></div>
       <div id="ahStatus" class="status"></div></div>
+    <div class="panel"><h3>ولّد بنموذج من مكتبة النماذج</h3>
+      <p class="hint">بدل ما ترفع ملف أو تطلب من الإضافة: النموذج اللي ربطته بـ«مكتبة النماذج» (الموسيقى أو المؤثرات) بيولّد المقطع هون. الموسيقى بتنطلب دايماً «بلا غناء ولا كلام». اللي بيطلع بيدخل المكتبة <b>غير معتمد</b> وبينتظر سمعك — ما بيدخل أي فيديو بدون اعتمادك.</p>
+      <div class="task-grid">
+        <label class="zk-field"><span class="zk-field__label">النوع</span>
+          <select class="zk-select" id="sgKind"><option value="music">موسيقى (بلا غناء)</option><option value="ahat">مؤثر / آهة</option></select></label>
+        <label class="zk-field"><span class="zk-field__label">الاسم</span><input class="zk-input" id="sgName" maxlength="80" placeholder="مثلاً: موسيقى هادئة للمقدمة"></label>
+        <label class="zk-field"><span class="zk-field__label">المزاج</span><select class="zk-select" id="sgMood">${Object.entries(AH.moods).map(([k, v]) => `<option value="${esc(k)}">${esc(v)}</option>`).join("")}</select></label>
+        <label class="zk-field"><span class="zk-field__label">المدة بالثواني</span><input class="zk-input" id="sgSec" type="number" min="1" max="300" step="1" value="30"></label>
+      </div>
+      <label class="zk-field"><span class="zk-field__label">الوصف (شو بدك تسمع؟)</span><textarea class="zk-textarea" id="sgPrompt" rows="2" maxlength="600" placeholder="مثلاً: بيانو هادئ دافئ بإيقاع بطيء"></textarea></label>
+      <div class="row end"><button class="zk-btn zk-btn--primary" id="sgGo" type="button">ولّد</button></div>
+      <div id="sgStatus" class="status" role="status" aria-live="polite"></div></div>
     <div class="panel"><h3>المقاطع (${AH.tracks.length})</h3>
       ${AH.tracks.map((t) => `
         <div class="ahrow" data-id="${esc(t.id)}">
@@ -41,6 +53,23 @@ async function loadAhat() {
     try { await api("/api/ahat", { method: "POST", body: fd }); toast("انرفع", "ok"); await loadAhat(); }
     catch (e) { setStatus(st, e.message, "err"); }
   });
+  const sgKind = $("#sgKind");
+  if (sgKind) {
+    sgKind.addEventListener("change", () => { $("#sgSec").value = sgKind.value === "music" ? 30 : 3; });
+    $("#sgGo").addEventListener("click", async (ev) => {
+      const btn = ev.currentTarget, st = $("#sgStatus"), prompt = $("#sgPrompt").value.trim();
+      if (!prompt) { setStatus(st, "اكتب وصف للي بدك ياه", "err"); return; }
+      btn.disabled = true;
+      setStatus(st, "عم يولّد… (ممكن ياخد دقايق حسب النموذج)");
+      try {
+        const { job_id: jid } = await post("/api/ahat/generate", { kind: sgKind.value, prompt, name: $("#sgName").value.trim(), mood: $("#sgMood").value, seconds: Number($("#sgSec").value) || undefined });
+        const job = await waitForJob(jid);
+        if (job.status !== "done") throw new Error(job.error || "فشل التوليد");
+        toast("وصل مقطع جديد للمكتبة — بانتظار سمعك", "ok");
+        await loadAhat();
+      } catch (e) { setStatus(st, e.message, "err"); btn.disabled = false; }
+    });
+  }
   /* الاعتماد بالسمع: الزر بيتفعّل بعد ما المقطع يشتغل فعلاً أكتر من ثانيتين */
   $$("audio[data-audio]", box).forEach((au) => au.addEventListener("timeupdate", () => {
     if (au.currentTime > 2 || (au.duration && au.currentTime >= au.duration - 0.2)) {
@@ -132,6 +161,17 @@ async function refreshAhatReqs() {
   if (!r.data) { list.innerHTML = errBox(r.err); return; }
   const reqs = (r.data.requests || []).filter((x) => x.kind === "ahat" || x.kind === "music");
   list.innerHTML = extReqList(reqs, true);
+  $$("[data-genreq]", list).forEach((b) => b.addEventListener("click", async () => {
+    b.disabled = true;
+    try {
+      const { job_id: jid } = await post(`/api/studio/${enc(AE.file)}/sounds/${enc(b.dataset.genreq)}/generate`, {});
+      toast("بدأ التوليد… ممكن ياخد دقايق", "");
+      const job = await waitForJob(jid);
+      toast(job.status === "done" ? "وصل مقطع جديد للمكتبة — بانتظار سمعك" : (job.error || "فشل التوليد"), job.status === "done" ? "ok" : "err");
+      await refreshAhatReqs();
+      await loadAhat();
+    } catch (e) { toast(e.message, "err"); b.disabled = false; }
+  }));
   $$("[data-delreq]", list).forEach((b) => b.addEventListener("click", async () => {
     if (!confirm("حذف هالطلب؟")) return;
     try { await extDeleteRequest(AE.file, b.dataset.delreq); await refreshAhatReqs(); } catch (e) { toast(e.message, "err"); }

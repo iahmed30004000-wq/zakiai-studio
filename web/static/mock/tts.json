@@ -1,0 +1,151 @@
+{
+  "current": {
+    "provider": "elevenlabs",
+    "kind": "elevenlabs",
+    "model": "eleven_v3",
+    "voice": "Rachel",
+    "base_url": "https://api.elevenlabs.io/v1",
+    "speed": 1.0,
+    "stability": 0.5,
+    "similarity": 0.75,
+    "style": 0.0,
+    "instructions": "",
+    "gender": "female",
+    "age": "adult",
+    "dialect": "ar-SY",
+    "tone": "warm",
+    "key_set": true,
+    "key_masked": "مضبوط"
+  },
+  "providers": {
+    "elevenlabs": {
+      "label": "ElevenLabs",
+      "models": [
+        "eleven_v3",
+        "eleven_multilingual_v2",
+        "eleven_turbo_v2_5"
+      ],
+      "voices": [
+        "Rachel",
+        "Adam",
+        "Layla"
+      ],
+      "lists_voices": true,
+      "note": "الأقوى باللهجات العربية. eleven_v3 بيدعم وسوم المشاعر بالنص.",
+      "env_key": "ELEVENLABS_API_KEY"
+    },
+    "openai": {
+      "label": "OpenAI TTS",
+      "models": [
+        "gpt-4o-mini-tts",
+        "tts-1-hd",
+        "tts-1"
+      ],
+      "voices": [
+        "alloy",
+        "echo",
+        "fable",
+        "onyx",
+        "nova",
+        "shimmer",
+        "ash",
+        "sage",
+        "coral"
+      ],
+      "lists_voices": false,
+      "note": "gpt-4o-mini-tts بيقبل تعليمات نبرة بحقل instructions.",
+      "env_key": "OPENAI_API_KEY"
+    },
+    "minimax": {
+      "label": "MiniMax Speech",
+      "models": [
+        "speech-02-hd",
+        "speech-02-turbo"
+      ],
+      "voices": [
+        "male-qn-qingse",
+        "female-shaonv",
+        "audiobook_male_1"
+      ],
+      "lists_voices": false,
+      "note": "بيحتاج GroupId مع المفتاح — حطّه بخانة Base URL هيك: ...?GroupId=xxx",
+      "env_key": "MINIMAX_API_KEY"
+    },
+    "google": {
+      "label": "Google Cloud TTS",
+      "models": [
+        "Chirp3-HD",
+        "Neural2",
+        "Standard"
+      ],
+      "voices": [],
+      "lists_voices": true,
+      "note": "بيدعم لهجات عربية متعددة (ar-XA وغيرها). الصوت بينحدد بالاسم الكامل.",
+      "env_key": "GOOGLE_TTS_API_KEY"
+    },
+    "gemini": {
+      "label": "Google Gemini TTS",
+      "models": [
+        "gemini-2.5-flash-preview-tts",
+        "gemini-2.5-pro-preview-tts"
+      ],
+      "voices": [
+        "Kore",
+        "Puck",
+        "Charon",
+        "Fenrir",
+        "Aoede",
+        "Leda",
+        "Orus",
+        "Zephyr"
+      ],
+      "lists_voices": false,
+      "note": "بيقبل تعليمات نبرة بلغة طبيعية قبل النص — الأمرن بالتحكم بالأداء.",
+      "env_key": "GEMINI_API_KEY"
+    },
+    "deepgram": {
+      "label": "Deepgram Aura",
+      "models": [
+        "aura-2-thalia-en",
+        "aura-asteria-en"
+      ],
+      "voices": [],
+      "lists_voices": false,
+      "note": "سريع ورخيص، بس أصواته إنجليزية بالأساس — مش مناسب للعربي.",
+      "env_key": "DEEPGRAM_API_KEY"
+    }
+  },
+  "attributes": {
+    "genders": {
+      "": "أي",
+      "female": "أنثى",
+      "male": "ذكر"
+    },
+    "ages": {
+      "": "أي",
+      "young": "شابة/شاب (18-25)",
+      "adult": "بالغ (26-40)",
+      "mature": "ناضج (40-55)",
+      "senior": "كبير بالسن (55+)"
+    },
+    "dialects": {
+      "": "أي",
+      "ar-SY": "شامي",
+      "ar-EG": "مصري",
+      "ar-SA": "خليجي",
+      "ar-MA": "مغربي",
+      "ar-XA": "فصحى"
+    },
+    "tones": {
+      "": "طبيعي",
+      "warm": "دافئ ومطمئن",
+      "energetic": "حماسي وسريع",
+      "confident": "واثق وحازم",
+      "intimate": "همس قريب وسرّي",
+      "urgent": "مستعجل وضاغط",
+      "empathetic": "متعاطف وهادي",
+      "excited": "متحمّس ومنبهر",
+      "authoritative": "خبير وموثوق"
+    }
+  }
+}

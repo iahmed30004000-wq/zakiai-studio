@@ -430,8 +430,9 @@ def _call_anthropic(cfg: dict, system: str, blocks: list[dict], max_tokens: int)
 def _call_openai(cfg: dict, system: str, blocks: list[dict], max_tokens: int) -> str:
     if not cfg["base_url"]:
         raise LLMError(f"ما في base_url لمزوّد {cfg['provider']} — حدّده بالإعدادات")
-    # المزوّد المحلي (Ollama) ما بدّه مفتاح
-    is_local = cfg["base_url"].startswith(("http://localhost", "http://127.0.0.1"))
+    # المزوّد المحلي (Ollama، أو نموذج كتابة على نفس السيرفر باسم صندوق docker) ما بدّه مفتاح
+    import connections
+    is_local = cfg["base_url"].startswith(("http://localhost", "http://127.0.0.1")) or connections.is_local_url(cfg["base_url"])
     if not cfg["api_key"] and not is_local:
         raise LLMError(f"ما في مفتاح لمزوّد {cfg['provider']} — حطّه من تبويب الإعدادات")
 

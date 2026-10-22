@@ -1,0 +1,170 @@
+{
+  "ok": true,
+  "reason": "",
+  "message": "الصندوق شغّال — 7 نموذج جاهز و1 مرفوض",
+  "url": "http://engine:8000",
+  "api": 2,
+  "backend": "diffusers",
+  "tasks": [
+    "t2i",
+    "i2i",
+    "upscale",
+    "t2v",
+    "i2v",
+    "t2a"
+  ],
+  "gpu": {
+    "free_gb": 21.4,
+    "total_gb": 24.0
+  },
+  "loaded_model": null,
+  "queued": 0,
+  "running": 0,
+  "gpu_busy": false,
+  "legacy": false,
+  "models": [
+    {
+      "name": "Qwen-Image",
+      "kind": "image",
+      "pipeline": "QwenImagePipeline",
+      "family": "qwen-image",
+      "tasks": [
+        "t2i"
+      ],
+      "size_gb": 40.9,
+      "licence": {
+        "id": "apache-2.0",
+        "commercial": "yes"
+      },
+      "ok": true,
+      "reason": "",
+      "note": ""
+    },
+    {
+      "name": "Qwen-Image-Edit-2509",
+      "kind": "image",
+      "pipeline": "QwenImageEditPlusPipeline",
+      "family": "qwen-image-edit",
+      "tasks": [
+        "i2i"
+      ],
+      "size_gb": 40.9,
+      "licence": {
+        "id": "apache-2.0",
+        "commercial": "yes"
+      },
+      "ok": true,
+      "reason": "",
+      "note": ""
+    },
+    {
+      "name": "FLUX.1-schnell",
+      "kind": "image",
+      "pipeline": "FluxPipeline",
+      "family": "flux",
+      "tasks": [
+        "t2i"
+      ],
+      "size_gb": 23.8,
+      "licence": {
+        "id": "apache-2.0",
+        "commercial": "yes"
+      },
+      "ok": true,
+      "reason": "",
+      "note": "نسخة سريعة (4 خطوات)"
+    },
+    {
+      "name": "Wan2.2-TI2V-5B-Diffusers",
+      "kind": "video",
+      "pipeline": "WanPipeline",
+      "family": "wan",
+      "tasks": [
+        "t2v",
+        "i2v"
+      ],
+      "size_gb": 33.7,
+      "licence": {
+        "id": "apache-2.0",
+        "commercial": "yes"
+      },
+      "ok": true,
+      "reason": "",
+      "note": ""
+    },
+    {
+      "name": "LTX-Video",
+      "kind": "video",
+      "pipeline": "LTXPipeline",
+      "family": "ltx",
+      "tasks": [
+        "t2v",
+        "i2v"
+      ],
+      "size_gb": 9.4,
+      "licence": {
+        "id": "ltx-video-open-weights",
+        "commercial": "unknown"
+      },
+      "ok": true,
+      "reason": "",
+      "note": ""
+    },
+    {
+      "name": "upscale-RealESRGAN_x4plus",
+      "kind": "image",
+      "pipeline": "spandrel",
+      "family": "upscale",
+      "tasks": [
+        "upscale"
+      ],
+      "size_gb": 0.06,
+      "licence": {
+        "id": "غير معروفة",
+        "commercial": "unknown"
+      },
+      "ok": true,
+      "reason": "",
+      "note": "بيتحمّل بـ spandrel (tensors بس، بلا تنفيذ كود)"
+    },
+    {
+      "name": "stable-audio-open-1.0",
+      "kind": "audio",
+      "pipeline": "StableAudioPipeline",
+      "family": "stable-audio",
+      "tasks": [
+        "t2a"
+      ],
+      "size_gb": 4.93,
+      "licence": {
+        "id": "stable-audio-community",
+        "commercial": "unknown"
+      },
+      "ok": true,
+      "reason": "",
+      "note": ""
+    },
+    {
+      "name": "Old-Checkpoint",
+      "kind": "image",
+      "pipeline": "FluxPipeline",
+      "family": "flux",
+      "tasks": [],
+      "size_gb": 6.9,
+      "licence": {
+        "id": "غير معروفة",
+        "commercial": "unknown"
+      },
+      "ok": false,
+      "reason": "فيه ملفات غير آمنة: model.ckpt — أوزان safetensors بس (pickle بيشغّل كود لما ينفتح)",
+      "note": ""
+    }
+  ],
+  "configured": true,
+  "box": {
+    "url": "http://engine:8000",
+    "token_secret": "modellib.box.token"
+  },
+  "token_set": true,
+  "audio_max_seconds": 47
+}

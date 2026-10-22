@@ -11,6 +11,9 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ffmpeg libgl1 libglib2.0-0 \
  && rm -rf /var/lib/apt/lists/*
 
+# أقفال الكرت المشتركة مع صناديق الأوزان (حجم بالـ compose). 0777 لأنو مستخدم الصناديق (10001) غير مستخدم التطبيق (APP_UID).
+RUN mkdir -p /locks && chmod 0777 /locks
+
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt

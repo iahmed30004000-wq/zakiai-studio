@@ -43,6 +43,16 @@ def get(conn_id: str) -> dict | None:
 # ── جلب الموديلات من المزوّد ─────────────────────────────────────────────
 
 
+def is_local_url(url: str) -> bool:
+    """عنوان محلي (127.x أو localhost أو اسم صندوق docker بلا نقاط، بمنفذ صريح): ما بدّه مفتاح — نفس قائمة سماح الصناديق (net_allow)."""
+    import net_allow
+    try:
+        net_allow.validate(url, subject="العنوان", allow_path=True)
+        return True
+    except net_allow.NetAllowError:
+        return False
+
+
 def fetch_models(provider: str, api_key: str, base_url: str = "") -> list[dict]:
     """يسأل المزوّد شو الموديلات المتاحة لهالمفتاح. بيرجع [{id, label}]."""
     preset = PROVIDER_PRESETS.get(provider)
@@ -62,7 +72,7 @@ def fetch_models(provider: str, api_key: str, base_url: str = "") -> list[dict]:
             if not url:
                 raise ConnectionError_("لازم base_url لهالمزوّد")
             r = requests.get(f"{url}/models",
-                             headers={"Authorization": f"Bearer {api_key}"}, timeout=45)
+                             headers={"Authorization": f"Bearer {api_key}"} if api_key else {}, timeout=45)
     except requests.RequestException as e:
         raise ConnectionError_(f"ما قدرت أوصل للمزوّد: {e}")
 
@@ -103,8 +113,9 @@ def fetch_models(provider: str, api_key: str, base_url: str = "") -> list[dict]:
 
 def create(provider: str, api_key: str, label: str = "", base_url: str = "") -> dict:
     """ينشئ اتصال ويجلب موديلاته فوراً — الفشل بيمنع الحفظ."""
-    if not api_key.strip():
-        raise ConnectionError_("لازم مفتاح")
+    preset = PROVIDER_PRESETS.get(provider) or {}
+    if not api_key.strip() and not (preset.get("kind") == "openai" and is_local_url((base_url or preset.get("base_url") or "").rstrip("/"))):
+        raise ConnectionError_("لازم مفتاح — إلا لو العنوان محلي (127.0.0.1 أو اسم صندوق على السيرفر، بمنفذ)")
 
     models = fetch_models(provider, api_key.strip(), base_url)
 

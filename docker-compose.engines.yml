@@ -1,14 +1,18 @@
-# صناديق النماذج المحلية (كل نموذج بحاوية لحاله) — للسيرفر القوي بكرت NVIDIA.
+# صناديق النماذج المحلية — للسيرفر القوي بكرت NVIDIA.
 # ⚠ غير مجرَّب على كرت حقيقي — ينجرّب على السيرفر. الخطوات بالتفصيل: README_AR_نشر_السيرفر.md
 #
-# تشغيل:   docker network create vidpattern_net     (مرة وحدة بس)
+# الصندوق العام «engine»: بيقرا أي أوزان diffusers بتحطها بمجلد الأوزان (صور، تعديل صور، تكبير، فيديو) — من «مكتبة النماذج» بتختار شو يشتغل.
+# صندوقين ثابتين (ltx وwan) بقوا احتياط قديم: بيشتغلوا بس مع  --profile legacy  (الصندوق العام بيغنيك عنهم).
+#
+# تشغيل:   docker network create vidpattern_net            (مرة وحدة بس)
+#          docker volume create vidpattern_gpu_locks        (مرة وحدة بس: قفل الكرت المشترك مع الاستوديو)
 #          docker compose -f docker-compose.engines.yml up -d --build
-# فحص:     curl http://127.0.0.1:8101/health   و   curl http://127.0.0.1:8102/health
+# فحص:     curl http://127.0.0.1:8100/health      (الصندوق العام)   ·   وللقديمين: 8101 (ltx) و8102 (wan)
 #
 # قواعد الأمان:
 #   · المنافذ مربوطة بـ 127.0.0.1 بس (مش مفتوحة عالشبكة). وكل طلب بدّه توكن ENGINE_TOKEN من ملف .env.
 #   · الأوزان للقراءة فقط (:ro). الحاوية read_only مع tmpfs للمؤقت. مستخدم غير root، وكل الصلاحيات مسحوبة.
-#   · الصندوقين بيتشاركوا مجلد locks (قفل الكرت): شغلة وحدة عالكرت بكل لحظة، والتانية بتستنى وما بتنهار.
+#   · كل الصناديق + الاستوديو بيتشاركوا مجلد locks (قفل الكرت): شغلة وحدة عالكرت بكل لحظة، والتانية بتستنى وما بتنهار.
 #   · الصناديق ما بتحمّل شي من الإنترنت (وضع أوفلاين). لو بدك تمنع خروج الشبكة تماماً شوف القسم الأخير بالـ README.
 
 name: vidpattern-engines
@@ -25,10 +29,10 @@ x-engine: &engine
   networks: [vidpattern_net]
   volumes:
     - ${ENGINE_WEIGHTS_DIR:-./models/engines}:/weights:ro     # الأوزان: قراءة فقط
-    - engine_locks:/locks                                      # قفل الكرت المشترك بين الصندوقين
+    - engine_locks:/locks                                      # قفل الكرت المشترك بين الصناديق والاستوديو
   tmpfs:
     - /tmp:size=2g,mode=1777
-    - /outputs:size=4g,mode=0700,uid=10001,gid=10001           # فيديوهات مؤقتة؛ الخدمة بتنظّف القديم لحالها
+    - /outputs:size=4g,mode=0700,uid=10001,gid=10001           # ناتج مؤقت (صور/فيديو)؛ الخدمة بتنظّف القديم لحالها
   deploy:
     resources:
       reservations:
@@ -50,13 +54,29 @@ x-engine-env: &engine-env
   ENGINE_TOKEN: ${ENGINE_TOKEN:?لازم تحط ENGINE_TOKEN بملف .env (شوف .env.example)}
   IDLE_UNLOAD_MIN: ${IDLE_UNLOAD_MIN:-10}
   MAX_SECONDS: ${MAX_SECONDS:-8}
+  AUDIO_MAX_SECONDS: ${AUDIO_MAX_SECONDS:-47}
   MAX_PIXELS: ${MAX_PIXELS:-0}
+  UPSCALE_MAX_PIXELS: ${UPSCALE_MAX_PIXELS:-64000000}
   ENGINE_OFFLOAD: ${ENGINE_OFFLOAD:-auto}
   OUTPUT_KEEP_MIN: ${OUTPUT_KEEP_MIN:-120}
 
 services:
+  engine:
+    <<: *engine
+    image: vidpattern/engine:local
+    build:
+      context: .
+      dockerfile: services/engine/Dockerfile.diffusers
+    ports:
+      - "127.0.0.1:8100:8000"
+    environment:
+      <<: *engine-env
+      ENGINE_BACKEND: diffusers
+      ENGINE_NAME: engine
+
   ltx:
     <<: *engine
+    profiles: [legacy]
     image: vidpattern/engine-ltx:local
     build:
       context: .
@@ -70,6 +90,7 @@ services:
 
   wan:
     <<: *engine
+    profiles: [legacy]
     image: vidpattern/engine-wan:local
     build:
       context: .
@@ -82,7 +103,9 @@ services:
       ENGINE_NAME: wan
 
 volumes:
-  engine_locks: {}
+  engine_locks:
+    external: true
+    name: vidpattern_gpu_locks       # مشترك مع docker-compose.yml (حاوية الاستوديو): docker volume create vidpattern_gpu_locks
 
 networks:
   vidpattern_net:

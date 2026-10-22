@@ -37,7 +37,7 @@ const EXT_STEPS = {
 };
 const EXT_REQ_STATUS = {
   pending: ["بانتظار الإضافة", "warn"], queued: ["بانتظار الإضافة", "warn"],
-  running: ["قيد التوليد", "info"], in_progress: ["قيد التوليد", "info"],
+  running: ["قيد التوليد", "info"], in_progress: ["قيد التوليد", "info"], local: ["عم يتولّد بنموذج المكتبة", "info"],
   done: ["وصل للمكتبة · بانتظار سمعك", "ok"], failed: ["فشل", "danger"], error: ["فشل", "danger"],
   stopped: ["واقف", "danger"],
 };
@@ -134,7 +134,7 @@ function extReqRow(r, deletable) {
     <p class="hint">${r.mood ? `المزاج: ${esc(r.mood_label || (typeof AH !== "undefined" && AH.moods && AH.moods[r.mood]) || r.mood)} · ` : ""}${r.seconds ? `${esc(r.seconds)}ث · ` : ""}${r.created_at ? `<span class="ltr">${esc(fmtDate(r.created_at))}</span>` : ""}</p>
     ${r.error || r.reason ? `<p class="status err">${esc(r.error || r.reason)}</p>` : ""}
     ${r.status === "done" ? `<p class="hint">دخل مكتبة الآهات <b>غير معتمد</b> — اسمعه واعتمده بنفسك من القائمة تحت.</p>` : ""}
-    ${deletable ? `<div class="row"><button class="zk-btn zk-btn--danger sm" data-delreq="${esc(r.id)}" type="button">${zkIcon("delete")} احذف الطلب</button></div>` : ""}
+    ${deletable ? `<div class="row">${r.status === "pending" ? `<button class="zk-btn zk-btn--secondary sm" data-genreq="${esc(r.id)}" type="button" title="بدل الإضافة: النموذج اللي ربطته بمكتبة النماذج بيولّده">🎼 ولّد بنموذج المكتبة</button>` : ""}<button class="zk-btn zk-btn--danger sm" data-delreq="${esc(r.id)}" type="button">${zkIcon("delete")} احذف الطلب</button></div>` : ""}
   </div>`;
 }
 function extReqList(requests, deletable) {

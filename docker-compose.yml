@@ -1,12 +1,13 @@
 # تطبيق VidPattern نفسه (الواجهة + الاستوديو). ⚠ غير مجرَّب — ينجرّب على السيرفر.
 #
-# تشغيل:   docker network create vidpattern_net     (مرة وحدة، نفس الشبكة تبع الصناديق)
+# تشغيل:   docker network create vidpattern_net        (مرة وحدة، نفس الشبكة تبع الصناديق)
+#          docker volume create vidpattern_gpu_locks    (مرة وحدة: قفل الكرت المشترك مع الصناديق)
 #          docker compose up -d --build
 # بعدها:   http://127.0.0.1:8000  (مربوط بـ 127.0.0.1 بس؛ للدخول عن بُعد استعمل نفق SSH، مش فتح المنفذ)
 #
 # · library/ = مكتبتك (قابلة للكتابة). models/ = النماذج الصغيرة (قراءة فقط).
 # · ما في أي مفتاح أو توكن بالصورة. توكن الصناديق بيجي من ENGINE_TOKEN بملف .env وقت التشغيل بس.
-# · بالتطبيق، عنوان صندوق LTX = http://ltx:8000 و Wan = http://wan:8000 (أسماء الحاويات على الشبكة المشتركة).
+# · عنوان صندوق الأوزان العام بمكتبة النماذج = http://engine:8000 (اسم الحاوية على الشبكة المشتركة). والقديمين: LTX = http://ltx:8000 و Wan = http://wan:8000.
 
 name: vidpattern
 
@@ -29,12 +30,17 @@ services:
       VP_ALLOWED_HOSTS: ${VP_ALLOWED_HOSTS:-}          # أسماء إضافية مسموحة للدخول (الافتراضي: localhost و127.0.0.1 بس)
       VP_ALLOWED_ORIGINS: ${VP_ALLOWED_ORIGINS:-}      # مصادر إضافية (بس لو في محوّل عكسي بيغيّر Host)
       VP_ALLOW_REMOTE_SETUP: ${VP_ALLOW_REMOTE_SETUP:-}  # 1 = بيسمح بإنشاء الحساب الأول من متصفح مش على نفس الجهاز (Docker). الأفضل: docker compose exec app python accounts.py create ...
+      VP_SECRETS_KEY: ${VP_SECRETS_KEY:-}              # عبارة سر الخزنة المشفّرة (16 حرف+) — بملف .env بس. بدونها ما في مكان آمن لمفاتيح الاتصالات على السيرفر
+      VP_SECRETS_DIR: /app/secrets
+      VP_GPU_LOCK_DIR: /locks                          # قفل الكرت المشترك مع الصناديق (بيبيّن «الكرت مشغول» بمكتبة النماذج، وبيحجز الكرت لبرامج النماذج)
       HOME: /tmp
       PYTHONUNBUFFERED: "1"
     volumes:
       - ./library:/app/library                         # قابل للكتابة
       - ./models:/app/models:ro                        # قراءة فقط
       - ./settings.json:/app/settings.json             # إعدادات الواجهة (بلا مفاتيح)
+      - ./secrets:/app/secrets                         # الخزنة المشفّرة (vault.enc) — برّا library فما بتدخل النسخ الاحتياطي ولا جيت
+      - gpu_locks:/locks                               # أقفال الكرت (ملفات صغيرة بس) — نفس الحجم المربوط بصناديق الأوزان
     tmpfs:
       - /tmp:size=1g,mode=1777
     networks: [vidpattern_net]
@@ -55,6 +61,11 @@ services:
     #         - driver: nvidia
     #           count: 1
     #           capabilities: [gpu]
+
+volumes:
+  gpu_locks:
+    external: true
+    name: vidpattern_gpu_locks       # docker volume create vidpattern_gpu_locks
 
 networks:
   vidpattern_net:

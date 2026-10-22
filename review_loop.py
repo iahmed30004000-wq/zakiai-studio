@@ -157,6 +157,55 @@ def approve(script_path, by: str = "owner") -> dict:
     return status(path)
 
 
+class ConfirmNeeded(ApprovalError):
+    """الموافقة بالفحص الحسابي بدها تأكيد من المالك (فيه مراجعة ذكاء حالية فيها موانع)."""
+
+
+LOCAL_PROVIDER = "local"
+_PACE_ISSUE = "الكلام أسرع من الممكن"
+
+
+def approve_local(script_path, by: str = "owner", confirm: bool = False, from_recording: bool = False) -> dict:
+    """موافقة المالك بالفحص الحسابي والادعاءات بس (بلا مراجعة ذكاء) — لما المراجعة بالذكاء مش متاحة (مفتاح مرفوض مثلاً).
+    الفحص بالكود: 7 مشاهد، المدة، إيقاع الكلام، وقواعد البريف والادعاءات الممنوعة. أي مانع بيوقف الموافقة (ما في تجاوز).
+    from_recording: السيناريو طالع من تسجيل المالك فمدده هي مدد كلامه الفعلي — بنتجاهل بس مانع «الكلام أسرع من الممكن».
+    إذا في مراجعة ذكاء حالية (لنفس المحتوى) فيها موانع: بيطلب confirm=True (الذكاء ممكن يشوف شي الكود ما بيشوفه).
+    بيكتب مراجعة provider=local بنفس بصمة المحتوى، وبعدها approve() العادية — فبوابة الإنتاج (is_cleared) ما بتتغيّر."""
+    import review_script
+    path = Path(script_path)
+    if not path.exists():
+        raise ApprovalError("السيناريو غير موجود")
+    script = _read(path)
+    findings = review_script.local_checks(script)
+    if from_recording:
+        findings = [f for f in findings if not str(f.get("issue", "")).startswith(_PACE_ISSUE)]
+    order = {"blocker": 0, "major": 1, "minor": 2}
+    findings.sort(key=lambda f: order.get(f.get("severity"), 3))
+    blockers = review_script.count_main(findings, "blocker")
+    if blockers:
+        first = next(f for f in findings if f.get("severity") == "blocker" and not review_script.is_hook_finding(f))
+        ev = f" ({first.get('evidence')})" if first.get("evidence") else ""
+        raise ApprovalError(f"ما بتنفع الموافقة: الفحص بالكود لقى {blockers} مانع — مثلاً: {first.get('issue')}{ev}")
+    h = script_versions.content_hash(script)
+    prev = load_review(path)
+    if (prev and prev.get("script_hash") == h and (prev.get("_meta") or {}).get("provider") != LOCAL_PROVIDER
+            and _blockers(prev) and not confirm):
+        raise ConfirmNeeded(f"مراجعة الذكاء الحالية لقت {_blockers(prev)} مانع، والموافقة بالفحص الحسابي بتتجاهلها — متأكد؟")
+    now = datetime.now().isoformat(timespec="seconds")
+    review = {
+        "verdict": "approve", "findings": findings, "blockers": 0,
+        "major": review_script.count_main(findings, "major"), "minor": review_script.count_main(findings, "minor"),
+        "hook_blockers": 0, "rounds": 0, "script_hash": h, "local_only": True,
+        "summary": "فحص حسابي وادعاءات بالكود بس — بلا مراجعة ذكاء. وافق عليه المالك بنفسه.",
+        "_meta": {"script": path.name, "reviewed_at": now, "provider": LOCAL_PROVIDER, "model": "local-checks", "approved_by": by},
+    }
+    out = review_path(path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")
+    _set_meta(path, approval_mode="local")
+    return approve(path, by=by)
+
+
 def _annotate_review(path: Path, rounds: int, history: list[dict]) -> None:
     rp = review_path(path)
     if not rp.exists():

@@ -1,7 +1,7 @@
 """
 نقطة تشغيل صندوق النموذج: uvicorn بإعدادات من متغيرات البيئة.
 
-    ENGINE_BACKEND  fake | ltx | wan          (افتراضي fake)
+    ENGINE_BACKEND  diffusers (الصندوق العام) | ltx | wan (قديمين) | fake | fake-images (تجريبيين بلا كرت)   (افتراضي fake)
     ENGINE_TOKEN    توكن الوصول (X-Engine-Token)
     WEIGHTS_DIR     مجلد الأوزان (للقراءة فقط)
     OUTPUT_DIR      مجلد الخرج المؤقت

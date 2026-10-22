@@ -21,15 +21,11 @@ def _script(filename: str) -> Path:
 
 
 def _tl(p: Path) -> dict:
-    import timeline
-    import voice_studio
-    ok, why = voice_studio.voice_is_approved(p)
-    if not ok:
-        raise HTTPException(409, why)
-    tl = timeline.load(p.stem)
-    if not tl:
-        raise HTTPException(404, "ما في خط زمني")
-    return tl
+    import studio_gate
+    try:
+        return studio_gate.timeline_for(p, "ما في خط زمني")
+    except studio_gate.GateError as e:
+        raise HTTPException(e.status, str(e))
 
 
 def _a(fn, *a, **k):
@@ -65,6 +61,54 @@ def list_ahat() -> dict:
 async def add_ahat(file: UploadFile = File(...), name: str = Form(""), mood: str = Form("any")) -> dict:
     import ahat
     return _a(ahat.add, name, mood, file.filename or "", await file.read())
+
+
+def _sound_job(label: str, cmd: list[str]) -> dict:
+    from web import jobs
+    return {"job_id": jobs.create_job("sound", label, cmd)}
+
+
+def _sg(fn, *a, **k):
+    import sound_gen
+    try:
+        return fn(*a, **k)
+    except sound_gen.SoundGenError as e:
+        raise HTTPException(409, str(e))
+
+
+@router.post("/ahat/generate")
+def generate_ahat(payload: dict) -> dict:
+    """يولّد موسيقى أو مؤثر بنموذج مكتبة النماذج (مهمة خلفية). المقطع بينزل غير معتمد وبينتظر سمعك."""
+    import sound_gen
+    if not isinstance(payload, dict) or set(payload) - {"kind", "prompt", "seconds", "name", "mood", "model"}:
+        raise HTTPException(400, "الحقول: kind وprompt وseconds وname وmood وmodel بس")
+    c = _sg(sound_gen.check, payload.get("kind"), payload.get("prompt"), payload.get("seconds"), payload.get("name") or "", payload.get("mood") or "any", payload.get("model"))
+    _sg(sound_gen.preflight, c["kind"], c["model"], c["seconds"])         # نرفض هلأ لو ما في نموذج جاهز (أو مدتك أطول من أقصاه) بدل ما تفشل المهمة بعدين
+    cmd = ["sound_gen.py", "free", "--kind", c["kind"], "--prompt", c["prompt"], "--seconds", str(c["seconds"]), "--name", c["name"], "--mood", c["mood"]]
+    if c["model"]:
+        cmd += ["--model", c["model"]]
+    return _sound_job(f"توليد {sound_gen.LABEL[c['kind']]}: {c['name']}", cmd)
+
+
+@router.post("/studio/{filename}/sounds/{rid}/generate")
+def generate_sound_for_request(filename: str, rid: str, payload: dict | None = None) -> dict:
+    """يولّد طلب آهة/موسيقى معلّق بسيناريو بنموذج المكتبة (بدل الإضافة). المقطع بينزل غير معتمد والطلب بيتقفل."""
+    import ext_tasks
+    import sound_gen
+    p = _script(filename)
+    model = (payload or {}).get("model") if isinstance(payload, dict) else None
+    row = next((r for r in ext_tasks.list_requests(p.stem) if r.get("id") == ext_tasks._norm_id(rid) and r.get("kind") in ext_tasks.REQUEST_KINDS), None)
+    if row is None:
+        raise HTTPException(404, "الطلب غير موجود")
+    if row.get("status") == "local":
+        raise HTTPException(409, "هالطلب عم يتولّد بنموذج المكتبة هلأ — استنى يخلص")
+    if row.get("status") != "pending":
+        raise HTTPException(409, "هالطلب خلص من قبل — اطلب نسخة جديدة إذا بدك")
+    if model not in (None, "") and (not isinstance(model, str) or not model.startswith("lib:")):
+        raise HTTPException(400, "النموذج: lib:ml_001 (من مكتبة النماذج) أو فاضي للافتراضي")
+    _sg(sound_gen.preflight, row["kind"], model or None, row.get("seconds"))
+    cmd = ["sound_gen.py", "request", str(p), row["id"]] + (["--model", model] if model else [])
+    return _sound_job(f"توليد {sound_gen.LABEL[row['kind']]} لطلب {row['id']}: {p.stem}", cmd)
 
 
 @router.post("/ahat/{tid}/approve")
@@ -124,11 +168,30 @@ def set_ambience(filename: str, payload: dict) -> dict:
     return {"ambience": _mt(montage.choose_ahat, p, payload.get("track_id") or None, float(payload.get("duck_db", -14)))}
 
 
+def _free_render(p: Path, mode: str) -> dict:
+    """المشروع الحر: free_montage.py (ffmpeg). التصدير النهائي بلا معاينة مسموح، والمتقدّم (Remotion) لسا مش للحر."""
+    import free_montage
+    from web import jobs
+    if mode == "advanced":
+        raise HTTPException(409, "المونتاج المتقدّم مش متاح للمشروع الحر لسا — استعمل «التصدير النهائي»")
+    if mode not in free_montage.MODES:
+        raise HTTPException(400, "الوضع: preview أو final")
+    try:
+        free_montage.preflight(p)
+    except free_montage.FreeMontageError as e:
+        raise HTTPException(409, str(e))
+    return {"job_id": jobs.create_job("montage", f"{'تصدير' if mode == 'final' else 'معاينة'} المشروع الحر: {p.stem}",
+                                      ["free_montage.py", mode, str(p)])}
+
+
 @router.post("/studio/{filename}/montage/render")
 def render_montage(filename: str, mode: str = "preview") -> dict:
+    import studio_gate
     import studio_state
     from web import jobs
     p = _script(filename)
+    if studio_gate.is_free(p):
+        return _free_render(p, mode)
     tl = _tl(p)
     if mode not in ("preview", "final", "advanced"):
         raise HTTPException(400, "الوضع: preview أو final أو advanced")
@@ -175,10 +238,18 @@ def _ln(fn, *a, **k):
         raise HTTPException(e.http if e.http in (403, 404) else 409, {"code": e.code, "message": str(e)})
 
 
+def _guided_only(p: Path) -> None:
+    """المشروع الحر ما بينطلق للعمليات (طرف الـ OMS لسا ما انبنى، وما إله رقم إعلان VP-): بيخلص بفيديو بتنزّله."""
+    import studio_gate
+    if studio_gate.is_free(p):
+        raise HTTPException(409, {"code": "free_project", "message": "المشروع الحر ما بينطلق للعمليات — نزّل الفيديو"})
+
+
 @router.get("/studio/{filename}/launch/info")
 def launch_info(filename: str) -> dict:
     import launch
     p = _script(filename)
+    _guided_only(p)
     _tl(p)
     return launch.info(p)
 
@@ -188,6 +259,7 @@ def launch_send(filename: str, payload: dict) -> dict:
     """سؤال واحد: mode = active|test. طلب واحد، وما بيتكرر لنفس (vp_id, mode)."""
     import launch
     p = _script(filename)
+    _guided_only(p)
     _tl(p)
     return _ln(launch.send, p, str(payload.get("mode") or ""), confirm=bool(payload.get("confirm")))
 
@@ -196,6 +268,7 @@ def launch_send(filename: str, payload: dict) -> dict:
 def launch_refresh(filename: str, payload: dict) -> dict:
     import launch
     p = _script(filename)
+    _guided_only(p)
     _tl(p)
     return _ln(launch.refresh, p, str(payload.get("mode") or ""))
 
@@ -204,5 +277,6 @@ def launch_refresh(filename: str, payload: dict) -> dict:
 def launch_cancel(filename: str, payload: dict) -> dict:
     import launch
     p = _script(filename)
+    _guided_only(p)
     _tl(p)
     return _ln(launch.cancel, p, str(payload.get("mode") or ""))

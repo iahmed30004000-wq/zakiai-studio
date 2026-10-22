@@ -186,8 +186,16 @@ def test_allowlist_rejects_everything_else(url):
 def test_registry_validates_http_models_and_never_stores_tokens(env):
     m = motion.upsert_model(http_model("http://127.0.0.1:8101", "LTX", token_secret="engine_ltx"))
     assert m["kind"] == "http" and m["http"] == {"url": "http://127.0.0.1:8101", "mode": "i2v", "steps": None, "guidance": None,
-                                                 "token_secret": "engine_ltx"}
+                                                 "token_secret": "engine_ltx", "model": None}
     assert m["command"] is None
+    def general(name, model):
+        return {**http_model("http://engine:8000", name), "http": {"url": "http://engine:8000", "mode": "i2v", "model": model}}
+    gen = motion.upsert_model(general("عام", "Wan2.2-TI2V-5B-Diffusers"))                                           # الصندوق العام: اسم مجلد الأوزان
+    assert gen["http"]["model"] == "Wan2.2-TI2V-5B-Diffusers"
+    for bad in ("../x", "فيه مسافة", "a b", "x" * 130):
+        with pytest.raises(motion.MotionError, match="اسم نموذج الصندوق"):
+            motion.upsert_model(general("سيئ", bad))
+    assert motion.upsert_model({"http": {"model": ""}}, gen["id"])["http"]["model"] is None                       # فاضي = صندوق بنموذج ثابت
     with pytest.raises(motion.MotionError):
         motion.upsert_model(http_model("http://evil.example.com:8101"))
     with pytest.raises(motion.MotionError):

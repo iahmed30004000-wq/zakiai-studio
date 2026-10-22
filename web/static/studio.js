@@ -199,7 +199,70 @@ function renderStep2() {
     ? `النمط: <a href="#/pattern/${enc(ST.pattern)}">${esc(ST.pattern)}</a> <button class="btn ghost sm" id="clearPattern" type="button">إلغاء الاختيار</button>` : "";
   const cp = $("#clearPattern");
   if (cp) cp.addEventListener("click", () => { ST.pattern = null; syncStudioHash(); renderStep2(); });
+  const need = !ST.product ? "اختار منتج أول (مرحلة «المنتج»)." : !ST.pattern ? "اختار نمط أول: من مرحلة «الفكرة» دوس «ولّد بهذا» على النمط اللي بدك ياه." : "";
+  $("#manNote").textContent = need;
+  $("#vsNote").textContent = need;
 }
+
+/* ── سيناريو بإيدك + ابدأ من تسجيلك (بدل الكاتب بالذكاء). القواعد نفسها: 7 مشاهد، 45–50 ثانية، المراجعة ── */
+const MANUAL_NEED = () => (!ST.product ? "اختر منتج أول" : !ST.pattern ? "اختر نمط من مرحلة «الفكرة» أول (زر «ولّد بهذا»)" : "");
+async function startManualScript() {
+  const st = $("#manStatus"), btn = $("#manGo");
+  const need = MANUAL_NEED();
+  if (need) { setStatus(st, need, "err"); return; }
+  const text = $("#manText").value, f = $("#manFile").files[0];
+  if (!text.trim() && !f) { setStatus(st, "الصق النص أو اختار ملف Excel", "err"); return; }
+  const fd = new FormData();
+  fd.append("product_file", ST.product);
+  fd.append("pattern_id", ST.pattern);
+  fd.append("split_sentences", $("#manSplit").checked ? "true" : "false");
+  if (f) fd.append("file", f, f.name); else fd.append("text", text);
+  btn.disabled = true;
+  setStatus(st, "عم ينعمل السيناريو…");
+  try {
+    const r = await api("/api/scripts/manual", { method: "POST", body: fd });
+    await studioLoad();
+    ST.script = r.file;
+    toast("انعمل السيناريو — راجعه ووافق عليه", "ok");
+    if ((r.warnings || []).length) toast(r.warnings.join(" · "));
+    setStatus(st, "", "");
+    showStudioStep(3);
+  } catch (e) { setStatus(st, e.message, "err"); }
+  finally { btn.disabled = false; }
+}
+$("#manGo").addEventListener("click", startManualScript);
+
+async function startVoiceScript() {
+  const st = $("#vsStatus"), btn = $("#vsGo");
+  const need = MANUAL_NEED();
+  if (need) { setStatus(st, need, "err"); return; }
+  const f = $("#vsFile").files[0];
+  if (!f) { setStatus(st, "اختار ملف التسجيل أول", "err"); return; }
+  const fd = new FormData();
+  fd.append("product_file", ST.product);
+  fd.append("pattern_id", ST.pattern);
+  fd.append("file", f, f.name);
+  btn.disabled = true;
+  setStatus(st, "عم يرفع التسجيل…");
+  try {
+    const r = await api("/api/scripts/manual/from-voice", { method: "POST", body: fd });
+    setStatus(st, "عم يفرّغ تسجيلك ويحوّله لسيناريو ويقسّم صوتك على المشاهد… (دقيقة أو أكتر حسب طوله وموديل التفريغ)");
+    const j = await waitForJob(r.job_id);
+    const res = (await soft(`/api/scripts/manual/result/${enc(r.token)}`)).data;
+    await studioLoad();
+    if (res && res.file) ST.script = res.file;
+    if (j.status === "done" && res && res.ok) {
+      toast("انعمل السيناريو من تسجيلك — اسمعه واعتمده", "ok");
+      if (window.Mission) { Mission.passed(3); location.hash = Mission.hash(res.file, 4, { s: 4 }); return; }
+      showStudioStep(3);
+    } else {
+      setStatus(st, (res && res.reason) || j.error || "فشلت المعالجة — شوف لوحة المهام", "err");
+      if (res && res.file) showStudioStep(3);
+    }
+  } catch (e) { setStatus(st, e.message, "err"); }
+  finally { btn.disabled = false; }
+}
+$("#vsGo").addEventListener("click", startVoiceScript);
 
 async function startGenerate(patternId) {
   const file = ST.product;
@@ -495,6 +558,9 @@ async function renderStep4() {
       ${s.reason ? `<p class="hint">${esc(s.reason)}</p>` : ""}` : unavailBox("حالة السيناريو غير متاحة.")}
     ${bl.length ? `<div class="notice danger"><b>موانع لسا قائمة:</b><ul class="list">${bl.map((b) => `<li>${esc(blockerText(b))}</li>`).join("")}</ul>
       <p class="hint">الموافقة اليدوية بتتقبّل بس لما الموانع تصير صفر — ارجع لخطوة المراجعة.</p></div>` : ""}
+    ${s && !s.approved ? `<div class="notice"><b>مراجعة الذكاء مش شغّالة؟</b>
+      <p class="hint">بتقدر توافق بالفحص بالكود بس: بيتحقق من 7 مشاهد والمدة وسرعة الكلام وقواعد البريف والادعاءات الممنوعة، وأي مانع بيوقف الموافقة. موافقتك بتنسجّل بالنشاط.</p>
+      <button id="approveLocalBtn" class="btn ghost" type="button">وافق بالفحص الحسابي بس</button></div>` : ""}
     <div class="row"><button id="approveBtn" class="btn" type="button" ${s && s.approved ? "disabled" : ""}>${s && s.approved ? "معتمد" : "وافق على السيناريو"}</button>
       <a class="btn ghost" href="/api/scripts/${enc(file)}/download">تصدير JSON</a>
       ${s && s.approved && window.Mission ? `<a class="btn ghost" href="${Mission.hash(file, 4)}">كمّل للمرحلة 4: الشخصية والصوت ←</a>` : ""}</div>
@@ -508,6 +574,31 @@ async function renderStep4() {
       if (window.Mission) { Mission.passed(3); location.hash = Mission.hash(file, 4); return; }   // بعد الموافقة: مرحلة الشخصية والصوت
       renderStep4();
     } catch (e) { setStatus(msg, e.unavailable ? "الخدمة غير مفعّلة بعد" : e.message, "err"); }
+  });
+
+  const al = $("#approveLocalBtn");
+  if (al) al.addEventListener("click", async () => {
+    const msg = $("#approveMsg");
+    if (!confirm("توافق على السيناريو بالفحص الحسابي بس، بدون مراجعة الذكاء؟ موافقتك بتنسجّل بالنشاط.")) return;
+    al.disabled = true;
+    try {
+      let confirmed = false;
+      for (;;) {
+        try { await post(`/api/scripts/${enc(file)}/approve-local`, { confirm: confirmed }); break; }
+        catch (e) {
+          if (!confirmed && e.status === 409 && e.detail && e.detail.code === "needs_confirm") {
+            if (!confirm(e.detail.message)) { al.disabled = false; return; }
+            confirmed = true;
+            continue;
+          }
+          throw e;
+        }
+      }
+      toast("تمت الموافقة بالفحص الحسابي", "ok");
+      await studioLoad();
+      if (window.Mission) { Mission.passed(3); location.hash = Mission.hash(file, 4); return; }
+      renderStep4();
+    } catch (e) { al.disabled = false; setStatus(msg, e.detail && e.detail.message ? e.detail.message : (e.unavailable ? "الخدمة غير مفعّلة بعد" : e.message), "err"); }
   });
 
   const [an, schema] = await Promise.all([soft(`/api/scripts/${enc(file)}/ad-name`), getBriefSchema()]);

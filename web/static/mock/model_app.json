@@ -1,0 +1,3258 @@
+{
+  "image": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          },
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": true,
+        "score": 19
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          }
+        ],
+        "fits": true,
+        "score": 11
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          },
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 7
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": false,
+        "score": 6
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "text",
+            "from": "prompt"
+          }
+        ],
+        "fits": false,
+        "score": 6
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      }
+    ],
+    "suggested": "/generate"
+  },
+  "voice": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "text",
+            "from": "text"
+          },
+          {
+            "param": "voice",
+            "from": "voice"
+          }
+        ],
+        "fits": true,
+        "score": 16
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "text"
+          },
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": true,
+        "score": 12
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "text"
+          },
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 10
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "text"
+          }
+        ],
+        "fits": false,
+        "score": 6
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      }
+    ],
+    "suggested": "/speak"
+  },
+  "stt": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": true,
+        "score": 16
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": true,
+        "score": 15
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 7
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 6
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 4
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 0
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 0
+      }
+    ],
+    "suggested": "/transcribe_json"
+  },
+  "upscale": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          },
+          {
+            "param": "scale",
+            "from": "scale"
+          }
+        ],
+        "fits": true,
+        "score": 16
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 9
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 5
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 0
+      }
+    ],
+    "suggested": "/upscale"
+  },
+  "bgremove": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": true,
+        "score": 11
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 9
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 5
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 0
+      }
+    ],
+    "suggested": "/upscale"
+  },
+  "lipsync": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": true,
+        "score": 16
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 4
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 0
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [],
+        "fits": false,
+        "score": 0
+      }
+    ],
+    "suggested": "/lipsync"
+  },
+  "music": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          },
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": true,
+        "score": 16
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "text",
+            "from": "prompt"
+          }
+        ],
+        "fits": true,
+        "score": 11
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          },
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 10
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          }
+        ],
+        "fits": false,
+        "score": 6
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      }
+    ],
+    "suggested": "/music"
+  },
+  "sfx": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          },
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": true,
+        "score": 12
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "text",
+            "from": "prompt"
+          }
+        ],
+        "fits": true,
+        "score": 11
+      },
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          },
+          {
+            "param": "negative",
+            "from": "negative"
+          },
+          {
+            "param": "width",
+            "from": "width"
+          },
+          {
+            "param": "height",
+            "from": "height"
+          },
+          {
+            "param": "seed",
+            "from": "seed"
+          }
+        ],
+        "fits": false,
+        "score": 10
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "prompt",
+            "from": "prompt"
+          }
+        ],
+        "fits": false,
+        "score": 6
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          },
+          {
+            "param": "language",
+            "from": "language"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "video",
+            "from": "video"
+          },
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 2
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "img",
+            "from": "image"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "audio",
+            "from": "audio"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ],
+        "suggest": [
+          {
+            "param": "seconds",
+            "from": "seconds"
+          }
+        ],
+        "fits": false,
+        "score": 1
+      }
+    ],
+    "suggested": "/music"
+  },
+  "default": {
+    "ok": true,
+    "reason": "",
+    "message": "برنامج Gradio 5.50.0 — 9 نقطة",
+    "url": "http://127.0.0.1:7860",
+    "version": "5.50.0",
+    "prefix": "/gradio_api",
+    "endpoints": [
+      {
+        "api_name": "/generate",
+        "hash": "6a6f063ccd05d748",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "width",
+            "label": "Width",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 128
+          },
+          {
+            "name": "height",
+            "label": "Height",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 192
+          },
+          {
+            "name": "seed",
+            "label": "Seed",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "negative",
+            "label": "Negative prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ]
+      },
+      {
+        "api_name": "/music",
+        "hash": "8d8d95bf0fa63fe5",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "seconds",
+            "label": "Duration (s)",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 3
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ]
+      },
+      {
+        "api_name": "/upscale",
+        "hash": "cc716c8be6d0f6f2",
+        "params": [
+          {
+            "name": "img",
+            "label": "Input image",
+            "component": "Image",
+            "kind": "image",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "scale",
+            "label": "Scale",
+            "component": "Radio",
+            "kind": "choice",
+            "required": false,
+            "default": 2
+          }
+        ],
+        "returns": [
+          {
+            "label": "Output",
+            "component": "Image",
+            "kind": "image"
+          }
+        ]
+      },
+      {
+        "api_name": "/transcribe",
+        "hash": "d17e6ec114cf2b2d",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Text",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ]
+      },
+      {
+        "api_name": "/transcribe_json",
+        "hash": "f4cffd8a84c80683",
+        "params": [
+          {
+            "name": "audio",
+            "label": "Audio file",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "language",
+            "label": "Language",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "JSON",
+            "kind": "text"
+          }
+        ]
+      },
+      {
+        "api_name": "/speak",
+        "hash": "602549663056bd6f",
+        "params": [
+          {
+            "name": "text",
+            "label": "Text to speak",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "voice",
+            "label": "Voice",
+            "component": "Textbox",
+            "kind": "text",
+            "required": false,
+            "default": "alloy"
+          },
+          {
+            "name": "speed",
+            "label": "Speed",
+            "component": "Slider",
+            "kind": "number",
+            "required": false,
+            "default": 1
+          }
+        ],
+        "returns": [
+          {
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio"
+          }
+        ]
+      },
+      {
+        "api_name": "/lipsync",
+        "hash": "8fde686449870142",
+        "params": [
+          {
+            "name": "video",
+            "label": "Video",
+            "component": "Video",
+            "kind": "video",
+            "required": true,
+            "default": null
+          },
+          {
+            "name": "audio",
+            "label": "Audio",
+            "component": "Audio",
+            "kind": "audio",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Video",
+            "component": "Video",
+            "kind": "video"
+          }
+        ]
+      },
+      {
+        "api_name": "/slow",
+        "hash": "aa0cb014b965b549",
+        "params": [
+          {
+            "name": "seconds",
+            "label": "Seconds",
+            "component": "Number",
+            "kind": "number",
+            "required": false,
+            "default": 5
+          }
+        ],
+        "returns": [
+          {
+            "label": "Out",
+            "component": "Textbox",
+            "kind": "text"
+          }
+        ]
+      },
+      {
+        "api_name": "/broken",
+        "hash": "da7d0c4a3d36241e",
+        "params": [
+          {
+            "name": "prompt",
+            "label": "Prompt",
+            "component": "Textbox",
+            "kind": "text",
+            "required": true,
+            "default": null
+          }
+        ],
+        "returns": [
+          {
+            "label": "Result",
+            "component": "Image",
+            "kind": "image"
+          }
+        ]
+      }
+    ],
+    "suggested": null
+  }
+}

@@ -11,6 +11,8 @@
 from __future__ import annotations
 
 import base64
+import contextlib
+import contextvars
 import json
 import os
 from pathlib import Path
@@ -18,6 +20,19 @@ from pathlib import Path
 import requests
 
 import config
+
+_LOG_CTX: contextvars.ContextVar = contextvars.ContextVar("vp_image_log_ctx", default=None)
+LIB_SIZE = {"width": 768, "height": 1344}          # الاستوديو عمودي 9:16 — لنموذج مكتبة ما إله مقاس مضبوط
+
+
+@contextlib.contextmanager
+def log_context(script_stem: str | None, shot_id: str | None):
+    """سياق سجل الإنتاج لنموذج صور من مكتبة النماذج (model_run بيسجّل محاولته بنفسه)."""
+    tok = _LOG_CTX.set({"script_stem": script_stem, "shot_id": shot_id})
+    try:
+        yield
+    finally:
+        _LOG_CTX.reset(tok)
 
 IMAGE_PRESETS = {
     "openai": {
@@ -274,18 +289,40 @@ def ref_rule(roles: list[str | None] | None = None) -> str:
     return " ".join(parts)
 
 
+def _lib_size(model: dict) -> dict:
+    p = model.get("params") or {}
+    return {} if ((p.get("width") and p.get("height")) or (model.get("std") or {}).get("size")) else dict(LIB_SIZE)
+
+
+def _generate_library(visual: str, out_path: Path, overrides: dict | None, extra: str, refs: list[Path], roles, cfg: dict) -> tuple[dict | None, str]:
+    """نموذج صور من مكتبة النماذج (الافتراضي أو lib:ml_x). (النتيجة، ملاحظة): النتيجة None = كمّل بالمزوّد الحالي."""
+    import model_run
+    prompt = build_prompt(visual, cfg, " ".join(filter(None, [extra, ref_rule(roles) if refs else ""])))
+    ctx = _LOG_CTX.get() or {}
+    req = model_run.RunRequest(task="image", prompt=prompt, out=Path(out_path), refs=list(refs), script_stem=ctx.get("script_stem"),
+                               shot_id=ctx.get("shot_id"))
+    res, note = model_run.run_via_library("image", req, (overrides or {}).get("provider"), error_cls=ImageError, params_for=_lib_size)
+    if res is None:
+        return None, note
+    out_path = Path(out_path)
+    return ({"path": str(out_path), "prompt": prompt, "provider": res.model_name, "model": res.model_id, "refs_used": [r.name for r in refs],
+             "size": out_path.stat().st_size, "logged": True}, "")
+
+
 def generate(visual: str, out_path: Path, overrides: dict | None = None,
              extra: str = "", refs: list[Path] | None = None, ref_roles: list[str | None] | None = None) -> dict:
     cfg = image_config(overrides)
-    if not cfg["api_key"]:
-        raise ImageError(f"ما في مفتاح لمزوّد {cfg['provider']} — حطّه من الإعدادات")
-    fn = _DISPATCH.get(cfg["kind"])
-    if not fn:
-        raise ImageError(f"مزوّد غير مدعوم: {cfg['provider']}")
-
     pairs = [(Path(r), ref_roles[i] if ref_roles and i < len(ref_roles) else None) for i, r in enumerate(refs or []) if Path(r).exists()]
     refs = [p for p, _role in pairs]                              # الأدوار بتتفلتر مع الصور (صورة مفقودة ما بتزحزح الباقي)
     roles = [role for _p, role in pairs] if ref_roles else None
+    lib, lib_note = _generate_library(visual, out_path, overrides, extra, refs, roles, cfg)
+    if lib is not None:
+        return lib
+    if not cfg["api_key"]:
+        raise ImageError((f"{lib_note} — " if lib_note else "") + f"ما في مفتاح لمزوّد {cfg['provider']} — حطّه من الإعدادات")
+    fn = _DISPATCH.get(cfg["kind"])
+    if not fn:
+        raise ImageError(f"مزوّد غير مدعوم: {cfg['provider']}")
     if refs and not cfg["supports_refs"]:
         raise ImageError(
             f"{cfg['provider']} ما بيدعم الصور المرجعية — بيولّد من النص بس.\n"
@@ -304,4 +341,4 @@ def generate(visual: str, out_path: Path, overrides: dict | None = None,
     return {"path": str(out_path), "prompt": prompt,
             "provider": cfg["provider"], "model": cfg["model"],
             "refs_used": [r.name for r in refs],
-            "size": out_path.stat().st_size}
+            "size": out_path.stat().st_size, **({"library_note": lib_note} if lib_note else {})}

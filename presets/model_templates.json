@@ -1,0 +1,1020 @@
+{
+  "version": 1,
+  "note": "قوالب جاهزة لمكتبة النماذج. الرخصة والشارات «مساعدة» بس (راجعناها وقت الكتابة): القرار الأخير للمالك، وأي نموذج رخصته ⚠ بيطلب تأكيدك قبل التفعيل، و✗ ما بيتفعّل. الأرقام (الكرت) تقريبية. القوالب اللي طريقة ربطها لسا ما انفتحت بتظهر معطّلة. قوالب التحريك (أوزان) بتنضاف لسجل موديلات التحريك من بطاقة التحريك.",
+  "templates": [
+    {
+      "id": "speaches-stt",
+      "name": "Speaches — تفريغ بـ Whisper",
+      "group": "ready",
+      "task": "stt",
+      "link": "std",
+      "licence": {
+        "id": "MIT",
+        "commercial": "yes",
+        "note": "Speaches وfaster-whisper وأوزان Whisper كلها MIT."
+      },
+      "badges": {
+        "vram_gb": 4,
+        "arabic": true
+      },
+      "summary": "سيرفر جاهز بيشغّل Whisper بنفس واجهة OpenAI، على كرت السيرفر. أسرع من التفريغ المدمج وبيعطي توقيت كل كلمة.",
+      "source": "https://github.com/speaches-ai/speaches",
+      "example_url": "http://127.0.0.1:8000/v1",
+      "howto": [
+        "شغّل Speaches على السيرفر (طريقة التشغيل بصفحة المشروع على GitHub) وخلّيه يسمع على 127.0.0.1 بس.",
+        "حط رابطه بالخطوة الجاية (بينتهي بـ /v1) واكبس «اقرا الموديلات» لتشوف شو عنده.",
+        "اختار موديل Whisper كبير (مثل faster-whisper-large-v3) واكبس «جرّب» بتسجيل قصير."
+      ],
+      "defaults": {
+        "caps": {
+          "arabic": true,
+          "word_timing": true
+        },
+        "params": {
+          "language": "ar"
+        },
+        "uses_gpu": true,
+        "timeout_sec": 600,
+        "std": {
+          "model": "Systran/faster-whisper-large-v3"
+        }
+      }
+    },
+    {
+      "id": "chatterbox-voice",
+      "name": "Chatterbox Multilingual — صوت (يحكي عربي)",
+      "group": "ready",
+      "task": "voice",
+      "link": "std",
+      "licence": {
+        "id": "MIT",
+        "commercial": "yes",
+        "note": "MIT. الأوزان والكود مفتوحين للاستعمال التجاري."
+      },
+      "badges": {
+        "vram_gb": 8,
+        "arabic": true
+      },
+      "summary": "نموذج صوت مفتوح بيحكي العربي وبيقلّد صوت من تسجيل قصير. جودة العربي أقل من ElevenLabs لسا، فجرّبه على جمل إعلانك قبل ما تعتمده.",
+      "source": "https://github.com/resemble-ai/chatterbox",
+      "example_url": "http://127.0.0.1:8000/v1",
+      "howto": [
+        "شغّل سيرفر Chatterbox بواجهة OpenAI (/v1/audio/speech) على السيرفر — في مشاريع جاهزة بتعمل هيك على GitHub.",
+        "حط رابطه بالخطوة الجاية، واكتب اسم الصوت اللي بدك.",
+        "اكبس «جرّب» بجملة من إعلانك واسمع النتيجة قبل ما تجعله الافتراضي. الصوت ما بيرجع لـ ElevenLabs لحاله لو وقع (تغيير الصوت بنص الفيديو بيخرّبه)."
+      ],
+      "defaults": {
+        "caps": {
+          "arabic": true,
+          "word_timing": false,
+          "clone": true
+        },
+        "params": {
+          "language": "ar",
+          "speed": 1.0
+        },
+        "uses_gpu": true,
+        "timeout_sec": 300,
+        "std": {
+          "model": "chatterbox",
+          "response_format": "mp3"
+        }
+      }
+    },
+    {
+      "id": "std-image-any",
+      "name": "أي سيرفر صور بواجهة OpenAI",
+      "group": "generic",
+      "task": "image",
+      "link": "std",
+      "licence": {
+        "id": "حسب النموذج اللي بيشتغل جوّاه",
+        "commercial": "unknown",
+        "note": "رخصة السيرفر نفسه مش هي المهمة — راجع رخصة النموذج اللي بيشغّله وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "أي سيرفر بيقبل /images/generations (و/images/edits للتعديل بصور مرجعية) بنفس شكل OpenAI. حط رابطه واسم الموديل.",
+      "source": null,
+      "example_url": "http://127.0.0.1:8000/v1",
+      "howto": [
+        "حط رابط السيرفر (بينتهي بـ /v1) واسم الموديل.",
+        "اكبس «جرّب» — بتطلع صورة تجريبية.",
+        "فعّله واجعله الافتراضي. وإذا وقع بيرجع لمزوّد الصور الحالي لحاله."
+      ],
+      "defaults": {
+        "caps": {
+          "refs": false,
+          "edit": false
+        },
+        "params": {
+          "width": 768,
+          "height": 1344
+        },
+        "uses_gpu": false,
+        "timeout_sec": 300,
+        "std": {
+          "model": "",
+          "size": "768x1344",
+          "response_format": "b64_json"
+        }
+      }
+    },
+    {
+      "id": "std-voice-any",
+      "name": "أي سيرفر صوت بواجهة OpenAI",
+      "group": "generic",
+      "task": "voice",
+      "link": "std",
+      "licence": {
+        "id": "حسب النموذج اللي بيشتغل جوّاه",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "أي سيرفر بيقبل /audio/speech بنفس شكل OpenAI. حط رابطه واسم الموديل والصوت.",
+      "source": null,
+      "example_url": "http://127.0.0.1:8000/v1",
+      "howto": [
+        "حط رابط السيرفر واسم الموديل والصوت.",
+        "اكبس «جرّب» واسمع.",
+        "الصوت ما بيرجع لـ ElevenLabs لحاله لو وقع."
+      ],
+      "defaults": {
+        "caps": {
+          "arabic": false,
+          "word_timing": false,
+          "clone": false
+        },
+        "params": {
+          "speed": 1.0
+        },
+        "uses_gpu": false,
+        "timeout_sec": 300,
+        "std": {
+          "model": "",
+          "response_format": "mp3"
+        }
+      }
+    },
+    {
+      "id": "std-stt-any",
+      "name": "أي سيرفر تفريغ بواجهة OpenAI",
+      "group": "generic",
+      "task": "stt",
+      "link": "std",
+      "licence": {
+        "id": "حسب النموذج اللي بيشتغل جوّاه",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "أي سيرفر بيقبل /audio/transcriptions بنفس شكل OpenAI. لو ما رجّع توقيت الكلمات منقدّره من الجمل.",
+      "source": null,
+      "example_url": "http://127.0.0.1:8000/v1",
+      "howto": [
+        "حط رابط السيرفر واسم الموديل.",
+        "اكبس «جرّب» بتسجيل قصير.",
+        "وإذا وقع بيرجع لـ Whisper المدمج لحاله."
+      ],
+      "defaults": {
+        "caps": {
+          "arabic": true,
+          "word_timing": false
+        },
+        "params": {
+          "language": "ar"
+        },
+        "uses_gpu": false,
+        "timeout_sec": 600,
+        "std": {
+          "model": ""
+        }
+      }
+    },
+    {
+      "id": "cmd-image",
+      "name": "أمر تشغيل — توليد صورة",
+      "group": "generic",
+      "task": "image",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر على السيرفر بيولّد صورة من وصف. بتحط أماكن الملفات ({prompt} للوصف، {out} لملف الناتج) والنظام بيعبّيها.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط (مثال بالخانة).",
+        "كل {مكان} بيتبدّل بقيمته وقت التشغيل — الناتج لازم ينكتب بـ {out}.",
+        "اكبس «جرّب» وشوف الصورة."
+      ],
+      "defaults": {
+        "caps": {
+          "refs": false,
+          "edit": false
+        },
+        "params": {
+          "width": 768,
+          "height": 1344
+        },
+        "uses_gpu": true,
+        "timeout_sec": 600,
+        "command": {
+          "argv": [
+            "python",
+            "gen_image.py",
+            "--prompt",
+            "{prompt}",
+            "--width",
+            "{width}",
+            "--height",
+            "{height}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-voice",
+      "name": "أمر تشغيل — كلام لصوت",
+      "group": "generic",
+      "task": "voice",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد النص ({text}) وبيكتب الصوت بـ {out}.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "{text} نص المشهد، {voice} اسم الصوت، {out} ملف الصوت.",
+        "اكبس «جرّب» واسمع."
+      ],
+      "defaults": {
+        "caps": {
+          "arabic": false,
+          "word_timing": false,
+          "clone": false
+        },
+        "params": {},
+        "uses_gpu": true,
+        "timeout_sec": 600,
+        "command": {
+          "argv": [
+            "python",
+            "speak.py",
+            "--text",
+            "{text}",
+            "--voice",
+            "{voice}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-stt",
+      "name": "أمر تشغيل — تفريغ كلام",
+      "group": "generic",
+      "task": "stt",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد الصوت ({audio}) وبيكتب النص (أو JSON فيه الكلمات) بـ {out}.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "الناتج ملف نصي، أو JSON بالشكل {\"text\": \"…\", \"words\": [{\"text\": \"…\", \"start\": 0.0, \"end\": 0.4}]}."
+      ],
+      "defaults": {
+        "caps": {
+          "arabic": true,
+          "word_timing": false
+        },
+        "params": {
+          "language": "ar"
+        },
+        "uses_gpu": true,
+        "timeout_sec": 900,
+        "command": {
+          "argv": [
+            "python",
+            "transcribe.py",
+            "--audio",
+            "{audio}",
+            "--language",
+            "{language}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-upscale",
+      "name": "أمر تشغيل — تكبير صورة",
+      "group": "generic",
+      "task": "upscale",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد الصورة ({image}) وبيكتب الصورة المكبّرة بـ {out}.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "{scale} معامل التكبير (2 أو 4)."
+      ],
+      "defaults": {
+        "caps": {
+          "scale_max": 4
+        },
+        "params": {
+          "scale": 4
+        },
+        "uses_gpu": true,
+        "timeout_sec": 600,
+        "command": {
+          "argv": [
+            "python",
+            "upscale.py",
+            "--in",
+            "{image}",
+            "--scale",
+            "{scale}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-bgremove",
+      "name": "أمر تشغيل — تفريغ خلفية",
+      "group": "generic",
+      "task": "bgremove",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد الصورة ({image}) وبيكتب PNG بخلفية شفافة بـ {out}.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "الناتج لازم PNG فيه شفافية — النظام بيرفض غير هيك."
+      ],
+      "defaults": {
+        "caps": {
+          "alpha": true
+        },
+        "params": {},
+        "uses_gpu": true,
+        "timeout_sec": 300,
+        "command": {
+          "argv": [
+            "python",
+            "bgremove.py",
+            "--in",
+            "{image}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-music",
+      "name": "أمر تشغيل — موسيقى",
+      "group": "generic",
+      "task": "music",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد وصف الموسيقى ({prompt}) والمدة ({seconds}) وبيكتب الملف بـ {out}. الناتج بينزل لمكتبة الأصوات «ناطر سماعك» قبل ما يدخل أي فيديو.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "الملف بيمرّ على مكتبة الأصوات وبتسمعه وتعتمده بنفسك."
+      ],
+      "defaults": {
+        "caps": {
+          "max_sec": 120
+        },
+        "params": {
+          "seconds": 30
+        },
+        "uses_gpu": true,
+        "timeout_sec": 900,
+        "command": {
+          "argv": [
+            "python",
+            "music.py",
+            "--prompt",
+            "{prompt}",
+            "--seconds",
+            "{seconds}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-sfx",
+      "name": "أمر تشغيل — مؤثر صوتي",
+      "group": "generic",
+      "task": "sfx",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج وأكّدها بنفسك."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد وصف المؤثر ({prompt}) والمدة ({seconds}) وبيكتب الملف بـ {out}.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "الملف بينزل لمكتبة الأصوات «ناطر سماعك»."
+      ],
+      "defaults": {
+        "caps": {
+          "max_sec": 15
+        },
+        "params": {
+          "seconds": 3
+        },
+        "uses_gpu": true,
+        "timeout_sec": 300,
+        "command": {
+          "argv": [
+            "python",
+            "sfx.py",
+            "--prompt",
+            "{prompt}",
+            "--seconds",
+            "{seconds}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cmd-lipsync",
+      "name": "أمر تشغيل — مزامنة شفاه",
+      "group": "generic",
+      "task": "lipsync",
+      "link": "command",
+      "licence": {
+        "id": "حسب النموذج",
+        "commercial": "unknown",
+        "note": "راجع رخصة النموذج بدقة — كتير نماذج المزامنة بتعتمد على أوزان للبحث فقط."
+      },
+      "badges": {
+        "vram_gb": null,
+        "arabic": null
+      },
+      "summary": "سطر أوامر بياخد الفيديو ({video}) والصوت ({audio}) وبيكتب الفيديو الجديد بـ {out}.",
+      "source": null,
+      "example_url": null,
+      "howto": [
+        "اكتب الأمر كقائمة وسائط.",
+        "المزامنة ما بترجع للطريقة الحالية لحالها لو وقعت."
+      ],
+      "defaults": {
+        "caps": {},
+        "params": {},
+        "uses_gpu": true,
+        "timeout_sec": 1800,
+        "command": {
+          "argv": [
+            "python",
+            "lipsync.py",
+            "--video",
+            "{video}",
+            "--audio",
+            "{audio}",
+            "--out",
+            "{out}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "qwen-image",
+      "name": "Qwen-Image",
+      "group": "ready",
+      "task": "image",
+      "link": "weights",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0."
+      },
+      "badges": {
+        "vram_gb": 24,
+        "arabic": null,
+        "disk_gb": 54
+      },
+      "summary": "نموذج صور كبير (~20 مليار) بيفهم الوصف الطويل. بدّه كرت كبير: حوالي 24GB بتفريغ لذاكرة الجهاز (أبطأ)، والمريح 48GB وفوق.",
+      "source": "https://huggingface.co/Qwen/Qwen-Image",
+      "example_url": null,
+      "howto": [
+        "نزّل الأوزان بمجلد الأوزان على السيرفر: huggingface-cli download Qwen/Qwen-Image --local-dir models/engines/Qwen-Image",
+        "بعد ما ينزل، افتح «أوزان على السيرفر» — الصندوق بيلاقيه لحاله وبيطلع بالقائمة مع حجمه ورخصته.",
+        "اكبس «جرّب»: أول صورة بتتأخر (تحميل النموذج بذاكرة الكرت)، والباقي أسرع."
+      ],
+      "defaults": {
+        "caps": {
+          "refs": false,
+          "edit": false
+        },
+        "params": {
+          "width": 768,
+          "height": 1344,
+          "steps": 30
+        },
+        "uses_gpu": false,
+        "timeout_sec": 900,
+        "weights": {
+          "model": "Qwen-Image"
+        }
+      }
+    },
+    {
+      "id": "qwen-image-edit",
+      "name": "Qwen-Image-Edit",
+      "group": "ready",
+      "task": "image",
+      "link": "weights",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0."
+      },
+      "badges": {
+        "vram_gb": 24,
+        "arabic": null,
+        "disk_gb": 54
+      },
+      "summary": "نفس عيلة Qwen-Image بس للتعديل: بتعطيه صورة (منتجك مثلاً) ووصف التعديل. بيخدم الصور المرجعية.",
+      "source": "https://huggingface.co/Qwen/Qwen-Image-Edit",
+      "example_url": null,
+      "howto": [
+        "نزّل الأوزان بمجلد الأوزان على السيرفر: huggingface-cli download Qwen/Qwen-Image-Edit --local-dir models/engines/Qwen-Image-Edit",
+        "اربطه من «أوزان على السيرفر». بياخد صورة وحدة (منتجك) ووصف التعديل."
+      ],
+      "defaults": {
+        "caps": {
+          "refs": true,
+          "edit": true
+        },
+        "params": {
+          "steps": 30,
+          "width": 768,
+          "height": 1344
+        },
+        "uses_gpu": false,
+        "timeout_sec": 900,
+        "weights": {
+          "model": "Qwen-Image-Edit"
+        }
+      }
+    },
+    {
+      "id": "qwen-image-edit-2509",
+      "name": "Qwen-Image-Edit-2509 — تعديل بعدة صور",
+      "group": "ready",
+      "task": "image",
+      "link": "weights",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0."
+      },
+      "badges": {
+        "vram_gb": 24,
+        "arabic": null,
+        "disk_gb": 54
+      },
+      "summary": "نسخة أحدث من Qwen-Image-Edit بتاخد لحد 3 صور مع بعض (منتجك + شخصية + خلفية مثلاً) ووصف التعديل. تقيل: حوالي 24GB بتفريغ لذاكرة الجهاز.",
+      "source": "https://huggingface.co/Qwen/Qwen-Image-Edit-2509",
+      "example_url": null,
+      "howto": [
+        "نزّل الأوزان بمجلد الأوزان على السيرفر: huggingface-cli download Qwen/Qwen-Image-Edit-2509 --local-dir models/engines/Qwen-Image-Edit-2509",
+        "اربطه من «أوزان على السيرفر». أول صورة بتتأخر (تحميل النموذج)، والباقي أسرع."
+      ],
+      "defaults": {
+        "caps": {
+          "refs": true,
+          "edit": true
+        },
+        "params": {
+          "steps": 30,
+          "width": 768,
+          "height": 1344
+        },
+        "uses_gpu": false,
+        "timeout_sec": 900,
+        "weights": {
+          "model": "Qwen-Image-Edit-2509"
+        }
+      }
+    },
+    {
+      "id": "flux-schnell",
+      "name": "FLUX.1 [schnell]",
+      "group": "ready",
+      "task": "image",
+      "link": "weights",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0 (نسخة schnell بالذات — نسخة dev مش تجارية)."
+      },
+      "badges": {
+        "vram_gb": 16,
+        "arabic": null,
+        "disk_gb": 31
+      },
+      "summary": "سريع جداً (4 خطوات). حوالي 16GB بتفريغ لذاكرة الجهاز، 24GB مريح.",
+      "source": "https://huggingface.co/black-forest-labs/FLUX.1-schnell",
+      "example_url": null,
+      "howto": [
+        "نزّل الأوزان بمجلد الأوزان على السيرفر: huggingface-cli download black-forest-labs/FLUX.1-schnell --local-dir models/engines/FLUX.1-schnell",
+        "اربطه من «أوزان على السيرفر». النظام بيعرف إنو نسخة سريعة: 4 خطوات وبلا توجيه."
+      ],
+      "defaults": {
+        "caps": {
+          "refs": false,
+          "edit": false
+        },
+        "params": {
+          "steps": 4,
+          "guidance": 0,
+          "width": 768,
+          "height": 1344
+        },
+        "uses_gpu": false,
+        "timeout_sec": 600,
+        "weights": {
+          "model": "FLUX.1-schnell"
+        }
+      }
+    },
+    {
+      "id": "real-esrgan",
+      "name": "Real-ESRGAN — تكبير",
+      "group": "ready",
+      "task": "upscale",
+      "link": "weights",
+      "licence": {
+        "id": "BSD-3-Clause",
+        "commercial": "yes",
+        "note": "BSD-3-Clause."
+      },
+      "badges": {
+        "vram_gb": 4,
+        "arabic": null,
+        "disk_gb": 0.06
+      },
+      "summary": "تكبير الصور 2× أو 3× أو 4× بحدّة. خفيف على الكرت، وبيشتغل بعد ما يخلص الباقي (ما بيحتاج يفرّغ نموذج كبير).",
+      "source": "https://github.com/xinntao/Real-ESRGAN",
+      "example_url": null,
+      "howto": [
+        "نزّل ملف الأوزان (حوالي 64MB) بمجلد الأوزان تحت upscale/: curl -L --create-dirs -o models/engines/upscale/RealESRGAN_x4plus.pth https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth",
+        "افتح «أوزان على السيرفر» وبيطلع باسم upscale-RealESRGAN_x4plus. التكبير ×2 أو ×3 أو ×4."
+      ],
+      "defaults": {
+        "caps": {
+          "scale_max": 4
+        },
+        "params": {
+          "scale": 4
+        },
+        "uses_gpu": false,
+        "timeout_sec": 600,
+        "weights": {
+          "model": "upscale-RealESRGAN_x4plus"
+        }
+      }
+    },
+    {
+      "id": "wan22-ti2v-5b",
+      "name": "Wan2.2 TI2V 5B — تحريك",
+      "group": "ready",
+      "task": "motion",
+      "link": "weights",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0."
+      },
+      "badges": {
+        "vram_gb": 24,
+        "arabic": null,
+        "disk_gb": 32
+      },
+      "summary": "تحريك صورة أو نص لفيديو، بجودة 720p. حوالي 24GB.",
+      "source": "https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B-Diffusers",
+      "example_url": null,
+      "howto": [
+        "نزّل الأوزان بمجلد الأوزان على السيرفر: huggingface-cli download Wan-AI/Wan2.2-TI2V-5B-Diffusers --local-dir models/engines/Wan2.2-TI2V-5B-Diffusers",
+        "من بطاقة «التحريك» اكبس «＋ من صندوق الأوزان» وأضفه لسجل الموديلات. الأرقام (المدة والسرعة والكرت) تقديرية — عدّلها من الجدول بعد أول تجربة."
+      ],
+      "defaults": {
+        "caps": {},
+        "params": {},
+        "uses_gpu": false,
+        "timeout_sec": 3600,
+        "weights": {
+          "model": "Wan2.2-TI2V-5B-Diffusers"
+        },
+        "motion": {
+          "max_sec": 5,
+          "vram_gb": 24,
+          "speed_sec_per_sec": 120,
+          "resolution": "704x1280",
+          "strengths": [
+            "faces",
+            "realism",
+            "camera_motion"
+          ],
+          "limits": "تقديري: حوالي 24GB؛ لقطة 5 ثواني بتاخد دقايق. عدّل الأرقام بعد أول تجربة على كرتك."
+        }
+      }
+    },
+    {
+      "id": "ltx-video",
+      "name": "LTX-Video — تحريك",
+      "group": "ready",
+      "task": "motion",
+      "link": "weights",
+      "licence": {
+        "id": "LTXV Open Weights",
+        "commercial": "conditional",
+        "note": "مجاني تجارياً للشركات اللي إيرادها السنوي أقل من 10 مليون دولار؛ فوقها لازم اتفاق مدفوع مع Lightricks. راجع الشروط الحالية بنفسك."
+      },
+      "badges": {
+        "vram_gb": 12,
+        "arabic": null,
+        "disk_gb": 27
+      },
+      "summary": "تحريك سريع وخفيف نسبياً. رخصته مشروطة بحجم إيراد شركتك.",
+      "source": "https://huggingface.co/Lightricks/LTX-Video",
+      "example_url": null,
+      "howto": [
+        "نزّل الأوزان بمجلد الأوزان على السيرفر: huggingface-cli download Lightricks/LTX-Video --local-dir models/engines/LTX-Video",
+        "من بطاقة «التحريك» اكبس «＋ من صندوق الأوزان». رخصته مشروطة بحجم إيراد شركتك، فبيطلب تأكيدك قبل الإضافة."
+      ],
+      "defaults": {
+        "caps": {},
+        "params": {},
+        "uses_gpu": false,
+        "timeout_sec": 3600,
+        "weights": {
+          "model": "LTX-Video"
+        },
+        "motion": {
+          "max_sec": 6,
+          "vram_gb": 12,
+          "speed_sec_per_sec": 30,
+          "resolution": "480x864",
+          "strengths": [
+            "product",
+            "realism"
+          ],
+          "limits": "تقديري: حوالي 12GB؛ سريع للحركة البسيطة وأضعف بالوجوه."
+        }
+      }
+    },
+    {
+      "id": "ace-step",
+      "name": "ACE-Step — موسيقى",
+      "group": "ready",
+      "task": "music",
+      "link": "app",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0."
+      },
+      "badges": {
+        "vram_gb": 12,
+        "arabic": null
+      },
+      "summary": "توليد موسيقى من وصف. بيجي مع برنامج ويب (Gradio) — بتحط رابطه والنظام بيقرا خاناته. الناتج بينزل لمكتبة الأصوات «ناطر سماعك».",
+      "source": "https://github.com/ace-step/ACE-Step",
+      "example_url": "http://127.0.0.1:7860",
+      "howto": [
+        "شغّل برنامج ACE-Step على السيرفر (طريقة التشغيل بصفحته على GitHub) وخلّيه يسمع على 127.0.0.1 بس.",
+        "افتح «اربط نموذج» ← «برنامج نموذج (Gradio)»، حط رابطه (مثل http://127.0.0.1:7860) واكبس «اقرا البرنامج»: بيعرض نقاطه ومعاملاتها وبيقترح الربط — راجعه وأكّده.",
+        "اكبس «جرّب» بوصف قصير. الناتج بينزل لمكتبة الأصوات «ناطر سماعك» قبل ما يدخل أي فيديو."
+      ],
+      "defaults": {
+        "caps": {
+          "max_sec": 120
+        },
+        "params": {
+          "seconds": 30
+        },
+        "uses_gpu": true,
+        "timeout_sec": 900
+      }
+    },
+    {
+      "id": "stable-audio-music",
+      "name": "Stable Audio Open — موسيقى",
+      "group": "ready",
+      "task": "music",
+      "link": "weights",
+      "licence": {
+        "id": "Stability AI Community License",
+        "commercial": "conditional",
+        "note": "رخصة مجتمع Stability AI: حسب نصها العام مجانية للاستعمال التجاري لمن إيراده السنوي أقل من مليون دولار (وبيطلبوا تسجيل عندهم)؛ فوق هالحد لازم ترخيص منهم. نص رخصة هالنموذج بملف LICENSE.md بصفحته — راجعه بنفسك."
+      },
+      "badges": {
+        "vram_gb": 8,
+        "arabic": null,
+        "disk_gb": 5.3
+      },
+      "summary": "موسيقى وإيقاعات قصيرة ستيريو حتى 47 ثانية، من وصف بالإنجليزي. أقوى بالمقاطع القصيرة والأجواء من الأغاني الكاملة (للأطول جرّب ACE-Step). الناتج بينزل لمكتبة الأصوات «ناطر سماعك».",
+      "source": "https://huggingface.co/stabilityai/stable-audio-open-1.0",
+      "example_url": null,
+      "howto": [
+        "الأوزان محمية على Hugging Face: سجّل دخول وافق على شروط النموذج بصفحته، وبعدين على السيرفر: huggingface-cli login",
+        "نزّل الأوزان بمجلد الأوزان (بلا ملفات .ckpt: الصندوق بيرفضها، وبلا النسخة الأحادية المكرّرة وفرت 5 جيجا): huggingface-cli download stabilityai/stable-audio-open-1.0 --exclude \"*.ckpt\" \"model.safetensors\" --local-dir models/engines/stable-audio-open-1.0",
+        "اربطه من «أوزان على السيرفر». اكتب الوصف بالإنجليزي (مثال: warm lo-fi piano, slow tempo). الموسيقى بتنطلب دايماً بلا غناء."
+      ],
+      "defaults": {
+        "caps": {
+          "max_sec": 47
+        },
+        "params": {
+          "seconds": 30
+        },
+        "uses_gpu": false,
+        "timeout_sec": 600,
+        "weights": {
+          "model": "stable-audio-open-1.0"
+        }
+      }
+    },
+    {
+      "id": "stable-audio-sfx",
+      "name": "Stable Audio Open — مؤثرات",
+      "group": "ready",
+      "task": "sfx",
+      "link": "weights",
+      "licence": {
+        "id": "Stability AI Community License",
+        "commercial": "conditional",
+        "note": "رخصة مجتمع Stability AI: حسب نصها العام مجانية للاستعمال التجاري لمن إيراده السنوي أقل من مليون دولار (وبيطلبوا تسجيل عندهم)؛ فوق هالحد لازم ترخيص منهم. نص رخصة هالنموذج بملف LICENSE.md بصفحته — راجعه بنفسك."
+      },
+      "badges": {
+        "vram_gb": 8,
+        "arabic": null,
+        "disk_gb": 5.3
+      },
+      "summary": "مؤثرات وأصوات محيطة (طرق، خطوات، أجواء، فول) ستيريو حتى 47 ثانية، من وصف بالإنجليزي. الناتج بينزل لمكتبة الأصوات «ناطر سماعك».",
+      "source": "https://huggingface.co/stabilityai/stable-audio-open-1.0",
+      "example_url": null,
+      "howto": [
+        "الأوزان محمية على Hugging Face: سجّل دخول وافق على شروط النموذج بصفحته، وبعدين على السيرفر: huggingface-cli login",
+        "نزّل الأوزان بمجلد الأوزان (بلا ملفات .ckpt: الصندوق بيرفضها، وبلا النسخة الأحادية المكرّرة وفرت 5 جيجا): huggingface-cli download stabilityai/stable-audio-open-1.0 --exclude \"*.ckpt\" \"model.safetensors\" --local-dir models/engines/stable-audio-open-1.0",
+        "اربطه من «أوزان على السيرفر» (نفس النموذج بيخدم الموسيقى والمؤثرات). مثال وصف: a hammer hitting a wooden surface."
+      ],
+      "defaults": {
+        "caps": {
+          "max_sec": 47
+        },
+        "params": {
+          "seconds": 5
+        },
+        "uses_gpu": false,
+        "timeout_sec": 300,
+        "weights": {
+          "model": "stable-audio-open-1.0"
+        }
+      }
+    },
+    {
+      "id": "wan22-s2v",
+      "name": "Wan2.2 S2V — مزامنة شفاه",
+      "group": "ready",
+      "task": "lipsync",
+      "link": "app",
+      "licence": {
+        "id": "Apache-2.0",
+        "commercial": "yes",
+        "note": "Apache-2.0."
+      },
+      "badges": {
+        "vram_gb": 40,
+        "arabic": null
+      },
+      "summary": "صوت لفيديو بيحرّك الوجه مع الكلام. تقيل جداً — بدّه كرت كبير.",
+      "source": "https://huggingface.co/Wan-AI/Wan2.2-S2V-14B",
+      "example_url": "http://127.0.0.1:7860",
+      "howto": [
+        "شغّل برنامج Wan2.2-S2V على السيرفر (بصفحة النموذج على GitHub/Hugging Face) وخلّيه يسمع على 127.0.0.1 بس. تقيل جداً: بدّه كرت كبير.",
+        "افتح «اربط نموذج» ← «برنامج نموذج (Gradio)»، حط رابطه واكبس «اقرا البرنامج»، واربط الفيديو/الصورة والصوت بمعاملات النقطة.",
+        "المزامنة ما بترجع للطريقة الحالية لحالها لو وقعت (تغيير الصوت بنص الفيديو بيخرّبه)."
+      ],
+      "defaults": {
+        "caps": {},
+        "params": {},
+        "uses_gpu": true,
+        "timeout_sec": 3600
+      }
+    },
+    {
+      "id": "latentsync",
+      "name": "LatentSync — مزامنة شفاه",
+      "group": "ready",
+      "task": "lipsync",
+      "link": "app",
+      "licence": {
+        "id": "يعتمد على InsightFace",
+        "commercial": "no",
+        "note": "حسب مراجعتنا بيعتمد على أوزان InsightFace وهي للبحث فقط (مش تجارية). ما بنفعّله. تأكّد بنفسك لو بدك تعيد النظر."
+      },
+      "badges": {
+        "vram_gb": 8,
+        "arabic": null
+      },
+      "summary": "مزامنة شفاه معروفة، بس رخصة اعتماده تمنعه من الاستعمال التجاري.",
+      "source": "https://github.com/bytedance/LatentSync",
+      "example_url": "http://127.0.0.1:7860",
+      "howto": [
+        "ما بنفعّله بسبب الرخصة: حسب مراجعتنا بيعتمد على أوزان InsightFace وهي للبحث فقط.",
+        "بنخلّيه بالقائمة للسجل: لو بدك تعيد النظر راجع رخصته بنفسك أول."
+      ],
+      "defaults": {
+        "caps": {},
+        "params": {},
+        "uses_gpu": true,
+        "timeout_sec": 1800
+      }
+    }
+  ]
+}

@@ -5,6 +5,8 @@ settings.json
 !.env.example
 *.pem
 *.key
+*.enc
+secrets/
 .claude/
 
 # ── بيانات التشغيل (مكتبتك الخاصة: أنماط، سيناريوهات، صور، أصوات، قواعد بيانات) ─────

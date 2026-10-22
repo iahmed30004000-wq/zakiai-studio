@@ -185,6 +185,14 @@ def ensure_frame(src: Path, dest: Path) -> dict:
 def refs_supported(overrides: dict | None = None) -> dict:
     """هل مزوّد الصور المضبوط بياخد صور مرجعية؟ {provider, model, supports_refs}. أي مشكلة بقراءة الإعدادات = «بياخد» (السلوك القديم)."""
     try:
+        import model_library
+        pk = model_library.pick("image", (overrides or {}).get("provider"))
+        if pk.model:                                             # نموذج من المكتبة (افتراضي أو صريح): بياخد مراجع لو قدراته بتقول
+            caps = pk.model.get("caps") or {}
+            return {"provider": pk.model["name"], "model": pk.model["id"], "supports_refs": bool(caps.get("refs") or caps.get("edit"))}
+    except Exception:                                            # noqa: BLE001 — خطأ مكتبة: بنكمّل بالمزوّد الحالي والتوليد بيطلّع الرسالة
+        pass
+    try:
         import imagegen
         cfg = imagegen.image_config(overrides)
         return {"provider": cfg["provider"], "model": cfg["model"], "supports_refs": bool(cfg["supports_refs"])}
@@ -272,14 +280,19 @@ def generate_shot(script_path, shot_id: str, n: int | None = None, overrides: di
         out = img_dir(stem) / f"{shot_id}_{int(time.time() * 1000)}_{k}.png"
         t_gen = time.time()
         try:
-            r = imagegen.generate(prompt, out, overrides, refs=refs, ref_roles=roles)
+            with imagegen.log_context(stem, shot_id):
+                r = imagegen.generate(prompt, out, overrides, refs=refs, ref_roles=roles)
         except imagegen.ImageError as e:
-            production_log.record("image", "failed", script_stem=stem, shot_id=shot_id, path="api",
-                                  seconds=time.time() - t_gen, error=str(e))
+            if not getattr(e, "logged", False):                  # نموذج المكتبة: model_run سجّل المحاولة
+                production_log.record("image", "failed", script_stem=stem, shot_id=shot_id, path="api",
+                                      seconds=time.time() - t_gen, error=str(e))
             studio_state.set_state(stem, 7, "failed", str(e))
             raise ImageStudioError(str(e))
-        production_log.record("image", "ok", script_stem=stem, shot_id=shot_id, model_id=r.get("model"),
-                              model_name=r.get("provider"), path="api", seconds=time.time() - t_gen)
+        if r.get("library_note"):
+            log(f"  [i] {r['library_note']}")
+        if not r.get("logged"):
+            production_log.record("image", "ok", script_stem=stem, shot_id=shot_id, model_id=r.get("model"),
+                                  model_name=r.get("provider"), path="api", seconds=time.time() - t_gen)
         _bump(stem)
         try:
             usage.record("image", r["provider"], r["model"], 0, 0)
@@ -324,8 +337,33 @@ def generate_all(script_path, n: int | None = None, overrides: dict | None = Non
     return {"done": done, "failed": failed, "routed": routed, "budget": budget(stem)}
 
 
+# ── صورة من المالك (بدل التوليد) ─────────────────────────────────────────
+def add_upload(script_path, shot_id: str, im) -> dict:
+    """صورة (PIL) من المالك للقطة كمرشّح provider=upload — بنفس شرط التوليد (المحطة 7 مسموح تبدأ). الاختيار بعدها بـ choose(path_used='upload').
+    بيرجّع المرشّح. المحطة بتصير «بانتظار اختيارك» (زي أي توليد جديد)."""
+    import media_io
+    path = Path(script_path)
+    stem = path.stem
+    ok, why = studio_state.can_start(stem, 7)
+    if not ok:
+        raise ImageStudioError(why)
+    tl = _load(stem)
+    _sc, sh = _shot(tl, shot_id)
+    out = img_dir(stem) / f"{shot_id}_{int(time.time() * 1000)}_up.png"
+    info = media_io.save_png(im, out)
+    cand = {"path": _rel(stem, out), "provider": "upload", "model": "owner", "at": _now(), "w": info["w"], "h": info["h"],
+            "refs_used": [], "path_used": "upload"}
+    _image(sh)["candidates"].append(cand)
+    _save(stem, tl)
+    try:
+        studio_state.set_state(stem, 7, "awaiting_choice", "بانتظار اختيارك لكل لقطة")
+    except studio_state.StationBlocked as e:
+        raise ImageStudioError(str(e))
+    return cand
+
+
 # ── الاختيار ────────────────────────────────────────────────────────────
-def choose(script_path, shot_id: str, cand_path: str) -> dict:
+def choose(script_path, shot_id: str, cand_path: str, path_used: str = "api") -> dict:
     stem = Path(script_path).stem
     tl = _load(stem)
     _sc, sh = _shot(tl, shot_id)
@@ -339,7 +377,7 @@ def choose(script_path, shot_id: str, cand_path: str) -> dict:
     dest = src.with_name(src.stem + "_1080.png")
     info = ensure_frame(src, dest)
     im.update(chosen=_rel(stem, dest), source=cand["path"], upscaled=info["upscaled"],
-              upscale_method=info["method"], cropped=info["cropped"], composite=None, path_used="api")
+              upscale_method=info["method"], cropped=info["cropped"], composite=None, path_used=path_used)
     sh["product_check"] = None
     sh["face_check"] = None
     (tl.get("checks_approved_by_owner") or {}).pop(shot_id, None)
@@ -673,6 +711,8 @@ def approve_match(script_path) -> dict:
 
 
 def main() -> None:
+    import job_signals
+    job_signals.install()
     ap = argparse.ArgumentParser(description="توليد صور الخط الزمني")
     ap.add_argument("action", choices=["gen"])
     ap.add_argument("script")

@@ -4,6 +4,7 @@
 !.env.example
 .git
 .claude
+secrets
 **/__pycache__
 **/*.pyc
 library

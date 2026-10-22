@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 import config
@@ -48,6 +48,49 @@ def make_voice(filename: str, provider: str | None = None, model: str | None = N
         if val:
             cmd += [flag, val]
     return {"job_id": jobs.create_job("voice", f"فويس أوفر (بوابة المدة): {p.stem}", cmd)}
+
+
+@router.post("/{filename}/voice/upload")
+async def upload_voice(filename: str, file: UploadFile = File(...), language: str = Form("")) -> dict:
+    """تسجيلك لمحطة الصوت (المهمة الموجّهة): بيتفرّغ وبيتطابق مع نص السيناريو وبيتقص على المشاهد كمهمة خلفية، وبعدها بتسمعه
+    وبتعتمده بالزر المعتاد. بنفس شروط الإضافة (مراجعة نظيفة + المحطة 4 مسموح تبدأ). نسخ الهوك بترفض."""
+    import ext_tasks
+    import media_io
+    import studio_gate
+    import voice_upload
+    from fastapi.concurrency import run_in_threadpool
+    from web import jobs
+    p = _script(filename)
+    if studio_gate.is_free(p):
+        raise HTTPException(409, "هاد مشروع حر — ارفع التسجيل من لوحة «الصوت» جواه")
+    try:
+        ext_tasks._voice_ready(p)
+    except ext_tasks.ExtError as e:
+        raise HTTPException(409, str(e))
+    if ((json.loads(p.read_text(encoding="utf-8")).get("_meta")) or {}).get("hook_of"):
+        raise HTTPException(409, "هاي نسخة هوك: صوت المشاهد 2–7 موروث من الفيديو الأساسي — ارفع تسجيلك لنسخة الأساس")
+    kind = media_io.kind_of(file.filename)
+    if kind not in ("audio", "video"):
+        raise HTTPException(400, "لازم ملف صوت (mp3, wav, m4a, ogg…) أو فيديو فيه صوتك")
+    d = Path(config.LIBRARY_DIR) / "voice" / p.stem / "upload_src"
+    d.mkdir(parents=True, exist_ok=True)
+    dest = d / f"upload{Path(file.filename or '').suffix.lower()}"
+    try:
+        await media_io.stream_to(file, dest, media_io.MAX_AUDIO_BYTES if kind == "audio" else media_io.MAX_VIDEO_BYTES)
+        info = await run_in_threadpool(media_io.probe_av, dest)
+    except media_io.MediaError as e:
+        dest.unlink(missing_ok=True)
+        raise HTTPException(e.status, str(e))
+    if not info["has_audio"]:
+        dest.unlink(missing_ok=True)
+        raise HTTPException(400, "الملف ما فيه صوت (جرّب ملف تسجيل صوتي أو فيديو فيه صوتك)")
+    if info["duration_sec"] > voice_upload.MAX_SOURCE_SEC:
+        dest.unlink(missing_ok=True)
+        raise HTTPException(400, f"التسجيل أطول من {int(voice_upload.MAX_SOURCE_SEC // 60)} دقايق — قسّمه")
+    cmd = ["voice_upload.py", "ingest-guided", str(p), "--audio", str(dest)]
+    if language.strip():
+        cmd += ["--language", language.strip()]
+    return {"job_id": jobs.create_job("voice", f"تفريغ تسجيلك وتقسيمه على مشاهد السيناريو: {p.stem}", cmd)}
 
 
 @router.get("/{filename}/voice")
@@ -119,15 +162,12 @@ def move_boundary(filename: str, scene: int, shot: int, to_ms: int) -> dict:
 
 # ─────────────────── المحطة ٦: برومبتات اللقطات ───────────────────
 def _timeline_of(p: Path) -> dict:
-    import timeline
-    import voice_studio
-    ok, why = voice_studio.voice_is_approved(p)
-    if not ok:
-        raise HTTPException(409, why)
-    tl = timeline.load(p.stem)
-    if not tl:
-        raise HTTPException(404, "ما في خط زمني — اعتمد الصوت أولاً")
-    return tl
+    """بوابة الخط الزمني (موجّه: صوت معتمد ثم خط زمني؛ حر: الخط الزمني بس) — studio_gate."""
+    import studio_gate
+    try:
+        return studio_gate.timeline_for(p, "ما في خط زمني — اعتمد الصوت أولاً")
+    except studio_gate.GateError as e:
+        raise HTTPException(e.status, str(e))
 
 
 @router.post("/{filename}/shots/build")
@@ -228,11 +268,19 @@ def images_info(filename: str) -> dict:
 def images_generate(filename: str, shot: str | None = None, n: int | None = None,
                     provider: str | None = None, model: str | None = None) -> dict:
     """يولّد ٢–٣ خيارات لكل لقطة (أو لقطة وحدة) كمهمة. بيحتاج برومبتات معتمدة (محطة ٦)."""
+    import studio_gate
     import studio_state
     from web import jobs
     p = _script(filename)
-    _timeline_of(p)
-    if studio_state.state_of(p.stem, 6) != "approved":
+    tl = _timeline_of(p)
+    if studio_gate.is_free(p):                          # المشروع الحر: وصف الصورة بيكفي (بلا اعتماد محطة 6)
+        shots = [sh for sc in tl["scenes"] for sh in sc["shots"] if shot is None or sh["id"] == shot]
+        if not shots:
+            raise HTTPException(404, "لقطة غير موجودة")
+        missing = [sh["id"] for sh in shots if not (sh.get("prompt_ar") or "").strip()]
+        if shot and missing:
+            raise HTTPException(409, "اكتب وصف الصورة للقطة أول")
+    elif studio_state.state_of(p.stem, 6) != "approved":
         raise HTTPException(409, "اعتمد برومبتات اللقطات (محطة 6) قبل الصور")
     cmd = ["image_studio.py", "gen", str(p)]
     for flag, val in (("--shot", shot), ("--n", n), ("--provider", provider), ("--model", model)):
@@ -257,6 +305,57 @@ def choose_image(filename: str, shot_id: str, payload: dict) -> dict:
     p = _script(filename)
     _timeline_of(p)
     return {"shot": _img_call(image_studio.choose, p, shot_id, str(payload.get("path") or ""))}
+
+
+@router.post("/{filename}/shots/{shot_id}/upload")
+async def upload_shot_media(filename: str, shot_id: str, file: UploadFile = File(...)) -> dict:
+    """صورة أو فيديو من عندك للقطة (بدل التوليد). المشروع الحر: بلا شروط. المهمة الموجّهة: الصورة بعد ما تنفتح محطة الصور (7)، والفيديو بعد
+    محطة التحريك (9) ومدته بتتظبط على مدة اللقطة (قص، أو مط حتى 15%، وإلا رفض)، وبيتعمل اختيار تلقائي (المحطة بتصير بانتظار اختيارك)."""
+    import shutil
+    import uuid
+    from fastapi.concurrency import run_in_threadpool
+    import free_project
+    import media_io
+    import studio_gate
+    p = _script(filename)
+    kind = media_io.kind_of(file.filename)
+    if kind not in ("image", "video"):
+        raise HTTPException(400, "الملف لازم صورة (png, jpg, webp) أو فيديو (mp4, mov, webm)")
+    guided = not studio_gate.is_free(p)
+    tmp = Path(config.LIBRARY_DIR) / "uploads" / "free_tmp" / uuid.uuid4().hex
+    tmp.mkdir(parents=True, exist_ok=True)
+    try:
+        dest = tmp / f"up{Path(file.filename or '').suffix.lower()}"
+        try:
+            await media_io.stream_to(file, dest, media_io.MAX_IMAGE_BYTES if kind == "image" else media_io.MAX_VIDEO_BYTES)
+            if guided:
+                return await run_in_threadpool(_guided_shot_upload, p, shot_id, kind, dest)
+            import accounts
+            return await run_in_threadpool(free_project.upload_to_shot, p, shot_id, dest, file.filename or "", accounts.who("owner"))
+        except media_io.MediaError as e:
+            raise HTTPException(e.status, str(e))
+        except free_project.FreeError as e:
+            raise HTTPException(e.status, str(e))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def _guided_shot_upload(p: Path, shot_id: str, kind: str, dest: Path) -> dict:
+    """المهمة الموجّهة: صورة ← مرشّح + اختيار؛ فيديو ← مقطع بمدة اللقطة + اختيار. أخطاء المحطات (409) بالعربي."""
+    import image_studio
+    import media_io
+    import motion
+    try:
+        if kind == "image":
+            im = media_io.check_image(dest.read_bytes())
+            cand = image_studio.add_upload(p, shot_id, im)
+            return {"shot": image_studio.choose(p, shot_id, cand["path"], path_used="upload"), "warnings": []}
+        info = media_io.check_video(dest)
+        sh = motion.add_upload(p, shot_id, dest)
+        warnings = [] if not info["has_audio"] else ["صوت الفيديو ما بيدخل بالمهمة الموجّهة (الصوت من الفويس أوفر)"]
+        return {"shot": motion.choose(p, shot_id, sh["motion_candidates"][-1]["clip"]), "warnings": warnings}
+    except (image_studio.ImageStudioError, motion.MotionError) as e:
+        raise HTTPException(409, str(e))
 
 
 @router.post("/{filename}/shots/{shot_id}/upscale")

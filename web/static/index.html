@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zakiai Systems — استوديو المحتوى</title>
-<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=68">
-<link rel="stylesheet" href="/theme.css?v=68">
-<link rel="stylesheet" href="/style.css?v=68">
-<link rel="stylesheet" href="/ornament.css?v=68">
+<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=76">
+<link rel="stylesheet" href="/theme.css?v=76">
+<link rel="stylesheet" href="/style.css?v=76">
+<link rel="stylesheet" href="/ornament.css?v=76">
 </head>
 <body class="zk">
 
@@ -81,10 +81,11 @@
     <div class="page-head">
       <div>
         <h2>خريطة المهمات <span class="term-slot" data-term="mission"></span></h2>
-        <p class="hint">كل إعلان «مهمة» إلها 7 مراحل. كمّل من وين وقفت، أو ابدأ وحدة جديدة.</p>
+        <p class="hint">كل إعلان «مهمة» إلها 7 مراحل. كمّل من وين وقفت، أو ابدأ وحدة جديدة. وإذا بدك شغلة وحدة بس (حرّك صورة، ولّد صورة، صوت…) <a href="#/mission/new?free=1">اشتغل يدوي بلا ترتيب</a>.</p>
       </div>
       <div class="row nowrap">
         <a class="btn" href="#/mission/new?stage=1">✦ مهمة جديدة</a>
+        <a class="btn ghost" href="#/mission/new?free=1">✎ مشروع حر</a>
         <button id="homeRefresh" class="btn ghost sm" type="button">تحديث</button>
       </div>
     </div>
@@ -138,13 +139,13 @@
   <!-- ═════════ ⚙ المصنع: طرق التوليد ═════════ -->
   <section id="v-factory" class="view" data-view="factory">
     <div class="page-head hero compact" data-img="factory">
-      <div><h2>المصنع</h2><p class="hint">طرق التوليد التلاتة: API (مفاتيح ومزوّدين) · النماذج المحلية · الإضافة <span class="term-slot" data-term="extension"></span>. لكل طريقة: شغّالة؟ وشو آخر مشكلة؟</p></div>
+      <div><h2>المصنع</h2><p class="hint">طرق التوليد التلاتة: API (مفاتيح ومزوّدين) · مكتبة النماذج (نماذجك أنت) · الإضافة <span class="term-slot" data-term="extension"></span>. لكل طريقة: شغّالة؟ وشو آخر مشكلة؟</p></div>
       <div class="hero-actions"><button id="facCheck" class="btn ghost sm" type="button">افحص الطرق</button><button class="btn ghost sm" type="button" data-guide-next>الخطوة الجاية ←</button></div>
     </div>
     <div id="facMethods"></div>
     <div class="seg" id="facTabs" role="tablist" aria-label="طرق التوليد">
       <button type="button" data-tab="api" class="on">API</button>
-      <button type="button" data-tab="local">النماذج المحلية</button>
+      <button type="button" data-tab="local">مكتبة النماذج</button>
       <button type="button" data-tab="extension">الإضافة</button>
     </div>
     <div id="fac-api" class="tabpane on">
@@ -319,6 +320,25 @@
         </div>
         <div id="genTabStatus" class="status"></div>
       </div>
+      <details class="panel fold" id="manualPanel">
+        <summary>✎ أو اكتب السيناريو بنفسك (بدل الذكاء الاصطناعي)</summary>
+        <p class="hint">7 مشاهد بالضبط وكلام بكل مشهد، والمدة الكلية بين 45 و50 ثانية. كل فقرة (سطر فاضي بينها) بتصير مشهد، وبتقدر تكتب جوّاها «صورة: …» و«شاشة: …» و«مدة: 4». بعدها السيناريو بيدخل المراجعة والمحطات متل أي سيناريو.</p>
+        <p class="status warn" id="manNote"></p>
+        <div class="field"><label for="manText">نص السيناريو</label>
+          <textarea id="manText" rows="9" placeholder="ليش عيونك بتتعب آخر النهار؟&#10;صورة: وجه امرأة بتفرك عيونها&#10;&#10;هاي القطرة بتغيّر كل شي…"></textarea></div>
+        <div class="row"><label for="manFile">أو ملف Excel:</label><input type="file" id="manFile" accept=".xlsx"><a href="/api/scenes/template.xlsx" download>نزّل النموذج الجاهز</a></div>
+        <div class="row"><label class="check"><input type="checkbox" id="manSplit"> كل جملة تصير مشهد</label>
+          <button id="manGo" class="btn" type="button">أنشئ السيناريو</button></div>
+        <div id="manStatus" class="status"></div>
+      </details>
+      <details class="panel fold" id="voiceStartPanel">
+        <summary>🎙 أو ابدأ من تسجيل صوتك</summary>
+        <p class="hint">سجّل الإعلان بصوتك (بين 45 و50 ثانية، 7 جمل على الأقل بوقفات بينها) وارفعه: بيتفرّغ وبيتحوّل لسيناريو 7 مشاهد، وبيتوافق عليه بالفحص الحسابي، وصوتك بينقسم على المشاهد لحاله. بعدين بتسمعه وبتعتمده من محطة الصوت.</p>
+        <p class="status warn" id="vsNote"></p>
+        <div class="row"><input type="file" id="vsFile" accept=".mp3,.wav,.m4a,.ogg,.opus,.flac,.aac,.webm,.mp4,.mov,.m4v,.mkv">
+          <button id="vsGo" class="btn" type="button">ارفع وابدأ</button></div>
+        <div id="vsStatus" class="status"></div>
+      </details>
       <details class="panel fold">
         <summary>قارن بين موديلات</summary>
         <p class="hint">نفس المنتج ونفس النمط، بموديلات مختلفة — وبتقارن المخرجات جنب بعض.</p>
@@ -653,6 +673,7 @@
 
   <!-- ═════════ موديلات التحريك ═════════ -->
   <section id="v-models" class="view" data-view="models">
+    <div id="mlBody"></div>
     <div class="page-head"><div><h2>موديلات التحريك المحلية <span class="term-slot" data-term="motion"></span></h2>
       <p class="hint">سجل الموديلات المحلية اللي بتحرّك لقطاتك. كل موديل بأمر تشغيل خاص فيه، وبيتختار تلقائياً لكل لقطة حسب نوعها ومدتها والذاكرة.</p></div></div>
     <div id="mmBody"></div>
@@ -713,29 +734,32 @@
 
 <div id="toasts" class="toasts" aria-live="polite"></div>
 
-<script src="/vendor/zaki-ui/zaki-ui.all.js?v=68"></script>
-<script src="/app.js?v=68"></script>
-<script src="/studio.js?v=68"></script>
-<script src="/hooks.js?v=68"></script>
-<script src="/presets.js?v=68"></script>
-<script src="/perf.js?v=68"></script>
-<script src="/settings.js?v=68"></script>
-<script src="/accounts.js?v=68"></script>
-<script src="/production.js?v=68"></script>
-<script src="/refslots.js?v=68"></script>
-<script src="/characters.js?v=68"></script>
-<script src="/productref.js?v=68"></script>
-<script src="/models.js?v=68"></script>
-<script src="/ext.js?v=68"></script>
-<script src="/claims.js?v=68"></script>
-<script src="/patedit.js?v=68"></script>
-<script src="/adsfb.js?v=68"></script>
-<script src="/ahat.js?v=68"></script>
-<script src="/shell.js?v=68"></script>
-<script src="/guide.js?v=68"></script>
-<script src="/ornament.js?v=68"></script>
-<script src="/home.js?v=68"></script>
-<script src="/mission.js?v=68"></script>
-<script src="/boot.js?v=68"></script>
+<script src="/vendor/zaki-ui/zaki-ui.all.js?v=76"></script>
+<script src="/app.js?v=76"></script>
+<script src="/studio.js?v=76"></script>
+<script src="/hooks.js?v=76"></script>
+<script src="/presets.js?v=76"></script>
+<script src="/perf.js?v=76"></script>
+<script src="/settings.js?v=76"></script>
+<script src="/accounts.js?v=76"></script>
+<script src="/production.js?v=76"></script>
+<script src="/refslots.js?v=76"></script>
+<script src="/characters.js?v=76"></script>
+<script src="/productref.js?v=76"></script>
+<script src="/models.js?v=76"></script>
+<script src="/modellib.js?v=76"></script>
+<script src="/ext.js?v=76"></script>
+<script src="/claims.js?v=76"></script>
+<script src="/patedit.js?v=76"></script>
+<script src="/adsfb.js?v=76"></script>
+<script src="/ahat.js?v=76"></script>
+<script src="/shell.js?v=76"></script>
+<script src="/guide.js?v=76"></script>
+<script src="/ornament.js?v=76"></script>
+<script src="/home.js?v=76"></script>
+<script src="/free.js?v=76"></script>
+<script src="/freemontage.js?v=76"></script>
+<script src="/mission.js?v=76"></script>
+<script src="/boot.js?v=76"></script>
 </body>
 </html>

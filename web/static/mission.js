@@ -2,7 +2,8 @@
    المسار: #/mission/<ملف السيناريو أو new>?stage=1..7 (&s=<محطة> &step=<خطوة كتابة> &product=… &pattern=…)
    المراحل 1–3 بالتركيب: بننقل عقد شاشة المنتجات وخطوات الاستوديو (appendChild بيحافظ على المستمعات)
    ومنادي منطقها الموجود. المراحل 4–7 من production.js عبر prodMount(host, {file, only, station, part}).
-   ما في أي منطق توليد أو اعتماد هون — بس تنقّل، وحساب «شو الناقص» من حالات المحطات. */
+   ما في أي منطق توليد أو اعتماد هون — بس تنقّل، وحساب «شو الناقص» من حالات المحطات.
+   «المشروع الحر» (free.js) بياخد #/mission/new?free=1 وملفات free__* قبل ما نرسم المراحل — والمهمة الموجّهة تمشي متل ما هي. */
 "use strict";
 
 /* كل شي جوّا دالة مغلقة: ما في أسماء عامة غير VIEWS.mission و window.Mission (ما نصطدم بأسماء ملفات تانية) */
@@ -34,6 +35,16 @@ const STATION_NEED = {
   9: ["ناقص تحرّك كل لقطة وتختار حركتها وتعتمد التحريك", "#mvApprove, #mvAll"],
   10: ["ناقص تعمل معاينة وتصدّر الفيديو النهائي", "#mnFinal, #mnPreview"],
   11: ["ناقص تبعت طلب الإطلاق لموقع العمليات", "#lnSend"],
+};
+
+/* أبواب «يدوي بلا تسلسل»: بكل مرحلة اختصارات للشغل السريع بالمشروع الحر (free.js). المراحل نفسها وقواعدها ما بتتغيّر —
+   الباب بيفتح مشروع حر جاهز لهالخطوة لحالها، بلا سيناريو ولا مراحل قبلها. quick = اختصار من FreeProject.quick، start = نقطة بداية. */
+const MANUAL_DOORS = {
+  3: [{ start: "text", ico: "✎", name: "اكتب مشاهدك بلا قيود" }],
+  4: [{ quick: "speak" }, { quick: "transcribe" }],
+  5: [{ quick: "generate" }, { start: "images", ico: "⬆", name: "ارفع صورك" }],
+  6: [{ quick: "animate" }],
+  7: [{ quick: "montage" }],
 };
 
 /* دليل كل مرحلة — بالمثال نفسه (كريم إزالة شعر) من الأول للآخر */
@@ -217,7 +228,7 @@ function renderHead() {
   const pname = (meta && meta.product) || (prod && prod.product_name) || "";
   h.innerHTML = `✦ المهمة: <bdi>${esc(pname || (MS.file ? MS.file : "مهمة جديدة"))}</bdi>`;
   sub.innerHTML = meta ? `السيناريو: <bdi>${esc(meta.display_name || MS.file)}</bdi>${meta.title ? ` — ${esc(meta.title)}` : ""}`
-    : MS.file ? `السيناريو: <bdi>${esc(MS.file)}</bdi>` : "لسا ما في سيناريو — بتبلّش من المنتج والفكرة.";
+    : MS.file ? `السيناريو: <bdi>${esc(MS.file)}</bdi>` : `لسا ما في سيناريو — بتبلّش من المنتج والفكرة. <a href="#/mission/new?free=1">✎ أو ابدأ مشروع حر (بلا ترتيب إجباري)</a>`;
 }
 
 function renderGuide() {
@@ -229,6 +240,22 @@ function renderGuide() {
   host.innerHTML = `<details class="panel guide-panel"><summary><b>دليل المرحلة ${esc(MS.stage)}: ${esc(stageDef(MS.stage).name)}</b></summary>
     <p><b>شو:</b> ${esc(g.what)}</p><p><b>ليش:</b> ${esc(g.why)}</p><p><b>مثال:</b> ${esc(g.example)}</p>
     ${(g.tips || []).length ? `<ul class="why">${g.tips.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}</details>`;
+}
+
+function renderManual() {
+  const host = $("#msManual");
+  if (!host) return;
+  const F = window.FreeProject;
+  const rows = F ? (MANUAL_DOORS[MS.stage] || []).map((d) => {
+    const q = d.quick ? (F.quick || {})[d.quick] : null;
+    if (d.quick && !q) return "";
+    const href = d.quick ? F.quickHash(d.quick) : `#/mission/new?free=1&start=${enc(d.start)}`;
+    return `<a class="btn ghost sm" href="${href}">${esc(q ? q.ico : d.ico)} ${esc(q ? q.name : d.name)}</a>`;
+  }).filter(Boolean) : [];
+  host.innerHTML = rows.length ? `<div class="ms-manual" role="group" aria-label="شغل يدوي بلا تسلسل">
+    <b>✋ يدوي بلا تسلسل</b>
+    <span class="hint">بدك تعمل هالخطوة لحالها بدون ما تمرّ بالباقي؟ بيفتح مشروع حر جاهز (المهمة هون بتضل متل ما هي):</span>
+    ${rows.join("")}</div>` : "";
 }
 
 function renderBar() {
@@ -373,7 +400,8 @@ async function renderStage(seq) {
   /* 4–7: محطات الإنتاج */
   if (!MS.file) {
     box.innerHTML = `<div class="panel"><p class="empty">هالمرحلة بتفتح بعد ما توافق على السيناريو (المرحلة 3).</p>
-      <div class="row"><a class="zk-btn zk-btn--primary" href="${missionHash(null, 3, { product: MS.product })}">روح للسيناريو</a></div></div>`;
+      <div class="row"><a class="zk-btn zk-btn--primary" href="${missionHash(null, 3, { product: MS.product })}">روح للسيناريو</a></div>
+      ${(MANUAL_DOORS[n] || []).length && window.FreeProject ? `<p class="hint">أو بدك بس هالخطوة لحالها؟ استعمل «✋ يدوي بلا تسلسل» فوق.</p>` : ""}</div>`;
     return;
   }
   const def = stageDef(n);
@@ -411,11 +439,16 @@ VIEWS.mission = {
     const body = $("#missionBody");
     if (!body) return;
     parkBorrowed();
+    /* «المشروع الحر» (free.js) له شاشته: #/mission/new?free=1 وأي ملف free__*. المراحل السبعة والمهمة الموجّهة ما بتتأثر. */
+    clearTimeout(MS.timer);
+    if (window.FreeProject && (await FreeProject.enter(body, { file, q: MS.q, alive: () => seq === MS.seq }))) return;
+    if (seq !== MS.seq) return;
     body.innerHTML = `
       <div class="page-head mission-head hero compact" data-img="mission"><div><h2 id="msTitle">✦ المهمة</h2><p class="hint" id="msSub"></p></div></div>
       <ol class="mission-steps" id="msSteps" aria-label="مراحل المهمة"></ol>
       <div id="msPassed" class="mission-passed-host"></div>
       <div id="msGuide"></div>
+      <div id="msManual"></div>
       <div id="msStage" class="mission-stage"><div class="panel"><p class="hint">جاري التحميل…</p></div></div>
       <nav class="mission-bar" id="msBar" aria-label="التنقل بين المراحل"></nav>`;
 
@@ -439,7 +472,7 @@ VIEWS.mission = {
     if (MS.stage >= 4) await loadDetail(MS.stage);
     if (seq !== MS.seq) return;
 
-    renderHead(); renderSteps(); renderGuide(); renderBar();
+    renderHead(); renderSteps(); renderGuide(); renderManual(); renderBar();
     $("#msStage").innerHTML = "";
     try { await renderStage(seq); }
     catch (e) { $("#msStage").innerHTML = `<div class="panel">${errBox(e)}</div>`; }

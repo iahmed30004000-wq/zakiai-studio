@@ -441,6 +441,24 @@ def test_target_size_uses_image_aspect_or_explicit_size(tmp_path):
     assert fitted.size == (96, 160)
 
 
+def test_encode_mp4_accepts_numpy_frames_like_wan_returns_by_default(tmp_path):
+    """Wan بيرجّع إطارات numpy (float بين 0 و1) افتراضياً — الترميز لازم يقبلها مثل صور PIL (وهالخلل اتلقّى بمقارنة تواقيع diffusers)."""
+    import numpy as np
+    from services.engine.backends import _common as cm
+    floats = np.stack([np.full((96, 64, 3), 0.1 * (i % 9), dtype=np.float32) for i in range(24)])
+    out = tmp_path / "np.mp4"
+    cm.encode_mp4(floats, 24, out)                                    # مصفوفة (F,H,W,3) كاملة
+    assert out.exists() and abs(probe_duration(out.read_bytes(), tmp_path) - 1.0) < 0.15
+    ints = [np.full((96, 64, 3), 120, dtype=np.uint8) for _ in range(12)]
+    out2 = tmp_path / "u8.mp4"
+    cm.encode_mp4(ints, 12, out2)
+    assert out2.exists()
+    mixed = [Image.new("RGB", (64, 96), (9, 9, 9)), np.zeros((96, 64, 3), dtype=np.float32)]
+    cm.encode_mp4(mixed, 8, tmp_path / "mixed.mp4")
+    with pytest.raises(RuntimeError, match="شكل الإطار"):
+        cm.encode_mp4([np.zeros((96, 64), dtype=np.float32)], 8, tmp_path / "gray.mp4")
+
+
 # ───────────────────────── ملفات النشر (فحص ثابت — بدون Docker) ─────────────────────────
 def _yaml(name):
     yaml = pytest.importorskip("yaml")
@@ -449,9 +467,11 @@ def _yaml(name):
 
 def test_engines_compose_security_and_gpu_rules():
     d = _yaml("docker-compose.engines.yml")
-    assert set(d["services"]) == {"ltx", "wan"}
+    assert set(d["services"]) == {"engine", "ltx", "wan"}
     ports = {n: s["ports"] for n, s in d["services"].items()}
-    assert ports == {"ltx": ["127.0.0.1:8101:8000"], "wan": ["127.0.0.1:8102:8000"]}
+    assert ports == {"engine": ["127.0.0.1:8100:8000"], "ltx": ["127.0.0.1:8101:8000"], "wan": ["127.0.0.1:8102:8000"]}
+    assert "profiles" not in d["services"]["engine"]                                             # الصندوق العام هو الافتراضي
+    assert d["services"]["ltx"]["profiles"] == ["legacy"] and d["services"]["wan"]["profiles"] == ["legacy"]       # القديمين احتياط بس
     for n, s in d["services"].items():
         assert s["read_only"] is True and s["restart"] == "unless-stopped" and s["user"] == "10001:10001", n
         assert any(v.endswith(":/weights:ro") for v in s["volumes"]), n                    # الأوزان للقراءة فقط
@@ -463,7 +483,9 @@ def test_engines_compose_security_and_gpu_rules():
         assert s["cap_drop"] == ["ALL"] and "no-new-privileges:true" in s["security_opt"]
         assert s["environment"]["ENGINE_TOKEN"].startswith("${ENGINE_TOKEN:?")           # مطلوب من .env وما في قيمة مكتوبة
     assert d["services"]["ltx"]["environment"]["ENGINE_BACKEND"] == "ltx" and d["services"]["wan"]["environment"]["ENGINE_BACKEND"] == "wan"
-    assert "engine_locks" in d["volumes"]
+    assert d["services"]["engine"]["environment"]["ENGINE_BACKEND"] == "diffusers" and d["services"]["engine"]["environment"]["ENGINE_NAME"] == "engine"
+    assert d["services"]["engine"]["build"]["dockerfile"] == "services/engine/Dockerfile.diffusers"
+    assert d["volumes"]["engine_locks"] == {"external": True, "name": "vidpattern_gpu_locks"}      # حجم مشترك مع الاستوديو (docker volume create)
 
 
 def test_app_compose_and_env_example_have_no_secrets():
@@ -471,12 +493,14 @@ def test_app_compose_and_env_example_have_no_secrets():
     app = d["services"]["app"]
     assert app["ports"] == ["127.0.0.1:8000:8000"]
     assert "./library:/app/library" in app["volumes"] and "./models:/app/models:ro" in app["volumes"]
+    assert "gpu_locks:/locks" in app["volumes"] and app["environment"]["VP_GPU_LOCK_DIR"] == "/locks"        # قفل الكرت المشترك مع الصناديق
+    assert d["volumes"]["gpu_locks"] == {"external": True, "name": _yaml("docker-compose.engines.yml")["volumes"]["engine_locks"]["name"]}
     ex = (ROOT / ".env.example").read_text(encoding="utf-8")
     vals = {ln.split("=", 1)[0]: ln.split("=", 1)[1].strip() for ln in ex.splitlines() if ln and not ln.startswith("#") and "=" in ln}
     assert vals["ENGINE_TOKEN"] == ""                                                    # فاضي: ما في توكن حقيقي
     blob = "\n".join((ROOT / n).read_text(encoding="utf-8") for n in
                       ("docker-compose.yml", "docker-compose.engines.yml", "Dockerfile", "services/engine/Dockerfile.ltx",
-                       "services/engine/Dockerfile.wan", ".env.example", "README_AR_نشر_السيرفر.md"))
+                       "services/engine/Dockerfile.wan", "services/engine/Dockerfile.diffusers", ".env.example", "README_AR_نشر_السيرفر.md"))
     import re
     assert not re.search(r"(hf_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|ENGINE_TOKEN=[0-9a-f]{16,})", blob)
     assert ".env" in (ROOT / ".dockerignore").read_text(encoding="utf-8").splitlines()
@@ -484,9 +508,10 @@ def test_app_compose_and_env_example_have_no_secrets():
 
 def test_engine_dockerfiles_non_root_offline_and_pinned_requirements():
     import re
-    for m in ("ltx", "wan"):
+    for m in ("ltx", "wan", "diffusers"):
         df = (ROOT / "services" / "engine" / f"Dockerfile.{m}").read_text(encoding="utf-8")
         assert "USER 10001:10001" in df and "ffmpeg" in df and "HF_HUB_OFFLINE=1" in df and f"ENGINE_BACKEND={m}" in df
+        assert "chmod 0777 /locks" in df, m                                                        # الحجم مشترك مع الاستوديو بمستخدم غير 10001
         assert df.startswith("# syntax=docker/dockerfile:1") and "FROM pytorch/pytorch:" in df and "غير مجرَّب" in df
         req = (ROOT / "services" / "engine" / f"requirements-{m}.txt").read_text(encoding="utf-8")
         lines = [ln for ln in req.splitlines() if ln.strip() and not ln.startswith("#")]

@@ -19,8 +19,10 @@ from pathlib import Path
 
 import config
 
-KINDS = ("motion", "image", "voice", "music", "ahat", "face_image", "face_video")   # face_*: نتيجة فحص ثبات الوجه لموديل الصور/التحريك
-PATHS = ("command", "http", "api", "extension")
+KINDS = ("motion", "image", "voice", "music", "ahat", "face_image", "face_video",   # face_*: نتيجة فحص ثبات الوجه لموديل الصور/التحريك
+         "stt", "lipsync", "upscale", "bgremove", "sfx")                           # مكتبة النماذج: باقي مهامها التسع
+PATHS = ("command", "http", "api", "extension",
+         "app", "std", "builtin", "upload")        # app: برنامج Gradio · std: واجهة قياسية (OpenAI) · builtin: الطريقة المدمجة بالكود · upload: ملف رفعه المالك
 STATUSES = ("ok", "failed")
 MAX_ERROR = 300
 _lock = threading.Lock()

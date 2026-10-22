@@ -17,7 +17,12 @@ $("#homeRefresh").addEventListener("click", () => { METHODS.at = 0; loadHome(); 
 
 const blockerCount = (b) => (Array.isArray(b) ? b.length : Number(b) || 0);
 
+/* المشروع الحر: ما إله محطات ولا حالة سيناريو ولا إضافة — بلا نداءات إضافية */
+const freeLink = (f) => (window.FreeProject ? FreeProject.hash(f) : `#/mission/${enc(f)}`);
+const freeLine = (m) => `${m.s.scenes || 0} مشهد · ${Math.round(m.s.duration || 0)} ثانية`;
+
 async function homeMission(s) {
+  if (s.mode === "free") return { s, free: true, stations: [], status: null, cur: null, stage: 0, done: false, waits: [], err: null };
   const [st, ss, ex] = await Promise.all([
     soft(`/api/studio/${enc(s.file)}/state`), soft(`/api/scripts/${enc(s.file)}/status`), soft(`/api/studio/${enc(s.file)}/ext/status`),
   ]);
@@ -79,10 +84,28 @@ function renderHero(m) {
     box.innerHTML = `<div class="hero panel" data-img="home">
       <h3>ما عندك مهمات بعد</h3>
       <p>كل إعلان بيبلّش كمهمة: بتختار المنتج، والنظام بيقترحلك أفضل 3 أنماط، وبعدين خطوة خطوة للإطلاق.</p>
-      <div class="row"><a class="btn" href="#/mission/new?stage=1">✦ ابدأ أول مهمة</a></div></div>`;
+      <div class="row"><a class="btn" href="#/mission/new?stage=1">✦ ابدأ أول مهمة</a>
+        <a class="btn ghost" href="#/mission/new?free=1">✎ أو مشروع حر (بلا ترتيب إجباري)</a></div></div>`;
     return;
   }
   const name = m.s.display_name || m.s.file;
+  if (m.free) {
+    box.innerHTML = `<div class="hero panel" data-img="home" aria-label="المشروع الأحدث">
+      <div class="row between top">
+        <div style="min-width:0">
+          <p class="hint" style="margin:0">المشروع الأحدث</p>
+          <h3 style="margin:4px 0"><bdi>${esc(name)}</bdi></h3>
+        </div>
+        <span class="tag brand">مشروع حر</span>
+      </div>
+      <p class="hint">${esc(freeLine(m))}</p>
+      <div class="row">
+        <a class="btn" href="${esc(freeLink(m.s.file))}">كمّل المشروع ←</a>
+        <a class="btn ghost" href="#/mission/new?free=1">✎ مشروع حر جديد</a>
+        <a class="btn ghost" href="#/mission/new?stage=1">✦ مهمة جديدة</a>
+      </div></div>`;
+    return;
+  }
   const cur = m.cur;
   const note = cur ? `${cur.label}: ${cur.state === "awaiting_choice" ? "ناطرة اختيارك" : cur.state === "failed" ? "ساقطة" : cur.state === "running" ? "شغّالة" : "الخطوة الجاية"}${cur.note ? " — " + cur.note : ""}` : "";
   box.innerHTML = `<div class="hero panel" data-img="home" aria-label="المهمة الأحدث">
@@ -105,8 +128,12 @@ function renderHero(m) {
 
 function renderMissionCards(ms) {
   const box = $("#homeMissions");
-  if (!ms.length) { box.innerHTML = `<p class="empty">ما في مهمات — <a href="#/mission/new?stage=1">ابدأ أول مهمة</a>.</p>`; return; }
-  box.innerHTML = `<div class="grid">${ms.map((m) => `
+  if (!ms.length) { box.innerHTML = `<p class="empty">ما في مهمات — <a href="#/mission/new?stage=1">ابدأ أول مهمة</a> أو <a href="#/mission/new?free=1">مشروع حر</a>.</p>`; return; }
+  box.innerHTML = `<div class="grid">${ms.map((m) => (m.free ? `
+    <a class="pcard arch mission-card is-free" href="${esc(freeLink(m.s.file))}" data-free="1">
+      <h3><bdi>${esc(m.s.display_name || m.s.file)}</bdi></h3>
+      <p class="desc">${esc(m.s.title || "")}</p>
+      <div class="meta"><span class="tag brand">مشروع حر</span><span class="tag">${esc(freeLine(m))}</span></div></a>` : `
     <a class="pcard arch mission-card" href="${esc(missionHash(m.s.file, m.done ? 7 : m.stage))}" data-stage="${m.stage}">
       <h3><bdi>${esc(m.s.display_name || m.s.file)}</bdi></h3>
       <p class="desc">${esc(m.s.title || "")}</p>
@@ -115,7 +142,7 @@ function renderMissionCards(ms) {
         <span class="tag ${m.done ? "ok" : ""}">${esc(stageLine(m))}</span>
         ${m.waits.length ? `<span class="tag warn">${esc(`${m.waits.length} بانتظارك`)}</span>` : ""}
         ${m.err ? `<span class="tag idle">المحطات غير متاحة</span>` : ""}
-      </div></a>`).join("")}</div>`;
+      </div></a>`)).join("")}</div>`;
 }
 
 const WAIT_TAG = { awaiting_choice: ["ناطرة اختيارك", "warn"], failed: ["ساقطة", "danger"], ext: ["واقفة", "danger"], owner: ["قرارك", "danger"] };

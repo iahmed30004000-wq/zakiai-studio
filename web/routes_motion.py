@@ -29,15 +29,11 @@ def _script(filename: str) -> Path:
 
 
 def _tl(p: Path) -> dict:
-    import timeline
-    import voice_studio
-    ok, why = voice_studio.voice_is_approved(p)
-    if not ok:
-        raise HTTPException(409, why)
-    tl = timeline.load(p.stem)
-    if not tl:
-        raise HTTPException(404, "ما في خط زمني")
-    return tl
+    import studio_gate
+    try:
+        return studio_gate.timeline_for(p, "ما في خط زمني")
+    except studio_gate.GateError as e:
+        raise HTTPException(e.status, str(e))
 
 
 # ── السجل ───────────────────────────────────────────────────────────────
@@ -206,14 +202,19 @@ def approve_motion(filename: str) -> dict:
     return _m(motion.approve, p)
 
 
+_FREE_CLIP_TYPES = {".mp4": "video/mp4", ".m4v": "video/mp4", ".webm": "video/webm", ".mov": "video/quicktime", ".mkv": "video/x-matroska"}
+
+
 @router.get("/studio/{filename}/clip/{name:path}")
 def serve_clip(filename: str, name: str):
     import motion
+    import studio_gate
     p = _script(filename)
     f = motion.abs_of(p.stem, name)
-    if not f or f.suffix.lower() != ".mp4":
+    ext = f.suffix.lower() if f else ""
+    if not f or not (ext == ".mp4" or (ext in _FREE_CLIP_TYPES and studio_gate.is_free(p))):
         raise HTTPException(404, "المقطع غير موجود")
-    return FileResponse(f, media_type="video/mp4")
+    return FileResponse(f, media_type=_FREE_CLIP_TYPES.get(ext, "video/mp4"))
 
 
 # ── التحريك بالـ API (fal.ai) ────────────────────────────────────────────

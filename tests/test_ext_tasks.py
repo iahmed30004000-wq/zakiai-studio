@@ -876,3 +876,24 @@ def test_local_whisper_falls_back_to_cpu_when_cuda_libraries_are_missing(monkeyp
     out = stt._local_whisper({"model": "large-v3", "language": "ar"}, Path("x.wav"))
     assert calls == [False, True]                                       # جرّب الكرت ثم المعالج
     assert out["words"] == [{"text": "مرحبا", "start": 0.0, "end": 0.5}] and out["full_text"] == "مرحبا"
+
+
+
+def test_an_extension_upload_never_overwrites_a_request_that_changed_while_it_was_converting(real_audio, monkeypatch):
+    c = client()
+    h = H(real_audio)
+    a = c.post(f"{API}/requests", json={"kind": "ahat", "prompt": "تنهيدة", "name": "تنهيدة", "mood": "warm", "seconds": 2}).json()
+    real = ext_tasks._convert_audio
+
+    def convert_while_the_owner_starts_a_model_generation(data, filename, out):
+        ext_tasks.mark_local("s1", a["id"])                                  # أثناء ما الإضافة بتحوّل الصوت: بلّش توليد بنموذج المكتبة
+        return real(data, filename, out)
+    monkeypatch.setattr(ext_tasks, "_convert_audio", convert_while_the_owner_starts_a_model_generation)
+    r = post(c, h, "ahat", a["id"], mp3(2), site="elevenlabs")
+    assert r.status_code == 409 and "اتغيّر أثناء الرفع" in r.json()["detail"]
+    row = ext_tasks.list_requests("s1")[0]
+    assert row["status"] == "local" and row.get("track_id") is None             # بلا ما انكتب فوق حالة الطلب
+    assert len(ahat.list_all()) == 1 and ahat.list_all()[0]["approved"] is False   # والمقطع دخل المكتبة غير معتمد
+    monkeypatch.setattr(ext_tasks, "_convert_audio", real)
+    again = post(c, h, "ahat", a["id"], mp3(2), site="elevenlabs")
+    assert again.status_code == 409 and "عم يتولّد" in again.json()["detail"]    # وهو شغّال: الرفع التاني مرفوض بوضوح

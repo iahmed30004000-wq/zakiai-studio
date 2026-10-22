@@ -1,0 +1,54 @@
+# syntax=docker/dockerfile:1
+# الصندوق العام: أي أوزان diffusers بمجلد الأوزان (صور، تعديل صور، فيديو) + ملفات التكبير بمجلد upscale/. ⚠ غير مجرَّب — بينبني وبينجرّب على السيرفر بكرته.
+# البناء من جذر المشروع:  docker compose -f docker-compose.engines.yml build engine
+FROM pytorch/pytorch:2.7.1-cuda12.6-cudnn9-runtime
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONPATH=/app
+
+# ffmpeg لتحويل الإطارات لـ mp4. نفس مستخدم الصناديق كلها (10001) عشان ملف قفل الكرت المشترك يشتغل بين الصناديق.
+# /locks مفتوح للكل (0777): الحجم مشترك مع حاوية الاستوديو اللي مستخدمها مختلف (APP_UID)، ولازم تقدر تكتب ملف القفل.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ffmpeg \
+ && rm -rf /var/lib/apt/lists/* \
+ && groupadd --gid 10001 engine \
+ && useradd --uid 10001 --gid 10001 --no-create-home --shell /usr/sbin/nologin engine \
+ && mkdir -p /weights /outputs /locks /app/services/engine \
+ && chown 10001:10001 /outputs /locks \
+ && chmod 0777 /locks
+
+COPY services/engine/requirements-diffusers.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt && rm /tmp/requirements.txt
+
+COPY services/engine /app/services/engine
+RUN touch /app/services/__init__.py
+
+# الإعدادات الافتراضية — بتتغيّر من docker-compose.engines.yml / ملف .env
+# بلا شبكة وقت التشغيل: الأوزان من /weights بس (safetensors بس، بلا trust_remote_code)، وكل وضعيات «أوفلاين» مفعّلة.
+ENV ENGINE_BACKEND=diffusers \
+    ENGINE_NAME=engine \
+    ENGINE_HOST=0.0.0.0 \
+    ENGINE_PORT=8000 \
+    WEIGHTS_DIR=/weights \
+    OUTPUT_DIR=/outputs \
+    LOCK_DIR=/locks \
+    HF_HOME=/tmp/hf \
+    HOME=/tmp \
+    XDG_CACHE_HOME=/tmp/cache \
+    HF_HUB_OFFLINE=1 \
+    TRANSFORMERS_OFFLINE=1 \
+    HF_DATASETS_OFFLINE=1 \
+    HF_HUB_DISABLE_TELEMETRY=1 \
+    DO_NOT_TRACK=1
+
+USER 10001:10001
+WORKDIR /app
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"
+
+CMD ["python", "-m", "services.engine.server"]

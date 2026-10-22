@@ -38,21 +38,29 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, Request, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse, JSONResponse
+
+from services.engine.backends._introspect import EXT_OF_KIND, KIND_OF_MODE, NAME_RX as MODEL_NAME_RX, clean_extra  # noqa: E402
+from services.engine.gpu import GpuLock, Handoff  # noqa: E402,F401  (انتقلوا لـ gpu.py ليستوردهم الاستوديو؛ بنعيد تصديرهم من هون)
 
 log = logging.getLogger("engine")
 
 OOM_MESSAGE = "الذاكرة ما كفّت — جرّب مدة أقصر أو دقة أقل"
 STATUSES = ("queued", "waiting_gpu", "running", "done", "failed", "cancelled")
 TERMINAL = ("done", "failed", "cancelled")
-ALLOWED_PARAMS = {"mode", "prompt", "negative_prompt", "seconds", "fps", "seed", "steps", "guidance", "width", "height"}
+ALLOWED_PARAMS = {"mode", "prompt", "negative_prompt", "seconds", "fps", "seed", "steps", "guidance", "width", "height",
+                  "model", "strength", "scale", "extra"}          # عقد v2: الصندوق العام (model/strength/scale/extra)
 FAKE_ONLY_PARAMS = {"sleep", "simulate_oom", "simulate_error"}      # خطّافات اختبار — بالخلفية التجريبية بس
-HIDDEN_PARAMS = FAKE_ONLY_PARAMS
+HIDDEN_PARAMS = FAKE_ONLY_PARAMS | {"_image2", "_image3"}
+IMAGE_MODES = ("i2v", "i2i", "upscale")               # الأنماط اللي بدها صورة (i2i بيقبل صورتين مرجعيتين زيادة)
+API_VERSION = 2
+MEDIA_TYPES = {".mp4": "video/mp4", ".png": "image/png", ".wav": "audio/wav"}
+KIND_WORD = {"image": "صورة", "video": "فيديو", "audio": "صوت"}
 MAX_PROMPT_CHARS = 4000
 MAX_NEGATIVE_CHARS = 2000
 MAX_IMAGE_PIXELS = 64_000_000
-_NAME_RX = re.compile(r"[^A-Za-z0-9_.-]")
-_OUTPUT_FILE_RX = re.compile(r"^[0-9a-f]{16}(\.mp4|_in\.(png|jpg|webp))$")
+_OUTPUT_FILE_RX = re.compile(r"^[0-9a-f]{16}(\.mp4|\.png|\.wav|_in[23]?\.(png|jpg|webp))$")
 
 
 def _env_num(name: str, default: float, lo: float | None = None) -> float:
@@ -79,10 +87,12 @@ class Settings:
     token: str | None = None
     lock_poll_sec: float = 0.25
     max_seconds: float = 10.0
+    audio_max_seconds: float = 47.0         # سقف مدة الصوت (t2a): Stable Audio Open بيوصل لـ 47 ثانية، فالسقف العام للفيديو (max_seconds) صغير عليه
     max_image_mb: float = 20.0
     keep_minutes: float = 120.0             # كم دقيقة بنخلّي ملفات المهمات المنتهية
     max_queue: int = 20
-    max_pixels: int = 0                     # 0 = الافتراضي حسب الخلفية
+    max_pixels: int = 0                     # 0 = الافتراضي حسب الخلفية (دقة الصور والفيديو)
+    upscale_max_pixels: int = 64_000_000    # سقف مساحة الصورة المكبّرة بالخرج (مستقل عن max_pixels: ذاك لدقة التوليد)
     offload: str = "auto"                   # auto | model | none
     handoff_wait_sec: float = 30.0          # كم ننتظر الصندوق التاني يفرّغ ذاكرته
     cleanup_every_sec: float = 30.0
@@ -98,10 +108,12 @@ class Settings:
             idle_unload_min=_env_num("IDLE_UNLOAD_MIN", 10.0, 0.0),
             token=os.environ.get("ENGINE_TOKEN") or None,
             max_seconds=_env_num("MAX_SECONDS", 10.0, 0.5),
+            audio_max_seconds=_env_num("AUDIO_MAX_SECONDS", 47.0, 1.0),
             max_image_mb=_env_num("MAX_IMAGE_MB", 20.0, 0.1),
             keep_minutes=_env_num("OUTPUT_KEEP_MIN", 120.0, 1.0),
             max_queue=int(_env_num("MAX_QUEUE", 20, 1)),
             max_pixels=int(_env_num("MAX_PIXELS", 0, 0)),
+            upscale_max_pixels=int(_env_num("UPSCALE_MAX_PIXELS", 64_000_000, 1_000_000)),
             offload=os.environ.get("ENGINE_OFFLOAD", "auto"),
         )
 
@@ -124,6 +136,7 @@ class Job:
     error: str | None = None
     result: Path | None = None
     purged: bool = False
+    extra_images: list = field(default_factory=list)        # image2/image3 (تعديل صور بعدة مراجع)
     created_at: float = field(default_factory=time.time)
     started_at: float | None = None
     finished_at: float | None = None
@@ -131,101 +144,11 @@ class Job:
 
     def public(self) -> dict:
         took = round(self.finished_at - self.started_at, 2) if (self.finished_at and self.started_at) else None
-        return {"id": self.id, "status": self.status, "error": self.error, "seconds_taken": took,
+        kind = KIND_OF_MODE.get(self.params.get("mode"), "video")
+        return {"id": self.id, "status": self.status, "error": self.error, "seconds_taken": took, "result_kind": kind,
                 "cancelling": self.cancel.is_set() and self.status not in TERMINAL,
                 "progress": {"step": self.cancel.step, "total": self.cancel.total},
                 "params": {k: v for k, v in self.params.items() if k not in HIDDEN_PARAMS}}
-
-
-class GpuLock:
-    """قفل ملف مشترك بين كل الصناديق (نفس المجلد مربوط بكلهم)."""
-
-    def __init__(self, lock_dir: Path):
-        from filelock import FileLock
-        lock_dir.mkdir(parents=True, exist_ok=True)
-        self.path = lock_dir / "gpu.lock"
-        self._lock = FileLock(str(self.path))
-
-    def acquire(self, timeout: float) -> bool:
-        from filelock import Timeout
-        try:
-            self._lock.acquire(timeout=timeout)
-            return True
-        except Timeout:
-            return False
-
-    def release(self) -> None:
-        if self._lock.is_locked:
-            self._lock.release()
-
-    @property
-    def held(self) -> bool:
-        return self._lock.is_locked
-
-    def busy(self) -> bool:
-        """هل في أي صندوق (حتى هاد) ماسك الكرت هلأ؟ بمحاولة قفل لحظية بنسخة منفصلة."""
-        from filelock import FileLock, Timeout
-        probe = FileLock(str(self.path), thread_local=False)
-        try:
-            probe.acquire(timeout=0)
-        except Timeout:
-            return True
-        except OSError:
-            return False
-        probe.release()
-        return False
-
-
-class Handoff:
-    """تسليم الكرت بين الصناديق: مين آخر واحد استعمله، وطلب «فرّغ نموذجك» بملفات صغيرة بالمجلد المشترك."""
-
-    def __init__(self, lock_dir: Path, me: str):
-        self.dir = lock_dir
-        self.me = _NAME_RX.sub("_", me)
-
-    def _req(self, name: str) -> Path:
-        return self.dir / f"unload_{_NAME_RX.sub('_', name)}.req"
-
-    @property
-    def _last(self) -> Path:
-        return self.dir / "last_user"
-
-    def last_user(self) -> str | None:
-        try:
-            return self._last.read_text(encoding="utf-8").strip() or None
-        except OSError:
-            return None
-
-    def mark_used(self) -> None:
-        try:
-            self._last.write_text(self.me, encoding="utf-8")
-        except OSError:
-            pass
-
-    def clear_last_if_me(self) -> None:
-        if self.last_user() == self.me:
-            try:
-                self._last.unlink()
-            except OSError:
-                pass
-
-    def request_unload(self, other: str) -> None:
-        try:
-            self._req(other).write_text(self.me, encoding="utf-8")
-        except OSError:
-            pass
-
-    def requested(self) -> bool:
-        return self._req(self.me).exists()
-
-    def done(self) -> None:
-        try:
-            self._req(self.me).unlink()
-        except OSError:
-            pass
-
-    def pending_for(self, other: str) -> bool:
-        return self._req(other).exists()
 
 
 def _is_oom(e: BaseException) -> bool:
@@ -275,8 +198,8 @@ def _num(p: dict, key: str, lo: float, hi: float, *, integer: bool = False, labe
     return int(v) if integer else float(v)
 
 
-def validate_params(p: dict, tasks: tuple[str, ...], backend_name: str, max_seconds: float) -> dict:
-    allowed = set(ALLOWED_PARAMS) | (FAKE_ONLY_PARAMS if backend_name == "fake" else set())
+def validate_params(p: dict, tasks: tuple[str, ...], backend_name: str, max_seconds: float, audio_max_seconds: float = 47.0) -> dict:
+    allowed = set(ALLOWED_PARAMS) | (FAKE_ONLY_PARAMS if backend_name.startswith("fake") else set())
     unknown = set(p) - allowed
     if unknown:
         raise HTTPException(400, f"معاملات غير معروفة: {sorted(unknown)}")
@@ -288,8 +211,9 @@ def validate_params(p: dict, tasks: tuple[str, ...], backend_name: str, max_seco
     sec = out.get("seconds", 3)
     if isinstance(sec, bool) or not isinstance(sec, (int, float)):
         raise HTTPException(400, "seconds لازم رقم")
-    if not 0.5 <= sec <= max_seconds:
-        raise HTTPException(400, f"المدة لازم بين 0.5 و{max_seconds:g} ثانية")
+    limit = audio_max_seconds if mode == "t2a" else max_seconds
+    if not 0.5 <= sec <= limit:
+        raise HTTPException(400, f"المدة لازم بين 0.5 و{limit:g} ثانية")
     out["seconds"] = float(sec)
     for k, lim in (("prompt", MAX_PROMPT_CHARS), ("negative_prompt", MAX_NEGATIVE_CHARS)):
         if k in out:
@@ -310,6 +234,18 @@ def validate_params(p: dict, tasks: tuple[str, ...], backend_name: str, max_seco
     for k in ("width", "height"):
         if k in out:
             out[k] = _num(out, k, 64, 2048, integer=True)
+    if "model" in out and out["model"] is not None:
+        if not isinstance(out["model"], str) or not MODEL_NAME_RX.fullmatch(out["model"]):
+            raise HTTPException(400, "اسم النموذج: حروف إنجليزية وأرقام و _ - . بس")
+    if "strength" in out and out["strength"] is not None:
+        out["strength"] = _num(out, "strength", 0, 1)
+    if "scale" in out and out["scale"] is not None:
+        out["scale"] = _num(out, "scale", 2, 4, integer=True)
+    if "extra" in out:
+        try:
+            out["extra"] = clean_extra(out["extra"])
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from None
     if "sleep" in out:
         out["sleep"] = _num(out, "sleep", 0, 120)
     return out
@@ -349,7 +285,9 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
     def _purge_files(j: Job) -> None:
         _rm(j.image)
         _rm(j.result)
-        j.image, j.result, j.purged = None, None, True
+        for x in j.extra_images:
+            _rm(x)
+        j.image, j.result, j.extra_images, j.purged = None, None, [], True
 
     def _cleanup(force: bool = False) -> None:
         now = time.time()
@@ -364,7 +302,7 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
                 jobs.pop(j.id, None)
                 if j.id in order:
                     order.remove(j.id)
-            live = {p for j in jobs.values() for p in (j.image, j.result) if p}
+            live = {p for j in jobs.values() for p in (j.image, j.result, *j.extra_images) if p}
             live_names = {p.name for p in live}
         try:
             for f in s.outputs.iterdir():
@@ -383,6 +321,9 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
             job.status, job.error, job.result, job.finished_at = status, error, result, time.time()
             _rm(job.image)                           # الصورة المرفوعة ما بقى إلها لزوم
             job.image = None
+            for x in job.extra_images:
+                _rm(x)
+            job.extra_images = []
             cv.notify_all()
 
     def _serve_handoff() -> None:
@@ -404,14 +345,12 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
         while handoff.pending_for(prev) and time.time() < end and not job.cancel.is_set() and not state["stop"]:
             time.sleep(0.05)
         if handoff.pending_for(prev):               # الصندوق التاني ما ردّ: نكمّل (ممكن واقف أصلاً)
-            try:
-                handoff._req(prev).unlink()
-            except OSError:
-                pass
+            handoff.withdraw(prev)
 
     def _run_job(job: Job) -> None:
         got = False
-        out = s.outputs / f"{job.id}.mp4"
+        kind = KIND_OF_MODE.get(job.params.get("mode"), "video")
+        out = s.outputs / f"{job.id}{EXT_OF_KIND[kind]}"
         try:
             while not (job.cancel.is_set() or state["stop"]):
                 if lock.acquire(timeout=s.lock_poll_sec):
@@ -429,12 +368,13 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
                 if job.status in TERMINAL:
                     return
                 job.status, job.started_at = "running", time.time()
-            be.generate(job.params, job.image, out, job.cancel)
+            gen_params = {**job.params, **{f"_image{i + 2}": x for i, x in enumerate(job.extra_images[:2])}}
+            be.generate(gen_params, job.image, out, job.cancel)
             if job.cancel.is_set():
                 _rm(out)
                 _finish(job, "cancelled")
             elif not out.exists() or out.stat().st_size == 0:
-                _finish(job, "failed", "النموذج ما كتب فيديو")
+                _finish(job, "failed", f"النموذج ما كتب {KIND_WORD[kind]}")
             else:
                 _finish(job, "done", result=out)
         except Exception as e:                       # الخدمة ما لازم تنهار أبداً
@@ -474,6 +414,7 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
             _cleanup()
             return
         _run_job(job)
+        _cleanup()                                   # حتى مع طابور مزدحم (بدل ما نستنى فراغه): tmpfs المخرجات محدود
 
     def worker() -> None:
         while not state["stop"]:
@@ -494,6 +435,8 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
         _ensure_worker()
+        if be.name in ("diffusers", "ltx", "wan"):          # أول /health بيستورد torch (ثواني): نسخّنه بالخلفية عشان فحص صحة Docker ما يتأخر
+            threading.Thread(target=_gpu, daemon=True, name="engine-gpu-probe").start()
         yield
         state["stop"] = True
         with cv:
@@ -506,12 +449,19 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
 
     app = FastAPI(title=f"engine:{me}", lifespan=lifespan)
 
+    def _token_ok(tok: str | None) -> bool:
+        return not s.token or bool(tok and hmac.compare_digest(tok.encode("utf-8"), s.token.encode("utf-8")))
+
     @app.middleware("http")
     async def _limit_upload(request: Request, call_next):
         if request.method == "POST" and request.url.path == "/jobs":
+            if not _token_ok(request.headers.get("x-engine-token")):         # التوكن قبل ما يتقرا الجسم: طلب غير مصرّح ما بيخزّن شي بـ /tmp
+                return JSONResponse({"detail": "توكن الصندوق غير صالح"}, status_code=401)
             cl = request.headers.get("content-length")
+            if cl is None:                                                      # رفع بالقطع بلا طول معلن = ما في سقف: ممنوع (عملاؤنا كلهم بيبعتوا الطول)
+                return JSONResponse({"detail": "لازم ترويسة Content-Length (الرفع بالقطع مش مدعوم)"}, status_code=411)
             try:
-                too_big = cl is not None and int(cl) > max_image_bytes + 64 * 1024
+                too_big = int(cl) > 3 * max_image_bytes + 64 * 1024            # لحد 3 صور (image + image2 + image3)، وكل وحدة بتتفحص لحالها
             except ValueError:
                 too_big = True
             if too_big:
@@ -519,8 +469,19 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
         return await call_next(request)
 
     def _auth(tok: str | None) -> None:
-        if s.token and not (tok and hmac.compare_digest(tok.encode("utf-8"), s.token.encode("utf-8"))):
+        if not _token_ok(tok):
             raise HTTPException(401, "توكن الصندوق غير صالح")
+
+    def _gpu() -> dict | None:
+        """ذاكرة الكرت (GB) لو torch موجود وفي كرت — الاستوديو بيعتمد عليها لاختيار موديل التحريك."""
+        try:
+            import torch
+            if torch.cuda.is_available():
+                free, total = torch.cuda.mem_get_info()
+                return {"free_gb": round(free / 1024 ** 3, 1), "total_gb": round(total / 1024 ** 3, 1)}
+        except Exception:
+            pass
+        return None
 
     @app.get("/health")
     def health() -> dict:
@@ -528,13 +489,31 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
             queued = sum(1 for j in jobs.values() if j.status in ("queued", "waiting_gpu"))
             running = sum(1 for j in jobs.values() if j.status == "running")
         t = state["thread"]
-        return {"ok": True, "backend": be.name, "name": me, "tasks": list(be.tasks), "loaded": be.loaded,
+        return {"ok": True, "api": API_VERSION, "backend": be.name, "name": me, "tasks": list(be.tasks), "loaded": be.loaded, "loaded_model": be.loaded_model, "gpu": _gpu(),
                 "queued": queued, "running": running, "gpu_lock_held_here": lock.held, "gpu_busy": lock.busy(),
-                "worker_alive": bool(t and t.is_alive()), "max_seconds": s.max_seconds}
+                "worker_alive": bool(t and t.is_alive()), "max_seconds": s.max_seconds, "audio_max_seconds": s.audio_max_seconds}
+
+    @app.get("/models")
+    def models(refresh: bool = False, x_engine_token: str | None = Header(None)) -> dict:
+        """النماذج اللي بالصندوق: الاسم والنوع والأنماط والحجم والرخصة (للمساعدة) وصلاحيته مع سبب الرفض."""
+        _auth(x_engine_token)
+        return {"api": API_VERSION, "backend": be.name, "models": be.list_models(refresh)}
+
+    async def _read_upload(up: UploadFile, label: str) -> tuple[bytes, str]:
+        data = await up.read(max_image_bytes + 1)
+        if not data:
+            raise HTTPException(400, f"{label} فاضية")
+        if len(data) > max_image_bytes:
+            raise HTTPException(413, f"{label} أكبر من الحد ({s.max_image_mb:g}MB)")
+        sniffed = _sniff_image(data)
+        if sniffed is None:
+            raise HTTPException(415, "نوع الصورة مش مدعوم — PNG أو JPG أو WEBP بس")
+        _check_image(data)
+        return data, sniffed
 
     @app.post("/jobs")
-    async def submit(params: str = Form("{}"), image: UploadFile | None = File(None),
-                     x_engine_token: str | None = Header(None)) -> dict:
+    async def submit(params: str = Form("{}"), image: UploadFile | None = File(None), image2: UploadFile | None = File(None),
+                     image3: UploadFile | None = File(None), x_engine_token: str | None = Header(None)) -> dict:
         _auth(x_engine_token)
         try:
             p = json.loads(params or "{}")
@@ -542,33 +521,38 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
             raise HTTPException(400, "المعاملات لازم تكون JSON") from None
         if not isinstance(p, dict):
             raise HTTPException(400, "المعاملات لازم تكون كائن JSON")
-        p = validate_params(p, be.tasks, be.name, s.max_seconds)
-        data = b""
-        ext = ".png"
-        if image is not None and p["mode"] == "i2v":
-            data = await image.read(max_image_bytes + 1)
-            if not data:
-                raise HTTPException(400, "الصورة فاضية")
-            if len(data) > max_image_bytes:
-                raise HTTPException(413, f"الصورة أكبر من الحد ({s.max_image_mb:g}MB)")
-            sniffed = _sniff_image(data)
-            if sniffed is None:
-                raise HTTPException(415, "نوع الصورة مش مدعوم — PNG أو JPG أو WEBP بس")
-            ext = sniffed
-            _check_image(data)
-        elif p["mode"] == "i2v":
-            raise HTTPException(400, "وضع صورة لفيديو بدّه صورة")
+        p = validate_params(p, be.tasks, be.name, s.max_seconds, s.audio_max_seconds)
+        try:
+            p = await run_in_threadpool(be.validate_params, p)                  # بيمسح مجلد الأوزان لو الاسم مجهول: خارج حلقة الأحداث (/health ما بيتأخر)
+        except ValueError as e:
+            raise HTTPException(400, str(e)) from None
+        mode = p["mode"]
+        uploads: list[tuple[bytes, str]] = []
+        if mode in IMAGE_MODES:
+            if image is None:
+                raise HTTPException(400, {"i2v": "وضع صورة لفيديو بدّه صورة", "i2i": "تعديل الصورة بدّه صورة", "upscale": "التكبير بدّه صورة"}[mode])
+            uploads.append(await _read_upload(image, "الصورة"))
+            extras = [x for x in (image2, image3) if x is not None]
+            if extras and mode != "i2i":
+                raise HTTPException(400, "الصور الإضافية (image2/image3) بس لتعديل الصور (i2i)")
+            for k, up in enumerate(extras, 2):
+                uploads.append(await _read_upload(up, f"الصورة {k}"))
         _ensure_worker()
         jid = uuid.uuid4().hex[:16]
         img_path: Path | None = None
+        more: list[Path] = []
         with cv:
             waiting = sum(1 for j in jobs.values() if j.status in ("queued", "waiting_gpu"))
             if waiting >= s.max_queue:
                 raise HTTPException(429, f"الطابور ممتلئ ({s.max_queue} مهمة) — استنى شوي")
-            if data:
-                img_path = s.outputs / f"{jid}_in{ext}"        # الاسم من عندنا بس: ما بنستعمل اسم ملف العميل
-                img_path.write_bytes(data)
-            job = Job(id=jid, params=p, image=img_path)
+            for k, (data, ext) in enumerate(uploads):
+                f = s.outputs / (f"{jid}_in{ext}" if k == 0 else f"{jid}_in{k + 1}{ext}")      # الاسم من عندنا بس: ما بنستعمل اسم ملف العميل
+                f.write_bytes(data)
+                if k == 0:
+                    img_path = f
+                else:
+                    more.append(f)
+            job = Job(id=jid, params=p, image=img_path, extra_images=more)
             jobs[jid] = job
             order.append(jid)
             cv.notify_all()
@@ -593,7 +577,7 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
             raise HTTPException(410, "ملف المهمة انحذف")
         if j.status != "done" or not j.result or not _inside_outputs(j.result) or not j.result.exists():
             raise HTTPException(409, f"المهمة مش جاهزة (الحالة: {j.status})")
-        return FileResponse(j.result, media_type="video/mp4")
+        return FileResponse(j.result, media_type=MEDIA_TYPES.get(j.result.suffix.lower(), "application/octet-stream"))
 
     @app.delete("/jobs/{jid}")
     def cancel(jid: str, x_engine_token: str | None = Header(None)) -> dict:
@@ -608,6 +592,9 @@ def create_app(settings: Settings | None = None, backend=None) -> FastAPI:
                 j.status, j.finished_at = "cancelled", time.time()
                 _rm(j.image)
                 j.image = None
+                for x in j.extra_images:
+                    _rm(x)
+                j.extra_images = []
             cv.notify_all()
         return j.public()
 
