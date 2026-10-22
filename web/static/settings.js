@@ -35,6 +35,8 @@ async function loadSettingsTab(t) {
     case "ops": loadBackup(); loadScheduler(); loadSpend(); break;
     case "media": loadMediaSettings(); break;
     case "analysis": loadStt(); loadSettingsValues(); break;
+    case "staff": accStaffLoad(); break;
+    case "activity": accActivityLoad(); break;
     case "advanced": loadPrompts(); break;
   }
 }

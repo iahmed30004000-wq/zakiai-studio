@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 import subprocess
 import sys
@@ -53,6 +54,9 @@ def init_db() -> None:
             )
             """
         )
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(jobs)")}
+        if "created_by" not in cols:                      # ترحيل: مين طلب المهمة (حسابات الموظفين)
+            conn.execute("ALTER TABLE jobs ADD COLUMN created_by TEXT")
         # أي مهمة كانت شغالة وقت إغلاق السيرفر ما رح تكمل لحالها
         conn.execute(
             "UPDATE jobs SET status='failed', error='توقف السيرفر أثناء التنفيذ' "
@@ -65,11 +69,12 @@ def _now() -> str:
 
 
 def create_job(kind: str, label: str, cmd: list[str]) -> str:
+    import accounts
     job_id = uuid.uuid4().hex[:12]
     with _connect() as conn:
         conn.execute(
-            "INSERT INTO jobs (id, kind, label, status, cmd, created_at) VALUES (?,?,?,?,?,?)",
-            (job_id, kind, label, "queued", json.dumps(cmd), _now()),
+            "INSERT INTO jobs (id, kind, label, status, cmd, created_at, created_by) VALUES (?,?,?,?,?,?,?)",
+            (job_id, kind, label, "queued", json.dumps(cmd), _now(), accounts.who("") or None),
         )
     _queue.put(job_id)
     _ensure_worker()
@@ -85,7 +90,7 @@ def get_job(job_id: str) -> dict | None:
 def list_jobs(limit: int = 30) -> list[dict]:
     with _connect() as conn:
         rows = conn.execute(
-            "SELECT id, kind, label, status, error, created_at, started_at, finished_at "
+            "SELECT id, kind, label, status, error, created_at, started_at, finished_at, created_by "
             "FROM jobs ORDER BY created_at DESC LIMIT ?",
             (limit,),
         ).fetchall()
@@ -219,9 +224,13 @@ def _run_job(job_id: str) -> None:
         )
 
     try:
+        env = {**os.environ}
+        if job.get("created_by"):                         # مهام الخلفية بتسجّل باسم الموظف اللي طلبها (accounts.who)
+            env["VP_ACTOR"] = job["created_by"]
         proc = subprocess.Popen(
             [sys.executable, *cmd],
             cwd=str(ROOT),
+            env=env,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,

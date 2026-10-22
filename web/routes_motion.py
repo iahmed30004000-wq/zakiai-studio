@@ -150,11 +150,11 @@ def motion_info(filename: str) -> dict:
             shots.append({
                 "id": sh["id"], "scene": sc["n"], "type": sh["type"], "duration_ms": sh["end_ms"] - sh["start_ms"],
                 "motion_desc": sh.get("motion_desc") or motion.default_motion_desc(sh),
-                "talking": bool(sh.get("talking")), "motion": sh.get("motion"),
+                "talking": bool(sh.get("talking")), "motion": sh.get("motion"), "camera_preset": sh.get("camera_preset"),
                 "candidates": sh.get("motion_candidates", []), "has_image": bool((sh.get("image") or {}).get("chosen")),
                 "ranked": [{"id": r["model"]["id"], "name": r["model"]["name"], "score": r["score"],
                             "matched": r["matched"], "eta_sec": r["eta_sec"], "est_cost_usd": r.get("est_cost_usd"),
-                            "path": motion._path_of(r["model"])} for r in rk["ranked"]],
+                            "face_rate": r.get("face_rate"), "path": motion._path_of(r["model"])} for r in rk["ranked"]],
                 "excluded": [{"id": e["model"]["id"], "name": e["model"]["name"], "reason": e["reason"]} for e in rk["excluded"]],
                 "needs": rk["needs"]})
     return {"vram_gb": vram, "models": len(models), "shots": shots, "problems": motion.problems(tl),
@@ -288,7 +288,7 @@ def api_add_preset(key: str) -> dict:
         raise HTTPException(409, "هالنموذج مضاف أصلاً")
     try:
         return motion.upsert_model({"name": p["name"], "kind": "api", "strengths": p["strengths"], "max_sec": p["max_sec"],
-                                    "api": {k: p[k] for k in ("provider", "endpoint", "input", "durations", "cost_per_sec")}})
+                                    "api": {k: p[k] for k in ("provider", "endpoint", "input", "durations", "cost_per_sec", "end_image_field") if k in p}})
     except motion.MotionError as e:
         raise HTTPException(400, str(e))
 

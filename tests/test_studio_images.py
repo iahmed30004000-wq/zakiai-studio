@@ -107,7 +107,9 @@ def test_generate_shot_makes_candidates_with_refs_and_relative_paths(stage):
     call = stage.calls[0]
     assert "front.png" in call["refs"] and "three_quarter.png" in call["refs"]      # مرجع الشخصية
     assert call["roles"] == ["person", "person"]                                    # كل صورة بدورها (الشخص أول)
-    assert call["visual"] == sh["prompt_ar"]
+    # الترجمة بالذكاء مش متاحة بالاختبار → بيروح بطاقة هوية الشخصية (إنجليزي) + البرومبت العربي
+    assert call["visual"].startswith("Subject (identical in every shot): a 32-year-old Syrian (Levantine Arab) woman")
+    assert call["visual"].endswith(sh["prompt_ar"])
 
 
 def test_model_prompt_is_preferred_and_hand_shots_use_hands_sheet(stage):
@@ -269,7 +271,8 @@ def test_face_and_size_are_never_faked_as_measured(stage):
     sid, cand = gen_and_choose(stage, "medium")
     ims.choose(stage.script, sid, cand)
     sh = ims.check_shot(stage.script, sid, ocr=lambda p: "")
-    assert sh["face_check"]["status"] == "unchecked" and sh["face_check"]["similarity"] is None
+    # صور الشخصية بالاختبار مش وجوه حقيقية: يا «ما في مرجع صالح» (الموديل موجود) يا «غير مقاس» (الموديل مش منزّل) — مش «ناجح» أبداً
+    assert sh["face_check"]["status"] in ("no_ref", "unchecked") and sh["face_check"]["similarity"] is None
     hand = first_shot(timeline.load("s1"), "hand_product")
     hid, hcand = gen_and_choose(stage, "hand_product")
     ims.choose(stage.script, hid, hcand)

@@ -709,6 +709,9 @@ zk-app-shell > [slot="header"] {
   border-radius: var(--vp-radius-pill); background: var(--vp-brand);
 }
 .zk-nav-item[aria-current='page'] .zk-icon, .zk-nav-item.active .zk-icon { opacity: 1; color: var(--vp-brand); }
+/* «بحث سريع» عنصر <button> (مش رابط): شكله الافتراضي رمادي من المتصفح، فبنرجّعه للثيم */
+button.nav-search { background: transparent; border: 1px solid var(--vp-border); cursor: pointer; font-family: inherit; }
+button.nav-search:hover { background: var(--vp-surface-3); border-color: var(--vp-border-strong); }
 
 /* طي القائمة (كمبيوتر): زر الهمبرغر بالترويسة بيطويها لشريط أيقونات ضيّق، والاسم بيطلع كتلميح. الجوال بيضل درج منزلق. */
 @media (min-width: 769px) {
@@ -732,10 +735,18 @@ zk-app-shell > [slot="header"] {
 .zk-header { flex-wrap: wrap; min-inline-size: 0; }
 .zk-header__start { min-inline-size: 0; }
 .zk-header__end { margin-inline-start: auto; }
+/* لابتوب (561–1500px): أزرار الجولة والتطبيقات والمهام أيقونة بس (الاسم بالتلميح) عشان الترويسة تضل بسطر واحد */
+@media (min-width: 561px) and (max-width: 1500px) {
+  #tourBtn .tb-lbl, #appsDd .tb-lbl, #tbJobs .tb-lbl { display: none; }
+}
 @media (max-width: 560px) {
   .zk-header .tb-status { order: 3; flex: 1 1 100%; }
   .zk-header .chip { flex: 1 1 0; justify-content: center; }
   .brand-text small { display: none; }
+  /* جوال: أزرار الترويسة أضيق، بلا زر «الجولة» (بتضل من البحث السريع)، وبتلتف لو ضاقت الشاشة أكتر — بلا تمرير أفقي */
+  .zk-header__end { gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .zk-header__end .zk-btn { padding-inline: 10px; }
+  #tourBtn { display: none; }
 }
 
 
@@ -918,3 +929,31 @@ details.panel > summary { cursor: pointer; display: flex; gap: var(--vp-space-3)
 .hk-edit > summary { cursor: pointer; color: var(--vp-brand-text); font-size: var(--vp-fs-sm); }
 .hk-edit .hk-wide { grid-column: 1 / -1; }
 .hk-version { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+.hkb-arch { opacity: .6; }
+.hkb-edit { margin-top: var(--vp-space-2); }
+.hkb-result { margin-top: 6px; }
+
+/* ── الحركات السينمائية (presets.js) ── */
+.pst-card .pst-video, .pst-mini video { width: 100%; max-width: 150px; aspect-ratio: 9 / 16; border-radius: var(--vp-radius-sm); background: var(--vp-surface-3); display: block; margin: 6px 0; }
+.pst-noex { margin: 6px 0; }
+.pst-form { margin-top: var(--vp-space-2); }
+.pst-form .hk-wide { grid-column: 1 / -1; }
+.pst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--vp-space-3); margin-bottom: var(--vp-space-3); }
+.pst-mini { border: 1px solid var(--vp-border); border-radius: var(--vp-radius-sm); padding: var(--vp-space-2); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pst-gallery > summary { cursor: pointer; }
+.pst-shot { margin: var(--vp-space-2) 0; }
+
+/* ── حسابات الموظفين (accounts.js + login.html) ── */
+.who-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 6px 2px 10px; border: 1px solid var(--vp-border); border-radius: 999px; font-size: var(--vp-fs-sm); }
+.who-chip[hidden] { display: none; }
+.who-dot { color: var(--vp-ok); font-size: 10px; }
+@media (max-width: 640px) { .who-chip b { display: none; } }
+.acc-tbl .acc-act { white-space: nowrap; }
+.acc-reset td { background: var(--vp-warn-soft); }
+.login-page { min-height: 100vh; }
+.login-wrap { min-height: 100vh; display: grid; place-items: center; padding: var(--vp-space-5); }
+.login-card { width: min(420px, 100%); }
+.login-brand { text-align: center; margin-bottom: var(--vp-space-4); }
+.login-brand h1 { margin: 8px 0 0; font-family: var(--vp-font-heading); font-size: var(--vp-fs-xl); }
+.login-card form > h2 { margin: 0 0 var(--vp-space-2); font-size: var(--vp-fs-lg); }
+.login-card .zk-field { margin-bottom: var(--vp-space-3); }

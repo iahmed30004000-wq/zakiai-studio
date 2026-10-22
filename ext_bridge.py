@@ -25,6 +25,7 @@ from pathlib import Path
 
 import config
 import ext_config
+import shot_prompts
 import studio_state
 import timeline
 
@@ -231,7 +232,7 @@ def build_queue(script_path, n: int | None = None) -> list[dict]:
             if sh.get("inherited"):                      # نسخة هوك: اللقطة جاية بصورتها من الفيديو الأساسي
                 continue
             have = len((sh.get("image") or {}).get("candidates", []))
-            prompt = (sh.get("prompt_model") or sh.get("prompt_ar") or "").strip()
+            prompt = shot_prompts.model_prompt(sh).strip()
             if have >= n or not prompt:
                 continue
             refs = _refs(stem, sh, code)

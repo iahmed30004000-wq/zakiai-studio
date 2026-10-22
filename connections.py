@@ -186,6 +186,7 @@ TASK_PROFILE = {
     "importer": {"tier": "balanced", "vision": False},
     "shotplan": {"tier": "balanced", "vision": False},
     "translate": {"tier": "balanced", "vision": False},
+    "imgprompt": {"tier": "balanced", "vision": False},
 }
 
 # موديلات ما بتنفع للمهام هون مهما كان اسمها

@@ -29,7 +29,7 @@ def test_overview_key_is_never_returned_anywhere(client, isolated):
     r = client.get("/api/motion/api")
     d = r.json()
     assert r.status_code == 200 and d["has_key"] is False and d["provider"] == "fal" and d["cap_usd"] == 15
-    assert {p["key"] for p in d["presets"]} == {"kling26", "hailuo02", "grok"}
+    assert {p["key"] for p in d["presets"]} == {"kling26", "hailuo02", "grok", "klingo1"}
     assert all(p["est_cost_4s"] and p["durations"] for p in d["presets"]) and "برّا جهازك" in d["privacy_note"]
     r = client.put("/api/motion/api/key", json={"api_key": SECRET})
     assert r.status_code == 200 and r.json() == {"ok": True, "has_key": True}

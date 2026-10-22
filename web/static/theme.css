@@ -1,9 +1,10 @@
 /*
   theme.css — هوية «ليالي الشرق»: قيم الألوان والخطوط والقياسات للثيمين.
 
-  ثيمين:
+  تلات ثيمات:
     data-theme="night"  (الافتراضي)  سماء ليل بنفسجية، ذهبي، فيروزي، لازوردي.
     data-theme="day"                 نهار فاتح على ورق عاجي، لازوردي وذهبي.
+    data-theme="neon"                «ساحل النيون»: ليل ساحلي بنيون زهري وسماوي، حدود سودا وظل حاد (طابع بس، بلا أي شي من لعبة أو شركة).
   الأسماء القديمة dark / light / calm بتضل شغّالة: dark = night، light و calm = day.
 
   القاعدة: كل الشاشات بتقرأ --vp-* بس. وبنعيد ضبط --zk-* الأساسية لنفس القيم
@@ -68,6 +69,7 @@
   --vp-sunset-3:   #5a1c7a;
   --vp-night-ink:  #1a0b2e;
   --vp-on-hero:    #ffffff;
+  --vp-black:      #000000;
 
   /* ── ألوان المشاهد (فاتحة ومشبعة؛ النص فوقها غامق بالثيمين) ── */
   --vp-scene-1: #f5c542;
@@ -207,6 +209,70 @@
   --vp-text-shadow-hero: 3px 3px 0 #1a0b2e;
   --vp-display-ink:    #22145a;
   --vp-display-shadow: 2px 2px 0 #f2bb2e;
+}
+
+/* ═════════ «ساحل النيون» — ليل ساحلي بنيون (طابع بس) ═════════
+   الخلفية بنفسجي-كحلي عميق، الأساسي زهري نيون، الثانوي سماوي، الزر الأساسي أصفر.
+   العناوين بخط Lalezar (وBangers للاتيني) مع ظل أسود حاد. الحدود السودا والظلال الحادة بـ ornament.css. */
+[data-theme="neon"] {
+  color-scheme: dark;
+
+  --vp-font-heading: "Lalezar", "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --vp-font-display: "Bangers", "Lalezar", "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI Black", Tahoma, sans-serif;
+
+  --vp-sky: linear-gradient(180deg, #0a0524 0%, #12073a 42%, #2a0f52 78%, #4b1356 100%);
+  --vp-sunset: linear-gradient(180deg, #ffb347 0%, #ff4fa3 46%, #5b1a8f 100%);
+  --vp-hero-shade: linear-gradient(180deg, rgb(10 5 36 / 0) 25%, rgb(10 5 36 / 0.8) 100%);
+  --vp-orn: #00e5ff;
+  --vp-orn-alpha: 0.05;
+
+  --vp-bg:            #0a0524;
+  --vp-surface:       #150a38;
+  --vp-surface-2:     #0f0829;
+  --vp-surface-3:     #261457;
+  --vp-glass:         rgb(12 6 34 / 0.88);
+  --vp-overlay:       rgb(5 2 20 / 0.78);
+  --vp-border:        #3f2b8c;
+  --vp-border-strong: #ff4fa3;
+  --vp-border-input:  #8f78e0;
+  --vp-hairline:      rgb(0 229 255 / 0.32);
+
+  --vp-text:          #f6f1ff;
+  --vp-heading:       #ffe566;
+  --vp-text-muted:    #c9bfe8;
+  --vp-text-faint:    #a99bd8;
+
+  --vp-brand:         #ff4fa3;
+  --vp-brand-strong:  #ff77b9;
+  --vp-brand-soft:    #3a1146;
+  --vp-brand-text:    #ff8cc6;
+  --vp-on-brand:      #1a0420;
+  --vp-cta:           #ffd23f;
+  --vp-cta-hover:     #ffe066;
+  --vp-cta-edge:      #000000;
+  --vp-on-cta:        #1f1300;
+  --vp-accent:        #00e5ff;
+  --vp-accent-soft:   #0b3550;
+  --vp-focus-ring:    #00e5ff;
+
+  --vp-ok:            #3dffb0;
+  --vp-ok-soft:       #0c3a3c;
+  --vp-warn:          #ffb347;
+  --vp-warn-soft:     #46233a;
+  --vp-danger:        #ff6b8a;
+  --vp-danger-soft:   #4a1038;
+  --vp-on-danger:     #1a0712;
+  --vp-info:          #7fb2ff;
+  --vp-info-soft:     #1c2a66;
+  --vp-idle:          #a99bd8;
+  --vp-idle-soft:     #261457;
+
+  --vp-shadow-1: 3px 3px 0 #000000;
+  --vp-shadow-2: 6px 6px 0 #000000, 0 0 36px rgb(255 79 163 / 0.28);
+  --vp-glow:     0 0 0 2px #ff4fa3, 0 0 22px rgb(255 79 163 / 0.45);
+  --vp-text-shadow-hero: 3px 3px 0 #000000;
+  --vp-display-ink:    #ff7ab8;
+  --vp-display-shadow: 2px 2px 0 #000000;
 }
 
 /* ═════════ رموز مشتقة (بتتبع الثيم الحالي تلقائياً) ═════════ */

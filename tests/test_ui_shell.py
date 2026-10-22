@@ -185,7 +185,7 @@ for (const h of cases) { ctx.location.hash = h; out[h] = vm.runInContext("legacy
 out.__names = vm.runInContext("ROUTE_NAMES", ctx);
 out.__legacy = vm.runInContext("LEGACY_ROUTES", ctx);
 out.__themes = vm.runInContext("THEMES.map((t) => t.k)", ctx);
-out.__migrate = vm.runInContext("['dark','light','calm','night','day','zzz'].map(normTheme)", ctx);
+out.__migrate = vm.runInContext("['dark','light','calm','night','day','neon','zzz'].map(normTheme)", ctx);
 out.__stage = vm.runInContext("[1,2,3,4,5,6,7,8,9,10,11].map(stageOfStation)", ctx);
 process.stdout.write(JSON.stringify(out));
 """
@@ -218,9 +218,9 @@ def test_station_to_stage_table(routing):
     assert routing["__stage"] == [1, 3, 4, 4, 4, 5, 5, 5, 6, 7, 7]
 
 
-def test_themes_night_day_with_migration(routing):
-    assert routing["__themes"] == ["night", "day"]
-    assert routing["__migrate"] == ["night", "day", "day", "night", "day", "night"]
+def test_themes_night_day_neon_with_migration(routing):
+    assert routing["__themes"] == ["night", "day", "neon"]
+    assert routing["__migrate"] == ["night", "day", "day", "night", "day", "neon", "night"]
     assert 'data-theme="night"' in INDEX
     boot = _read("boot.js")
     assert re.search(r"try\s*\{\s*saved = localStorage\.getItem", boot)

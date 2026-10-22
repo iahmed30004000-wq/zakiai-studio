@@ -15,8 +15,9 @@ router = APIRouter(prefix="/api/pattern-lib")
 
 
 def _actor() -> str:
-    """مين عمل الشغلة (المرحلة 6 بتحوّلها لاسم الموظف اللي داخل)."""
-    return "owner"
+    """مين عمل الشغلة: اسم الموظف اللي داخل (حسابات الموظفين)، وإلا «owner»."""
+    import accounts
+    return accounts.who("owner")
 
 
 def _guard(fn, *a, **k):

@@ -317,7 +317,7 @@ def approve_script(file: str) -> dict:
     import review_loop
     path = _script_path(file)
     try:
-        st = review_loop.approve(path, by="owner")
+        st = review_loop.approve(path, by=__import__("accounts").who("owner"))
     except review_loop.ApprovalError as e:
         raise HTTPException(409, str(e))
     return {"ok": True, **st}

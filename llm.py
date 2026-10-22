@@ -198,6 +198,7 @@ LEGACY_MODEL_KEYS = {
     "importer": "MODEL_ANALYSIS",
     "shotplan": "MODEL_MATCH",
     "translate": "MODEL_MATCH",
+    "imgprompt": "MODEL_MATCH",
 }
 
 TASK_LABELS = {
@@ -209,6 +210,7 @@ TASK_LABELS = {
     "importer": "استيراد أنماط من مستند",
     "shotplan": "تقسيم المشهد للقطات",
     "translate": "ترجمة الأنماط للعربي",
+    "imgprompt": "ترجمة برومبتات اللقطات وبطاقة الشخصية للإنجليزي",
 }
 
 

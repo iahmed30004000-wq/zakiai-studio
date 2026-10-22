@@ -9,6 +9,10 @@
   · بلا أي كتابة/حروف/أرقام داخل الصورة (النص بينحط بالمونتاج).
   · كل لقطة بنوع مختلف عن اللي جنبها بنفس المشهد.
   · ما في برومبتين متطابقين بالسيناريو.
+
+الموديل بياخد دايماً نسخة إنجليزية (prompt_model): بتنترجم من العربي (اللي بيعدّله المالك) بالذكاء، ومعها بطاقة هوية الشخصية
+الإنجليزية (identity.py) — لأنو الموديلات الصينية بتميل لملامح شرق آسيا والوصف الثابت بيثبّت الهوية. لو الترجمة فشلت
+(الذكاء مش متاح) بيروح للموديل بطاقة الهوية + البرومبت العربي، وبتنعاد المحاولة بالتوليد الجاي.
 """
 
 from __future__ import annotations
@@ -107,7 +111,7 @@ def build(tl: dict, script: dict, product: str = "", ch: dict | None = None,
     return tl
 
 
-def refine(tl: dict, log=print) -> dict:
+def refine(tl: dict, log=print, ch: dict | None = None, country: str = "") -> dict:
     """تحسين اختياري بالموديل: بنداء واحد لكل الأفلام. أي خطأ ← القالب يبقى."""
     import llm
     shots = [{"id": sh["id"], "type": sh["type"], "prompt_ar": sh["prompt_ar"]}
@@ -135,9 +139,104 @@ def refine(tl: dict, log=print) -> dict:
                 sh["prompt_ar"] = _ensure_no_text(ar)[:MAX_LEN]
             en = str(r.get("prompt_model") or "").strip()
             if en:
-                sh["prompt_model"] = (en if re.search(r"no (?:text|writing|letters)", en, re.I)
-                                      else en + ". No text, letters, numbers or logos in the image.")[:MAX_LEN]
+                sh["prompt_model"] = _finish_en(en, sh, ch, country)
     return tl
+
+
+# ── النسخة الإنجليزية اللي بتروح للموديل (دايماً) ─────────────────────────
+_NO_TEXT_EN = re.compile(r"\b(?:no|without)\s+(?:any\s+|visible\s+|on-screen\s+)?(?:text|writing|letters|captions)", re.I)
+_AR_LETTER = re.compile(r"[\u0600-\u06FF]")
+_EN_CHUNK = 25
+_EN_SYSTEM = ("You translate image-generation prompts written in Arabic into natural, precise English for an image model. "
+              "Keep every instruction and visual detail; keep names as written; never add details; never drop the rule that the "
+              "image contains no text, letters, numbers or logos. The quoted Arabic voiceover words are only scene context: express "
+              "their meaning in a few words and do NOT quote them. Reply with JSON only: {\"shots\": [{\"id\": \"...\", \"en\": \"...\"}]}.")
+
+
+def character_of(sh: dict) -> dict | None:
+    """شخصية اللقطة من مرجعها (بلا ذكاء، قراءة ملف بس)."""
+    cid = (sh.get("refs") or {}).get("character_id")
+    if not cid:
+        return None
+    try:
+        import characters
+        return characters.get(cid)
+    except Exception:                                   # noqa: BLE001
+        return None
+
+
+def _identity_line(sh: dict, ch: dict | None, country: str = "") -> str:
+    """بطاقة الهوية قبل كل برومبت فيه وجه. لقطات اليد بلا وجه فبلا بطاقة (بشرة اليد بتجي من الورقة المرجعية)."""
+    if not ch or sh.get("type") == "hand_product":
+        return ""
+    import identity
+    return (f"Subject (identical in every shot): {identity.text_of(ch, country)}. "
+            "Keep exactly the same face as in the attached reference images. ")
+
+
+def _finish_en(en: str, sh: dict, ch: dict | None, country: str = "") -> str:
+    en = re.sub(r"\s+", " ", str(en or "")).strip()
+    if not _NO_TEXT_EN.search(en):
+        en = f"{en.rstrip('. ')}. No text, letters, numbers or logos in the image."
+    return (_identity_line(sh, ch, country) + en)[:MAX_LEN]
+
+
+def model_prompt(sh: dict, ch: dict | None = None, country: str = "") -> str:
+    """البرومبت اللي بينبعت للموديل: النسخة الإنجليزية المخزّنة، وإلا بطاقة الهوية + البرومبت العربي (الترجمة لسا ما صارت)."""
+    en = (sh.get("prompt_model") or "").strip()
+    if en:
+        return en
+    ar = (sh.get("prompt_ar") or "").strip()
+    if not ar:
+        return ""
+    return (_identity_line(sh, ch if ch is not None else character_of(sh), country) + ar)[:MAX_LEN]
+
+
+def _llm_translate(items: list[dict]) -> dict[str, str]:
+    import llm
+    res = llm.complete_json("imgprompt", _EN_SYSTEM, [{"type": "text", "text": json.dumps(items, ensure_ascii=False)}],
+                            config.MAX_OUTPUT_TOKENS)
+    rows = res.get("shots") if isinstance(res, dict) else None
+    return {str(r.get("id")): str(r.get("en") or "").strip() for r in (rows or []) if isinstance(r, dict)}
+
+
+def _mostly_english(t: str) -> bool:
+    letters = [c for c in t if c.isalpha()]
+    return bool(letters) and len(_AR_LETTER.findall(t)) / len(letters) < 0.3
+
+
+def english_for(tl: dict, ch: dict | None = None, country: str = "", translate=None, only=None, log=print,
+                force: bool = False) -> dict:
+    """يضمن نسخة إنجليزية (prompt_model) للقطات اللي ما إلها: ترجمة برومبتها العربي بنداء واحد (دفعات ٢٥)
+    + بطاقة هوية الشخصية. فشل الذكاء ما بيوقف شي: اللقطة بتضل بلا نسخة (model_prompt بيرجع للعربي) وبتنعاد المحاولة لاحقاً.
+    only: معرّفات لقطات محدّدة. force: يعيد حتى لو في نسخة. بيرجّع {done, failed}."""
+    todo = [sh for sc in tl["scenes"] for sh in sc["shots"]
+            if (only is None or sh["id"] in only) and (sh.get("prompt_ar") or "").strip() and not sh.get("inherited")
+            and (force or not (sh.get("prompt_model") or "").strip())]
+    if not todo:
+        return {"done": 0, "failed": 0}
+    if ch:
+        try:                                            # بطاقة الهوية أول (بتنترجم وبتنخزّن مرة وحدة)
+            import characters
+            import identity
+            identity.ensure(ch["id"], country)
+            ch = characters.get(ch["id"]) or ch
+        except Exception as e:                          # noqa: BLE001
+            log(f"[!] بطاقة الهوية: {type(e).__name__} — بنكمّل بنسختها الأساسية")
+    got: dict[str, str] = {}
+    items = [{"id": sh["id"], "ar": sh["prompt_ar"]} for sh in todo]
+    for i in range(0, len(items), _EN_CHUNK):
+        try:
+            got.update((translate or _llm_translate)(items[i:i + _EN_CHUNK]))
+        except Exception as e:                          # noqa: BLE001 — الذكاء مش متاح: بنكمّل بلا ترجمة
+            log(f"[!] تعذّرت ترجمة البرومبتات للإنجليزي ({type(e).__name__}) — بتنعاد عند التوليد")
+    done = 0
+    for sh in todo:
+        en = (got.get(sh["id"]) or "").strip()
+        if en and _mostly_english(en):
+            sh["prompt_model"] = _finish_en(en, sh, ch, country)
+            done += 1
+    return {"done": done, "failed": len(todo) - done}
 
 
 def set_prompt(tl: dict, shot_id: str, text: str) -> dict:

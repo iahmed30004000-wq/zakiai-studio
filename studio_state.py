@@ -87,6 +87,8 @@ def can_start(stem: str, n: int) -> tuple[bool, str]:
 
 
 def set_state(stem: str, n: int, state: str, note: str = "", by: str = "system") -> dict:
+    import accounts
+    by = accounts.actor_name(by)                      # الموظف الحالي (أو VP_ACTOR بمهام الخلفية) بدل «system/owner»
     if state not in STATES:
         raise ValueError(f"حالة غير معروفة: {state}")
     if n not in STATIONS:

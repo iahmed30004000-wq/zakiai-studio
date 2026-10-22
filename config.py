@@ -78,9 +78,13 @@ STUDIO_MAX_SHOT_SEC = 3.0        # أقصى مدة للقطة (قابلة للض
 STUDIO_MAX_SHOTS_PER_SCENE = 3
 STUDIO_IMAGE_CANDIDATES = 2         # خيارات لكل لقطة
 STUDIO_MAX_IMAGE_CALLS = 80         # حد نداءات الصور لكل فيديو (السعر مش معروف — الحد بالعدد)
+FACE_MATCH_THRESHOLD = 0.363        # أقل تطابق وجه (cosine، SFace) مع صور الشخصية المرجعية؛ تحته «الوجه تغيّر». بنضبطه على صور شخصياتك
+FACE_MIN_PX = 40                    # أصغر وجه (عرضاً بالبكسل) بنقدر نحكم عليه — الأصغر «ما انكشف وجه واضح»
+FACE_VIDEO_FRAMES = 3               # لقطات بتنفحص من كل فيديو تحريك
 GPU_VRAM_GB = 6                     # لو ما انقرت الذاكرة الحرة من الكرت
 MOTION_TIMEOUT_SEC = 3600           # مهلة تشغيل موديل تحريك للقطة
 MOTION_API_CAP_USD = 15.0           # سقف إنفاق التحريك بالـ API (دولار) لكل سيناريو — بعده بننزل للمحلي أو بنفشل
+MOTION_END_FRAME = True             # لقطات الوجه: نفس صورة اللقطة المعتمدة كصورة نهاية (للنماذج اللي بتاخدها) فالوجه يرجع لحاله بآخر اللقطة؛ بتتخطّى لو الحركة حركة كاميرا
 MONTAGE_FINAL_ENGINE = "ffmpeg"     # التصدير النهائي: "ffmpeg" (سريع) | "remotion" (متقدّم: ترجمة بالكلمة + بطاقات؛ بيرجع للعادي لو فشل)
 LAUNCH_MAX_MB = 500                 # أقصى حجم فيديو للإطلاق (حماية محلية)
 STUDIO_VOICE_MAX_ROUNDS = 2       # دورات تعديل النص لضبط مدة الصوت قبل ما يرفع للمالك
@@ -94,7 +98,8 @@ SETTINGS_PATH = BASE / "settings.json"
 # القيم المسموح تعديلها من الواجهة — أي مفتاح غيرها بينتجاهل
 OVERRIDABLE = {
     "SCRIPT_MAX_REVIEW_ROUNDS", "MIN_DELIVERED", "LIBRARY_QUOTA", "FAR_CATEGORY_PENALTY", "ADJACENT_CATEGORY_PENALTY",
-    "FATIGUE_DAYS", "BACKUP_KEEP", "BACKUP_ALERT_DAYS", "CRM_QUEUE_POLL_MINUTES", "PERF_MATURITY_DAYS", "CRM_RESYNC_LOOKBACK_DAYS", "CRM_INITIAL_BACKFILL_DAYS", "MIN_BASELINE_SCRIPTS", "STUDIO_MAX_SHOT_SEC", "STUDIO_MAX_SHOTS_PER_SCENE", "STUDIO_VOICE_MAX_ROUNDS", "LAUNCH_MAX_MB", "MONTAGE_FINAL_ENGINE", "GPU_VRAM_GB", "MOTION_TIMEOUT_SEC", "MOTION_API_CAP_USD", "STUDIO_IMAGE_CANDIDATES", "STUDIO_MAX_IMAGE_CALLS",
+    "FATIGUE_DAYS", "BACKUP_KEEP", "BACKUP_ALERT_DAYS", "CRM_QUEUE_POLL_MINUTES", "PERF_MATURITY_DAYS", "CRM_RESYNC_LOOKBACK_DAYS", "CRM_INITIAL_BACKFILL_DAYS", "MIN_BASELINE_SCRIPTS", "STUDIO_MAX_SHOT_SEC", "STUDIO_MAX_SHOTS_PER_SCENE", "STUDIO_VOICE_MAX_ROUNDS", "LAUNCH_MAX_MB", "MONTAGE_FINAL_ENGINE", "GPU_VRAM_GB", "MOTION_TIMEOUT_SEC", "MOTION_API_CAP_USD", "MOTION_END_FRAME", "STUDIO_IMAGE_CANDIDATES", "STUDIO_MAX_IMAGE_CALLS",
+    "FACE_MATCH_THRESHOLD", "FACE_MIN_PX", "FACE_VIDEO_FRAMES",
     "MODEL_ANALYSIS", "MODEL_MATCH", "MODEL_WRITER", "MAX_OUTPUT_TOKENS",
     "MAX_FRAMES_PER_VIDEO", "WHISPER_MODEL", "WHISPER_DEVICE", "WHISPER_COMPUTE",
     "WHISPER_LANGUAGE", "SCENE_THRESHOLD", "MIN_SCENE_SEC", "OCR_LANGS",

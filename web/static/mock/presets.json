@@ -1,0 +1,828 @@
+{
+ "categories": [
+  {
+   "id": "camera",
+   "name_ar": "حركات الكاميرا"
+  },
+  {
+   "id": "product",
+   "name_ar": "حركات المنتج"
+  },
+  {
+   "id": "character",
+   "name_ar": "حركات الشخصية"
+  }
+ ],
+ "presets": [
+  {
+   "id": "push_in",
+   "category": "camera",
+   "name_ar": "دخول للأمام",
+   "desc_ar": "الكاميرا بتقرّب ببطء من العنصر وهو ثابت بمكانه",
+   "motion_desc_ar": "دفع بطيء للكاميرا للأمام باتجاه العنصر والعنصر ثابت بمكانه",
+   "camera_move": true,
+   "recipes": {
+    "default": "Slow, steady push-in toward the subject while the subject stays in place",
+    "hailuo": "[Push in] Slow, steady push-in toward the subject while the subject stays in place",
+    "kling": "The camera slowly pushes in toward the subject in one smooth, stable move"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": {
+    "url": "/api/presets/push_in/example",
+    "model": "Kling 2.6 Pro (fal)",
+    "shot": "s1c1",
+    "stem": "demo",
+    "at": "2026-10-22T02:00:00+00:00"
+   }
+  },
+  {
+   "id": "pull_out",
+   "category": "camera",
+   "name_ar": "سحب للخلف",
+   "desc_ar": "الكاميرا بترجع لورا ببطء وبتكشف أكتر من المشهد",
+   "motion_desc_ar": "سحب بطيء للكاميرا للخلف لكشف المشهد",
+   "camera_move": true,
+   "recipes": {
+    "default": "Slow, steady pull-back that gradually reveals more of the scene while the subject stays in place",
+    "hailuo": "[Pull out] Slow, steady pull-back that gradually reveals more of the scene while the subject stays in place",
+    "kling": "The camera slowly pulls back in one smooth, stable move, revealing more of the scene"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "zoom_in",
+   "category": "camera",
+   "name_ar": "تقريب (زوم)",
+   "desc_ar": "زوم ناعم نحو العنصر بدون اهتزاز",
+   "motion_desc_ar": "تقريب بصري ناعم نحو العنصر بدون اهتزاز",
+   "camera_move": true,
+   "recipes": {
+    "default": "Smooth, gradual zoom in toward the subject with no camera shake",
+    "hailuo": "[Zoom in] Smooth, gradual zoom in toward the subject with no camera shake",
+    "kling": "A smooth, gradual zoom in toward the subject without any shake"
+   },
+   "duration_s": [
+    3,
+    4
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "zoom_out",
+   "category": "camera",
+   "name_ar": "تبعيد (زوم)",
+   "desc_ar": "زوم ناعم يبعّد عن العنصر بدون اهتزاز",
+   "motion_desc_ar": "تبعيد بصري ناعم عن العنصر بدون اهتزاز",
+   "camera_move": true,
+   "recipes": {
+    "default": "Smooth, gradual zoom out away from the subject with no camera shake",
+    "hailuo": "[Zoom out] Smooth, gradual zoom out away from the subject with no camera shake",
+    "kling": "A smooth, gradual zoom out away from the subject without any shake"
+   },
+   "duration_s": [
+    3,
+    4
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "pan_left",
+   "category": "camera",
+   "name_ar": "بانوراما يسار",
+   "desc_ar": "الكاميرا بتلف ناحية اليسار من مكانها",
+   "motion_desc_ar": "بانوراما ناعمة للكاميرا ناحية اليسار من مكانها",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera pans smoothly to the left from a fixed position, following the scene",
+    "hailuo": "[Pan left] The camera pans smoothly to the left from a fixed position, following the scene",
+    "kling": "The camera pans slowly and smoothly to the left from a fixed position"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "wide"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "pan_right",
+   "category": "camera",
+   "name_ar": "بانوراما يمين",
+   "desc_ar": "الكاميرا بتلف ناحية اليمين من مكانها",
+   "motion_desc_ar": "بانوراما ناعمة للكاميرا ناحية اليمين من مكانها",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera pans smoothly to the right from a fixed position, following the scene",
+    "hailuo": "[Pan right] The camera pans smoothly to the right from a fixed position, following the scene",
+    "kling": "The camera pans slowly and smoothly to the right from a fixed position"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "wide"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "truck_left",
+   "category": "camera",
+   "name_ar": "انزلاق يسار",
+   "desc_ar": "الكاميرا بتتحرك جنباً لليسار بسرعة ثابتة والعنصر بالكادر",
+   "motion_desc_ar": "انزلاق جانبي للكاميرا ناحية اليسار بسرعة ثابتة",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera slides sideways to the left at a constant speed while keeping the subject in frame",
+    "hailuo": "[Truck left] The camera slides sideways to the left at a constant speed while keeping the subject in frame",
+    "kling": "The camera glides sideways to the left at a steady pace, keeping the subject in frame"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "truck_right",
+   "category": "camera",
+   "name_ar": "انزلاق يمين",
+   "desc_ar": "الكاميرا بتتحرك جنباً لليمين بسرعة ثابتة والعنصر بالكادر",
+   "motion_desc_ar": "انزلاق جانبي للكاميرا ناحية اليمين بسرعة ثابتة",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera slides sideways to the right at a constant speed while keeping the subject in frame",
+    "hailuo": "[Truck right] The camera slides sideways to the right at a constant speed while keeping the subject in frame",
+    "kling": "The camera glides sideways to the right at a steady pace, keeping the subject in frame"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "tilt_up",
+   "category": "camera",
+   "name_ar": "ميلان لفوق",
+   "desc_ar": "الكاميرا بتميل لفوق من مكانها",
+   "motion_desc_ar": "ميلان ناعم للكاميرا لفوق من مكانها",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera tilts smoothly upward from a fixed position",
+    "hailuo": "[Tilt up] The camera tilts smoothly upward from a fixed position",
+    "kling": "The camera tilts slowly upward from a fixed position in one smooth move"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "wide"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "tilt_down",
+   "category": "camera",
+   "name_ar": "ميلان لتحت",
+   "desc_ar": "الكاميرا بتميل لتحت من مكانها",
+   "motion_desc_ar": "ميلان ناعم للكاميرا لتحت من مكانها",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera tilts smoothly downward from a fixed position",
+    "hailuo": "[Tilt down] The camera tilts smoothly downward from a fixed position",
+    "kling": "The camera tilts slowly downward from a fixed position in one smooth move"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "wide"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "pedestal_up",
+   "category": "camera",
+   "name_ar": "رافعة لفوق",
+   "desc_ar": "الكاميرا بتطلع عمودياً لفوق كأنها على رافعة",
+   "motion_desc_ar": "ارتفاع عمودي ناعم للكاميرا لفوق مع بقاء العنصر بالكادر",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera rises straight up in a smooth, crane-like lift while keeping the subject in frame",
+    "hailuo": "[Pedestal up] The camera rises straight up in a smooth, crane-like lift while keeping the subject in frame",
+    "kling": "The camera lifts smoothly straight upward like a crane move, keeping the subject in frame"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "pedestal_down",
+   "category": "camera",
+   "name_ar": "رافعة لتحت",
+   "desc_ar": "الكاميرا بتنزل عمودياً لتحت",
+   "motion_desc_ar": "نزول عمودي ناعم للكاميرا لتحت مع بقاء العنصر بالكادر",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera descends straight down in a smooth, crane-like move while keeping the subject in frame",
+    "hailuo": "[Pedestal down] The camera descends straight down in a smooth, crane-like move while keeping the subject in frame",
+    "kling": "The camera lowers smoothly straight downward, keeping the subject in frame"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "tracking",
+   "category": "camera",
+   "name_ar": "تتبّع",
+   "desc_ar": "الكاميرا بتمشي ورا العنصر وهو بيتحرك",
+   "motion_desc_ar": "تتبّع ناعم للعنصر وهو يتحرك مع إبقائه بالنص",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera tracks the subject smoothly as it moves, keeping it centered in frame",
+    "hailuo": "[Tracking shot] The camera tracks the subject smoothly as it moves, keeping it centered in frame",
+    "kling": "The camera follows the subject smoothly as it moves, keeping it centered"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "handheld",
+   "category": "camera",
+   "name_ar": "اهتزاز يد",
+   "desc_ar": "حركة كاميرا بالإيد خفيفة وطبيعية متل التصوير الوثائقي",
+   "motion_desc_ar": "اهتزاز خفيف طبيعي للكاميرا كأنها محمولة باليد",
+   "camera_move": true,
+   "recipes": {
+    "default": "Subtle, natural handheld camera movement with a documentary feel",
+    "hailuo": "[Shake] Subtle, natural handheld camera movement with a documentary feel",
+    "kling": "Subtle natural handheld camera sway, as if filmed by hand"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "wide",
+    "close"
+   ],
+   "prefer": [
+    "kling",
+    "hailuo"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "orbit",
+   "category": "camera",
+   "name_ar": "دوران حول العنصر",
+   "desc_ar": "الكاميرا بتلف ببطء حوالين العنصر وبتكشفه من زاوية مختلفة",
+   "motion_desc_ar": "دوران بطيء للكاميرا حول العنصر لكشفه من زاوية مختلفة",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera orbits slowly around the subject, revealing it from a slightly different angle while the subject stays centered",
+    "hailuo": "The camera orbits slowly around the subject, revealing it from a slightly different angle while the subject stays centered",
+    "kling": "The camera makes a slow, smooth orbit around the subject, keeping it centered"
+   },
+   "duration_s": [
+    4,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "hand_product"
+   ],
+   "prefer": [
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "static",
+   "category": "camera",
+   "name_ar": "ثابت",
+   "desc_ar": "الكاميرا ثابتة تماماً والعنصر بس هو اللي بيتحرك",
+   "motion_desc_ar": "كاميرا ثابتة تماماً والعنصر يتحرك بشكل طبيعي",
+   "camera_move": false,
+   "recipes": {
+    "default": "Locked-off static camera; only the subject moves naturally and the frame never changes",
+    "hailuo": "[Static shot] Locked-off static camera; only the subject moves naturally",
+    "kling": "The camera stays completely still on a tripod; only the subject moves naturally"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "medium",
+    "wide",
+    "hand_product"
+   ],
+   "prefer": [
+    "kling",
+    "hailuo"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "product_reveal",
+   "category": "product",
+   "name_ar": "كشف المنتج",
+   "desc_ar": "بتبلش على الملصق من قريب وبترجع لورا لتكشف المنتج كامل",
+   "motion_desc_ar": "بداية من قريب على الملصق ثم سحب بطيء للخلف لكشف المنتج كاملاً مع انزلاق ضوء ناعم على سطحه",
+   "camera_move": true,
+   "recipes": {
+    "default": "Start tight on the product label, then pull back slowly to reveal the whole product while soft light glides across its surface",
+    "hailuo": "[Pull out] Start tight on the product label, then pull back slowly to reveal the whole product while soft light glides across its surface",
+    "kling": "The camera starts tight on the product label and slowly pulls back to reveal the whole product, soft light gliding across its surface"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close",
+    "hand_product"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "product_spin",
+   "category": "product",
+   "name_ar": "دوران المنتج",
+   "desc_ar": "المنتج بيدور ببطء حول نفسه بضو ثابت والكاميرا ثابتة",
+   "motion_desc_ar": "يدور المنتج ببطء حول نفسه مع بقاء الملصق واضحاً والكاميرا ثابتة",
+   "camera_move": false,
+   "recipes": {
+    "default": "The product rotates slowly on its own axis showing its front and side, steady soft light, camera still, the label stays sharp and readable",
+    "hailuo": "[Static shot] The product rotates slowly on its own axis showing its front and side, steady soft light, the label stays sharp and readable",
+    "kling": "The product turns slowly on its own axis on a still camera, its label staying sharp and readable"
+   },
+   "duration_s": [
+    4,
+    5
+   ],
+   "best_for": [
+    "close"
+   ],
+   "prefer": [
+    "kling",
+    "hailuo"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "hand_present",
+   "category": "product",
+   "name_ar": "اليد تقدّم المنتج",
+   "desc_ar": "يد بترفع المنتج نحو الكاميرا وبتثبّته والملصق مواجه العدسة",
+   "motion_desc_ar": "ترفع اليد المنتج ببطء نحو العدسة وتثبّته والملصق مواجه للعدسة",
+   "camera_move": false,
+   "recipes": {
+    "default": "A hand slowly lifts the product toward the lens and holds it steady with the label facing the camera",
+    "hailuo": "[Static shot] A hand slowly lifts the product toward the lens and holds it steady with the label facing the camera",
+    "kling": "A hand gently lifts the product toward the lens and holds it still, the label facing the camera"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "hand_product",
+    "close"
+   ],
+   "prefer": [
+    "hailuo",
+    "kling"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "face_breath",
+   "category": "character",
+   "name_ar": "حياة خفيفة للوجه",
+   "desc_ar": "تنفّس وطرفة عين وحركة رأس بسيطة والكاميرا ثابتة (الأضمن لثبات الوجه)",
+   "motion_desc_ar": "تنفّس خفيف ورمشة ناعمة وحركة رأس بسيطة والكاميرا ثابتة",
+   "camera_move": false,
+   "recipes": {
+    "default": "Subtle natural life: gentle breathing, a soft blink and a tiny head movement; the camera stays still and the face never changes",
+    "hailuo": "[Static shot] Subtle natural life: gentle breathing, a soft blink and a tiny head movement; the face never changes",
+    "kling": "The person breathes gently, blinks softly and moves their head slightly; the camera stays still and the face never changes"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "close"
+   ],
+   "prefer": [
+    "kling",
+    "hailuo"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": {
+    "url": "/api/presets/face_breath/example",
+    "model": "Kling 2.6 Pro (fal)",
+    "shot": "s1c1",
+    "stem": "demo",
+    "at": "2026-10-22T02:00:00+00:00"
+   }
+  },
+  {
+   "id": "look_camera",
+   "category": "character",
+   "name_ar": "نظرة للكاميرا",
+   "desc_ar": "الشخصية بتدير نظرها ببطء للكاميرا مع ابتسامة خفيفة",
+   "motion_desc_ar": "تدير الشخصية نظرها ببطء نحو الكاميرا مع ابتسامة خفيفة والكاميرا ثابتة",
+   "camera_move": false,
+   "recipes": {
+    "default": "The person slowly turns their gaze to the camera with a slight, warm smile; the camera stays still and the face keeps the same identity",
+    "hailuo": "[Static shot] The person slowly turns their gaze to the camera with a slight, warm smile; the face keeps the same identity",
+    "kling": "The person slowly turns their eyes to the camera with a slight warm smile; the camera stays still and the face keeps the same identity"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "medium",
+    "close"
+   ],
+   "prefer": [
+    "kling",
+    "hailuo"
+   ],
+   "custom": false,
+   "overridden": false,
+   "example": null
+  },
+  {
+   "id": "custom",
+   "category": "product",
+   "name_ar": "كشف المنتج من الجنب",
+   "desc_ar": "وصفتك: الكاميرا بتنزلق جنباً وبتكشف المنتج",
+   "motion_desc_ar": "انزلاق جانبي ناعم لكشف المنتج",
+   "camera_move": true,
+   "recipes": {
+    "default": "The camera slides sideways to reveal the product from the side, smooth and steady"
+   },
+   "duration_s": [
+    3,
+    5
+   ],
+   "best_for": [
+    "close"
+   ],
+   "prefer": [
+    "kling"
+   ],
+   "custom": true,
+   "overridden": false,
+   "example": null
+  }
+ ],
+ "families": {
+  "default": "عام (الباقي)",
+  "hailuo": "Hailuo",
+  "kling": "Kling",
+  "grok": "Grok",
+  "local": "موديل محلي"
+ },
+ "looks": {
+  "cameras": [
+   {
+    "id": "modular_8k",
+    "name_ar": "رقمية معيارية 8K",
+    "en": "modular 8K digital cinema camera"
+   },
+   {
+    "id": "full_frame_cine",
+    "name_ar": "رقمية سينمائية فل فريم",
+    "en": "full-frame digital cinema camera"
+   },
+   {
+    "id": "grand_70mm",
+    "name_ar": "فيلم 70 ملم كبير",
+    "en": "grand format 70mm film camera"
+   },
+   {
+    "id": "s35_studio",
+    "name_ar": "ستوديو رقمية Super 35",
+    "en": "Super 35 studio digital camera"
+   },
+   {
+    "id": "classic_16mm",
+    "name_ar": "فيلم 16 ملم كلاسيك",
+    "en": "classic 16mm film camera"
+   },
+   {
+    "id": "premium_large",
+    "name_ar": "رقمية فورمات كبير فاخرة",
+    "en": "premium large-format digital cinema camera"
+   }
+  ],
+  "lenses": [
+   {
+    "id": "creative_tilt",
+    "name_ar": "عدسة ميلان إبداعية",
+    "en": "creative tilt lens effect"
+   },
+   {
+    "id": "compact_anamorphic",
+    "name_ar": "أنامورفيك صغيرة",
+    "en": "compact anamorphic lens"
+   },
+   {
+    "id": "extreme_macro",
+    "name_ar": "ماكرو شديد",
+    "en": "extreme macro lens"
+   },
+   {
+    "id": "cinema_70s",
+    "name_ar": "عدسة سينما السبعينات",
+    "en": "1970s cinema prime lens"
+   },
+   {
+    "id": "classic_anamorphic",
+    "name_ar": "أنامورفيك كلاسيك",
+    "en": "classic anamorphic lens"
+   },
+   {
+    "id": "modern_prime",
+    "name_ar": "برايم حديثة فاخرة",
+    "en": "premium modern prime lens"
+   },
+   {
+    "id": "warm_prime",
+    "name_ar": "برايم دافئة الألوان",
+    "en": "warm-toned cinema prime lens"
+   },
+   {
+    "id": "swirl_bokeh",
+    "name_ar": "بورتريه بوكيه دوّامي",
+    "en": "swirl bokeh portrait lens"
+   },
+   {
+    "id": "vintage_prime",
+    "name_ar": "برايم عتيقة",
+    "en": "vintage prime lens"
+   },
+   {
+    "id": "halation",
+    "name_ar": "فلتر هالة ناعمة",
+    "en": "halation diffusion filter"
+   },
+   {
+    "id": "clinical_sharp",
+    "name_ar": "برايم حادة جداً",
+    "en": "ultra-sharp clinical prime lens"
+   }
+  ],
+  "focals": [
+   {
+    "id": "8",
+    "mm": 8,
+    "name_ar": "8 ملم (واسعة جداً)",
+    "en": "ultra-wide perspective"
+   },
+   {
+    "id": "14",
+    "mm": 14,
+    "name_ar": "14 ملم (واسعة)",
+    "en": "wide-angle perspective"
+   },
+   {
+    "id": "24",
+    "mm": 24,
+    "name_ar": "24 ملم (واسعة ديناميكية)",
+    "en": "wide-angle dynamic perspective"
+   },
+   {
+    "id": "35",
+    "mm": 35,
+    "name_ar": "35 ملم (عين الإنسان)",
+    "en": "natural cinematic perspective"
+   },
+   {
+    "id": "50",
+    "mm": 50,
+    "name_ar": "50 ملم (بورتريه)",
+    "en": "standard portrait perspective"
+   },
+   {
+    "id": "85",
+    "mm": 85,
+    "name_ar": "85 ملم (بورتريه قريب)",
+    "en": "classic portrait perspective"
+   }
+  ],
+  "apertures": [
+   {
+    "id": "1.4",
+    "f": "f/1.4",
+    "name_ar": "f/1.4 (عمق ضحل)",
+    "en": "shallow depth of field, creamy bokeh"
+   },
+   {
+    "id": "4",
+    "f": "f/4",
+    "name_ar": "f/4 (متوازن)",
+    "en": "balanced depth of field"
+   },
+   {
+    "id": "11",
+    "f": "f/11",
+    "name_ar": "f/11 (تركيز عميق)",
+    "en": "deep focus clarity, sharp foreground to background"
+   }
+  ]
+ },
+ "shot_types": [
+  "close",
+  "medium",
+  "wide",
+  "hand_product"
+ ],
+ "counts": {
+  "total": 22,
+  "custom": 1,
+  "with_example": 2
+ }
+}

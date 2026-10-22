@@ -190,6 +190,17 @@ def update(cid: str, patch: dict) -> dict:
     return ch
 
 
+def set_identity(cid: str, data: dict | None) -> dict:
+    """بطاقة الهوية الإنجليزية (identity.py). None = مسح (رجوع للتلقائية). ما بتغيّر الحالة ولا updated_at (مش تعديل بيانات)."""
+    ch = _need(cid)
+    if data is None:
+        ch.pop("identity_en", None)
+    else:
+        ch["identity_en"] = data
+    _write(ch)
+    return ch
+
+
 def retire(cid: str) -> dict:
     ch = _need(cid)
     ch["status"] = "retired"
@@ -424,7 +435,7 @@ def choose(stem: str, script: dict, character_id: str) -> dict:
     except Exception:
         country = ""
     rec = {"character_id": character_id, "chosen_at": _now(), "product_code": code,
-           "script_id": meta.get("script_id")}
+           "script_id": meta.get("script_id"), "country": country}
     p = choice_path(stem)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(rec, ensure_ascii=False, indent=2), encoding="utf-8")

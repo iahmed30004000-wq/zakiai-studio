@@ -27,6 +27,7 @@ from pathlib import Path
 import config
 import ext_bridge
 import ext_config
+import shot_prompts
 import studio_state
 import timeline
 from ext_bridge import ExtError
@@ -271,7 +272,7 @@ def _image_tasks(path: Path, ctl: dict, marks: dict) -> list[dict]:
             if q:
                 prompt, want, refs = q["prompt"], q["want"], q["refs"]
             else:                                                     # إعادة لقطة عندها خيارات كفاية
-                prompt = (sh.get("prompt_model") or sh.get("prompt_ar") or "").strip()
+                prompt = shot_prompts.model_prompt(sh).strip()
                 if not prompt:
                     continue
                 refs = [{"index": i, "name": r.name} for i, r in enumerate(ext_bridge._refs(stem, sh, code))]

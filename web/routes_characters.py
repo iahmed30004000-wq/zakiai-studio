@@ -100,6 +100,49 @@ def get_sheet(cid: str, view: str):
     return FileResponse(p)
 
 
+def _identity_view(ch: dict, country: str = "") -> dict:
+    import identity
+    return {**identity.current(ch, country), "negative": identity.negative(ch), "country": identity.pick_country(ch, country)}
+
+
+@router.get("/characters/{cid}/identity")
+def get_identity(cid: str, country: str = "") -> dict:
+    """بطاقة الهوية الإنجليزية الحالية (بلا ذكاء): {text, auto, complete, stale, negative, country}."""
+    import characters
+    try:
+        ch = characters.get(cid)
+    except characters.CharacterError as e:
+        raise HTTPException(400, str(e))
+    if not ch:
+        raise HTTPException(404, "الشخصية غير موجودة")
+    return _identity_view(ch, country)
+
+
+@router.put("/characters/{cid}/identity")
+def put_identity(cid: str, payload: dict) -> dict:
+    """المالك بيكتب البطاقة بإيده (إنجليزي). نص فاضي = رجوع للتلقائية."""
+    import characters
+    import identity
+    try:
+        identity.set_manual(cid, str(payload.get("text") or ""))
+        return _identity_view(characters.get(cid))
+    except (identity.IdentityError, characters.CharacterError) as e:
+        raise HTTPException(400, str(e))
+
+
+@router.post("/characters/{cid}/identity/rebuild")
+def rebuild_identity(cid: str, payload: dict | None = None) -> dict:
+    """يعيد بناءها وبيترجم بالذكاء (نداء واحد). لو الذكاء مش متاح بترجع ناقصة (complete=false) وبنعيد المحاولة لاحقاً."""
+    import characters
+    import identity
+    country = str((payload or {}).get("country") or "")
+    try:
+        identity.ensure(cid, country, force=True)
+        return _identity_view(characters.get(cid), country)
+    except (identity.IdentityError, characters.CharacterError) as e:
+        raise HTTPException(400, str(e))
+
+
 @router.get("/characters/{cid}/slots")
 def character_slots(cid: str, country: str = "") -> dict:
     """الوضعيات الثابتة للورقة المرجعية: صورة كل وضعية + برومبتها (الفعلي والأصلي) + التثبيت."""

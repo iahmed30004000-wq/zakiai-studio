@@ -149,10 +149,12 @@ def build_shot_prompts(filename: str, refine: bool = False) -> dict:
     cur = characters.chosen(p.stem)
     ch = characters.get(cur["character_id"]) if cur else None
     product = b.get("product_name") or (script.get("_meta") or {}).get("product") or ""
+    country = b.get("country") or ""
     try:
         shot_prompts.build(tl, script, product, ch, brief_mod.slug_code(b.get("product_code") or product))
         if refine:
-            shot_prompts.refine(tl)
+            shot_prompts.refine(tl, ch=ch, country=country)
+        shot_prompts.english_for(tl, ch, country)         # النسخة الإنجليزية اللي بتروح للموديل (فشلها ما بيوقف شي)
         timeline.save(p.stem, tl)
     except (shot_prompts.ShotPromptError, timeline.TimelineError) as e:
         raise HTTPException(409, str(e))
@@ -211,7 +213,12 @@ def images_info(filename: str) -> dict:
     script = json.loads(p.read_text(encoding="utf-8"))
     code = image_studio.product_code(script)
     ref = product_ref.load(code) if code else None
+    sup = image_studio.refs_supported()
+    routed = ([sh["id"] for sc in tl["scenes"] for sh in sc["shots"]
+               if not (sh.get("image") or {}).get("candidates") and image_studio.refs_for_shot(p.stem, sh, code)]
+              if not sup["supports_refs"] else [])
     return {"budget": image_studio.budget(p.stem), "product_code": code,
+            "image_provider": {**sup, "note": image_studio.routed_message(sup) if routed else ""}, "ext_routed": routed,
             "product_ref": ({"missing": product_ref.missing(ref), "can_composite": product_ref.can_composite(code),
                              "label_text": ref["label_text"]} if ref else None),
             "problems": image_studio.image_problems(tl), "match_problems": image_studio.match_problems(tl)}
@@ -284,6 +291,15 @@ def check_image(filename: str, shot_id: str) -> dict:
     p = _script(filename)
     _timeline_of(p)
     return {"shot": _img_call(image_studio.check_shot, p, shot_id)}
+
+
+@router.post("/{filename}/match/check")
+def check_all_images(filename: str) -> dict:
+    """يفحص كل اللقطات اللي لسا ما انفحصت (الملصق + الوجه) — الواجهة بتناديه لحالها أول ما تفتح محطة فحص التطابق."""
+    import image_studio
+    p = _script(filename)
+    _timeline_of(p)
+    return _img_call(image_studio.check_all, p)
 
 
 @router.post("/{filename}/shots/{shot_id}/verdict")

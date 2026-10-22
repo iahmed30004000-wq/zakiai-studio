@@ -142,3 +142,136 @@ async function hkAct(btn) {
     btn.textContent = label;
   } finally { HK.busy = false; }
 }
+
+
+/* ═════════ بنك الهوكات (المكتبات ← بنك الهوكات) ═════════ */
+const HKB = { data: null, f: { product: "", type: "", role: "", star: false, archived: false, q: "" }, busy: false, editing: null };
+const HKB_ROLE = { main: ["أساسي بسيناريو", "brand"], alt: ["بديل ما اتجرّب", ""], video: ["نسخة فيديو", "ok"], manual: ["يدوي", "info"] };
+const HKB_VERDICT = { winner: ["رابح", "ok"], ok: ["ضمن المعتاد", "info"], loser: ["خاسر", "danger"], insufficient: ["بيانات غير كافية", "idle"] };
+
+VIEWS.hooksBank = { async enter() { await hkbLoad(); } };
+
+async function hkbLoad() {
+  const box = $("#libs-hooks");
+  if (!box) return;
+  const f = HKB.f, qs = new URLSearchParams();
+  if (f.product) qs.set("product", f.product);
+  if (f.type) qs.set("type", f.type);
+  if (f.role) qs.set("role", f.role);
+  if (f.star) qs.set("star", "true");
+  if (f.archived) qs.set("archived", "true");
+  if (f.q) qs.set("q", f.q);
+  const r = await soft(`/api/hooks-bank${qs.toString() ? "?" + qs : ""}`);
+  if (!r.data) { box.innerHTML = `<div class="panel">${errBox(r.err)}</div>`; return; }
+  HKB.data = r.data;
+  hkbDraw();
+}
+
+function hkbResult(e) {
+  const r = e.result;
+  if (!r) return `<span class="hint">${e.role === "manual" ? "هوك يدوي — ما إله نتايج" : "لسا ما اتجرّب بإعلان"}</span>`;
+  const [t, k] = HKB_VERDICT[r.verdict] || HKB_VERDICT.insufficient;
+  return `<span class="tag ${k}" title="${esc(r.reason || "")}">${esc(t)}</span>
+    <span class="hint">${r.cost_per_delivered != null ? `تكلفة الطلب المُسلَّم ${esc(r.cost_per_delivered)}$` : ""}${r.delivered ? ` · ${esc(r.delivered)} طلب مُسلَّم` : ""}${r.cost_vs_baseline != null ? ` · ${esc(Math.round(r.cost_vs_baseline * 100))}% من المعتاد` : ""}</span>`;
+}
+
+function hkbCard(e, types) {
+  const [rt, rk] = HKB_ROLE[e.role] || HKB_ROLE.alt;
+  const manual = e.source === "manual";
+  const edit = HKB.editing === e.key ? `<div class="task-grid hkb-edit">
+      <label class="hk-wide">النص<textarea data-bf="text" rows="2" maxlength="300">${esc(e.text)}</textarea></label>
+      <label>النوع<select data-bf="type"><option value="">غير محدد</option>${Object.entries(types).map(([k, v]) => `<option value="${esc(k)}"${k === e.type ? " selected" : ""}>${esc(v)}</option>`).join("")}</select></label>
+      <label>المنتج<input data-bf="product" maxlength="80" value="${esc(e.product || "")}"></label>
+      <label class="hk-wide">ملاحظة<input data-bf="note" maxlength="300" value="${esc(e.note || "")}"></label>
+      <div class="row end hk-wide"><button type="button" class="btn sm" data-hkb="save" data-key="${esc(e.key)}">احفظ</button><button type="button" class="btn ghost sm" data-hkb="cancel">إلغاء</button></div></div>` : "";
+  return `<div class="hk-card${e.star ? " main" : ""}${e.archived ? " hkb-arch" : ""}" data-key="${esc(e.key)}">
+    <div class="row between top">
+      <div class="tags"><span class="tag ${rk}">${esc(rt)}</span><span class="tag">${esc(e.type_label)}</span>${e.product ? `<span class="tag">${esc(e.product)}</span>` : ""}${e.archived ? `<span class="tag idle">مؤرشف</span>` : ""}</div>
+      <div class="row nowrap">
+        <button type="button" class="btn ghost sm" data-hkb="star" data-key="${esc(e.key)}" title="${e.star ? "شيل النجمة" : "نجّمه: بيروح مثال للكاتب"}" aria-pressed="${e.star}">${e.star ? "★ مفضّل" : "☆ نجّمه"}</button>
+        <button type="button" class="btn ghost sm" data-hkb="copy" data-key="${esc(e.key)}">انسخ</button>
+        ${manual ? `<button type="button" class="btn ghost sm" data-hkb="edit" data-key="${esc(e.key)}">عدّل</button>` : ""}
+        <button type="button" class="btn ghost sm" data-hkb="archive" data-key="${esc(e.key)}">${e.archived ? "رجّعه" : "أرشف"}</button>
+        ${manual ? `<button type="button" class="btn danger sm" data-hkb="delete" data-key="${esc(e.key)}">احذف</button>` : ""}
+      </div></div>
+    <p class="hk-line">«${esc(e.text)}»</p>
+    ${e.on_screen_text || e.visual ? `<p class="hint">${e.on_screen_text ? `نص الشاشة: <b>${esc(e.on_screen_text)}</b>` : ""}${e.on_screen_text && e.visual ? " · " : ""}${e.visual ? `المشهد: ${esc(e.visual)}` : ""}</p>` : ""}
+    ${e.note ? `<p class="hint">ملاحظتك: ${esc(e.note)}</p>` : ""}
+    <div class="row hkb-result">${hkbResult(e)}</div>
+    <div class="row hint">${e.script_file ? `<a href="#/mission/${enc(e.script_file)}?stage=3">افتح السيناريو</a>` : ""}${e.version ? ` · <a href="#/mission/${enc(e.version.file)}">افتح نسخة الفيديو</a>` : ""}</div>
+    ${edit}</div>`;
+}
+
+function hkbDraw() {
+  const d = HKB.data, f = HKB.f, c = d.counts, box = $("#libs-hooks");
+  const opt = (v, cur, label) => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(label)}</option>`;
+  box.innerHTML = `
+    <div class="panel">
+      <div class="row between"><h3>بنك الهوكات <span class="tag">${esc(c.total)}</span> ${window.Guide ? Guide.term("hooks_bank") : ""}</h3>
+        <div class="tags"><span class="tag">★ مفضّلة ${esc(c.starred)}</span><span class="tag">مجرّبة ${esc(c.tested)}</span><span class="tag ok">رابحة ${esc(c.winners)}</span></div></div>
+      <p class="hint">كل الهوكات اللي انكتبت (الأساسي والبدائل) + هوكاتك اليدوية. اللي بينجح بالنتايج أو بتنجّمه بيروح <b>مثال للكاتب</b> بالسيناريوهات الجاية، فالنظام بيتعلّم أي افتتاحية بتبيع.</p>
+      <div class="filters">
+        <input id="hkbQ" type="search" class="f-search" placeholder="ابحث بنص الهوك…" value="${esc(f.q)}">
+        <select id="hkbProduct" aria-label="المنتج"><option value="">كل المنتجات</option>${d.products.map((p) => opt(p, f.product, p)).join("")}</select>
+        <select id="hkbType" aria-label="النوع"><option value="">كل الأنواع</option>${Object.entries(d.types).map(([k, v]) => opt(k, f.type, v)).join("")}</select>
+        <select id="hkbRole" aria-label="المصدر"><option value="">كل المصادر</option>${Object.entries(HKB_ROLE).map(([k, v]) => opt(k, f.role, v[0])).join("")}</select>
+        <label class="row nowrap"><input type="checkbox" id="hkbStar"${f.star ? " checked" : ""}> ★ المفضّلة بس</label>
+        <label class="row nowrap"><input type="checkbox" id="hkbArch"${f.archived ? " checked" : ""}> مع المؤرشف${c.archived ? ` (${esc(c.archived)})` : ""}</label>
+      </div>
+      <details class="fold"><summary>＋ ضيف هوك يدوي (سمعته، شفته عند منافس، أو عجبك)</summary>
+        <div class="task-grid">
+          <label class="hk-wide">نص الهوك<textarea id="hkbNewText" rows="2" maxlength="300" placeholder="مثال: شو بتعمل لو عينك بتحرقك قدام الشاشة؟"></textarea></label>
+          <label>النوع (اختياري)<select id="hkbNewType"><option value="">غير محدد</option>${Object.entries(d.types).map(([k, v]) => `<option value="${esc(k)}">${esc(v)}</option>`).join("")}</select></label>
+          <label>المنتج (اختياري)<input id="hkbNewProduct" maxlength="80"></label>
+          <label class="hk-wide">ملاحظة (اختياري)<input id="hkbNewNote" maxlength="300" placeholder="من وين جبته؟ ليش عجبك؟"></label>
+        </div>
+        <div class="row end"><button type="button" class="btn sm" id="hkbAdd">أضف للبنك</button></div><div id="hkbStatus" class="status"></div></details>
+    </div>
+    <div class="hk-list">${d.items.length ? d.items.map((e) => hkbCard(e, d.types)).join("") : `<p class="empty"${f.q || f.product || f.type || f.role || f.star ? "" : ' data-art="hooks"'}>${f.q || f.product || f.type || f.role || f.star ? "ما في هوكات بهالفلاتر" : "البنك فاضي — بيتعبّى لحاله لما تكتب سيناريوهات بهوكات، أو ضيف هوك يدوي."}</p>`}</div>`;
+  const re = () => { clearTimeout(HKB.t); HKB.t = setTimeout(hkbLoad, 250); };
+  $("#hkbQ").addEventListener("input", (e) => { HKB.f.q = e.target.value.trim(); re(); });
+  [["#hkbProduct", "product"], ["#hkbType", "type"], ["#hkbRole", "role"]].forEach(([s, k]) => $(s).addEventListener("change", (e) => { HKB.f[k] = e.target.value; hkbLoad(); }));
+  $("#hkbStar").addEventListener("change", (e) => { HKB.f.star = e.target.checked; hkbLoad(); });
+  $("#hkbArch").addEventListener("change", (e) => { HKB.f.archived = e.target.checked; hkbLoad(); });
+  $("#hkbAdd").addEventListener("click", hkbAdd);
+  box.onclick = (e) => { const b = e.target.closest("[data-hkb]"); if (b) hkbAct(b); };
+}
+
+async function hkbAdd() {
+  const st = $("#hkbStatus"), text = $("#hkbNewText").value.trim();
+  if (text.length < 3) { setStatus(st, "اكتب نص الهوك (3 أحرف على الأقل)", "err"); return; }
+  try {
+    await post("/api/hooks-bank", { text, type: $("#hkbNewType").value || null, product: $("#hkbNewProduct").value.trim(), note: $("#hkbNewNote").value.trim() });
+    toast("انضاف الهوك للبنك", "ok");
+    await hkbLoad();
+  } catch (e) { setStatus(st, e.message, "err"); }
+}
+
+async function hkbAct(btn) {
+  if (HKB.busy) return;
+  const act = btn.dataset.hkb, key = btn.dataset.key, e = HKB.data.items.find((x) => x.key === key);
+  const url = `/api/hooks-bank/${enc(key || "")}`;
+  try {
+    HKB.busy = true;
+    if (act === "copy") { toast((await copyText(e.text)) ? "اننسخ الهوك" : "ما قدرت أنسخ", "ok"); }
+    else if (act === "star") { await post(`${url}/star`, { on: !e.star }); await hkbLoad(); }
+    else if (act === "archive") { await post(`${url}/archive`, { on: !e.archived }); toast(e.archived ? "رجع للبنك" : "انأرشف (ما بيصير مثال للكاتب)", "ok"); await hkbLoad(); }
+    else if (act === "edit") { HKB.editing = key; hkbDraw(); }
+    else if (act === "cancel") { HKB.editing = null; hkbDraw(); }
+    else if (act === "save") {
+      const body = {};
+      $$(`.hk-card[data-key="${CSS.escape(key)}"] [data-bf]`).forEach((el) => { body[el.dataset.bf] = el.value; });
+      body.type = body.type || null;
+      await put(url, body);
+      HKB.editing = null;
+      toast("انحفظ التعديل", "ok");
+      await hkbLoad();
+    } else if (act === "delete") {
+      if (!confirm("تحذف هالهوك اليدوي من البنك؟")) return;
+      await api(url, { method: "DELETE" });
+      toast("انحذف", "ok");
+      await hkbLoad();
+    }
+  } catch (er) { toast(er.message, "err"); }
+  finally { HKB.busy = false; }
+}

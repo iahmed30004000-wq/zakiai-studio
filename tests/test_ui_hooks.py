@@ -35,7 +35,7 @@ def test_the_generate_form_asks_for_the_number_of_hooks_and_sends_it():
 
 def test_every_hooks_call_goes_through_the_script_hooks_api_and_asks_before_big_changes():
     ok = r"scripts/\$\{enc\((?:HK\.)?file\)\}/hooks"                                  # enc(file) بالتحميل، enc(HK.file) بالأفعال
-    assert re.search(r"`/api/" + ok, JS) and not re.search(r'["`]/api/(?!' + ok + ")", JS)
+    assert re.search(r"`/api/" + ok, JS) and not re.search(r'["`]/api/(?!' + ok + "|hooks-bank)", JS)          # + بنك الهوكات
     for path in ("/select", "/${enc(id)}/regenerate", "/${enc(id)}/version", "/${enc(id)}"):
         assert path in JS, path
     for question in ("بتخلّي هالهوك هو الأساسي", "تحذف هالهوك؟", "بنعمل نسخة فيديو لهالهوك"):
@@ -60,3 +60,33 @@ def test_mock_hooks_cover_main_ok_blocked_and_version_states():
     assert all(h["version"] is None for h in d["hooks"]) and d["version_of"] is None
     for path in ("mockHooks", "mockHooksWrite", "select|regenerate|version"):
         assert path in APP, path
+
+
+# ═════════════════ بنك الهوكات ═════════════════
+SHELL = (STATIC / "shell.js").read_text(encoding="utf-8")
+
+
+def test_the_bank_is_a_library_tab_wired_through_the_shell():
+    tabs = re.search(r'<div class="seg" id="libsTabs".*?</div>', HTML, re.S).group(0)
+    assert 'data-tab="hooks">بنك الهوكات</button>' in tabs and '<div id="libs-hooks" class="tabpane"></div>' in HTML
+    assert '"sounds", "hooks", "claims"' in SHELL and 'case "hooks": return VIEWS.hooksBank.enter();' in SHELL
+    assert "VIEWS.hooksBank = { async enter() { await hkbLoad(); } };" in JS
+
+
+def test_the_bank_talks_to_its_own_api_and_confirms_destructive_actions():
+    urls = set(re.findall(r"[`\"](/api/hooks-bank[^`\"]*)", JS))
+    assert "/api/hooks-bank" in urls and any(u.startswith("/api/hooks-bank/${enc(key") for u in urls)
+    for needle in ('data-hkb="star"', 'data-hkb="archive"', 'data-hkb="copy"', 'data-hkb="edit"', 'data-hkb="delete"', "تحذف هالهوك اليدوي من البنك؟",
+                   "نجّمه: بيروح مثال للكاتب", "هوك يدوي", "رابح", "لسا ما اتجرّب بإعلان"):
+        assert needle in JS, needle
+    assert 'qs.set("star", "true")' in JS and 'qs.set("archived", "true")' in JS
+
+
+def test_mock_bank_covers_every_role_a_result_a_star_and_a_manual_entry():
+    d = mock("hooks_bank")
+    roles = {e["role"] for e in d["items"]}
+    assert roles == {"main", "alt", "video", "manual"} and d["counts"]["total"] == len(d["items"]) and set(d["types"]) == {"question", "number", "life_moment", "contrarian", "visual_shock"}
+    assert any(e["star"] for e in d["items"]) and any((e["result"] or {}).get("verdict") == "winner" for e in d["items"])
+    assert any(e["source"] == "manual" and e["note"] for e in d["items"]) and all(e["key"] for e in d["items"]) and len({e["key"] for e in d["items"]}) == len(d["items"])
+    for fn in ("mockBank", "mockBankWrite", '"/api/hooks-bank"'):
+        assert fn in APP, fn

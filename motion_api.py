@@ -7,6 +7,13 @@
 
 التدفق: إرسال الصورة+البرومبت (طابور fal) ← استنى النتيجة ← نزّل الفيديو. بعدها motion.fit_duration بيضبط المدة.
 
+ثبات الشخصية (أسماء الحقول متحقَّق منها من صفحات fal الرسمية):
+  · البرومبت السلبي: أي قالب فيه negative_prompt (Kling) بنضيف عليه ممنوعات الهوية (ملامح شرق آسيا، تغيّر الوجه…) بلا ما نبدّل اللي كاتبه المالك.
+  · صورة النهاية: spec.end_image_field (Kling 2.6 وHailuo 02: end_image_url) — بنبعت صورة اللقطة المعتمدة نفسها فالوجه يرجع لحاله بآخر اللقطة.
+  · النموذج المرجعي (Kling O1): {ref_front} {ref_three_quarter} {ref_side} بقالب المدخلات بتنبدّل بصور الشخصية (elements[].frontal_image_url
+    وreference_image_urls) والبرومبت بيذكر @Image1 (أول لقطة) و@Element1 (الشخص). مرجع ناقص بينشال من الطلب؛ «أمام» ناقصة = خطأ واضح.
+  · Hailuo: prompt_optimizer مطفي لأنو بيعيد كتابة البرومبت وبيضيّع بطاقة الهوية.
+
 قواعد أمان:
   · المفتاح من مخزن الأسرار بس (إعدادات MOTION_API.fal.api_key)، وما بينكتب بأي سجل ولا رسالة خطأ.
   · الاتصال بعنوان fal الثابت بس. روابط الحالة/النتيجة/الإلغاء بتنقبل فقط لو بتبدأ بنفس العنوان (حماية SSRF)،
@@ -49,18 +56,20 @@ PRESETS = {
         "endpoint": "fal-ai/kling-video/v2.6/pro/image-to-video",
         "input": {"prompt": "{prompt}", "start_image_url": "{image}", "duration": "{duration_str}", "generate_audio": False,
                   "negative_prompt": "blur, distort, low quality, text, watermark, extra fingers"},
+        "end_image_field": "end_image_url",
         "durations": [5, 10], "cost_per_sec": 0.07, "max_sec": 10,
         "strengths": ["product", "realism", "faces"],
-        "note": "جودة عالية للناس والمنتجات. السعر التقديري 0.07$ للثانية بدون صوت.",
+        "note": "جودة عالية للناس والمنتجات. بياخد صورة نهاية (نفس صورة اللقطة) وبرومبت سلبي ضد تغيّر الوجه. السعر التقديري 0.07$ للثانية بدون صوت.",
     },
     "hailuo02": {
         "name": "Hailuo 02 Standard (fal)", "provider": "fal",
         "endpoint": "fal-ai/minimax/hailuo-02/standard/image-to-video",
         "input": {"prompt": "{prompt}", "image_url": "{image}", "duration": "{duration_str}", "resolution": "768P",
-                  "prompt_optimizer": True},
+                  "prompt_optimizer": False},
+        "end_image_field": "end_image_url",
         "durations": [6, 10], "cost_per_sec": 0.045, "max_sec": 10,
         "strengths": ["product", "realism"],
-        "note": "أرخص بشوي، حركة جيدة للمنتجات. السعر التقديري 0.045$ للثانية بدقة 768p.",
+        "note": "أرخص بشوي، حركة جيدة للمنتجات. محسّن البرومبت مطفي (بيعيد كتابة كلامنا) وبياخد صورة نهاية. السعر التقديري 0.045$ للثانية بدقة 768p.",
     },
     "grok": {
         "name": "Grok Imagine Video (fal)", "provider": "fal",
@@ -71,7 +80,24 @@ PRESETS = {
         "strengths": ["product"],
         "note": "سعره قريب من Kling. السعر التقديري 0.07$ للثانية بدقة 720p.",
     },
+    "klingo1": {
+        "name": "Kling O1 — من المراجع (fal)", "provider": "fal",
+        "endpoint": "fal-ai/kling-video/o1/standard/reference-to-video",
+        "input": {"prompt": "Start from @Image1 as the first frame. The person is @Element1: keep exactly the same face, skin tone, hair "
+                            "and outfit in every frame. {prompt}",
+                  "image_urls": ["{image}"],
+                  "elements": [{"frontal_image_url": "{ref_front}", "reference_image_urls": ["{ref_three_quarter}", "{ref_side}"]}],
+                  "duration": "{duration_str}", "aspect_ratio": "9:16"},
+        "durations": [3, 4, 5, 6, 7, 8, 9, 10], "cost_per_sec": 0.112, "max_sec": 10,
+        "strengths": ["faces", "realism"],
+        "note": "للقطات الوجه القريبة: بياخد صور الشخصية (أمام + ثلاثة أرباع + جانب) كمرجع هوية، فالوجه أثبت من أي موديل بصورة وحدة. "
+                "السعر التقديري 0.112$ للثانية من مصادر خارجية (مش مؤكَّد من صفحة fal) — تأكّد منه وعدّله. الدقة 720p (نسخة Pro بتطلع 1080p بسعر أعلى).",
+    },
 }
+REF_VIEWS = ("front", "three_quarter", "side")                    # صور الشخصية اللي بتنبعت للموديل المرجعي (بالترتيب)
+END_FIELD_RX = re.compile(r"^[a-z][a-z0-9_]{2,40}$")
+_REF_RX = re.compile(r"\{ref_(front|three_quarter|side)\}")
+MAX_NEGATIVE = 2500
 
 
 # ── التحقق من إعداد النموذج ─────────────────────────────────────────────
@@ -103,8 +129,13 @@ def validate_spec(spec: dict) -> dict:
             raise ApiMotionError("سعر الثانية لازم يكون رقم")
         if not 0 <= cost <= 5:
             raise ApiMotionError("سعر الثانية خارج المعقول (0 إلى 5 دولار)")
-    return {"provider": "fal", "endpoint": ep, "input": inp, "durations": sorted({float(d) for d in durs}),
-            "cost_per_sec": cost}
+    out = {"provider": "fal", "endpoint": ep, "input": inp, "durations": sorted({float(d) for d in durs}), "cost_per_sec": cost}
+    ef = spec.get("end_image_field")
+    if ef not in (None, ""):
+        if not isinstance(ef, str) or not END_FIELD_RX.match(ef):
+            raise ApiMotionError("اسم حقل صورة النهاية غير صالح — مثال: end_image_url")
+        out["end_image_field"] = ef
+    return out
 
 
 def pick_duration(spec: dict, seconds: float) -> float:
@@ -195,9 +226,6 @@ def _image_data_uri(path: Path) -> str:
     return "data:image/jpeg;base64," + base64.b64encode(data).decode("ascii")
 
 
-_PLACEHOLDER_RX = re.compile(r"\{(prompt|image|duration|duration_str|duration_int)\}")
-
-
 def _fill(node, vals: dict):
     """بيبدّل {prompt} {image} {duration_str} {duration_int} بمرور واحد (القيمة المبدّلة ما بتنفحص من جديد)."""
     if isinstance(node, str):
@@ -211,10 +239,60 @@ def _fill(node, vals: dict):
     return node
 
 
-def build_payload(spec: dict, image_uri: str, prompt: str, duration: float) -> dict:
+_PLACEHOLDER_RX = re.compile(r"\{(prompt|image|duration|duration_str|duration_int|ref_front|ref_three_quarter|ref_side)\}")
+_DROP = object()
+_REQUIRED_KEYS = ("frontal_image_url",)                           # عنصر مرجعي بلا صورة أمام ما بينفع: بيروح كله
+
+
+def _prune(node, avail: set):
+    """بيشيل من القالب كل شي بيطلب صورة شخصية مش موجودة ({ref_x}): نص ← خانة، عنصر قائمة، وحقل. بيرجّع _DROP لو كله راح.
+    بيشتغل على القالب قبل التعبئة (فنص البرومبت ما بينفحص)."""
+    if isinstance(node, str):
+        return _DROP if any(v not in avail for v in _REF_RX.findall(node)) else node
+    if isinstance(node, dict):
+        out = {k: v for k, v in ((k, _prune(v, avail)) for k, v in node.items()) if v is not _DROP}
+        if any(k in node and k not in out for k in _REQUIRED_KEYS):
+            return _DROP
+        return out if out or not node else _DROP
+    if isinstance(node, list):
+        out = [v for v in (_prune(v, avail) for v in node) if v is not _DROP]
+        return out if out or not node else _DROP
+    return node
+
+
+def _merge_negative(base: str, extra: str) -> str:
+    """ممنوعات الهوية بتنضاف لسلبي المالك (بلا تكرار، بنفس الترتيب)."""
+    have = [t.strip() for t in str(base or "").split(",") if t.strip()]
+    low = {t.lower() for t in have}
+    for t in (x.strip() for x in str(extra or "").split(",")):
+        if t and t.lower() not in low:
+            have.append(t)
+            low.add(t.lower())
+    return ", ".join(have)[:MAX_NEGATIVE]
+
+
+def needs_refs(spec: dict) -> set[str]:
+    """وضعيات الشخصية اللي القالب بيطلبها ({ref_front}…)."""
+    return set(_REF_RX.findall(repr(spec.get("input"))))
+
+
+def build_payload(spec: dict, image_uri: str, prompt: str, duration: float, *, end_uri: str | None = None,
+                  refs: dict | None = None, negative: str = "") -> dict:
+    """refs: {front|three_quarter|side: data-uri}. end_uri: صورة النهاية (لو النموذج إله end_image_field). negative: ممنوعات إضافية."""
     d = int(duration) if float(duration).is_integer() else duration
     vals = {"prompt": prompt[:2000], "image": image_uri, "duration": d, "duration_str": str(d)}
-    return _fill(spec["input"], vals)
+    avail = set()
+    for view, uri in (refs or {}).items():
+        if view in REF_VIEWS and uri:
+            vals[f"ref_{view}"] = uri
+            avail.add(view)
+    tpl = _prune(spec["input"], avail)
+    payload = _fill(tpl, vals) if isinstance(tpl, dict) else {}
+    if end_uri and spec.get("end_image_field"):
+        payload[spec["end_image_field"]] = end_uri
+    if negative and isinstance(payload.get("negative_prompt"), str):
+        payload["negative_prompt"] = _merge_negative(payload["negative_prompt"], negative)
+    return payload
 
 
 def _err(r: requests.Response, what: str) -> ApiMotionError:
@@ -236,14 +314,21 @@ def _err(r: requests.Response, what: str) -> ApiMotionError:
 
 # ── التشغيل ─────────────────────────────────────────────────────────────
 def run_job(spec: dict, image: Path, prompt: str, seconds: float, out: Path, timeout_sec: int = 900,
-            log=print, cancel=None, sleep=time.sleep) -> dict:
-    """يرسل المهمة، يستنى، ينزّل الفيديو لـ out. بيرجّع {request_id, billed_sec, cost_usd, took_sec}."""
+            log=print, cancel=None, sleep=time.sleep, *, end_image: Path | None = None, refs: dict | None = None,
+            negative: str = "") -> dict:
+    """يرسل المهمة، يستنى، ينزّل الفيديو لـ out. بيرجّع {request_id, billed_sec, cost_usd, took_sec}.
+    end_image: صورة النهاية (بتنبعت بس لو النموذج بياخدها). refs: {وضعية: ملف} لصور الشخصية (للموديل المرجعي). negative: ممنوعات الهوية."""
     spec = validate_spec(spec)
     key = get_key()
     if not key:
         raise ApiMotionError("ما في مفتاح fal — حطّه من «المصنع» ثم «API»")
     duration = pick_duration(spec, seconds)
-    payload = build_payload(spec, _image_data_uri(Path(image)), prompt, duration)
+    wanted = needs_refs(spec)
+    if "front" in wanted and not (refs or {}).get("front"):
+        raise ApiMotionError("هالنموذج بياخد صور الشخصية كمرجع وما لقينا صورة «أمام» — اختار شخصية للسيناريو أو موديل تاني")
+    ref_uris = {v: _image_data_uri(Path(p)) for v, p in (refs or {}).items() if v in wanted and p}
+    end_uri = _image_data_uri(Path(end_image)) if end_image and spec.get("end_image_field") else None
+    payload = build_payload(spec, _image_data_uri(Path(image)), prompt, duration, end_uri=end_uri, refs=ref_uris, negative=negative)
     ep = spec["endpoint"]
     t0 = time.time()
     try:
@@ -257,7 +342,7 @@ def run_job(spec: dict, image: Path, prompt: str, seconds: float, out: Path, tim
     if not rid:
         raise ApiMotionError("fal ما رجّع رقم طلب")
     status_url, result_url, cancel_url = (_trusted(sub.get(k)) for k in ("status_url", "response_url", "cancel_url"))
-    log(f"    [fal] أُرسلت {ep.split('/')[1]} — {duration:g}ث")
+    log(f"    [fal] أُرسلت {ep.split('/')[1]} — {duration:g}ث" + (" + صورة نهاية" if end_uri else "") + (" + مراجع الشخصية" if ref_uris else ""))
 
     def abort(reason: str):
         try:

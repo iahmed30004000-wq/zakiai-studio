@@ -30,13 +30,16 @@ mountInto("#v-extension", "#fac-extension");
 
 /* ───────── ❖ المكتبات ───────── */
 const LIBS = { tab: "patterns" };
-const LIBS_TABS = ["patterns", "products", "characters", "sounds", "claims"];
+const LIBS_TABS = ["patterns", "products", "characters", "sounds", "hooks", "claims", "presets"];
 const libsRest = (p) => p.rest.slice(1);
+/* صورة بطل «المكتبات» حسب الرف المفتوح (أسماء data-img بـ ornament.css) */
+const LIBS_IMG = { patterns: "pattern", products: "products", characters: "library", sounds: "sounds", hooks: "home-night", claims: "tiles", presets: "tour" };
 
 VIEWS.libs = {
   async enter(p) {
     const tab = LIBS_TABS.includes(p.rest[0]) ? p.rest[0] : "patterns";
     LIBS.tab = selectTab("#libsTabs", "libs", tab);
+    const lh = $("#libsHero"); if (lh) lh.dataset.img = LIBS_IMG[LIBS.tab] || "library";
     const sub = { name: tab, rest: libsRest(p), q: p.q };
     switch (LIBS.tab) {
       case "patterns": return VIEWS.library.enter({ name: "library", rest: sub.rest.length ? sub.rest : ["patterns"], q: p.q });
@@ -55,6 +58,8 @@ VIEWS.libs = {
       }
       case "characters": return VIEWS.characters.enter({ name: "characters", rest: sub.rest, q: p.q });
       case "sounds": return VIEWS.ahat.enter({ name: "ahat", rest: [], q: p.q });
+      case "hooks": return VIEWS.hooksBank.enter();
+      case "presets": return VIEWS.presets.enter();
       case "claims": return VIEWS.claims.enter();
     }
   },

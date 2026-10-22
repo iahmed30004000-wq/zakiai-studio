@@ -263,7 +263,8 @@ def test_http_model_params_reach_the_engine(ready, box, monkeypatch):
     motion.run_shot(ready.script, ready.ids[0], log=silent)
     p = seen["params"]
     assert p["mode"] == "i2v" and p["steps"] == 7 and p["guidance"] == 2.5 and 0.5 <= p["seconds"] <= 10 and seen["has_image"]
-    assert p["width"] <= 2048 and p["height"] <= 2048 and "ثانية" in p["prompt"]
+    assert p["width"] <= 2048 and p["height"] <= 2048
+    assert "seconds" in p["prompt"] and not any(0x600 <= ord(c) <= 0x6ff for c in p["prompt"])            # الصناديق بتاخد برومبت إنجليزي
 
 
 # ───────────────────────── التحويلات (redirect) ─────────────────────────
@@ -538,7 +539,7 @@ def test_production_log_record_recent_stats(env):
     assert [r["id"] for r in rec] == [d, c, b, a]                              # الأحدث أول
     assert [r["id"] for r in production_log.recent(2)] == [d, c]
     assert [r["id"] for r in production_log.recent(10, "motion")] == [b, a]
-    assert rec[3]["seconds"] == 12.35 and set(rec[0]) == {"id", "at", "kind", "script_stem", "shot_id", "model_id", "model_name", "path", "status", "seconds", "error", "cost_usd"}
+    assert rec[3]["seconds"] == 12.35 and set(rec[0]) == {"id", "at", "kind", "script_stem", "shot_id", "model_id", "model_name", "path", "status", "seconds", "error", "cost_usd", "score"}
     assert len(rec[2]["error"]) == 300 and rec[2]["error"].startswith("خطأ")
     assert "abc123" not in rec[0]["error"] and "zzz" not in rec[0]["error"]    # ما بنخزّن شي بيشبه التوكن
     st = production_log.stats()

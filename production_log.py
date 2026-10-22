@@ -19,7 +19,7 @@ from pathlib import Path
 
 import config
 
-KINDS = ("motion", "image", "voice", "music", "ahat")
+KINDS = ("motion", "image", "voice", "music", "ahat", "face_image", "face_video")   # face_*: نتيجة فحص ثبات الوجه لموديل الصور/التحريك
 PATHS = ("command", "http", "api", "extension")
 STATUSES = ("ok", "failed")
 MAX_ERROR = 300
@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS attempts (
     status TEXT NOT NULL,
     seconds REAL,
     error TEXT,
-    cost_usd REAL
+    cost_usd REAL,
+    score REAL
 );
 CREATE INDEX IF NOT EXISTS attempts_kind_id ON attempts(kind, id);
 """
@@ -57,9 +58,10 @@ def _connect() -> sqlite3.Connection:
     con.row_factory = sqlite3.Row
     con.executescript(_SCHEMA)
     cols = {r[1] for r in con.execute("PRAGMA table_info(attempts)")}
-    if "cost_usd" not in cols:                       # ترحيل قاعدة قديمة بدون عمود التكلفة
-        con.execute("ALTER TABLE attempts ADD COLUMN cost_usd REAL")
-        con.commit()
+    for col in ("cost_usd", "score"):                # ترحيل قاعدة قديمة بدون عمود التكلفة/الرقم
+        if col not in cols:
+            con.execute(f"ALTER TABLE attempts ADD COLUMN {col} REAL")
+            con.commit()
     return con
 
 
@@ -73,8 +75,8 @@ def _clean_error(error) -> str | None:
 
 def record(kind: str, status: str, *, script_stem: str | None = None, shot_id: str | None = None,
            model_id: str | None = None, model_name: str | None = None, path: str | None = None,
-           seconds: float | None = None, error=None, cost_usd: float | None = None) -> int | None:
-    """يسجّل محاولة. بيرجّع رقمها، أو None لو التسجيل نفسه فشل (الإنتاج بيكمل)."""
+           seconds: float | None = None, error=None, cost_usd: float | None = None, score: float | None = None) -> int | None:
+    """يسجّل محاولة. بيرجّع رقمها، أو None لو التسجيل نفسه فشل (الإنتاج بيكمل). score: رقم الفحص (تطابق الوجه) لأنواع face_*."""
     if kind not in KINDS:
         raise ValueError(f"نوع غير معروف: {kind}")
     if status not in STATUSES:
@@ -86,11 +88,11 @@ def record(kind: str, status: str, *, script_stem: str | None = None, shot_id: s
             con = _connect()
             try:
                 cur = con.execute(
-                    "INSERT INTO attempts(at,kind,script_stem,shot_id,model_id,model_name,path,status,seconds,error,cost_usd) "
-                    "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO attempts(at,kind,script_stem,shot_id,model_id,model_name,path,status,seconds,error,cost_usd,score) "
+                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
                     (datetime.now(timezone.utc).isoformat(timespec="seconds"), kind, script_stem, shot_id, model_id,
                      model_name, path, status, None if seconds is None else round(float(seconds), 2), _clean_error(error),
-                     None if cost_usd is None else round(float(cost_usd), 4)))
+                     None if cost_usd is None else round(float(cost_usd), 4), None if score is None else round(float(score), 3)))
                 con.commit()
                 return cur.lastrowid
             finally:
@@ -153,6 +155,26 @@ def stats(kind: str | None = None) -> dict:
         pass
     return out
 
+
+
+def face_rates(kind: str = "face_video") -> dict[str, dict]:
+    """نسبة نجاح فحص الوجه لكل موديل: {model_id: {name, checks, passed, rate, avg_score}}.
+    بتحسب الفحوص الحاسمة بس (ناجح/ساقط)؛ «ما انكشف وجه» ما بينسجّل أصلاً. بتغذّي ترتيب الموديلات للقطات الوجه."""
+    if kind not in ("face_image", "face_video"):
+        raise ValueError(f"نوع غير معروف: {kind}")
+    if not db_path().exists():
+        return {}
+    try:
+        con = _connect()
+        try:
+            rows = con.execute("SELECT model_id, MAX(model_name) name, COUNT(*) n, SUM(status='ok') ok, ROUND(AVG(score), 3) s "
+                               "FROM attempts WHERE kind=? AND model_id IS NOT NULL AND model_id != '' GROUP BY model_id", (kind,)).fetchall()
+        finally:
+            con.close()
+    except sqlite3.Error:
+        return {}
+    return {r["model_id"]: {"name": r["name"], "checks": r["n"], "passed": r["ok"] or 0,
+                            "rate": round((r["ok"] or 0) / r["n"], 3), "avg_score": r["s"]} for r in rows if r["n"]}
 
 
 def spent(script_stem: str, kind: str = "motion") -> float:

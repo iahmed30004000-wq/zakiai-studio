@@ -436,7 +436,8 @@ function drawShotPrompts(body, tl, built) {
               <span class="hint"><span class="tag">${esc({ close: "قريبة", medium: "متوسطة", wide: "واسعة", hand_product: "يد مع المنتج" }[sh.type] || sh.type)}</span> ${((sh.end_ms - sh.start_ms) / 1000).toFixed(1)}ث${sh.prompt_edited ? ` · <span class="tag warn">معدّل يدوياً</span>` : ""}${sh.prompt_model ? ` · <span class="tag ok">مترجم</span>` : ""}</span></div>
             <p class="hint says">«${esc(tl.words.slice(sh.word_range[0], sh.word_range[1] + 1).map((w) => w.text).join(" "))}»</p>
             <textarea class="zk-textarea" rows="4" data-prompt="${esc(sh.id)}" maxlength="1500">${esc(sh.prompt_ar)}</textarea>
-            ${sh.prompt_model ? `<details><summary class="hint">النسخة المرسلة للموديل</summary><p class="mono ltr">${esc(sh.prompt_model)}</p></details>` : ""}
+            ${sh.prompt_model ? `<details><summary class="hint">النسخة المرسلة للموديل (إنجليزي + بطاقة هوية الشخصية)</summary><p class="mono ltr">${esc(sh.prompt_model)}</p></details>`
+              : `<p class="hint">النسخة الإنجليزية لسا ما انبنت — بتنترجم لحالها لما تولّد الصور.</p>`}
           </div>`).join("")}
       </div>`).join("") : ""}`;
 
@@ -491,15 +492,21 @@ function drawImageStation(body, tl, info) {
   const st = PRD.stations.find((s) => s.n === 7) || { state: "not_started" };
   const b = info.budget, ref = info.product_ref;
   const allChosen = tl.scenes.every((s) => s.shots.every((h) => h.image && h.image.chosen));
+  /* مزوّد الصور المضبوط ما بياخد صور مرجعية (UnoRouter…): لقطات الشخصية/المنتج بتروح للإضافة بدل ما تفشل */
+  const routed = info.ext_routed || [], prov = info.image_provider || {};
+  const missing = tl.scenes.reduce((n, s) => n + s.shots.filter((h) => !(h.image && (h.image.candidates || []).length)).length, 0);
+  const allRouted = routed.length > 0 && routed.length >= missing;
   body.innerHTML = `<div class="panel">
     <h3>صور اللقطات</h3>
     <p class="hint">لكل لقطة 2–3 خيارات بمرجع الشخصية والمنتج. اختر الأحسن. أي صورة أقل من 1080×1920 أو بغير نسبة 9:16 بتنقصّ وبتتكبّر (Lanczos — مش موديل تكبير ذكي). لقطات المنتج القريبة بتنركّب فيها صورة المنتج الحقيقية.</p>
     <div class="quota"><span>نداءات الصور</span><progress max="${b.cap}" value="${b.used}"></progress><b class="num">${b.used} من ${b.cap}</b></div>
     ${ref ? (ref.missing.length ? `<p class="status warn">ملف المنتج المرجعي (${esc(info.product_code)}) ناقص: ${ref.missing.map(esc).join("، ")}. <a href="#/library/products?ref=${enc(info.product_code)}&tab=refs">أكمله</a></p>`
       : `<p class="status ok">ملف المنتج المرجعي كامل.</p>`) : ""}
+    ${routed.length ? `<div class="notice warn" id="imRouteNote"><b>${esc(routed.length)} لقطة (شخصية/منتج) بتتولّد بالإضافة مش بالـ API:</b> ${esc(prov.note || "")}
+      <div class="row"><button class="zk-btn zk-btn--primary sm" id="imToExt" type="button">افتح لوحة الإضافة</button></div></div>` : ""}
     <div class="row end">
       <a class="zk-btn zk-btn--ghost" href="#/library/products?ref=${enc(info.product_code)}&tab=refs">ملف المنتج المرجعي</a>
-      <button class="zk-btn zk-btn--secondary" id="imGenAll" type="button">ولّد اللقطات الناقصة</button>
+      <button class="zk-btn zk-btn--secondary" id="imGenAll" type="button" ${allRouted ? "disabled" : ""} ${allRouted ? 'title="كل اللقطات الناقصة فيها مراجع — بتتولّد بالإضافة"' : ""}>ولّد اللقطات الناقصة</button>
       <button class="zk-btn zk-btn--primary" id="imApprove" type="button" ${allChosen && st.state !== "approved" ? "" : "disabled"}>${st.state === "approved" ? "معتمدة" : "اعتمد الصور"}</button>
     </div>
     <div id="imStatus" class="status"></div></div>
@@ -523,6 +530,13 @@ function drawImageStation(body, tl, info) {
     await refresh();
   };
   $("#imGenAll").addEventListener("click", () => runJob(`/api/studio/${enc(file)}/images/generate`, "بيولّد كل اللقطات الناقصة (ممكن ياخد وقت ويصرف رصيد)"));
+  const toExt = $("#imToExt");
+  if (toExt) toExt.addEventListener("click", async () => {
+    try { await api(`/api/studio/${enc(file)}/ext/control`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "image" }) }); } catch (e) { toast(e.message, "err"); }
+    await drawExtPanel();
+    const d = $("#extPanel details[data-dk=main]");
+    if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  });
   $("#imApprove").addEventListener("click", async () => {
     try { await api(`/api/studio/${enc(file)}/images/approve`, { method: "POST" }); toast("اعتُمدت الصور", "ok"); await refresh(); }
     catch (e) { setStatus($("#imStatus"), e.message, "err"); }
@@ -588,8 +602,18 @@ function imageShotCard(tl, sh, ref) {
 /* ───────── المحطة 8: فحص التطابق ───────── */
 async function renderMatchStation(body) {
   const file = PRD.file;
-  const [t, info] = await Promise.all([soft(`/api/studio/${enc(file)}/timeline`), soft(`/api/studio/${enc(file)}/images/info`)]);
+  const load = () => Promise.all([soft(`/api/studio/${enc(file)}/timeline`), soft(`/api/studio/${enc(file)}/images/info`)]);
+  let [t, info] = await load();
   if (!t.data || !info.data) { body.innerHTML = `<div class="panel"><p class="empty">اعتمد الصوت والصور أولاً.</p></div>`; return; }
+  // أول ما تفتح المحطة: كل لقطة لسا ما انفحصت (نص الملصق + وجه الشخصية) بتنفحص لحالها على جهازك — ما في زر لازم تكبسه
+  const unchecked = !MOCK && t.data.timeline.scenes.some((sc) => sc.shots.some((sh) => (sh.image && (sh.image.composite || sh.image.chosen))
+    && (sh.product_check == null || (sh.refs && sh.refs.character_id && sh.type !== "hand_product" && sh.face_check == null))));
+  if (unchecked) {
+    body.innerHTML = `<div class="panel"><p class="hint">عم بفحص اللقطات: نص الملصق ووجه الشخصية، على جهازك. أول مرة ممكن ياخد نص دقيقة…</p></div>`;
+    try { await api(`/api/studio/${enc(file)}/match/check`, { method: "POST" }); } catch (e) { toast(e.message, "err"); }
+    [t, info] = await load();
+    if (!t.data || !info.data) { body.innerHTML = `<div class="panel"><p class="empty">اعتمد الصوت والصور أولاً.</p></div>`; return; }
+  }
   drawMatchStation(body, t.data.timeline, info.data);
 }
 
@@ -600,13 +624,21 @@ function checkBadge(label, c) {
   return `<span class="tag ${cls}" title="${esc(c.note || "")}">${esc(label)}: ${txt}</span>`;
 }
 
+/* شارة وجه الشخصية: مطابق / تغيّر + الرقم الخام (الحد بالتلميح). «ما انكشف وجه» مش فشل — الفحص بس ما بيقدر يحكم */
+function faceBadge(c) {
+  if (!c) return `<span class="tag">الوجه: —</span>`;
+  const t = { pass: ["ok", "مطابق"], fail: ["danger", "تغيّر"], no_face: ["warn", "ما انكشف وجه"], no_ref: ["warn", "ما في مرجع صالح"] }[c.status] || ["warn", "غير مقاس"];
+  const n = (c.status === "pass" || c.status === "fail") && c.similarity != null ? ` ${Number(c.similarity).toFixed(2)}` : "";
+  return `<span class="tag ${t[0]}" title="${esc(c.note || "")}">الوجه: ${t[1]}${n}</span>`;
+}
+
 function drawMatchStation(body, tl, info) {
   const file = PRD.file, owner = tl.checks_approved_by_owner || {};
   const st = PRD.stations.find((s) => s.n === 8) || { state: "not_started" };
   const probs = info.match_problems || [];
   body.innerHTML = `<div class="panel">
     <h3>فحص التطابق</h3>
-    <p class="hint">كل لقطة جنب كلماتها. الفحص الآلي بيقيس نص الملصق (OCR) بس. حجم المنتج والتشابه البصري ووجه الشخصية <b>غير مقاسة</b> — الحكم لإلك. ما في انتقال للتحريك وفي لقطة ساقطة إلا بموافقتك الصريحة بسبب مكتوب.</p>
+    <p class="hint">كل لقطة جنب كلماتها. الفحص الآلي (على جهازك) بيقيس نص الملصق وتطابق وجه الشخصية مع صورها المرجعية. حجم المنتج والتشابه البصري <b>غير مقاسة</b> — الحكم لإلك. ما في انتقال للتحريك وفي لقطة ساقطة أو وجهها تغيّر إلا بموافقتك الصريحة بسبب مكتوب.</p>
     <div class="row end">
       <span class="hint">${probs.length ? `${probs.length} لقطة بانتظار حكمك` : "كل اللقطات محكومة"}</span>
       <button class="zk-btn zk-btn--primary" id="mtApprove" type="button" ${st.state === "approved" ? "disabled" : ""}>${st.state === "approved" ? "معتمدة" : "اعتمد التطابق"}</button>
@@ -623,11 +655,13 @@ function drawMatchStation(body, tl, info) {
             <div class="mt-info">
               <div class="row between"><b>${esc(sh.id)}</b><span class="hint">${esc(SHOT_LABEL[sh.type] || sh.type)} · ${((sh.end_ms - sh.start_ms) / 1000).toFixed(1)}ث</span></div>
               <p class="says">«${esc(words)}»</p>
-              <div class="chips">${checkBadge("المنتج", sh.product_check)}${sh.refs && sh.refs.character_id ? checkBadge("الوجه", sh.face_check) : ""}
+              <div class="chips">${checkBadge("المنتج", sh.product_check)}${sh.refs && sh.refs.character_id && sh.type !== "hand_product" ? faceBadge(sh.face_check) : ""}
                 ${v ? `<span class="tag ${v.verdict === "fail" ? "danger" : "ok"}">حكمك: ${{ pass: "مطابقة", fail: "ساقطة", override: "اعتماد استثنائي" }[v.verdict]}</span>` : `<span class="tag warn">بانتظار حكمك</span>`}</div>
               ${v && v.note ? `<p class="hint">${esc(v.note)}</p>` : ""}
+              ${sh.face_check && sh.face_check.status === "fail" && !(v && v.verdict !== "fail")
+                ? `<p class="hint">الوجه بهاللقطة مختلف عن الشخصية. جرّب «خيارات جديدة» (أو «أعد بالإضافة») من <a href="${prodHash(file, 7)}">محطة الصور</a> — أو اعتمدها بسبب مكتوب لو شايفها مناسبة.</p>` : ""}
               <div class="row">
-                <button class="zk-btn zk-btn--ghost sm" data-check="${esc(sh.id)}" type="button" ${fin ? "" : "disabled"}>فحص الملصق</button>
+                <button class="zk-btn zk-btn--ghost sm" data-check="${esc(sh.id)}" type="button" ${fin ? "" : "disabled"} title="يعيد فحص نص الملصق ووجه الشخصية">افحص</button>
                 <button class="zk-btn zk-btn--secondary sm" data-verdict="pass" data-shot="${esc(sh.id)}" type="button" ${fin ? "" : "disabled"}>مطابقة</button>
                 <button class="zk-btn zk-btn--secondary sm" data-verdict="override" data-shot="${esc(sh.id)}" type="button" ${fin ? "" : "disabled"}>اعتماد استثنائي</button>
                 <button class="zk-btn zk-btn--danger sm" data-verdict="fail" data-shot="${esc(sh.id)}" type="button" ${fin ? "" : "disabled"}>ساقطة</button>
@@ -661,7 +695,8 @@ const fmtEta = (s) => (s >= 3600 ? `${(s / 3600).toFixed(1)} ساعة` : s >= 60
 
 async function renderMotionStation(body) {
   const file = PRD.file;
-  const r = await soft(`/api/studio/${enc(file)}/motion/info`);
+  const [r, pr] = await Promise.all([soft(`/api/studio/${enc(file)}/motion/info`), soft("/api/presets")]);
+  if (r.data) r.data.presets = pr.data || null;                       // الحركات السينمائية (presets.js) — اختيارية
   if (!r.data) {
     body.innerHTML = `<div class="panel"><p class="empty">اعتمد فحص التطابق (محطة 8) أولاً.</p>
       <div class="row"><a class="zk-btn zk-btn--secondary" href="${prodHash(file, 8)}">روح لفحص التطابق</a></div></div>`;
@@ -691,6 +726,7 @@ function drawMotion(body, d) {
       <button class="zk-btn zk-btn--primary" id="mvApprove" type="button" ${d.problems.length || st.state === "approved" ? "disabled" : ""}>${st.state === "approved" ? "معتمدة" : "اعتمد التحريك"}</button>
     </div>
     <div id="mvStatus" class="status"></div></div>
+    ${pstGallery(d.presets)}
     <div id="extPanel"></div>
     ${d.shots.map((s) => `
       <div class="panel mvshot" data-id="${esc(s.id)}">
@@ -698,11 +734,12 @@ function drawMotion(body, d) {
           ${s.motion ? `<span class="tag ok">محرّكة${s.motion.lipsync ? " · شفاه" : ""}</span>` : `<span class="tag warn">بلا حركة</span>`}</div>
         <label class="zk-field"><span class="zk-field__label">وصف الحركة (شو بيتحرك وكيف، والكاميرا)</span>
           <textarea class="zk-textarea" rows="2" maxlength="600" data-desc="${esc(s.id)}">${esc(s.motion_desc)}</textarea></label>
+        ${pstShotControl(s, d.presets)}
         <label class="zk-checkbox"><input type="checkbox" data-talking="${esc(s.id)}" ${s.talking ? "checked" : ""}> كلام على الكاميرا (مزامنة شفاه)</label>
         <div class="row">
           <label class="zk-field mv-model"><span class="zk-field__label">الموديل</span>
             <select class="zk-select" data-model="${esc(s.id)}"><option value="">تلقائي${s.ranked[0] ? ` (${esc(s.ranked[0].name)})` : ""}</option>
-              ${s.ranked.map((m) => `<option value="${esc(m.id)}">${esc(m.name)}${m.est_cost_usd ? ` ($${esc(m.est_cost_usd)})` : m.path === "api" ? "" : " (مجاني)"} — ${esc(m.matched.map((x) => ({ faces: "وجوه", product: "منتج", camera_motion: "كاميرا", realism: "واقعية", hand: "يد" }[x] || x)).join("، ") || "بلا تطابق")} · ~${esc(fmtEta(m.eta_sec))}</option>`).join("")}</select></label>
+              ${s.ranked.map((m) => `<option value="${esc(m.id)}">${esc(m.name)}${m.est_cost_usd ? ` ($${esc(m.est_cost_usd)})` : m.path === "api" ? "" : " (مجاني)"} — ${esc(m.matched.map((x) => ({ faces: "وجوه", product: "منتج", camera_motion: "كاميرا", realism: "واقعية", hand: "يد" }[x] || x)).join("، ") || "بلا تطابق")} · ~${esc(fmtEta(m.eta_sec))}${m.face_rate && m.face_rate.checks >= 3 ? ` · حفظ الوجه ${Math.round(m.face_rate.rate * 100)}٪ (${m.face_rate.checks} فحوص)` : ""}</option>`).join("")}</select></label>
           <button class="zk-btn zk-btn--secondary sm" data-run="${esc(s.id)}" type="button" ${s.has_image && d.models ? "" : "disabled"}>${s.candidates.length ? "خيارات جديدة" : "حرّك"}</button>
           <button class="zk-btn zk-btn--ghost sm" data-extretry="${esc(s.id)}" data-defprompt="${esc(s.motion_desc || "")}" type="button" ${s.has_image ? "" : "disabled"} title="مهمة جديدة لـ Flow بالإضافة مع إمكانية تعديل وصف الحركة">${zkIcon("refresh")} أعد بـ Flow (الإضافة)</button>
         </div>
@@ -710,9 +747,10 @@ function drawMotion(body, d) {
         <div class="vidrow">${s.candidates.map((c) => `
           <figure class="vid ${s.motion && s.motion.clip === c.clip ? "on" : ""}">
             <video src="${clipUrl(c.clip)}" controls preload="none" muted playsinline></video>
-            <figcaption class="hint">${esc(c.model_name || extSite(String(c.provider || "").replace(/^extension:/, "")))}${isExtCand(c) ? ` <span class="tag info">من الإضافة</span>` : ""}${c.fit ? ` · ${esc({ exact: "مدة دقيقة", trimmed: "مقصوص", stretched: "ممدّد" }[c.fit] || c.fit)}` : ""}${c.lipsync ? " · شفاه" : ""}${c.cost_usd != null ? ` · <span class="tag warn">$${esc(c.cost_usd)}</span>` : ""}${c.fallback_from ? ` <span class="tag">بديل</span>` : ""}</figcaption>
-            <button class="zk-btn ${s.motion && s.motion.clip === c.clip ? "zk-btn--secondary" : "zk-btn--primary"} sm" data-pick="${esc(s.id)}" data-clip="${esc(c.clip)}" type="button" ${s.motion && s.motion.clip === c.clip ? "disabled" : ""}>${s.motion && s.motion.clip === c.clip ? "المختار" : "اختر"}</button>
+            <figcaption class="hint">${esc(c.model_name || extSite(String(c.provider || "").replace(/^extension:/, "")))}${isExtCand(c) ? ` <span class="tag info">من الإضافة</span>` : ""}${c.fit ? ` · ${esc({ exact: "مدة دقيقة", trimmed: "مقصوص", stretched: "ممدّد" }[c.fit] || c.fit)}` : ""}${c.lipsync ? " · شفاه" : ""}${c.cost_usd != null ? ` · <span class="tag warn">$${esc(c.cost_usd)}</span>` : ""}${c.fallback_from ? ` <span class="tag">بديل</span>` : ""}${c.face ? ` ${faceBadge(c.face)}` : ""}</figcaption>
+            <button class="zk-btn ${s.motion && s.motion.clip === c.clip ? "zk-btn--secondary" : "zk-btn--primary"} sm" data-pick="${esc(s.id)}" data-clip="${esc(c.clip)}" data-facefail="${c.face && c.face.status === "fail" ? "1" : ""}" type="button" ${s.motion && s.motion.clip === c.clip ? "disabled" : ""}>${s.motion && s.motion.clip === c.clip ? "المختار" : "اختر"}</button>
           </figure>`).join("")}</div>
+        ${s.candidates.some((c) => c.face && c.face.status === "fail") ? `<p class="hint">في فيديو وجهه تغيّر عن الشخصية. جرّب موديل تاني من القائمة وكبسة «خيارات جديدة» (النظام بيقدّم الموديل اللي بيحافظ على الوجه أكتر كل ما تجمّعت فحوص)، أو اختار فيديو تاني.</p>` : ""}
       </div>`).join("")}
     ${d.problems.length ? `<div class="panel"><h4>قبل الاعتماد</h4><ul class="vlist">${d.problems.map((p) => `<li class="warn">${esc(p.message)}</li>`).join("")}</ul></div>` : ""}`;
 
@@ -721,6 +759,7 @@ function drawMotion(body, d) {
   $$("[data-extretry]", body).forEach((btn) => btn.addEventListener("click", () =>
     extRetryModal(file, "video", btn.dataset.extretry, btn.dataset.defprompt, () => drawExtPanel())));
   const refresh = async () => { await loadProdState(); renderRail(); await renderStation(9); };
+  pstBindShots(body, file, refresh);
   const runJob = async (url, label) => {
     const s = $("#mvStatus"); setStatus(s, `${label}…`);
     try {
@@ -747,6 +786,7 @@ function drawMotion(body, d) {
     catch (e) { toast(e.message, "err"); cb.checked = !cb.checked; }
   }));
   $$("[data-pick]", body).forEach((b) => b.addEventListener("click", async () => {
+    if (b.dataset.facefail && !confirm("وجه الشخصية بهالفيديو تغيّر عن صورتها المرجعية. متأكد بدك تختاره؟")) return;
     try { await api(`/api/studio/${enc(file)}/shots/${enc(b.dataset.pick)}/motion/choose`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ clip: b.dataset.clip }) }); await refresh(); }
     catch (e) { toast(e.message, "err"); }
   }));

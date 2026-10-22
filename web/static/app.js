@@ -174,6 +174,39 @@ async function mockHooksWrite(path, method, body) {
   return mockHooks();
 }
 
+/* بنك الهوكات بالمحاكاة: نسخة بالذاكرة (فلترة + نجمة + أرشفة + يدوي) */
+async function mockBank(q) {
+  if (!mockState.bank) mockState.bank = await mockFile("hooks_bank");
+  const all = mockState.bank.items, inc = q.get("archived") === "true";
+  const product = q.get("product"), type = q.get("type"), role = q.get("role"), text = (q.get("q") || "").toLowerCase();
+  const items = all.filter((e) => (inc || !e.archived) && (!product || e.product === product) && (!type || e.type === type) && (!role || e.role === role)
+    && (q.get("star") !== "true" || e.star) && (!text || `${e.text} ${e.note || ""}`.toLowerCase().includes(text)));
+  const live = all.filter((e) => !e.archived);
+  return { items: JSON.parse(JSON.stringify(items)), types: mockState.bank.types, products: [...new Set(live.map((e) => e.product).filter(Boolean))].sort(),
+    counts: { total: live.length, starred: live.filter((e) => e.star).length, tested: live.filter((e) => e.result).length,
+      winners: live.filter((e) => e.result && e.result.verdict === "winner").length, archived: all.length - live.length } };
+}
+async function mockBankWrite(path, method, body) {
+  if (!mockState.bank) mockState.bank = await mockFile("hooks_bank");
+  const st = mockState.bank, m = /^\/api\/hooks-bank(?:\/([^/]+))?(?:\/(star|archive))?$/.exec(path), key = m && m[1], tail = m && m[2];
+  const find = (k) => st.items.find((e) => e.key === k);
+  if (!key && method === "POST") {
+    const t = (body || {}).type || null, n = st.items.filter((e) => e.source === "manual").length + 1;
+    const e = { key: `m_${n}`, source: "manual", text: String((body || {}).text || "").trim(), on_screen_text: "", visual: "", why: "", type: t, type_label: st.types[t] || "غير محدد", product: (body || {}).product || null,
+      product_code: null, category: null, script_file: null, script_id: null, hook_id: null, role: "manual", version: null, result: null, created_at: new Date().toISOString(), note: (body || {}).note || "", star: false, archived: false };
+    if (e.text.length < 3) throw new ApiError("«نص الهوك» لازم يكون 3 أحرف على الأقل", 400, "«نص الهوك» لازم يكون 3 أحرف على الأقل");
+    st.items.unshift(e);
+    return { ok: true, entry: e };
+  }
+  const e = find(key);
+  if (!e) throw new ApiError("الهوك غير موجود بالبنك", 404, "الهوك غير موجود بالبنك");
+  if (tail === "star") { e.star = !!(body || {}).on; return { ok: true, entry: e }; }
+  if (tail === "archive") { e.archived = (body || {}).on !== false; return { ok: true, entry: e }; }
+  if (method === "PUT") { Object.assign(e, body || {}, { type_label: st.types[(body || {}).type] || e.type_label }); return { ok: true, entry: e }; }
+  if (method === "DELETE") { st.items = st.items.filter((x) => x.key !== key); return { ok: true }; }
+  return { ok: true };
+}
+
 async function mockApi(url, opts) {
   const u = new URL(url, location.origin);
   const path = u.pathname;
@@ -187,6 +220,7 @@ async function mockApi(url, opts) {
     if (path === "/api/taxonomy") return mockFile("taxonomy");
     if (path === "/api/patterns") return mockFile("patterns");
     if ((m = /^\/api\/scripts\/([^/]+)\/hooks$/.exec(path))) return mockHooks();
+    if (path === "/api/hooks-bank") return mockBank(q);
     if (path === "/api/pattern-lib/schema") return mockFile("pattern_schema");
     if (path === "/api/pattern-lib/translation") {
       const d = { ...(await mockFile("pattern_translation")), auto: true, running: false, done: 0, total: 0, error: "", retry_in: 0, stuck: 0 };
@@ -248,6 +282,11 @@ async function mockApi(url, opts) {
     if (/^\/api\/studio\/[^/]+\/images\/info$/.test(path)) return mockFile("studio_images_info");
     if (path === "/api/product-refs") return mockFile("product_refs");
     if (/^\/api\/characters\/[^/]+\/slots$/.test(path)) return mockFile("char_slots");
+    if (/^\/api\/characters\/[^/]+\/identity$/.test(path)) return mockFile("character_identity");
+    if (path === "/api/presets") return mockFile("presets");
+    if (path === "/api/auth/me") return mockFile("auth_me");
+    if (path === "/api/accounts") return mockFile("accounts");
+    if (/^\/api\/activity$/.test(path)) return mockFile("activity");
     if (/^\/api\/product-refs\/[^/]+$/.test(path)) return mockFile("product_ref");
     if (/^\/api\/product-refs\/[^/]+\/angle\//.test(path)) return NOMOCK;
     if (path === "/api/motion-models") return mockFile("motion_models");
@@ -323,6 +362,10 @@ async function mockApi(url, opts) {
   await new Promise((r) => setTimeout(r, 250));
   if (path === "/api/characters" && method === "POST") { const d = await mockFile("characters"); return d.characters[0]; }
   if ((m = /^\/api\/characters\/([^/]+)(\/retire|\/sheet\/[^/]+|\/consent)?$/.exec(path)) && method !== "GET") { const d = await mockFile("characters"); return d.characters[0]; }
+  if (/^\/api\/characters\/[^/]+\/identity(\/rebuild)?$/.test(path) && method !== "GET") return mockFile("character_identity");
+  if (/^\/api\/(accounts(\/[^/]+\/(active|reset))?|auth\/(password|logout))$/.test(path) && method !== "GET") return { ok: true };
+  if (/^\/api\/presets(\/[^/]+)?$/.test(path) && method !== "GET") { const d = await mockFile("presets"); return method === "DELETE" ? { ok: true, restored: null } : d.presets[0]; }
+  if (/^\/api\/studio\/[^/]+\/shots\/[^/]+\/preset$/.test(path) && method !== "GET") return { shot: {} };
   if (/^\/api\/studio\/[^/]+\/character$/.test(path) && method === "POST") return { character_id: "ch_f_001", chosen_at: "2026-09-30T10:00:00" };
   if (/^\/api\/studio\/[^/]+\/shots\/build$/.test(path) && method === "POST") return mockFile("studio_shots");
   if ((m = /^\/api\/studio\/[^/]+\/shots\/([^/]+)\/prompt$/.exec(path)) && method === "PUT") { const b = JSON.parse(opts.body); return { shot: { id: m[1], prompt_ar: b.prompt_ar + ". بدون أي كتابة أو حروف أو أرقام أو شعارات داخل الصورة." }, problems: [] }; }
@@ -330,6 +373,7 @@ async function mockApi(url, opts) {
   if (/^\/api\/product-refs\/[^/]+(\/angle\/[^/]+)?$/.test(path) && method !== "GET") return mockFile("product_ref");
   if (/^\/api\/studio\/[^/]+\/images\/generate$/.test(path) && method === "POST") return { job_id: "mock-job" };
   if (/^\/api\/studio\/[^/]+\/(images|match)\/approve$/.test(path) && method === "POST") return { approved: true, shots: 19 };
+  if (/^\/api\/studio\/[^/]+\/match\/check$/.test(path) && method === "POST") return { checked: [], failed: [] };
   if (/^\/api\/studio\/[^/]+\/shots\/[^/]+\/(choose|composite|check)$/.test(path) && method !== "GET") return { shot: {} };
   if (/^\/api\/studio\/[^/]+\/shots\/[^/]+\/verdict$/.test(path) && method === "POST") return { verdict: "pass", note: "" };
   if (/^\/api\/motion-models(\/[^/]+)?$/.test(path) && method !== "GET") { const d = await mockFile("motion_models"); return d.models[0]; }
@@ -370,6 +414,7 @@ async function mockApi(url, opts) {
   if (path === "/api/queue/poll") return { ok: true, pulled: 2, pending: 4 };
   if (path === "/api/settings/spend-limits") { mockCache.spend_limits = { ...(mockCache.spend_limits || {}), ...(body || {}) }; return { ok: true }; }
   if (/^\/api\/scripts\/[^/]+\/hooks(\/|$)/.test(path)) return mockHooksWrite(path, method, body);
+  if (/^\/api\/hooks-bank(\/|$)/.test(path)) return mockBankWrite(path, method, body);
   if (path === "/api/crm/config" || path === "/api/crm/token") return { ok: true };
   if (path === "/api/pattern-lib" && method === "POST") return { ok: true, id: "manual_mock" };
   if (/^\/api\/pattern-lib\/[^/]+$/.test(path) && method === "PUT") return { ok: true, rev: "mockrev2", changed: [] };
@@ -392,6 +437,12 @@ async function mockApi(url, opts) {
   return { ok: true };
 }
 
+/* ما في دخول أو انتهت الجلسة: لصفحة الدخول (وضع التجربة مفتوح بلا دخول) */
+function authRedirect() {
+  if (MOCK || /\/login\.html$/.test(location.pathname)) return;
+  location.href = "/login.html";
+}
+
 async function api(url, opts) {
   if (MOCK) {
     const m = await mockApi(url, opts);
@@ -405,6 +456,7 @@ async function api(url, opts) {
     let detail = "";
     try {
       const j = await r.json();
+      if ((r.status === 401 && j.code === "auth_required") || (r.status === 403 && j.code === "must_change_password")) authRedirect();
       detail = j.detail ?? "";
       if (Array.isArray(detail)) msg = detail.map((d) => d.msg || d).join("، ");
       else if (detail) msg = detail;
@@ -897,7 +949,7 @@ function renderPatterns() {
   const all = LIB.patterns.length;
   $("#libCount").textContent = `${list.length} من ${all} نمط`;
   const box = $("#patGrid");
-  if (!list.length) { box.innerHTML = `<p class="empty">${all ? "ما في أنماط مطابقة للفلاتر" : "ما في أنماط بالمكتبة"}</p>`; return; }
+  if (!list.length) { box.innerHTML = `<p class="empty"${all ? "" : ' data-art="patterns"'}>${all ? "ما في أنماط مطابقة للفلاتر" : "ما في أنماط بالمكتبة"}</p>`; return; }
 
   if (LIB.view === "clusters") {
     const groups = new Map();

@@ -7,9 +7,12 @@
 كل لقطة معتمدة بالبرومبتات (محطة ٦) بتتولّد بمرجع الشخصية والمنتج، والمالك بيختار.
   · أي صورة أقل من 1080×1920 (أو بنسبة غير 9:16) بتنقص/تنكبّر — تكبير Lanczos (مش موديل ذكاء اصطناعي).
   · لقطات المنتج القريبة (قريبة، يد مع المنتج): صورة المنتج الحقيقية بتنركّب فوق المشهد بالحجم المحسوب.
-  · باقي اللقطات: فحص آلي لنص الملصق (OCR). حجم المنتج والتشابه البصري ووجه الشخصية **ما بتنقاس**
-    آلياً (ما في موديل على الجهاز) — بتنعلّم «غير مقاسة» والمالك بيحكم بمحطة فحص التطابق.
+  · باقي اللقطات: فحص آلي لنص الملصق (OCR) ولوجه الشخصية (facecheck.py: YuNet + SFace على الجهاز، بلا إنترنت).
+    حجم المنتج والتشابه البصري **ما بينقاسوا** آلياً — بتنعلّم «غير مقاسة» والمالك بيحكم بمحطة فحص التطابق.
+    الفحص بيعلّم بس («الوجه تغيّر»)؛ حكم المالك هو النهائي، ونتيجة كل فحص حاسم بتنسجّل لنموذج الصور (تعلّم أي نموذج بيحافظ على الوجه).
   · حد عدد نداءات الصور لكل فيديو (STUDIO_MAX_IMAGE_CALLS) — بيوقف لما يوصل.
+  · لقطة فيها مراجع (شخصية/منتج) ومزوّد الصور المضبوط ما بياخد صور مرجعية (UnoRouter مثلاً): ما بنفشل ولا بنولّد بلا الوجه المرجعي —
+    بتتحوّل لطابور الإضافة (ChatGPT/Flow/Gemini بالمراجع) والنظام بيقول ليش بوضوح (RoutedToExtension).
 """
 
 from __future__ import annotations
@@ -42,6 +45,10 @@ VERDICTS = ("pass", "fail", "override")
 
 class ImageStudioError(Exception):
     """رسالة عربية جاهزة للعرض."""
+
+
+class RoutedToExtension(ImageStudioError):
+    """مش فشل: اللقطة فيها مراجع ومزوّد الصور ما بياخدها فبتنعمل بالإضافة. الرسالة بتشرح ليش وشو يعمل المالك."""
 
 
 def _now() -> str:
@@ -175,19 +182,81 @@ def ensure_frame(src: Path, dest: Path) -> dict:
 
 
 # ── التوليد ─────────────────────────────────────────────────────────────
+def refs_supported(overrides: dict | None = None) -> dict:
+    """هل مزوّد الصور المضبوط بياخد صور مرجعية؟ {provider, model, supports_refs}. أي مشكلة بقراءة الإعدادات = «بياخد» (السلوك القديم)."""
+    try:
+        import imagegen
+        cfg = imagegen.image_config(overrides)
+        return {"provider": cfg["provider"], "model": cfg["model"], "supports_refs": bool(cfg["supports_refs"])}
+    except Exception:                                            # noqa: BLE001
+        return {"provider": "", "model": "", "supports_refs": True}
+
+
+def routed_message(sup: dict) -> str:
+    return (f"مزوّد الصور المضبوط ({sup.get('provider') or '؟'}) بيولّد من النص بس وما بياخد صور مرجعية. "
+            "لقطات الشخصية والمنتج لازم تتولّد بمراجعها (عشان الوجه والعبوة يضلّوا نفسهم)، فبتروح لطابور الإضافة "
+            "(ChatGPT أو Flow أو Gemini): شغّلها من لوحة «الإضافة» بنفس هالصفحة. أو بدّل مزوّد الصور بالإعدادات لواحد بياخد مراجع (Google أو OpenAI).")
+
+
+def _route_to_extension(stem: str) -> None:
+    """بنضبط الإضافة على نوع «صور» (بلا ما نشغّلها — التشغيل من نافذتها)."""
+    try:
+        import ext_bridge
+        ext_bridge.set_control(stem, kind="image")
+    except Exception:                                            # noqa: BLE001
+        pass
+
+
+def _character_and_country(stem: str, script: dict) -> tuple[dict | None, str]:
+    """شخصية السيناريو المختارة وبلد البريف (لبطاقة الهوية الإنجليزية ببرومبت الموديل)."""
+    import characters
+    import review_script
+    cur = characters.chosen(stem)
+    ch = characters.get(cur["character_id"]) if cur else None
+    try:
+        country = (review_script.load_brief(script) or {}).get("country") or ""
+    except Exception:                                            # noqa: BLE001
+        country = ""
+    return ch, country
+
+
+def _ensure_english(stem: str, script: dict, ids=None) -> None:
+    """نسخة إنجليزية (prompt_model) للقطات اللي ما إلها: ترجمة بالذكاء + بطاقة هوية الشخصية، وبتنخزّن بالخط الزمني.
+    فشلها ما بيوقف التوليد — البرومبت بيروح بطاقة الهوية + العربي وبتنعاد المحاولة بالتوليد الجاي."""
+    import shot_prompts
+    try:
+        tl = _load(stem)
+        ch, country = _character_and_country(stem, script)
+        if shot_prompts.english_for(tl, ch, country, only=ids, log=lambda *_: None)["done"]:
+            _save(stem, tl)
+    except Exception:                                            # noqa: BLE001
+        pass
+
+
 def generate_shot(script_path, shot_id: str, n: int | None = None, overrides: dict | None = None,
                   log=print) -> dict:
     import imagegen
+    import shot_prompts
     import usage
     path = Path(script_path)
     stem = path.stem
     script = json.loads(path.read_text(encoding="utf-8"))
     n = n or int(getattr(config, "STUDIO_IMAGE_CANDIDATES", 2))
+    code = product_code(script)
+    ok, why = studio_state.can_start(stem, 7)
+    if not ok:
+        raise ImageStudioError(why)
+    if refs_for_shot(stem, _shot(_load(stem), shot_id)[1], code):
+        sup = refs_supported(overrides)
+        if not sup["supports_refs"]:                             # بلا فشل وبلا توليد بلا مراجع: الإضافة بتاخدها (والمحطة ما بتصير «شغّالة»)
+            _route_to_extension(stem)
+            raise RoutedToExtension(routed_message(sup))
     try:
         studio_state.set_state(stem, 7, "running", f"توليد صور {shot_id}")
     except studio_state.StationBlocked as e:
         raise ImageStudioError(str(e))
-    code = product_code(script)
+    _ensure_english(stem, script, [shot_id])
+    ch, country = _character_and_country(stem, script)
     made = 0
     for k in range(n):
         if calls_used(stem) >= cap():
@@ -195,7 +264,7 @@ def generate_shot(script_path, shot_id: str, n: int | None = None, overrides: di
             raise ImageStudioError(f"وصل حد نداءات الصور لهالفيديو ({cap()}) — ارفع STUDIO_MAX_IMAGE_CALLS من الإعدادات لو بدك تكمّل")
         tl = _load(stem)
         _sc, sh = _shot(tl, shot_id)
-        prompt = (sh.get("prompt_model") or sh.get("prompt_ar") or "").strip()
+        prompt = shot_prompts.model_prompt(sh, ch, country).strip()
         if not prompt:
             raise ImageStudioError(f"لقطة {shot_id} بلا برومبت — اعتمد المحطة ٦ أولاً")
         pairs = refs_with_roles(stem, sh, code)
@@ -234,17 +303,25 @@ def generate_all(script_path, n: int | None = None, overrides: dict | None = Non
     stem = Path(script_path).stem
     tl = _load(stem)
     todo = [sh["id"] for sc in tl["scenes"] for sh in sc["shots"] if not _image(sh)["candidates"]]
-    done, failed = [], []
+    if todo:
+        _ensure_english(stem, json.loads(Path(script_path).read_text(encoding="utf-8")), todo)      # ترجمة دفعة وحدة بدل لقطة لقطة
+    done, failed, routed = [], [], []
     for sid in todo:
         try:
             generate_shot(script_path, sid, n, overrides, log)
             done.append(sid)
+        except RoutedToExtension as e:
+            routed.append(sid)
+            if len(routed) == 1:
+                log(f"  [→] {e}")
         except ImageStudioError as e:
             failed.append({"shot": sid, "error": str(e)})
             log(f"  [!] {sid}: {e}")
             if "حد نداءات" in str(e):
                 break
-    return {"done": done, "failed": failed, "budget": budget(stem)}
+    if routed:
+        log(f"  [→] {len(routed)} لقطة اتحوّلت للإضافة: {'، '.join(routed)}")
+    return {"done": done, "failed": failed, "routed": routed, "budget": budget(stem)}
 
 
 # ── الاختيار ────────────────────────────────────────────────────────────
@@ -414,8 +491,42 @@ def label_score(read_text: str, label_text: str) -> float:
     return (len(want & _tokens(read_text)) / len(want)) if want else 0.0
 
 
-def check_shot(script_path, shot_id: str, ocr=None) -> dict:
-    """نص الملصق بالـOCR للقطات المولَّدة. الحجم والتشابه والوجه: غير مقاسة (ما في موديل)."""
+def _face_result(character_id: str, img: Path, face=None) -> dict:
+    """تطابق وجه اللقطة بصور الشخصية المرجعية، محلياً. أي عطل تقني = «غير مقاس» مع السبب (ما بيوقف الفحص ولا الإنتاج)."""
+    import characters
+    import facecheck
+    try:
+        r = (face or facecheck.check_image)(facecheck.character_refs(character_id), img)
+    except (facecheck.FaceCheckError, characters.CharacterError) as e:
+        return {"status": "unchecked", "similarity": None, "note": str(e)}
+    except Exception as e:                                       # noqa: BLE001 — فحص تحسيني: ما بنكسر الإنتاج لأي سبب
+        return {"status": "unchecked", "similarity": None, "note": f"تعذّر فحص الوجه ({type(e).__name__})"}
+    return {**r, "at": _now()}
+
+
+def _log_face(stem: str, sh: dict, res: dict) -> None:
+    """يسجّل نتيجة الفحص الحاسمة (ناجح/ساقط) لنموذج الصور اللي ولّد اللقطة — هيك النظام بيتعلّم مين بيحافظ على الوجه."""
+    im = sh.get("image") or {}
+    cands = im.get("candidates", [])
+    cand = next((c for c in cands if c.get("path") == im.get("source")), None) or {}
+    for _ in range(3):                                           # المكبَّرة بالذكاء بتورّث وجه الصورة الأصلية → النموذج المنسوب إلو هو الأصلي
+        if cand.get("path_used") == "upscale" and cand.get("from"):
+            cand = next((c for c in cands if c.get("path") == cand["from"]), None) or {}
+    pth = cand.get("path_used")
+    if pth not in production_log.PATHS:
+        pth = "extension" if str(cand.get("provider") or "").startswith("extension") else ("api" if cand.get("provider") else None)
+    production_log.record("face_image", "ok" if res["status"] == "pass" else "failed", script_stem=stem, shot_id=sh["id"],
+                          model_id=cand.get("model") or cand.get("provider"), model_name=cand.get("provider"),
+                          path=pth, score=res.get("similarity"))
+
+
+def _needs_face(sh: dict) -> bool:
+    return bool((sh.get("refs") or {}).get("character_id")) and sh.get("type") != "hand_product"
+
+
+def check_shot(script_path, shot_id: str, ocr=None, face=None, *, label: bool = True, faces: bool = True) -> dict:
+    """نص الملصق بالـOCR + تطابق الوجه (محلي) للقطات المولَّدة. الحجم والتشابه البصري: غير مقاسة.
+    face: دالة (صور_مرجعية, صورة) ← نتيجة (للاختبارات)؛ label/faces: أي جزء بدنا نعيد فحصه."""
     import product_ref
     path = Path(script_path)
     stem = path.stem
@@ -428,15 +539,15 @@ def check_shot(script_path, shot_id: str, ocr=None) -> dict:
     if not img:
         raise ImageStudioError("ما في صورة معتمدة للقطة")
 
-    if (sh.get("product_check") or {}).get("mode") != "composite":
-        label = product_ref.load(code)["label_text"] if code else ""
-        if not label:
+    if label and (sh.get("product_check") or {}).get("mode") != "composite":
+        label_text = product_ref.load(code)["label_text"] if code else ""
+        if not label_text:
             sh["product_check"] = {"mode": "generated", "status": "unchecked", "label_match": None,
                                    "size_ratio": None, "similarity": None,
                                    "note": "ما في نص ملصق بملف المنتج المرجعي — ما بنقدر نفحصه"}
         else:
             try:
-                score = label_score((ocr or _easyocr_read)(img), label)
+                score = label_score((ocr or _easyocr_read)(img), label_text)
             except Exception as e:
                 score = None
                 note = f"تعذّر تشغيل OCR: {e}"
@@ -450,11 +561,44 @@ def check_shot(script_path, shot_id: str, ocr=None) -> dict:
                                        "label_score": round(score, 2), "size_ratio": None, "similarity": None,
                                        "status": "pass" if score >= LABEL_PASS else "fail",
                                        "note": note + " — الحجم والتشابه البصري غير مقاسين (حكم المالك)"}
-    has_face = bool((sh.get("refs") or {}).get("character_id")) and sh.get("type") != "hand_product"
-    sh["face_check"] = ({"status": "unchecked", "similarity": None,
-                         "note": "ما في موديل وجوه على الجهاز — حكم المالك بشاشة فحص التطابق"} if has_face else None)
+    if faces:
+        if _needs_face(sh):
+            prev = sh.get("face_check") or {}
+            res = _face_result(sh["refs"]["character_id"], img, face)
+            res["image"] = rel
+            if res["status"] in ("pass", "fail"):
+                if prev.get("logged") != rel:                    # نفس الصورة ما بتنسجّل مرتين
+                    _log_face(stem, sh, res)
+                res["logged"] = rel
+            sh["face_check"] = res
+        else:
+            sh["face_check"] = None
     _save(stem, tl)
     return sh
+
+
+def check_all(script_path, ocr=None, face=None, only_missing: bool = True) -> dict:
+    """يفحص كل لقطات الصور المعتمدة (الملصق + الوجه). only_missing: اللي انفحصت قبل ما بتنعاد.
+    فشل لقطة وحدة ما بيوقف الباقي."""
+    stem = Path(script_path).stem
+    tl = _load(stem)
+    todo = []
+    for sc in tl["scenes"]:
+        for sh in sc["shots"]:
+            if not _final_image(sh):
+                continue
+            need_label = sh.get("product_check") is None
+            need_face = _needs_face(sh) and sh.get("face_check") is None
+            if not only_missing or need_label or need_face:
+                todo.append((sh["id"], need_label or not only_missing, need_face or not only_missing))
+    done, failed = [], []
+    for sid, lab, fac in todo:
+        try:
+            check_shot(script_path, sid, ocr, face, label=lab, faces=fac)
+            done.append(sid)
+        except ImageStudioError as e:
+            failed.append({"shot": sid, "error": str(e)})
+    return {"checked": done, "failed": failed}
 
 
 # ── حكم المالك واعتماد المحطتين ─────────────────────────────────────────
@@ -496,7 +640,9 @@ def match_problems(tl: dict) -> list[dict]:
             if v in ("pass", "override"):
                 continue
             pc = sh.get("product_check") or {}
-            if pc.get("status") == "fail":
+            if (sh.get("face_check") or {}).get("status") == "fail":
+                out.append({"shot": sid, "message": f"لقطة {sid}: الوجه تغيّر عن الشخصية — أعد التوليد (نموذج تاني أو الإضافة) أو اعتمد صراحة"})
+            elif pc.get("status") == "fail":
                 out.append({"shot": sid, "message": f"لقطة {sid}: نص الملصق ما تطابق — أعد التوليد أو ركّب المنتج أو اعتمد صراحة"})
             else:
                 out.append({"shot": sid, "message": f"لقطة {sid}: بانتظار حكمك"})

@@ -93,6 +93,7 @@ function renderCharDetail() {
     <div id="cfStatus" class="status"></div>
   </div>
   ${isNew ? "" : `
+  <div class="panel" id="chIdentity"></div>
   <div class="panel"><h3>الورقة المرجعية (5 وضعيات ثابتة)</h3>
     <p class="hint">نفس الوجه واللبس بكل الوضعيات. لكل وضعية برومبت جاهز بنفس الإطار والإضاءة والخلفية: ولّد «أمام» أول وراجعها، وبعدها باقي الوضعيات بصورة «أمام» مرفقة، وارفع كل صورة جنب برومبتها. لما تعتمد وضعية اضغط «ثبّت». اللي بينبعت للتوليد فعلياً: «أمام» و«ثلاثة أرباع» (و«يدين» بلقطات اليد)، والباقي مرجع للثبات.</p>
     <div class="row"><a class="zk-btn zk-btn--secondary" id="chDoc" href="/api/characters/${enc(c.id)}/prompts.docx" download>${zkIcon("download")} نزّل برومبتات هالشخصية (Word)</a>
@@ -106,7 +107,7 @@ function renderCharDetail() {
     <p class="hint">النظام بيخزّن الملف وبيمنع الاعتماد بدونه؛ ما بيتحقق قانونياً من محتواه.</p>
   </div>` : ""}`}`;
 
-  if (!isNew) chDrawSlots(c);
+  if (!isNew) { chDrawIdentity(c); chDrawSlots(c); }
   const collect = () => ({
     name_ar: $("#cfName").value, gender: $("#cfGender").value, age: $("#cfAge").value,
     skin: $("#cfSkin").value, hair: $("#cfHair").value, persona: $("#cfPersona").value,
@@ -141,6 +142,43 @@ function renderCharDetail() {
     const fd = new FormData(); fd.append("file", cf.files[0]); fd.append("signed_at", $("#cnDate").value); fd.append("scope", $("#cnScope").value);
     try { await api(`/api/characters/${enc(c.id)}/consent`, { method: "POST", body: fd }); toast("انرفقت الموافقة", "ok"); await loadCharacters(); }
     catch (e) { toast(e.message, "err"); }
+  });
+}
+
+
+/* بطاقة الهوية الإنجليزية: جملة وحدة ثابتة بتنحط بكل برومبت صورة وتحريك فيه الشخصية (تثبيت الهوية ضد الميل لملامح شرق آسيا) */
+async function chDrawIdentity(c) {
+  const holder = $("#chIdentity");
+  if (!holder) return;
+  const base = `/api/characters/${enc(c.id)}/identity`;
+  const r = await soft(base);
+  if (!r.data) { holder.innerHTML = errBox(r.err); return; }
+  const d = r.data;
+  const st = !d.auto ? ["info", "معدّلة بإيدك"] : d.complete && !d.stale ? ["ok", "تلقائية"] : ["warn", "تلقائية — ناقصة"];
+  const jo = (method, body) => ({ method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+  holder.innerHTML = `<div class="row between"><h3>بطاقة الهوية (إنجليزي)</h3><span class="tag ${st[0]}">${st[1]}</span></div>
+    <p class="hint">جملة وحدة بتنحط بكل برومبت صورة وتحريك فيه هالشخصية، عشان الموديلات (خصوصاً الصينية) ما تميل لملامح شرق آسيا. بتنبني لحالها من بياناتها وبتنترجم بالذكاء مرة وحدة. لو عدّلتها بإيدك ما بتنكتب فوقها، ولو مسحت النص بترجع تلقائية.</p>
+    ${d.auto && !d.complete ? `<p class="status warn">التفاصيل (البشرة والشعر واللبس) لسا ما انترجمت — الذكاء مش متاح هلّق. بتنعاد المحاولة لحالها أول ما تتجهّز برومبتات لقطات فيها هالشخصية، أو اضغط «ابنِها من جديد».</p>` : ""}
+    <label class="zk-field"><span class="zk-field__label">البطاقة</span>
+      <textarea class="zk-textarea" id="idText" rows="3" dir="ltr" maxlength="600">${esc(d.text)}</textarea></label>
+    <p class="hint">الممنوعات اللي بتنبعت للموديلات اللي بتقبلها: <span class="mono" dir="ltr">${esc(d.negative)}</span></p>
+    <div class="row end">
+      <button class="zk-btn zk-btn--ghost" id="idRebuild" type="button">ابنِها من جديد (ترجمة بالذكاء)</button>
+      <button class="zk-btn zk-btn--primary" id="idSave" type="button">احفظ تعديلي</button>
+    </div>
+    <div id="idStatus" class="status"></div>`;
+  $("#idSave").addEventListener("click", async () => {
+    try { await api(base, jo("PUT", { text: $("#idText").value })); toast("انحفظت بطاقة الهوية", "ok"); await chDrawIdentity(c); }
+    catch (e) { setStatus($("#idStatus"), e.message, "err"); }
+  });
+  $("#idRebuild").addEventListener("click", async (ev) => {
+    if (!d.auto && !confirm("بطاقتك المعدّلة بإيدك رح تنمسح وبتنبني من جديد تلقائياً. كمّل؟")) return;
+    ev.target.disabled = true; ev.target.textContent = "بيترجم…";
+    try {
+      if (!d.auto) await api(base, jo("PUT", { text: "" }));
+      await api(`${base}/rebuild`, jo("POST", {}));
+      await chDrawIdentity(c);
+    } catch (e) { setStatus($("#idStatus"), e.message, "err"); ev.target.disabled = false; ev.target.textContent = "ابنِها من جديد (ترجمة بالذكاء)"; }
   });
 }
 

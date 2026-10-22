@@ -9,6 +9,13 @@
    "duration_ms": 2880,
    "motion_desc": "تقريب بطيء على المنتج مع حركة ضوء خفيفة",
    "talking": false,
+   "camera_preset": {
+    "id": "push_in",
+    "look": {
+     "camera": "classic_16mm",
+     "focal": "35"
+    }
+   },
    "motion": {
     "model_id": "mm_001",
     "clip": "clips/c1.mp4",
@@ -22,7 +29,29 @@
      "model_name": "LTX محلي",
      "duration_ms": 2880,
      "fit": "trimmed",
-     "lipsync": false
+     "lipsync": false,
+     "face": {
+      "status": "pass",
+      "similarity": 0.58,
+      "threshold": 0.363,
+      "note": "الوجه مطابق للشخصية (تطابق 0.58، الحد 0.36)",
+      "frames": []
+     }
+    },
+    {
+     "clip": "clips/c2.mp4",
+     "model_id": "mm_002",
+     "model_name": "Wan صغير",
+     "duration_ms": 2880,
+     "fit": "exact",
+     "lipsync": false,
+     "face": {
+      "status": "fail",
+      "similarity": 0.21,
+      "threshold": 0.363,
+      "note": "الوجه تغيّر عن الشخصية (تطابق 0.21 وأقل من الحد 0.36) — بلقطات عند 83٪ من الفيديو",
+      "frames": []
+     }
     }
    ],
    "has_image": true,
@@ -30,12 +59,19 @@
     {
      "id": "mm_001",
      "name": "LTX محلي",
-     "score": 19.5,
+     "score": 24.5,
      "matched": [
       "product",
       "realism"
      ],
-     "eta_sec": 130
+     "eta_sec": 130,
+     "face_rate": {
+      "name": "LTX محلي",
+      "checks": 5,
+      "passed": 4,
+      "rate": 0.8,
+      "avg_score": 0.52
+     }
     },
     {
      "id": "mm_002",

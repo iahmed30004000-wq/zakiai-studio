@@ -137,17 +137,22 @@ function route() {
 }
 window.addEventListener("hashchange", route);
 
-/* الثيم (ليل / نهار) + مبدّل التطبيقات + قائمتها */
-const THEMES = [{ k: "night", n: "ليل", g: "☾" }, { k: "day", n: "نهار", g: "☀" }];
+/* الثيم (ليالي الشرق: ليلي / نهاري · ساحل النيون) + مبدّل التطبيقات + قائمتها. n = الاسم الكامل بالقائمة، s = الاسم القصير بالزر */
+const THEMES = [
+  { k: "night", n: "ليالي الشرق (ليلي)", s: "ليل", g: "☾" },
+  { k: "day", n: "ليالي الشرق (نهاري)", s: "نهار", g: "☀" },
+  { k: "neon", n: "ساحل النيون", s: "نيون", g: "✺" },
+];
 /* ترحيل القيم القديمة: dark → night، light / calm → day */
 const THEME_MIGRATE = { dark: "night", light: "day", calm: "day" };
 function normTheme(k) { return THEME_MIGRATE[k] || (THEMES.some((x) => x.k === k) ? k : "night"); }
 function applyTheme(k) {
   const t = THEMES.find((x) => x.k === normTheme(k)) || THEMES[0];
   document.documentElement.setAttribute("data-theme", t.k);
-  const el = $("#themeName"); if (el) el.textContent = t.n;
+  const el = $("#themeName"); if (el) el.textContent = t.s;
   const g = $("#themeGlyph"); if (g) g.textContent = t.g;
-  const b = $("#themeBtn"); if (b) b.title = `الثيم: ${t.n} — اضغط للتبديل`;
+  const b = $("#themeBtn"); if (b) b.title = `الثيم: ${t.n} — اضغط لتختار غيره`;
+  $$("#themeMenu .zk-dropdown__item").forEach((it) => it.setAttribute("aria-selected", String(it.dataset.value === t.k)));
   try { localStorage.setItem("vp-theme", t.k); } catch { /* التخزين ممنوع */ }
 }
 /* طي القائمة الجانبية (كمبيوتر): الهمبرغر بالترويسة بيطويها لشريط أيقونات وبيرجّعها، والاختيار بيتذكّر. الجوال بيضل درج الإطار. */
@@ -175,12 +180,14 @@ async function initChrome() {
   try { saved = localStorage.getItem("vp-theme") || "night"; } catch { /* تجاهل */ }
   try { lastMission = localStorage.getItem("vp-last-mission") || ""; } catch { /* تجاهل */ }
   if (lastMission && !/^#\/mission\//.test(lastMission)) lastMission = "";
+  /* قائمة الثيم: بتنبني من THEMES، والاختيار بيتذكّر (vp-theme) */
+  $("#themeMenu").innerHTML = THEMES.map((t) =>
+    `<button type="button" class="zk-dropdown__item" role="menuitem" data-value="${t.k}" aria-selected="false"><span aria-hidden="true">${t.g}</span> ${t.n}</button>`).join("");
   applyTheme(saved);
-  $("#themeBtn").addEventListener("click", () => {
-    const cur = normTheme(document.documentElement.getAttribute("data-theme") || "night");
-    applyTheme(THEMES[(THEMES.findIndex((x) => x.k === cur) + 1) % THEMES.length].k);
-  });
-  if (window.zk && zk.dropdown) zk.dropdown($("#appsDd"));
+  if (window.zk && zk.dropdown) {
+    zk.dropdown($("#themeDd"), { onSelect: (k) => applyTheme(k) });
+    zk.dropdown($("#appsDd"));
+  }
   /* العمليات: رابطها من إعداد الـ OMS لو موجود. الاستوديو هو الحالي. ما بنفترض توفّر أي تطبيق. */
   const apps = [{ id: "studio", name: "استوديو المحتوى", icon: "zk-film", url: location.origin, active: true }];
   const r = await soft("/api/crm/status");
@@ -203,6 +210,7 @@ async function boot() {
   watchDigits();
   initNavCollapse();
   initChrome();
+  accWho();                                  // اسم الموظف الداخل + «خروج» (accounts.js)
   refreshTopbar();
   loadHealth();
   if (window.Guide && Guide.init) Guide.init();

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zakiai Systems — استوديو المحتوى</title>
-<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=58">
-<link rel="stylesheet" href="/theme.css?v=58">
-<link rel="stylesheet" href="/style.css?v=58">
-<link rel="stylesheet" href="/ornament.css?v=58">
+<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=68">
+<link rel="stylesheet" href="/theme.css?v=68">
+<link rel="stylesheet" href="/style.css?v=68">
+<link rel="stylesheet" href="/ornament.css?v=68">
 </head>
 <body class="zk">
 
@@ -42,9 +42,13 @@
       <button class="zk-btn zk-btn--secondary" type="button" aria-haspopup="menu" aria-label="التطبيقات"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-rocket"></use></svg><span class="tb-lbl">التطبيقات</span></button>
       <div class="zk-dropdown__menu" role="menu" hidden><zk-app-switcher id="appSwitcher"></zk-app-switcher></div>
     </div>
-    <button class="zk-btn zk-btn--ghost" id="themeBtn" type="button" aria-label="بدّل الثيم (ليل / نهار)"><span id="themeGlyph" aria-hidden="true">☾</span><span class="tb-lbl" id="themeName">ليل</span></button>
+    <div class="zk-dropdown" id="themeDd">
+      <button class="zk-btn zk-btn--ghost" id="themeBtn" type="button" aria-haspopup="menu" aria-label="الثيم"><span id="themeGlyph" aria-hidden="true">☾</span><span class="tb-lbl" id="themeName">ليل</span></button>
+      <div class="zk-dropdown__menu" id="themeMenu" role="menu" hidden></div>
+    </div>
+    <span class="who-chip" id="whoChip" hidden><span class="who-dot" aria-hidden="true">●</span><b id="whoName"></b><button class="zk-btn zk-btn--ghost sm" id="logoutBtn" type="button" title="تسجيل الخروج">خروج</button></span>
     <a class="zk-btn zk-btn--ghost tb-route" id="settingsBtn" href="#/settings" data-route="settings" aria-label="الإعدادات" title="الإعدادات"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-settings"></use></svg></a>
-    <button class="zk-btn zk-btn--ghost tb-jobs" id="tbJobs" type="button" aria-controls="drawer" aria-expanded="false">
+    <button class="zk-btn zk-btn--ghost tb-jobs" id="tbJobs" type="button" aria-controls="drawer" aria-expanded="false" aria-label="المهام" title="المهام">
       <svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-time"></use></svg><span class="tb-lbl">المهام</span><span id="jobBadge" class="count" hidden></span>
     </button>
   </div>
@@ -109,28 +113,33 @@
 
   <!-- ═════════ ❖ المكتبات (shell.js بيركّب الشاشات القديمة جوّا التبويبات) ═════════ -->
   <section id="v-libs" class="view" data-view="libs">
-    <div class="page-head">
-      <div><h2>المكتبات</h2><p class="hint">رفوف شغلك: الأنماط، المنتجات، الشخصيات، الأصوات والآهات، والادعاءات الممنوعة.</p></div>
+    <div class="page-head hero compact" id="libsHero" data-img="pattern">
+      <div><h2>المكتبات</h2><p class="hint">كل مواد شغلك بمكان واحد: الأنماط والمنتجات والشخصيات والأصوات، وبنك الهوكات والحركات السينمائية والادعاءات الممنوعة.</p></div>
+      <div class="hero-actions"><button class="btn ghost sm" type="button" data-guide-next>الخطوة الجاية ←</button></div>
     </div>
     <div class="seg" id="libsTabs" role="tablist" aria-label="رفوف المكتبات">
       <button type="button" data-tab="patterns" class="on">الأنماط</button>
       <button type="button" data-tab="products">المنتجات</button>
       <button type="button" data-tab="characters">الشخصيات</button>
       <button type="button" data-tab="sounds">الأصوات والآهات</button>
+      <button type="button" data-tab="hooks">بنك الهوكات</button>
+      <button type="button" data-tab="presets">الحركات السينمائية</button>
       <button type="button" data-tab="claims">الادعاءات الممنوعة</button>
     </div>
     <div id="libs-patterns" class="tabpane on"></div>
     <div id="libs-products" class="tabpane"></div>
     <div id="libs-characters" class="tabpane"></div>
     <div id="libs-sounds" class="tabpane"></div>
+    <div id="libs-hooks" class="tabpane"></div>
+    <div id="libs-presets" class="tabpane"></div>
     <div id="libs-claims" class="tabpane"></div>
   </section>
 
   <!-- ═════════ ⚙ المصنع: طرق التوليد ═════════ -->
   <section id="v-factory" class="view" data-view="factory">
-    <div class="page-head">
+    <div class="page-head hero compact" data-img="factory">
       <div><h2>المصنع</h2><p class="hint">طرق التوليد التلاتة: API (مفاتيح ومزوّدين) · النماذج المحلية · الإضافة <span class="term-slot" data-term="extension"></span>. لكل طريقة: شغّالة؟ وشو آخر مشكلة؟</p></div>
-      <button id="facCheck" class="btn ghost sm" type="button">افحص الطرق</button>
+      <div class="hero-actions"><button id="facCheck" class="btn ghost sm" type="button">افحص الطرق</button><button class="btn ghost sm" type="button" data-guide-next>الخطوة الجاية ←</button></div>
     </div>
     <div id="facMethods"></div>
     <div class="seg" id="facTabs" role="tablist" aria-label="طرق التوليد">
@@ -357,8 +366,8 @@
 
   <!-- ═════════ 6 · الأداء ═════════ -->
   <section id="v-performance" class="view" data-view="performance">
-    <div class="page-head"><div><h2>الأداء</h2><p class="hint">الأنماط حسب تكلفة الطلب المُسلَّم ودرجة الدليل.</p></div>
-      <button id="perfRefresh" class="btn ghost sm" type="button">تحديث</button></div>
+    <div class="page-head hero compact" data-img="performance"><div><h2>الأداء</h2><p class="hint">أي نمط وأي هوك بيبيع فعلاً: التكلفة حسب الطلب المُسلَّم ودرجة الدليل. الأرقام بتوصل من الـ OMS <span class="term-slot" data-term="oms"></span>.</p></div>
+      <div class="hero-actions"><button id="perfRefresh" class="btn ghost sm" type="button">تحديث</button><button class="btn ghost sm" type="button" data-guide-next>الخطوة الجاية ←</button></div></div>
     <div class="seg" id="perfTabs">
       <button type="button" data-tab="patterns" class="on">الأنماط</button>
       <button type="button" data-tab="scripts">أحكام السيناريوهات</button>
@@ -381,6 +390,8 @@
       <button type="button" data-tab="crm">الـ OMS والطابور</button>
       <button type="button" data-tab="ops">النسخ والجدولة والإنفاق</button>
       <button type="button" data-tab="analysis">التحليل والقواعد</button>
+      <button type="button" data-tab="staff">الموظفين</button>
+      <button type="button" data-tab="activity">النشاط</button>
       <button type="button" data-tab="advanced">متقدّم — البرومبتات</button>
     </div>
 
@@ -603,6 +614,9 @@
     </div>
 
     <!-- متقدم: البرومبتات -->
+    <div id="set-staff" class="tabpane"></div>
+    <div id="set-activity" class="tabpane"></div>
+
     <div id="set-advanced" class="tabpane">
       <div class="panel">
         <h3>برومبتات المنظومة</h3>
@@ -699,27 +713,29 @@
 
 <div id="toasts" class="toasts" aria-live="polite"></div>
 
-<script src="/vendor/zaki-ui/zaki-ui.all.js?v=58"></script>
-<script src="/app.js?v=58"></script>
-<script src="/studio.js?v=58"></script>
-<script src="/hooks.js?v=58"></script>
-<script src="/perf.js?v=58"></script>
-<script src="/settings.js?v=58"></script>
-<script src="/production.js?v=58"></script>
-<script src="/refslots.js?v=58"></script>
-<script src="/characters.js?v=58"></script>
-<script src="/productref.js?v=58"></script>
-<script src="/models.js?v=58"></script>
-<script src="/ext.js?v=58"></script>
-<script src="/claims.js?v=58"></script>
-<script src="/patedit.js?v=58"></script>
-<script src="/adsfb.js?v=58"></script>
-<script src="/ahat.js?v=58"></script>
-<script src="/shell.js?v=58"></script>
-<script src="/guide.js?v=58"></script>
-<script src="/ornament.js?v=58"></script>
-<script src="/home.js?v=58"></script>
-<script src="/mission.js?v=58"></script>
-<script src="/boot.js?v=58"></script>
+<script src="/vendor/zaki-ui/zaki-ui.all.js?v=68"></script>
+<script src="/app.js?v=68"></script>
+<script src="/studio.js?v=68"></script>
+<script src="/hooks.js?v=68"></script>
+<script src="/presets.js?v=68"></script>
+<script src="/perf.js?v=68"></script>
+<script src="/settings.js?v=68"></script>
+<script src="/accounts.js?v=68"></script>
+<script src="/production.js?v=68"></script>
+<script src="/refslots.js?v=68"></script>
+<script src="/characters.js?v=68"></script>
+<script src="/productref.js?v=68"></script>
+<script src="/models.js?v=68"></script>
+<script src="/ext.js?v=68"></script>
+<script src="/claims.js?v=68"></script>
+<script src="/patedit.js?v=68"></script>
+<script src="/adsfb.js?v=68"></script>
+<script src="/ahat.js?v=68"></script>
+<script src="/shell.js?v=68"></script>
+<script src="/guide.js?v=68"></script>
+<script src="/ornament.js?v=68"></script>
+<script src="/home.js?v=68"></script>
+<script src="/mission.js?v=68"></script>
+<script src="/boot.js?v=68"></script>
 </body>
 </html>

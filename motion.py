@@ -16,6 +16,12 @@
     services/engine). عنوان الصندوق بقائمة سماح صارمة: http، loopback أو اسم docker بلا نقاط، منفذ صريح، بلا تحويلات.
   · kind=api: تحريك عبر API مباشر (motion_api.py، fal.ai) بالدفع حسب الثانية — بيتقدّر سعره قبل التشغيل وبينفرض سقف إنفاق للسيناريو،
     وبيستخدم برومبت إنجليزي ثابت (النماذج الخارجية بتفهم الإنجليزي أحسن من العربي).
+  · ثبات وجه الشخصية: لقطات الوجه بتاخد بطاقة الهوية الإنجليزية (identity.py) ببرومبتها الإنجليزي، وبرومبت سلبي ضد ملامح شرق آسيا
+    وتغيّر الوجه (للموديلات اللي بتقبله)، ونفس صورة اللقطة كصورة نهاية (Kling/Hailuo؛ بتتخطّى لحركات الكاميرا)، وصور الشخصية كمرجع
+    للموديل المرجعي. وبعد كل فيديو بنفحص وجهه محلياً (facecheck.py: 3 لقطات) وبنسجّل نتيجة كل موديل (production_log.face_rates):
+    الترتيب التلقائي بيقدّم اللي بيحافظ على الوجه. الفحص بيعلّم بس («الوجه تغيّر») والمالك هو اللي بيقرر.
+  · الحركات السينمائية (motion_presets.py): وصفة على اللقطة (camera_preset) بتحدّد كلام الكاميرا حسب عائلة الموديل (Hailuo بأوامره بين أقواس،
+    Kling جملة طبيعية)، وبتفضّل عائلة موديل، وبتقرر إذا في حركة كاميرا (بتتعارض مع صورة النهاية). أول فيديو بوصفة بيتحفظ كمثال.
   · بديل تلقائي: لو موديل فشل لسبب تقني (مهلة/اتصال/نقص ذاكرة/خرج غير صالح) بنجرّب التالي بالترتيب (حتى 3 محاولات)،
     وكل محاولة بتنسجّل بسجل الإنتاج (production_log.py). أخطاء المالك/الحالة ما إلها بديل.
 """
@@ -40,7 +46,9 @@ for _s in (sys.stdout, sys.stderr):
         _s.reconfigure(encoding="utf-8", errors="replace")
 
 import config
+import facecheck
 import motion_api
+import motion_presets
 import production_log
 import studio_state
 import timeline
@@ -52,6 +60,12 @@ STRETCH_TOLERANCE = 0.15
 DURATION_EPS_MS = 60
 SECTIONS = ["قفل المرجع", "الأجواء", "الواقعية الجسدية", "الكاميرا", "الفيزياء", "المزاج", "الممنوع"]
 _CAMERA_RX = re.compile(r"كاميرا|تقريب|تبعيد|بانوراما|دفع|سحب|zoom|pan|dolly|tilt", re.I)
+# حركة كاميرا فعلية (مش مجرد ذكر الكاميرا): صورة نهاية = نفس صورة البداية بتتعارض معها
+_CAMERA_MOVE_RX = re.compile(r"تقريب|تبعيد|بانوراما|دفع|سحب|دوران|رافعة|تتبّع|تتبع|zoom|dolly|\bpan(?:s|ning)?\b|"
+                             r"camera\s+(?:tilt|push|pull|move|moves|orbit|track)|push[- ]?in|pull[- ]?out|orbit|crane|tracking", re.I)
+FACE_MIN_CHECKS = 3                    # أقل فحوص قبل ما نثق بنسبة موديل
+FACE_WEIGHT = 10                       # نسبة الوجه 0..1 ← ±5 نقاط على الترتيب (نقطة القوة = 10)
+HTTP_NEGATIVE = "worst quality, low quality, blurry, jittery, distorted, inconsistent motion, watermark, text, subtitles"
 PLACEHOLDERS = ("{image}", "{prompt_file}", "{prompt}", "{seconds}", "{width}", "{height}", "{out}")
 
 
@@ -323,6 +337,12 @@ def rank_models(shot: dict, models: list[dict] | None = None, vram_gb: float | N
     vram = available_vram_gb() if vram_gb is None else vram_gb
     dur = (shot["end_ms"] - shot["start_ms"]) / 1000
     need = needs_for(shot, talking)
+    face_rates: dict = {}
+    if "faces" in need and (shot.get("refs") or {}).get("character_id") and shot.get("type") != "hand_product":
+        try:                                           # نسبة نجاح فحص الوجه لكل موديل (بتتجمّع من الفحوص السابقة)
+            face_rates = production_log.face_rates("face_video")
+        except Exception:                              # noqa: BLE001 — التعلّم تحسين مش شرط
+            face_rates = {}
     ranked, excluded = [], []
     for m in models:
         if not m.get("enabled", True):
@@ -340,8 +360,12 @@ def rank_models(shot: dict, models: list[dict] | None = None, vram_gb: float | N
             cost = est_cost(m, dur)
             # الملاءمة أهم (10 لكل نقطة قوة)، وبعدها الأرخص: المحلي مجاني، والـ API بيخصم ضعف سعره بالدولار
             score = 10 * len(matched) - round(m.get("speed_sec_per_sec", 0) / 60, 2) - 2 * (cost or 0)
-            ranked.append({"model": m, "score": round(score, 2), "matched": matched,
-                           "eta_sec": round(m.get("speed_sec_per_sec", 0) * dur), "est_cost_usd": cost})
+            fr = face_rates.get(m["id"])
+            bonus = round(FACE_WEIGHT * (fr["rate"] - 0.5), 2) if fr and fr["checks"] >= FACE_MIN_CHECKS else 0.0
+            pref = motion_presets.preference(shot, m)             # وصفة سينمائية على اللقطة: العائلة المفضّلة للوصفة
+            ranked.append({"model": m, "score": round(score + bonus + pref, 2), "matched": matched,
+                           "eta_sec": round(m.get("speed_sec_per_sec", 0) * dur), "est_cost_usd": cost,
+                           "face_rate": fr, "face_bonus": bonus, "preset_bonus": pref})
     ranked.sort(key=lambda r: (-r["score"], r["model"]["id"]))
     return {"ranked": ranked, "excluded": excluded, "needs": need, "vram_gb": vram}
 
@@ -581,7 +605,8 @@ def _image_payload(img: Path) -> tuple[bytes, str]:
     return buf.getvalue(), "image/jpeg"
 
 
-def _run_http(m: dict, img: Path | None, prompt: str, seconds: float, w: int, h: int, raw: Path, timeout: int, log) -> None:
+def _run_http(m: dict, img: Path | None, prompt: str, seconds: float, w: int, h: int, raw: Path, timeout: int, log,
+              negative: str = "") -> None:
     """POST /jobs ← استطلاع GET /jobs/{id} ← تنزيل /result. DELETE بالنهاية دائماً (إلغاء لو لسا شغّالة، تنظيف لو خلصت)."""
     cfg = m.get("http") or {}
     base = validate_engine_url(cfg.get("url"))
@@ -593,6 +618,8 @@ def _run_http(m: dict, img: Path | None, prompt: str, seconds: float, w: int, h:
     for k in ("steps", "guidance"):
         if cfg.get(k) is not None:
             params[k] = cfg[k]
+    if negative:                                       # الصندوق بيقبله (ALLOWED_PARAMS)؛ بدونه بياخد سلبي الباكند الافتراضي
+        params["negative_prompt"] = negative[:1900]
     files = None
     if mode == "i2v":
         if img is None:
@@ -683,11 +710,12 @@ def _over_budget(stem: str, m: dict, dur_ms: int) -> str | None:
     return None
 
 
-def _run_api(m: dict, img: Path | None, prompt: str, seconds: float, raw: Path, timeout: int, log) -> dict:
+def _run_api(m: dict, img: Path | None, prompt: str, seconds: float, raw: Path, timeout: int, log, **extra) -> dict:
+    """extra: end_image / refs / negative (ثبات الشخصية) — motion_api.run_job بيبعت بس اللي النموذج بياخده."""
     if img is None:
         raise MotionError("تحريك الـ API بدّه صورة معتمدة")
     try:
-        return motion_api.run_job(m["api"], img, prompt, seconds, raw, timeout_sec=min(timeout, 1200), log=log)
+        return motion_api.run_job(m["api"], img, prompt, seconds, raw, timeout_sec=min(timeout, 1200), log=log, **extra)
     except motion_api.ApiMotionError as e:
         raise TechnicalError(str(e), "api") from None
 
@@ -700,10 +728,21 @@ _EN_DESC = {
 }
 
 
-def build_prompt_en(shot: dict, character: dict | None, duration_ms: int) -> str:
-    """برومبت إنجليزي ثابت للـ API (النماذج الخارجية أفهم للإنجليزي). وصف الحركة: لو المالك كتبه بحروف لاتينية بناخده،
-    وإلا بنستخدم الوصف الإنجليزي الافتراضي لنوع اللقطة. بدون أي نص عربي (ما بيتفهم) ولا بيانات حساسة."""
-    custom = (shot.get("api_desc_en") or "").strip()
+def _preset_desc(shot: dict, model: dict | None) -> str:
+    """كلام الكاميرا لوصفة اللقطة حسب عائلة الموديل (+ جملة «الكاميرا والعدسة» لو المالك اختارها). فاضي لو ما في وصفة."""
+    p = motion_presets.of_shot(shot)
+    if not p:
+        return ""
+    text = motion_presets.recipe_text(p, motion_presets.family_of(model))
+    look = motion_presets.look_text((shot.get("camera_preset") or {}).get("look"))
+    return f"{text}. {look}" if text and look else text
+
+
+def build_prompt_en(shot: dict, character: dict | None, duration_ms: int, country: str = "", model: dict | None = None) -> str:
+    """برومبت إنجليزي ثابت للـ API والصناديق (النماذج أفهم للإنجليزي). وصف الحركة: لو المالك كتبه بحروف لاتينية بناخده،
+    وإلا بنستخدم الوصف الإنجليزي الافتراضي لنوع اللقطة. بدون أي نص عربي (ما بيتفهم) ولا بيانات حساسة.
+    لقطات الوجه: بطاقة هوية الشخصية الإنجليزية (identity.py) عشان الوجه ما يميل لملامح شرق آسيا."""
+    custom = _preset_desc(shot, model) or (shot.get("api_desc_en") or "").strip()
     if not custom:
         d = (shot.get("motion_desc") or "").strip()
         letters = [c for c in d if c.isalpha()]
@@ -712,7 +751,11 @@ def build_prompt_en(shot: dict, character: dict | None, duration_ms: int) -> str
     desc = custom or _EN_DESC.get(shot.get("type"), "Calm natural motion")
     if not custom and _CAMERA_RX.search(shot.get("motion_desc") or "") and "camera" not in desc.lower():
         desc += ", with a smooth camera move"
-    who = " Keep the same person: identical face, hair and clothing." if character and shot.get("type") != "hand_product" else ""
+    who = ""
+    if character and shot.get("type") != "hand_product":
+        import identity
+        who = (f" Keep the same person in every frame: {identity.text_of(character, country)}. "
+               "Identical face, hair and clothing; the face must not change.")
     text = (f"Animate the reference image for {duration_ms / 1000:.1f} seconds. {desc.rstrip('.')}.{who} "
             "Keep the exact composition, product, label and colors of the image; never change the product packaging or its text. "
             "Realistic natural motion, steady cinematic camera, soft consistent lighting. "
@@ -796,14 +839,18 @@ def _log_attempt(stem: str, shot_id: str, m: dict, ok: bool, seconds: float, err
 
 
 def _produce(m: dict, *, img: Path, prompt: str, pf: Path, dur_ms: int, w: int, h: int, raw: Path, stem: str, sh: dict,
-             out_dir: Path, talking: bool, log, prompt_en: str = "") -> tuple[Path, dict, bool]:
-    """موديل واحد، محاولة واحدة: تشغيل ← ضبط المدة ← (مزامنة شفاه). أي فشل تقني بيطلع TechnicalError."""
+             out_dir: Path, talking: bool, log, prompt_en: str = "", negative: str = "", end_image: Path | None = None,
+             refs: dict | None = None) -> tuple[Path, dict, bool]:
+    """موديل واحد، محاولة واحدة: تشغيل ← ضبط المدة ← (مزامنة شفاه). أي فشل تقني بيطلع TechnicalError.
+    negative/end_image/refs: ثبات الشخصية للقطات الوجه بس (فاضيين لغيرها). الأوامر المحلية بتضل بالبرومبت العربي (المالك ضابطها)."""
     timeout = int(getattr(config, "MOTION_TIMEOUT_SEC", 3600))
     api_info: dict = {}
     if m.get("kind", "command") == "api":
-        api_info = _run_api(m, img, prompt_en or prompt, dur_ms / 1000, raw, timeout, log)
+        api_info = _run_api(m, img, prompt_en or prompt, dur_ms / 1000, raw, timeout, log, negative=negative,
+                            end_image=end_image, refs=refs)
     elif m.get("kind", "command") == "http":
-        _run_http(m, img, prompt, dur_ms / 1000, w, h, raw, timeout, log)
+        _run_http(m, img, prompt_en or prompt, dur_ms / 1000, w, h, raw, timeout, log,
+                  negative=f"{HTTP_NEGATIVE}, {negative}" if negative else "")
     else:
         cmd = _fill(m["command"], {"image": img, "prompt_file": pf, "prompt": prompt, "seconds": f"{dur_ms / 1000:.3f}",
                                    "width": w, "height": h, "out": raw})
@@ -827,7 +874,44 @@ def _cleanup_attempt(raw: Path) -> None:
         (raw.parent / f"{base}{suffix}").unlink(missing_ok=True)
 
 
-def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1, log=print, fallback: bool = True) -> dict:
+def _end_frame_ok(sh: dict) -> bool:
+    """صورة النهاية = صورة البداية: بتنفع لحركة خفيفة بمكانها، وبتتعارض مع حركة كاميرا (تقريب/دفع/دوران…)."""
+    if not getattr(config, "MOTION_END_FRAME", True):
+        return False
+    mv = motion_presets.camera_move_of(sh)                    # وصفة سينمائية: هي اللي بتقرر
+    return not (_CAMERA_MOVE_RX.search(sh.get("motion_desc") or "") if mv is None else mv)
+
+
+def _identity_inputs(sh: dict, ch: dict | None, img: Path, face_shot: bool) -> dict:
+    """مدخلات ثبات الشخصية للقطة وجه: ممنوعات الهوية، صورة النهاية، وصور الشخصية (للموديل المرجعي). فاضية لغير لقطات الوجه."""
+    if not face_shot or not ch:
+        return {"negative": "", "end_image": None, "refs": None}
+    import characters
+    import identity
+    refs = {}
+    for view in motion_api.REF_VIEWS:
+        p = characters.sheet_path(ch["id"], view)
+        if p:
+            refs[view] = p
+    return {"negative": identity.negative(ch), "end_image": img if _end_frame_ok(sh) else None, "refs": refs}
+
+
+def _check_face(ch: dict, video: Path, stem: str, shot_id: str, cand: dict, check=None) -> dict:
+    """فحص وجه الفيديو (3 لقطات) + تسجيل النتيجة الحاسمة لموديل التحريك. أي عطل تقني = «غير مقاس» (ما بيوقف الإنتاج)."""
+    try:
+        r = (check or facecheck.check_video)(facecheck.character_refs(ch["id"]), video)
+    except facecheck.FaceCheckError as e:
+        return {"status": "unchecked", "similarity": None, "note": str(e)}
+    except Exception as e:                                       # noqa: BLE001 — فحص تحسيني: ما بنكسر الإنتاج لأي سبب
+        return {"status": "unchecked", "similarity": None, "note": f"تعذّر فحص الوجه ({type(e).__name__})"}
+    if r.get("status") in ("pass", "fail"):
+        production_log.record("face_video", "ok" if r["status"] == "pass" else "failed", script_stem=stem, shot_id=shot_id,
+                              model_id=cand["id"], model_name=cand.get("name"), path=_path_of(cand), score=r.get("similarity"))
+    return {**r, "at": _now()}
+
+
+def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1, log=print, fallback: bool = True,
+             face_check=None) -> dict:
     path = Path(script_path)
     stem = path.stem
     ok, why = studio_state.can_start(stem, 9)
@@ -863,11 +947,21 @@ def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1,
     import characters
     cur = characters.chosen(stem)
     ch = characters.get(cur["character_id"]) if cur else None
+    country = (cur or {}).get("country") or ""
     if not sh.get("motion_desc"):
         sh["motion_desc"] = default_motion_desc(sh)
+    face_shot = bool(ch) and sh.get("type") != "hand_product"
+    if face_shot:                                    # بطاقة الهوية الإنجليزية (بتنترجم وبتنخزّن مرة وحدة؛ فشلها ما بيوقف)
+        try:
+            import identity
+            identity.ensure(ch["id"], country)
+            ch = characters.get(ch["id"]) or ch
+        except Exception:                            # noqa: BLE001
+            pass
     prompt = build_prompt(sh, sc, ch, dur_ms)
     sh["motion_prompt"] = prompt
-    prompt_en = build_prompt_en(sh, ch, dur_ms)
+    prompt_en = build_prompt_en(sh, ch, dur_ms, country)
+    ident = _identity_inputs(sh, ch, img, face_shot)
     timeline.save(stem, tl)
 
     studio_state.set_state(stem, 9, "running", f"تحريك {shot_id} بـ {m['name']}")
@@ -905,7 +999,8 @@ def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1,
             t0 = time.time()
             try:
                 final, fit, lip = _produce(cand, img=img, prompt=prompt, pf=pf, dur_ms=dur_ms, w=w, h=h, raw=raw, stem=stem,
-                                           sh=sh, out_dir=out_dir, talking=talking, log=log, prompt_en=prompt_en)
+                                           sh=sh, out_dir=out_dir, talking=talking, log=log,
+                                           prompt_en=build_prompt_en(sh, ch, dur_ms, country, model=cand), **ident)
             except TechnicalError as e:
                 _log_attempt(stem, shot_id, cand, False, time.time() - t0, str(e))
                 dead.add(cand["id"])
@@ -942,12 +1037,21 @@ def run_shot(script_path, shot_id: str, model_id: str | None = None, n: int = 1,
                "took_sec": round(took, 1), "at": _now()}
         if fit.get("cost_usd") is not None:
             rec["cost_usd"] = fit["cost_usd"]
+        if face_shot:
+            rec["face"] = _check_face(ch, final, stem, shot_id, cand, face_check)
+            if rec["face"]["status"] == "fail":
+                log(f"  [!] {shot_id}: الوجه تغيّر بفيديو «{cand['name']}» — {rec['face'].get('note', '')}")
         skipped = [c for c in chain if c["id"] in dead and c["id"] != cand["id"]]      # موديلات فشلت (هلأ أو بخيار سابق) فنزلنا عنها
         if skipped:
             rec["fallback_from"] = skipped[0]["id"]
             fallbacks += 1
         sh2.setdefault("motion_candidates", []).append(rec)
         timeline.save(stem, tl)
+        if sh2.get("camera_preset"):                                  # أول فيديو بهالوصفة = مثالها بمكتبة الحركات (من شغلنا)
+            try:
+                motion_presets.remember_example(sh2["camera_preset"]["id"], final, {"model": cand["name"], "shot": shot_id, "stem": stem})
+            except Exception:                                         # noqa: BLE001 — المثال تحسين مش شرط
+                pass
         made.append(final.name)
         log(f"  [✓] {shot_id} خيار {k + 1}/{n} ({fit['how']})" + (f" — بديل عن «{skipped[0]['name']}»" if skipped else ""))
     studio_state.set_state(stem, 9, "awaiting_choice", "بانتظار اختيارك لحركة كل لقطة")

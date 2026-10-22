@@ -1,0 +1,14 @@
+{
+ "user": {
+  "id": 1,
+  "username": "sara",
+  "display_name": "سارة (تجربة)",
+  "active": true,
+  "must_change": false,
+  "created_at": "2026-10-20T10:00:00+00:00",
+  "created_by": "setup",
+  "last_login": "2026-10-22T05:00:00+00:00"
+ },
+ "needs_setup": false,
+ "seats_note": ""
+}

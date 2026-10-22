@@ -1,0 +1,37 @@
+{
+ "users": [
+  {
+   "id": 1,
+   "username": "sara",
+   "display_name": "سارة (تجربة)",
+   "active": true,
+   "must_change": false,
+   "created_at": "2026-10-20T10:00:00+00:00",
+   "created_by": "setup",
+   "last_login": "2026-10-22T05:00:00+00:00"
+  },
+  {
+   "id": 2,
+   "username": "omar",
+   "display_name": "عمر",
+   "active": true,
+   "must_change": true,
+   "created_at": "2026-10-21T08:30:00+00:00",
+   "created_by": "سارة (تجربة)",
+   "last_login": null
+  },
+  {
+   "id": 3,
+   "username": "lina",
+   "display_name": "لينا",
+   "active": false,
+   "must_change": false,
+   "created_at": "2026-10-21T09:00:00+00:00",
+   "created_by": "سارة (تجربة)",
+   "last_login": "2026-10-21T12:15:00+00:00"
+  }
+ ],
+ "me": 1,
+ "seats_note": "",
+ "free_seats": 3
+}

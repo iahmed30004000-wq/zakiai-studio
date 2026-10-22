@@ -28,6 +28,7 @@ services:
       ENGINE_TOKEN: ${ENGINE_TOKEN:-}                  # للاتصال بالصناديق (مش مخبّأ بالصورة)
       VP_ALLOWED_HOSTS: ${VP_ALLOWED_HOSTS:-}          # أسماء إضافية مسموحة للدخول (الافتراضي: localhost و127.0.0.1 بس)
       VP_ALLOWED_ORIGINS: ${VP_ALLOWED_ORIGINS:-}      # مصادر إضافية (بس لو في محوّل عكسي بيغيّر Host)
+      VP_ALLOW_REMOTE_SETUP: ${VP_ALLOW_REMOTE_SETUP:-}  # 1 = بيسمح بإنشاء الحساب الأول من متصفح مش على نفس الجهاز (Docker). الأفضل: docker compose exec app python accounts.py create ...
       HOME: /tmp
       PYTHONUNBUFFERED: "1"
     volumes:

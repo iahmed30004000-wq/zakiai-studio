@@ -412,7 +412,7 @@ VIEWS.mission = {
     if (!body) return;
     parkBorrowed();
     body.innerHTML = `
-      <div class="page-head mission-head"><div><h2 id="msTitle">✦ المهمة</h2><p class="hint" id="msSub"></p></div></div>
+      <div class="page-head mission-head hero compact" data-img="mission"><div><h2 id="msTitle">✦ المهمة</h2><p class="hint" id="msSub"></p></div></div>
       <ol class="mission-steps" id="msSteps" aria-label="مراحل المهمة"></ol>
       <div id="msPassed" class="mission-passed-host"></div>
       <div id="msGuide"></div>

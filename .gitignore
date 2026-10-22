@@ -21,6 +21,7 @@ models/*
 !models/README.md
 third_party/*
 !third_party/README.md
+!third_party/open-generative-ai/
 services/openmontage/
 **/node_modules/
 _handoff/

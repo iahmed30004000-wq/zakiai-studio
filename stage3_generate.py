@@ -31,6 +31,7 @@ import brief as brief_mod
 import claims
 import clusters
 import config
+import hooks_bank
 import pattern_store
 import pattern_text
 import script_hooks
@@ -393,6 +394,14 @@ def _actionable(review: dict) -> list[dict]:
             if isinstance(f, dict) and f.get("severity") in ("blocker", "major", "minor")]
 
 
+def _hook_examples(product: dict) -> str:
+    """كتلة «هوكات نجحت» من بنك الهوكات (⭐ أو رابحة بالنتايج). فاضية لو ما في، وما بتكسر الكتابة لو فشل شي."""
+    try:
+        return hooks_bank.writer_block(hooks_bank.writer_examples((product or {}).get("category")))
+    except Exception:                                        # noqa: BLE001 — الأمثلة تحسين مش شرط
+        return ""
+
+
 def write_script(product: dict, pattern: dict, used: dict, *, previous: dict | None = None,
                  review: dict | None = None, hooks=None) -> dict:
     """hooks: عدد الافتتاحيات المطلوب (الأساسي + بدائل)؛ الافتراضي config.HOOKS_DEFAULT. الرد بيتعاير بـ script_hooks.normalize."""
@@ -412,6 +421,7 @@ def write_script(product: dict, pattern: dict, used: dict, *, previous: dict | N
         f"{json.dumps(claims.writer_rules(product), ensure_ascii=False, indent=2)}\n\n"
         "## PATTERN TO APPLY (full blueprint)\n"
         f"{json.dumps(pattern_text.for_model(pattern), ensure_ascii=False, indent=2)}\n\n"
+        f"{_hook_examples(product)}"
         "## ALREADY USED — DO NOT REPEAT ANY OF THESE\n"
         f"{json.dumps(used, ensure_ascii=False, indent=2)}"
     )

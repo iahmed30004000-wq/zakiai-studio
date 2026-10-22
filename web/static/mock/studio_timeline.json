@@ -814,9 +814,13 @@
        "note": "ما في نص ملصق بملف المنتج المرجعي"
       },
       "face_check": {
-       "status": "unchecked",
-       "similarity": null,
-       "note": "ما في موديل وجوه على الجهاز"
+       "status": "pass",
+       "similarity": 0.62,
+       "threshold": 0.363,
+       "faces": 1,
+       "face_px": 310,
+       "ref": "front",
+       "note": "الوجه مطابق للشخصية (تطابق 0.62، الحد 0.36)"
       },
       "motion": null
      },
@@ -872,7 +876,15 @@
        "similarity": 1.0,
        "note": "صورة المنتج الحقيقية مركّبة بالحجم المحسوب"
       },
-      "face_check": null,
+      "face_check": {
+       "status": "fail",
+       "similarity": 0.18,
+       "threshold": 0.363,
+       "faces": 1,
+       "face_px": 280,
+       "ref": "three_quarter",
+       "note": "الوجه تغيّر عن الشخصية (تطابق 0.18 وأقل من الحد 0.36)"
+      },
       "motion": null
      }
     ]
