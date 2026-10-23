@@ -11,8 +11,9 @@ import pytest
 
 TOOLS = Path(__file__).resolve().parents[1] / "tools" / "local_models"
 
-BATS = ["1_whisper_turbo_ar.bat", "2_chatterbox.bat", "3_ace_step.bat", "4_stable_audio.bat",
-        "تشغيل الصوت العربي.bat", "تشغيل الموسيقى.bat"]
+# المحتوى بـ .ps1، وجنب كل واحد .bat بنفس الاسم بس لينفتح بالنقر المزدوج
+SCRIPTS = ["1_whisper_turbo_ar.ps1", "2_chatterbox.ps1", "3_ace_step.ps1", "4_stable_audio.ps1",
+           "تشغيل الصوت العربي.ps1", "تشغيل الموسيقى.ps1"]
 
 # أنماط أسرار شائعة (توكنات/مفاتيح) — لازم ما يكون ولا وحدة بسكربتات الجهاز
 SECRET_RX = [
@@ -29,7 +30,7 @@ def _text(name: str) -> str:
 
 
 # ───────── أسرار ─────────
-@pytest.mark.parametrize("name", BATS + ["fetch_model.py", "stable_audio_cmd.py"])
+@pytest.mark.parametrize("name", SCRIPTS + ["fetch_model.py", "stable_audio_cmd.py"])
 def test_no_secrets_in_scripts(name):
     t = _text(name)
     for rx in SECRET_RX:
@@ -38,11 +39,11 @@ def test_no_secrets_in_scripts(name):
 
 # ───────── تراخيص مذكورة ─────────
 @pytest.mark.parametrize("name,licence", [
-    ("1_whisper_turbo_ar.bat", "Apache-2.0"),
-    ("2_chatterbox.bat", "MIT"),
-    ("2_chatterbox.bat", "AGPL-3.0"),
-    ("3_ace_step.bat", "Apache-2.0"),
-    ("4_stable_audio.bat", "Stability AI Community"),
+    ("1_whisper_turbo_ar.ps1", "Apache-2.0"),
+    ("2_chatterbox.ps1", "MIT"),
+    ("2_chatterbox.ps1", "AGPL-3.0"),
+    ("3_ace_step.ps1", "Apache-2.0"),
+    ("4_stable_audio.ps1", "Stability AI Community"),
     ("stable_audio_cmd.py", "Stability AI Community"),
 ])
 def test_licence_note_present(name, licence):
@@ -66,9 +67,28 @@ def test_fetch_model_checks_disk_and_gpu():
     assert "already_done" in t                          # السكربت idempotent: بينط لو منزّل
 
 
-# ───────── كل .bat بينادي fetch_model.py بأوزان تحت models/ ─────────
-@pytest.mark.parametrize("name", [b for b in BATS if b[0].isdigit()])
-def test_fetch_bats_call_fetch_model_with_models_dest(name):
+# ───────── مشغّل .bat: cmd بينادي PowerShell عالـ .ps1 اللي جنبه ─────────
+@pytest.mark.parametrize("name", SCRIPTS)
+def test_bat_launcher_runs_sibling_ps1(name):
+    bat = TOOLS / name.replace(".ps1", ".bat")
+    assert bat.exists(), f"ناقص المشغّل {bat.name}"
+    raw = bat.read_bytes()
+    assert raw.isascii(), f"{bat.name} لازم يكون إنجليزي بس (cmd بيخربط العربي)"
+    t = raw.decode("ascii")
+    assert t.lower().startswith("@echo off")
+    assert "powershell" in t.lower() and '-File "%~dp0%~n0.ps1"' in t
+    assert "<#" not in t and "$ErrorActionPreference" not in t   # ما في PowerShell جوّا الـ .bat
+
+
+@pytest.mark.parametrize("name", SCRIPTS)
+def test_ps1_has_utf8_bom(name):
+    # PowerShell 5.1 بيقرأ الملف بلا BOM كـ ANSI فالعربي بيطلع مخربط
+    assert (TOOLS / name).read_bytes().startswith(b"\xef\xbb\xbf"), f"{name} لازم UTF-8 مع BOM"
+
+
+# ───────── كل سكربت تنزيل بينادي fetch_model.py بأوزان تحت models/ ─────────
+@pytest.mark.parametrize("name", [b for b in SCRIPTS if b[0].isdigit()])
+def test_fetch_scripts_call_fetch_model_with_models_dest(name):
     t = _text(name)
     assert "fetch_model.py" in t, f"{name} لازم ينادي fetch_model.py"
     m = re.search(r'--dest\s+"(models/[^"]+)"', t)
@@ -79,7 +99,7 @@ def test_fetch_bats_call_fetch_model_with_models_dest(name):
 
 # ───────── موديلات مقيّدة بدها login قبلها ─────────
 def test_gated_model_tells_owner_to_login():
-    t = _text("4_stable_audio.bat")
+    t = _text("4_stable_audio.ps1")
     assert "huggingface-cli login" in t
     assert "stabilityai/stable-audio-open-1.0" in t
     t2 = _text("fetch_model.py")
@@ -88,8 +108,8 @@ def test_gated_model_tells_owner_to_login():
 
 # ───────── منافذ محلية بس (net_allow يقبل 127.0.0.1 بمنفذ صريح) ─────────
 @pytest.mark.parametrize("name,host", [
-    ("تشغيل الصوت العربي.bat", "127.0.0.1"),
-    ("تشغيل الموسيقى.bat", "127.0.0.1"),
+    ("تشغيل الصوت العربي.ps1", "127.0.0.1"),
+    ("تشغيل الموسيقى.ps1", "127.0.0.1"),
 ])
 def test_servers_bind_loopback_only(name, host):
     t = _text(name)
@@ -117,5 +137,5 @@ def test_stable_audio_cmd_uses_std_placeholders():
 
 # ───────── مقاطع الأوزان اللي بنمط allow_patterns موجودة فعلاً بالريبو ─────────
 def test_whisper_allow_patterns_cover_the_bin():
-    t = _text("1_whisper_turbo_ar.bat")
+    t = _text("1_whisper_turbo_ar.ps1")
     assert '"*.bin"' in t and '"*.json"' in t           # model.bin + config/tokenizer
