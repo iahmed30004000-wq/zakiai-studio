@@ -542,11 +542,15 @@ function drawImageStation(body, tl, info) {
     </div>
     <div id="imStatus" class="status"></div></div>
     <div id="extPanel"></div>
-    ${tl.scenes.map((sc, i) => `
+    ${tl.scenes.map((sc, i) => {
+      const chosen = sc.shots.filter((h) => h.image && h.image.chosen).length;
+      return `
       <div class="panel scp" style="--sc:var(--vp-scene-${(i % 8) + 1})">
         <h4><span class="scdot"></span> مشهد ${esc(sc.n)} · ${esc(sc.function || "")}</h4>
+        <details ${i === 0 ? "open" : ""} class="imSceneDetails"><summary>${esc(sc.shots.length)} لقطة (${esc(chosen)}/${esc(sc.shots.length)} مختارة)</summary>
         ${sc.shots.map((sh) => imageShotCard(tl, sh, ref)).join("")}
-      </div>`).join("")}`;
+        </details>
+      </div>`;}).join("")}`;
 
   const refresh = async () => { await loadProdState(); renderRail(); await renderStation(7); };
   drawExtPanel();
