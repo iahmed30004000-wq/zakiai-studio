@@ -146,13 +146,13 @@ async function renderVoiceStation(body) {
       <div class="row end"><button class="zk-btn zk-btn--primary" id="pvGo" type="button">ولّد الصوت وافحص المدة</button></div>
       <div id="pvStatus" class="status"></div>
     </div>
-    <div class="panel" id="pvUpload"><h3>🎙 أو ارفع تسجيلك</h3>
+    <details class="panel" id="pvUpload"><summary><b>🎙 أو ارفع تسجيلك</b></summary>
       <p class="hint">سجّل السيناريو بصوتك (المدة بين ${esc(45)} و${esc(50)} ثانية) وارفعه: بيتفرّغ وبيتقصّ على المشاهد لحاله وبيقلك قديش طابق النص المكتوب. بعدين بتسمعه وبتعتمده بنفس الزر.</p>
       <div class="row"><label class="zk-field" style="flex:1 1 16rem"><span class="zk-field__label">ملف التسجيل (صوت، أو فيديو فيه صوتك)</span>
         <input type="file" id="pvFile" accept=".mp3,.wav,.m4a,.ogg,.opus,.flac,.aac,.webm,.mp4,.mov,.m4v,.mkv"></label>
         <button class="zk-btn zk-btn--secondary" id="pvUp" type="button">ارفع وفرّغ</button></div>
       <div id="pvUpStatus" class="status"></div>
-    </div>
+    </details>
     <div id="extPanel"></div>
     <div id="pvResult"></div>`;
   drawExtPanel();
@@ -494,7 +494,7 @@ function drawShotPrompts(body, tl, built) {
     try {
       const r = await api(`/api/studio/${enc(file)}/shots/approve`, { method: "POST" });
       toast(`اعتُمدت ${r.shots} لقطة`, "ok");
-      await loadProdState(); renderRail(); await renderStation(6);
+      location.hash = prodHash(file, 7);
     } catch (e) { setStatus($("#spStatus"), e.message, "err"); ap.disabled = false; }
   });
 }
@@ -524,6 +524,9 @@ function drawImageStation(body, tl, info) {
   const routed = info.ext_routed || [], prov = info.image_provider || {};
   const missing = tl.scenes.reduce((n, s) => n + s.shots.filter((h) => !(h.image && (h.image.candidates || []).length)).length, 0);
   const allRouted = routed.length > 0 && routed.length >= missing;
+  const genPrimary = missing > 0 && !allRouted;
+  const extPrimary = missing > 0 && allRouted;
+  const approvePrimary = allChosen && st.state !== "approved";
   body.innerHTML = `<div class="panel">
     <h3>صور اللقطات</h3>
     <p class="hint">لكل لقطة 2–3 خيارات بمرجع الشخصية والمنتج. اختر الأحسن. أي صورة أقل من 1080×1920 أو بغير نسبة 9:16 بتنقصّ وبتتكبّر (Lanczos — مش موديل تكبير ذكي). لقطات المنتج القريبة بتنركّب فيها صورة المنتج الحقيقية.</p>
@@ -531,11 +534,11 @@ function drawImageStation(body, tl, info) {
     ${ref ? (ref.missing.length ? `<p class="status warn">ملف المنتج المرجعي (${esc(info.product_code)}) ناقص: ${ref.missing.map(esc).join("، ")}. <a href="#/library/products?ref=${enc(info.product_code)}&tab=refs">أكمله</a></p>`
       : `<p class="status ok">ملف المنتج المرجعي كامل.</p>`) : ""}
     ${routed.length ? `<div class="notice warn" id="imRouteNote"><b>${esc(routed.length)} لقطة (شخصية/منتج) بتتولّد بالإضافة مش بالـ API:</b> ${esc(prov.note || "")}
-      <div class="row"><button class="zk-btn zk-btn--primary sm" id="imToExt" type="button">افتح لوحة الإضافة</button></div></div>` : ""}
+      <div class="row"><button class="zk-btn ${extPrimary ? "zk-btn--primary" : "zk-btn--secondary"} sm" id="imToExt" type="button">افتح لوحة الإضافة</button></div></div>` : ""}
     <div class="row end">
       <a class="zk-btn zk-btn--ghost" href="#/library/products?ref=${enc(info.product_code)}&tab=refs">ملف المنتج المرجعي</a>
-      <button class="zk-btn zk-btn--secondary" id="imGenAll" type="button" ${allRouted ? "disabled" : ""} ${allRouted ? 'title="كل اللقطات الناقصة فيها مراجع — بتتولّد بالإضافة"' : ""}>ولّد اللقطات الناقصة</button>
-      <button class="zk-btn zk-btn--primary" id="imApprove" type="button" ${allChosen && st.state !== "approved" ? "" : "disabled"}>${st.state === "approved" ? "معتمدة" : "اعتمد الصور"}</button>
+      <button class="zk-btn ${genPrimary ? "zk-btn--primary" : "zk-btn--secondary"}" id="imGenAll" type="button" ${allRouted ? "disabled" : ""} ${allRouted ? 'title="كل اللقطات الناقصة فيها مراجع — بتتولّد بالإضافة"' : ""}>ولّد اللقطات الناقصة</button>
+      <button class="zk-btn ${approvePrimary ? "zk-btn--primary" : "zk-btn--secondary"}" id="imApprove" type="button" ${allChosen && st.state !== "approved" ? "" : "disabled"}>${st.state === "approved" ? "معتمدة" : "اعتمد الصور"}</button>
     </div>
     <div id="imStatus" class="status"></div></div>
     <div id="extPanel"></div>
@@ -566,7 +569,7 @@ function drawImageStation(body, tl, info) {
     if (d) { d.open = true; d.scrollIntoView({ behavior: "smooth", block: "start" }); }
   });
   $("#imApprove").addEventListener("click", async () => {
-    try { await api(`/api/studio/${enc(file)}/images/approve`, { method: "POST" }); toast("اعتُمدت الصور", "ok"); await refresh(); }
+    try { await api(`/api/studio/${enc(file)}/images/approve`, { method: "POST" }); toast("اعتُمدت الصور — بنفحص تطابقها هلأ", "ok"); location.hash = prodHash(file, 8); }
     catch (e) { setStatus($("#imStatus"), e.message, "err"); }
   });
   $$("[data-extretry]", body).forEach((btn) => btn.addEventListener("click", () =>
@@ -761,10 +764,12 @@ function drawMotion(body, d) {
   const done = d.shots.filter((s) => s.motion).length;
   body.innerHTML = `<div class="panel">
     <h3>التحريك</h3>
-    <p class="hint">كل لقطة بتتحرّك بموديل محلي من سجلك. مدة الحركة = مدة اللقطة بالضبط (بيقص لو أطول، وبيمدّد لحد 15٪ لو أقصر، وغير هيك بيفشل). النظام بيرشّح موديل حسب نوع اللقطة ووصف الحركة والمدة والذاكرة المتاحة (${esc(d.vram_gb)} GB)، وبيقلك ليش استبعد غيره.</p>
-    ${d.models ? "" : `<p class="status warn">سجل الموديلات فاضي. <a href="#/factory/local">أضف موديلاتك</a> (بيفتحوا بأمر تشغيل لكل موديل).</p>`}
+    <details><summary class="hint">كيف بيشتغل التحريك؟</summary>
+      <p class="hint">كل لقطة بتتحرّك بموديل محلي من سجلك. مدة الحركة = مدة اللقطة بالضبط (بيقص لو أطول، وبيمدّد لحد 15٪ لو أقصر، وغير هيك بيفشل). النظام بيرشّح موديل حسب نوع اللقطة ووصف الحركة والمدة والذاكرة المتاحة (${esc(d.vram_gb)} GB)، وبيقلك ليش استبعد غيره.</p>
+      ${d.models ? "" : `<p class="status warn">سجل الموديلات فاضي. <a href="#/factory/local">أضف موديلاتك</a> (بيفتحوا بأمر تشغيل لكل موديل).</p>`}
+      <p class="hint">الوقت التقريبي لباقي اللقطات (على المرشَّح الأول): <b>${esc(fmtEta(d.eta_total_sec))}</b>. الطابور بيشتغل على كرت الشاشة، وبتقدر توقفه وتكمّله من لوحة المهام.</p>
+    </details>
     <div class="quota"><span>لقطات محرّكة</span><progress max="${d.shots.length}" value="${done}"></progress><b class="num">${done} من ${d.shots.length}</b></div>
-    <p class="hint">الوقت التقريبي لباقي اللقطات (على المرشَّح الأول): <b>${esc(fmtEta(d.eta_total_sec))}</b>. الطابور بيشتغل على كرت الشاشة، وبتقدر توقفه وتكمّله من لوحة المهام.</p>
     <div id="mvCost" class="status" aria-live="polite"></div>
     <div class="row end">
       <a class="zk-btn zk-btn--ghost" href="#/factory/local">سجل الموديلات</a>
@@ -776,9 +781,10 @@ function drawMotion(body, d) {
     ${pstGallery(d.presets)}
     <div id="extPanel"></div>
     ${d.shots.map((s) => `
-      <div class="panel mvshot" data-id="${esc(s.id)}">
+      <div class="panel mvshot" style="display:inline-block;vertical-align:top;width:min(100%,35rem);margin:0 6px 12px" data-id="${esc(s.id)}">
         <div class="row between"><h4>${esc(s.id)} · <span class="tag">${esc(SHOT_LABEL[s.type] || s.type)}</span> ${(s.duration_ms / 1000).toFixed(1)}ث</h4>
           ${s.motion ? `<span class="tag ok">محرّكة${s.motion.lipsync ? " · شفاه" : ""}</span>` : `<span class="tag warn">بلا حركة</span>`}</div>
+        <details class="mv-details"><summary class="hint">⚙ إعدادات اللقطة</summary>
         <label class="zk-field"><span class="zk-field__label">وصف الحركة (شو بيتحرك وكيف، والكاميرا)</span>
           <textarea class="zk-textarea" rows="2" maxlength="600" data-desc="${esc(s.id)}">${esc(s.motion_desc)}</textarea></label>
         ${pstShotControl(s, d.presets)}
@@ -788,10 +794,14 @@ function drawMotion(body, d) {
             <select class="zk-select" data-model="${esc(s.id)}"><option value="">تلقائي${s.ranked[0] ? ` (${esc(s.ranked[0].name)})` : ""}</option>
               ${s.ranked.map((m) => `<option value="${esc(m.id)}">${esc(m.name)}${m.est_cost_usd ? ` ($${esc(m.est_cost_usd)})` : m.path === "api" ? "" : " (مجاني)"} — ${esc(m.matched.map((x) => ({ faces: "وجوه", product: "منتج", camera_motion: "كاميرا", realism: "واقعية", hand: "يد" }[x] || x)).join("، ") || "بلا تطابق")} · ~${esc(fmtEta(m.eta_sec))}${m.face_rate && m.face_rate.checks >= 3 ? ` · حفظ الوجه ${Math.round(m.face_rate.rate * 100)}٪ (${m.face_rate.checks} فحوص)` : ""}</option>`).join("")}</select></label>
           <button class="zk-btn zk-btn--secondary sm" data-run="${esc(s.id)}" type="button" ${s.has_image && d.models ? "" : "disabled"}>${s.candidates.length ? "خيارات جديدة" : "حرّك"}</button>
-          <button class="zk-btn zk-btn--ghost sm" data-extretry="${esc(s.id)}" data-defprompt="${esc(s.motion_desc || "")}" type="button" ${s.has_image ? "" : "disabled"} title="مهمة جديدة لـ Flow بالإضافة مع إمكانية تعديل وصف الحركة">${zkIcon("refresh")} أعد بـ Flow (الإضافة)</button>
-          <button class="zk-btn zk-btn--ghost sm" data-upclip="${esc(s.id)}" type="button" title="فيديو من عندك بدل التوليد (mp4 أو mov أو webm): مدته بتتظبط على مدة اللقطة (قص، أو مط حتى 15٪)">⬆ ارفع فيديو</button>
+          <details class="mv-menu"><summary aria-label="خيارات إضافية">⋯</summary>
+            <button class="zk-btn zk-btn--ghost sm" data-extretry="${esc(s.id)}" data-defprompt="${esc(s.motion_desc || "")}" type="button" ${s.has_image ? "" : "disabled"} title="مهمة جديدة لـ Flow بالإضافة مع إمكانية تعديل وصف الحركة">${zkIcon("refresh")} أعد بـ Flow (الإضافة)</button>
+            <button class="zk-btn zk-btn--ghost sm" data-upclip="${esc(s.id)}" type="button" title="فيديو من عندك بدل التوليد (mp4 أو mov أو webm): مدته بتتظبط على مدة اللقطة (قص، أو مط حتى 15٪)">⬆ ارفع فيديو</button>
+          </details>
         </div>
         ${s.excluded.length ? `<details><summary class="hint">موديلات مستبعدة (${s.excluded.length})</summary><ul class="why">${s.excluded.map((e) => `<li><b>${esc(e.name)}</b>: ${esc(e.reason)}</li>`).join("")}</ul></details>` : ""}
+        </details>
+        <details class="mv-details"><summary class="hint">المرشّحات (${s.candidates.length})</summary>
         <div class="vidrow">${s.candidates.map((c) => `
           <figure class="vid ${s.motion && s.motion.clip === c.clip ? "on" : ""}">
             <video src="${clipUrl(c.clip)}" controls preload="none" muted playsinline></video>
@@ -799,8 +809,9 @@ function drawMotion(body, d) {
             <button class="zk-btn ${s.motion && s.motion.clip === c.clip ? "zk-btn--secondary" : "zk-btn--primary"} sm" data-pick="${esc(s.id)}" data-clip="${esc(c.clip)}" data-facefail="${c.face && c.face.status === "fail" ? "1" : ""}" type="button" ${s.motion && s.motion.clip === c.clip ? "disabled" : ""}>${s.motion && s.motion.clip === c.clip ? "المختار" : "اختر"}</button>
           </figure>`).join("")}</div>
         ${s.candidates.some((c) => c.face && c.face.status === "fail") ? `<p class="hint">في فيديو وجهه تغيّر عن الشخصية. جرّب موديل تاني من القائمة وكبسة «خيارات جديدة» (النظام بيقدّم الموديل اللي بيحافظ على الوجه أكتر كل ما تجمّعت فحوص)، أو اختار فيديو تاني.</p>` : ""}
+        </details>
       </div>`).join("")}
-    ${d.problems.length ? `<div class="panel"><h4>قبل الاعتماد</h4><ul class="vlist">${d.problems.map((p) => `<li class="warn">${esc(p.message)}</li>`).join("")}</ul></div>` : ""}`;
+    ${d.problems.length ? `<details class="panel"><summary>قبل الاعتماد · ${d.problems.length} ملاحظة</summary><ul class="vlist">${d.problems.map((p) => `<li class="warn">${esc(p.message)}</li>`).join("")}</ul></details>` : ""}`;
 
   drawExtPanel();
   drawMotionCost(file);
@@ -915,10 +926,12 @@ function drawMontage(body, d) {
       <div class="row end">
         <button class="zk-btn zk-btn--secondary" id="mnPreview" type="button" ${d.clips_ready ? "" : "disabled"}>${rp ? "أعد المعاينة" : "اعمل معاينة"}</button>
         <button class="zk-btn zk-btn--primary" id="mnFinal" type="button" ${d.can_final ? "" : "disabled"}>${rf ? "أعد التصدير النهائي" : "صدّر نهائياً"}</button>
-        <button class="zk-btn zk-btn--secondary" id="mnAdv" type="button" ${d.can_final ? "" : "disabled"}>تصدير متقدّم (ترجمة بالكلمة + بطاقات)</button>
       </div>
-      <label class="zk-checkbox"><input type="checkbox" id="mnEngine" ${d.final_engine === "remotion" ? "checked" : ""}> <span>خلّي «صدّر نهائياً» دايماً بالمتقدّم (ولو فشل بيرجع للعادي لحاله)</span></label>
-      <p class="hint">«التصدير المتقدّم» بيرسم ترجمة عربية بتضوي الكلمة المحكية + بطاقة المنتج والسعر والعرض وشاشة «اطلب هلأ» بهوية ليالي الشرق، وبياخد حوالي 4–8 دقايق (بيحتاج Node وChrome مثبّتين). لو فشل، تصديرك العادي السابق بيضل سليم.${rf && rf.engine === "remotion" ? " <b>التصدير الحالي: متقدّم.</b>" : ""}</p>
+      <details><summary class="hint">خيارات أكتر</summary>
+        <button class="zk-btn zk-btn--secondary" id="mnAdv" type="button" ${d.can_final ? "" : "disabled"}>تصدير متقدّم (ترجمة بالكلمة + بطاقات)</button>
+        <label class="zk-checkbox"><input type="checkbox" id="mnEngine" ${d.final_engine === "remotion" ? "checked" : ""}> <span>خلّي «صدّر نهائياً» دايماً بالمتقدّم (ولو فشل بيرجع للعادي لحاله)</span></label>
+        <p class="hint">«التصدير المتقدّم» بيرسم ترجمة عربية بتضوي الكلمة المحكية + بطاقة المنتج والسعر والعرض وشاشة «اطلب هلأ» بهوية ليالي الشرق، وبياخد حوالي 4–8 دقايق (بيحتاج Node وChrome مثبّتين). لو فشل، تصديرك العادي السابق بيضل سليم.${rf && rf.engine === "remotion" ? " <b>التصدير الحالي: متقدّم.</b>" : ""}</p>
+      </details>
       <div id="mnStatus" class="status"></div>
       ${rp ? `<h4 class="sub-h">المعاينة · ${(rp.duration_ms / 1000).toFixed(1)}ث${rp.ahat ? " · بآهات" : " · بلا آهات"}</h4><video class="wide-video" controls preload="metadata" src="${renderUrl("preview")}"></video>` : ""}
       ${rf ? `<h4 class="sub-h">التصدير النهائي</h4><p class="status ok">${esc(rf.file)} · ${esc(rf.size.join("×"))} · ${(rf.duration_ms / 1000).toFixed(1)}ث</p>
@@ -1082,10 +1095,11 @@ async function drawExtPanel(opts = {}) {
   const d = s.data, c = d.control, stopped = c.command === "stop" && c.stop_code;
   const mine = !c.kind || c.kind === kind;                               // الإضافة مضبوطة على هالنوع؟
   const running = mine && c.command === "run";
+  const active = mine && (c.command === "run" || c.command === "pause");
   const pending = d.kinds ? d.kinds[kind] || 0 : d.queue;
   const prevBox = box.querySelector("details[data-dk=main]");
   const openKeys = new Set($$("details[data-dk]", box).filter((x) => x.open).map((x) => x.dataset.dk));
-  const mainOpen = prevBox ? prevBox.open : (stopped || running);
+  const mainOpen = prevBox ? prevBox.open : false;
   const only = mine && Array.isArray(c.only) ? new Set(c.only) : null;
   const sites = extSitesFor(kind, d.sites);
   const siteOk = sites.some((x) => x.id === c.site);
@@ -1098,6 +1112,7 @@ async function drawExtPanel(opts = {}) {
   box.innerHTML = `<details class="panel extp" data-dk="main" ${mainOpen ? "open" : ""}><summary><b>${esc(cfg.title)}</b>
       <span class="tag ${!mine ? "idle" : stopped ? "danger" : running ? "ok" : ""}">${!mine ? "مضبوطة على «" + esc(extKind(c.kind)) + "»" : stopped ? "وقفت" : esc(EXT_CMD[c.command] || c.command)}</span>
       <span class="hint">معلّق: ${esc(pending)} ${esc(cfg.unit)}</span></summary>
+    <details class="ext-options"><summary class="hint">إعدادات وخيارات الإضافة</summary>
     <p class="hint">${esc(cfg.intro)}</p>
     <p class="status warn">أتمتة واجهة هالمواقع بتخالف شروطهم عادة وبتعرّض حسابك للإيقاف. الأفضل حساب ثانوي وسرعة «طبيعي». الإضافة بتشتغل بحسابك المسجّل بنفسك، بتبويب واحد وشغلة بالمرة، وبتوقف كلياً عند أي تحقق أو كابتشا أو تحذير أو طلب دخول — وما بتتجاوز أي حماية، وما بتخزّن ولا بتدخل كلمات سر.</p>
 
@@ -1136,12 +1151,13 @@ async function drawExtPanel(opts = {}) {
         : `<p class="empty">ما في ${esc(cfg.units)} للاختيار (الخط الزمني غير جاهز).</p>`}
     </details>
 
+    </details>
     ${stopped ? `<div class="notice danger"><b>وقفت الإضافة:</b> ${esc(c.stop_reason || EXT_STOPS[c.stop_code] || c.stop_code)}
       <br><span class="hint">${c.stop_reason ? "" : "السبب: " + esc(EXT_STOPS[c.stop_code] || c.stop_code) + " · "}المكان: ${esc(extPlaceText(c) || "غير معروف")}.</span>
       <br><span class="hint">حلّ الموضوع بنفسك بالموقع (حل التحقق، سجّل دخولك، استنى الحد...) وبعدين اضغط «كمّل». ما في استئناف تلقائي أبداً.</span></div>` : ""}
     <div class="row">
-      <button class="zk-btn zk-btn--ghost sm" id="extPause" type="button">${zkIcon("pause")} إيقاف مؤقت</button>
-      <button class="zk-btn zk-btn--danger sm" id="extStop" type="button">${zkIcon("stop")} إيقاف</button>
+      ${running ? `<button class="zk-btn zk-btn--ghost sm" id="extPause" type="button">${zkIcon("pause")} إيقاف مؤقت</button>` : ""}
+      ${active ? `<button class="zk-btn zk-btn--danger sm" id="extStop" type="button">${zkIcon("stop")} إيقاف</button>` : ""}
       ${stopped ? `<button class="zk-btn zk-btn--secondary sm" id="extResume" type="button" title="بيغيّر أمر الاستوديو لتشغيل — التشغيل الفعلي من نافذة الإضافة">كمّل (بعد ما حلّيت الموضوع)</button>` : ""}
     </div>
 

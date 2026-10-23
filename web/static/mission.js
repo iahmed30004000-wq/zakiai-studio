@@ -345,7 +345,18 @@ async function renderStage(seq) {
     const host = document.createElement("div");
     host.className = "mission-borrow";
     box.appendChild(host);
-    borrow(host, productNodes());
+    const [toolbar, tabs, brief, refs] = productNodes();
+    if (toolbar) borrow(host, [toolbar]);
+    [[tabs, "اختيار المنتجات"], [brief, "بريف المنتج"], [refs, "مراجع المنتج"]].forEach(([node, label]) => {
+      if (!node) return;
+      const section = document.createElement("details");
+      section.className = "panel mission-product-section";
+      const summary = document.createElement("summary");
+      summary.textContent = label;
+      section.appendChild(summary);
+      host.appendChild(section);
+      borrow(section, [node]);
+    });
     if (!host.children.length) { box.innerHTML = `<div class="panel"><p class="status err">ما لقيت شاشة المنتجات لتركيبها هون.</p></div>`; return; }
     await VIEWS.products.enter({ name: "products", rest: MS.product ? [enc(MS.product)] : [], q: { tab: q.tab || "" } });
     if (seq !== MS.seq) return;

@@ -36,7 +36,7 @@ function fmtAt(s) {
 }
 
 function renderAttempts() {
-  const box = $("#mmLog");
+  const box = $("#mmLogContent");
   if (!box) return;
   const { items, stats, err } = MM.log;
   const pathLabel = (p) => (p === "http" ? "صندوق" : p === "command" ? "أمر" : p === "api" ? "API" : "—");
@@ -79,9 +79,9 @@ function renderModels() {
           <td data-label="الحالة"><span class="tag ${m.enabled && runnable(m) ? "ok" : "warn"}">${!runnable(m) ? "ناقص" : m.enabled ? "مفعّل" : "معطّل"}</span></td>
           <td><a class="zk-btn zk-btn--ghost sm" href="#/factory/local/${enc(m.id)}">عدّل</a></td></tr>`).join("")
           || `<tr><td colspan="8" class="empty">ما في موديلات. أضف أول موديل.</td></tr>`}</tbody></table></div></div>
-    <div class="panel" id="mmApi"></div>
+    <details class="panel" id="mmApi"><summary>التحريك بالـ API (fal.ai)</summary><div id="mmApiContent"></div></details>
     <div id="mmForm"></div>
-    <div class="panel" id="mmLog"></div>`;
+    <details class="panel" id="mmLog"><summary>آخر المحاولات</summary><div id="mmLogContent"></div></details>`;
   $("#mmNew").addEventListener("click", () => { MM.sel = "new"; renderModelForm(); });
   if (MM.sel) renderModelForm();
   renderAttempts();
@@ -256,7 +256,7 @@ async function loadApiPanel() {
 }
 
 function renderApiPanel() {
-  const box = $("#mmApi");
+  const box = $("#mmApiContent");
   if (!box) return;
   const a = MM.api;
   if (!a) { box.innerHTML = `<h3>التحريك بالـ API (fal.ai)</h3><p class="hint">…</p>`; return; }
