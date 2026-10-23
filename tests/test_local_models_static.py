@@ -1,0 +1,121 @@
+# -*- coding: utf-8 -*-
+"""فحوص ساكنة لسكربتات النماذج المحلية على جهاز المالك (tools/local_models/).
+بلا إنترنت وبلا تشغيل — بس قراءة الملفات: لا أسرار، تراخيص مذكورة، أنماط مسموحة، وصياغة صحيحة."""
+
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+TOOLS = Path(__file__).resolve().parents[1] / "tools" / "local_models"
+
+BATS = ["1_whisper_turbo_ar.bat", "2_chatterbox.bat", "3_ace_step.bat", "4_stable_audio.bat",
+        "تشغيل الصوت العربي.bat", "تشغيل الموسيقى.bat"]
+
+# أنماط أسرار شائعة (توكنات/مفاتيح) — لازم ما يكون ولا وحدة بسكربتات الجهاز
+SECRET_RX = [
+    re.compile(r"hf_[A-Za-z0-9]{20,}"),           # توكن HuggingFace
+    re.compile(r"sk-[A-Za-z0-9]{20,}"),           # مفتاح OpenAI
+    re.compile(r"(?i)(api[_-]?key|token|secret|password)\s*[:=]\s*['\"][^'\"]{8,}"),
+]
+
+ALLOWED_REPO_DIRS = {"models"}                   # الأوزان دايماً تحت models/
+
+
+def _text(name: str) -> str:
+    return (TOOLS / name).read_text(encoding="utf-8-sig")
+
+
+# ───────── أسرار ─────────
+@pytest.mark.parametrize("name", BATS + ["fetch_model.py", "stable_audio_cmd.py"])
+def test_no_secrets_in_scripts(name):
+    t = _text(name)
+    for rx in SECRET_RX:
+        assert not rx.search(t), f"أسرار ممنوعة بـ {name}: {rx.pattern}"
+
+
+# ───────── تراخيص مذكورة ─────────
+@pytest.mark.parametrize("name,licence", [
+    ("1_whisper_turbo_ar.bat", "Apache-2.0"),
+    ("2_chatterbox.bat", "MIT"),
+    ("2_chatterbox.bat", "AGPL-3.0"),
+    ("3_ace_step.bat", "Apache-2.0"),
+    ("4_stable_audio.bat", "Stability AI Community"),
+    ("stable_audio_cmd.py", "Stability AI Community"),
+])
+def test_licence_note_present(name, licence):
+    assert licence in _text(name), f"الترخيص {licence} لازم يكون مكتوب بـ {name}"
+
+
+# ───────── fetch_model.py ─────────
+def test_fetch_model_uses_allow_patterns_and_no_trust_remote_code():
+    t = _text("fetch_model.py")
+    assert "allow_patterns" in t
+    assert "trust_remote_code=False" in t              # ما مننفّذ كود من النت
+    assert "MODELS_DIR" in t and "models" in t         # الأوزان تحت models/
+    assert "token=None" in t or "huggingface-cli login" in t   # ما منخزّن توكن
+    assert "snapshot_download" in t
+
+
+def test_fetch_model_checks_disk_and_gpu():
+    t = _text("fetch_model.py")
+    assert "disk_usage" in t                            # فحص المساحة
+    assert "nvidia-smi" in t                            # فحص كرت الشاشة
+    assert "already_done" in t                          # السكربت idempotent: بينط لو منزّل
+
+
+# ───────── كل .bat بينادي fetch_model.py بأوزان تحت models/ ─────────
+@pytest.mark.parametrize("name", [b for b in BATS if b[0].isdigit()])
+def test_fetch_bats_call_fetch_model_with_models_dest(name):
+    t = _text(name)
+    assert "fetch_model.py" in t, f"{name} لازم ينادي fetch_model.py"
+    m = re.search(r'--dest\s+"(models/[^"]+)"', t)
+    assert m, f"{name} لازم يحدد --dest تحت models/"
+    assert m.group(1).split("/")[0] in ALLOWED_REPO_DIRS
+    assert re.search(r'--allow\s+"', t), f"{name} لازم يحدد أنماط ملفات مسموحة"
+
+
+# ───────── موديلات مقيّدة بدها login قبلها ─────────
+def test_gated_model_tells_owner_to_login():
+    t = _text("4_stable_audio.bat")
+    assert "huggingface-cli login" in t
+    assert "stabilityai/stable-audio-open-1.0" in t
+    t2 = _text("fetch_model.py")
+    assert "--gated" in t2
+
+
+# ───────── منافذ محلية بس (net_allow يقبل 127.0.0.1 بمنفذ صريح) ─────────
+@pytest.mark.parametrize("name,host", [
+    ("تشغيل الصوت العربي.bat", "127.0.0.1"),
+    ("تشغيل الموسيقى.bat", "127.0.0.1"),
+])
+def test_servers_bind_loopback_only(name, host):
+    t = _text(name)
+    assert host in t
+    assert "0.0.0.0" not in t, f"{name} لازم يسمع على {host} بس، مش عالشبكة"
+
+
+# ───────── صياغة بايثون ─────────
+@pytest.mark.parametrize("name", ["fetch_model.py", "stable_audio_cmd.py"])
+def test_py_compile(name):
+    r = subprocess.run([sys.executable, "-m", "py_compile", str(TOOLS / name)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+
+
+# ───────── stable_audio_cmd يفهم أماكن الملفات القياسية ─────────
+def test_stable_audio_cmd_uses_std_placeholders():
+    t = _text("stable_audio_cmd.py")
+    for ph in ("--prompt", "--prompt-file", "--out", "--seconds"):
+        assert ph in t, f"ناقص {ph} — ضروري للربط بـ «أمر تشغيل» (PLACEHOLDERS)"
+    assert "StableAudioPipeline" in t
+    assert "enable_model_cpu_offload" in t              # كرت 6 غيغا — لازم CPU offload
+    assert "float16" in t or "fp16" in t
+
+
+# ───────── مقاطع الأوزان اللي بنمط allow_patterns موجودة فعلاً بالريبو ─────────
+def test_whisper_allow_patterns_cover_the_bin():
+    t = _text("1_whisper_turbo_ar.bat")
+    assert '"*.bin"' in t and '"*.json"' in t           # model.bin + config/tokenizer

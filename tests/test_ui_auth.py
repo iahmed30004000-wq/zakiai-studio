@@ -37,7 +37,11 @@ def test_the_login_script_covers_setup_login_and_forced_password_change_without_
 
 
 def test_the_header_shows_who_is_logged_in_with_a_logout_button():
-    assert re.search(r'<span class="who-chip" id="whoChip" hidden>.*?id="whoName".*?id="logoutBtn".*?خروج</button></span>', INDEX, re.S)
+    # الاسم والخروج جوّا قائمة «حسابي» بالترويسة (accDd) — مش شريحة مستقلة بنفس السطر
+    assert re.search(r'<span class="who-chip" id="whoChip" hidden>.*?id="whoName".*?</span>.*?id="logoutBtn"', INDEX, re.S)
+    assert 'id="accDd"' in INDEX and 'id="accBtn"' in INDEX
+    header = re.search(r'<header slot="header".*?</header>', INDEX, re.S).group(0)
+    assert 'id="logoutBtn"' in header and "خروج" in header
     assert "accWho();" in BOOT and "async function accWho()" in AJS
     assert '"/api/auth/logout", { method: "POST" }' in AJS and 'location.href = "/login.html"' in AJS
 

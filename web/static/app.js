@@ -740,10 +740,18 @@ function authRedirect() {
   location.href = "/login.html";
 }
 
+/* لما طلب POST بيرجّع job_id (شغلة طويلة بالخلفية) منبعت حدث vp:job — najma.js بيفرجي شاشة التحميل والحبة الصغيرة */
+function jobHook(url, opts, data) {
+  try {
+    const method = String((opts && opts.method) || "GET").toUpperCase();
+    if (method === "POST" && data && typeof data.job_id === "string" && data.job_id)
+      document.dispatchEvent(new CustomEvent("vp:job", { detail: { id: data.job_id, url: String(url) } }));
+  } catch { /* الزينة ما بتوقف الطلب */ }
+}
 async function api(url, opts) {
   if (MOCK) {
     const m = await mockApi(url, opts);
-    if (m !== NOMOCK) return m;
+    if (m !== NOMOCK) { jobHook(url, opts, m); return m; }
   }
   let r;
   try { r = await fetch(url, opts); }
@@ -760,7 +768,9 @@ async function api(url, opts) {
     } catch { /* الرد مش JSON */ }
     throw new ApiError(toLatin(msg), r.status, detail);
   }
-  return r.json();
+  const data = await r.json();
+  jobHook(url, opts, data);
+  return data;
 }
 /* نسخة ما بترمي: {data, err} */
 async function soft(url, opts) {
@@ -914,6 +924,11 @@ async function refreshTopbar() {
     setChip("tbBackup", bad ? "danger" : "ok", a.long, a.short,
       `آخر نسخة: ${fmtDate(lb.at)}${lb.ok === false ? " — فشلت" : ""}${s.backup_alert ? " — تنبيه: النسخة قديمة" : ""}`);
   }
+  /* الـ OMS شرائحه بتنشال من الترويسة والقائمة لما ما يكون مضبوط (html[data-oms="on"]) */
+  document.documentElement.dataset.oms = s.configured ? "on" : "off";
+  /* شريحة النسخة بتطلع بس لما في مشكلة — النسخة الناجحة خبر سار بس، ما بيحتاج خانة */
+  const bp = $("#tbBackup");
+  if (bp) bp.hidden = !["warn", "danger"].includes(bp.dataset.state);
   updateAlertBadge();
 }
 $("#tbCrm").addEventListener("click", () => { location.hash = "#/settings/crm"; });

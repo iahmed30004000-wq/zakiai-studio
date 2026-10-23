@@ -737,7 +737,7 @@ button.nav-search:hover { background: var(--vp-surface-3); border-color: var(--v
 .zk-header__end { margin-inline-start: auto; }
 /* لابتوب (561–1500px): أزرار الجولة والتطبيقات والمهام أيقونة بس (الاسم بالتلميح) عشان الترويسة تضل بسطر واحد */
 @media (min-width: 561px) and (max-width: 1500px) {
-  #tourBtn .tb-lbl, #appsDd .tb-lbl, #tbJobs .tb-lbl { display: none; }
+  #guideBtn .tb-lbl, #accBtn .tb-lbl, #tbJobs .tb-lbl { display: none; }
 }
 @media (max-width: 560px) {
   .zk-header .tb-status { order: 3; flex: 1 1 100%; }
@@ -746,7 +746,7 @@ button.nav-search:hover { background: var(--vp-surface-3); border-color: var(--v
   /* جوال: أزرار الترويسة أضيق، بلا زر «الجولة» (بتضل من البحث السريع)، وبتلتف لو ضاقت الشاشة أكتر — بلا تمرير أفقي */
   .zk-header__end { gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
   .zk-header__end .zk-btn { padding-inline: 10px; }
-  #tourBtn { display: none; }
+  #guideBtn .tb-lbl { display: none; }
 }
 
 

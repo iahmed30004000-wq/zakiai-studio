@@ -181,12 +181,14 @@ def test_routes_return_arabic_400s(client):
 
 
 # ───────── الواجهة ─────────
-def test_ui_has_the_claims_tab_escapes_text_and_confirms_destructive_actions():
+def test_claims_tab_moved_to_settings_analysis_escapes_text_and_confirms_destructive_actions():
+    """تبويب الادعاءات انتقل من المكتبات إلى الإعدادات → #/settings/analysis؛ ما عاد بيبان كتبويبة مكتبة."""
     js = (ROOT / "web/static/claims.js").read_text(encoding="utf-8")
     idx = (ROOT / "web/static/index.html").read_text(encoding="utf-8")
     shell = (ROOT / "web/static/shell.js").read_text(encoding="utf-8")
-    assert 'data-tab="claims"' in idx and 'id="libs-claims"' in idx and "/claims.js?v=" in idx
-    assert '"claims"' in shell and "VIEWS.claims.enter" in shell
+    assert 'data-tab="claims"' not in idx and 'id="libs-claims"' not in idx
+    assert "/claims.js?v=" in idx                                              # السكربت بضل محمّل (يفتحه الإعدادات)
+    assert '"claims"' in shell and 'id="set-claims"' in idx                     # shell.js بيوجّه claims ← analysis، والحاوية بالإعدادات
     assert js.count("confirm(") >= 2                                          # الحذف والاسترجاع بيطلبوا تأكيد
     assert "${esc(r.label)}" in js and "${esc(f.evidence)}" in js             # نصوص بتنهرّب
     assert not re.search(r"[٠-٩]", js)                                        # أرقام غربية بالكود

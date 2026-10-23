@@ -1,11 +1,13 @@
 /*
-  theme.css — هوية «ليالي الشرق»: قيم الألوان والخطوط والقياسات للثيمين.
+  theme.css — هوية «نجمة وطريق»: قيم الألوان والخطوط والقياسات للثيمين.
 
-  تلات ثيمات:
-    data-theme="night"  (الافتراضي)  سماء ليل بنفسجية، ذهبي، فيروزي، لازوردي.
-    data-theme="day"                 نهار فاتح على ورق عاجي، لازوردي وذهبي.
-    data-theme="neon"                «ساحل النيون»: ليل ساحلي بنيون زهري وسماوي، حدود سودا وظل حاد (طابع بس، بلا أي شي من لعبة أو شركة).
-  الأسماء القديمة dark / light / calm بتضل شغّالة: dark = night، light و calm = day.
+  النجمة = الهندسة الإسلامية (نجمة ثمانية، أقواس، ذهبي وفيروزي على كحلي الليل).
+  الطريق = طابع ألعاب المدن: غروب وردي-برتقالي، عناوين بوستر عريضة بإطار أسود، وخط طريق بيوصلك من خطوة لخطوة.
+
+  ثيمين:
+    data-theme="night"  (الافتراضي)  كحلي الليل، ذهبي، فيروزي، وسما غروب للأبطال بس.
+    data-theme="day"                 حجر عمّان الفاتح، فيروزي غامق وذهبي.
+  الأسماء القديمة بتمرق بالترحيل بـ boot.js: dark و neon («ساحل النيون» القديم) → night، light و calm → day.
 
   القاعدة: كل الشاشات بتقرأ --vp-* بس. وبنعيد ضبط --zk-* الأساسية لنفس القيم
   عشان مكوّنات zaki-ui (الأزرار، الحقول، الشريط الجانبي، المحطات) تتلوّن معنا.
@@ -16,7 +18,7 @@
 /* ═════════ القياسات والخطوط (مشتركة بين الثيمين) ═════════ */
 :root {
   /* ── الخطوط ── */
-  --vp-font-sans:    var(--zk-font-sans);
+  --vp-font-sans:    "IBM Plex Sans Arabic", var(--zk-font-sans);
   --vp-font-heading: "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
   --vp-font-display: "Lalezar", "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI Black", Tahoma, sans-serif;
   --vp-font-mono: Consolas, "Cascadia Mono", "Courier New", monospace;
@@ -27,7 +29,7 @@
   --vp-fs-lg:  var(--zk-text-16);
   --vp-fs-xl:  var(--zk-text-20);
   --vp-fs-2xl: var(--zk-text-24);
-  --vp-fs-hero: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  --vp-fs-hero: clamp(2rem, 1.2rem + 3.2vw, 3rem);
   --vp-lh: var(--zk-leading-body);
 
   /* ── المسافات ── */
@@ -60,27 +62,35 @@
   --vp-ease-slow: 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* ── ألوان الهوية الخام (نفسها بالثيمين؛ للزخرفة والأبطال) ── */
-  --vp-gold:       #f5c542;
-  --vp-gold-deep:  #a37a12;
-  --vp-lapis:      #1f4fbf;
-  --vp-turq:       #1fd1a5;
-  --vp-sunset-1:   #ff7a45;
-  --vp-sunset-2:   #ff4f9a;
-  --vp-sunset-3:   #5a1c7a;
-  --vp-night-ink:  #1a0b2e;
+  --vp-gold:       #e3b04b;
+  --vp-gold-light: #f6d27a;
+  --vp-gold-deep:  #9a6f17;
+  --vp-lapis:      #1f4fa8;
+  --vp-turq:       #36b5cc;
+  --vp-sunset-1:   #f28c38;
+  --vp-sunset-2:   #e0457b;
+  --vp-sunset-3:   #2b1a4a;
+  --vp-night-ink:  #050f1f;
+  --vp-cash:       #5bd77a;
+  --vp-hl-yellow:  #f6d27a;
+  --vp-hl-blue:    #7fc8ff;
   --vp-on-hero:    #ffffff;
   --vp-black:      #000000;
+  /* إطار عناوين البوستر: أسود بـ 8 اتجاهات (أنعم من text-stroke مع الحروف العربية) */
+  --vp-poster-outline: 2px 0 0 #000000, -2px 0 0 #000000, 0 2px 0 #000000, 0 -2px 0 #000000,
+                       2px 2px 0 #000000, -2px 2px 0 #000000, 2px -2px 0 #000000, -2px -2px 0 #000000,
+                       0 5px 0 #000000, 0 8px 18px rgb(0 0 0 / 0.55);
 
   /* ── ألوان المشاهد (فاتحة ومشبعة؛ النص فوقها غامق بالثيمين) ── */
-  --vp-scene-1: #f5c542;
-  --vp-scene-2: #3fe0b8;
-  --vp-scene-3: #ff8fb3;
-  --vp-scene-4: #8fb0ff;
-  --vp-scene-5: #ffa66b;
-  --vp-scene-6: #c3a3ff;
-  --vp-scene-7: #e3d98a;
-  --vp-scene-8: #7fdde6;
-  --vp-on-scene: #1a0b2e;
+  --vp-scene-1: #f6d27a;
+  --vp-scene-2: #5fd0e0;
+  --vp-scene-3: #ff9fb8;
+  --vp-scene-4: #9cc2ff;
+  --vp-scene-5: #ffb070;
+  --vp-scene-6: #c9b0ff;
+  --vp-scene-7: #e6dc95;
+  --vp-scene-8: #8ee6b0;
+  --vp-on-scene: #0b1b33;
 }
 
 /* ═════════ «ليل» — الافتراضي ═════════ */
@@ -89,190 +99,126 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* السماء: خلفية الصفحة كاملة */
-  --vp-sky: linear-gradient(180deg, #120a2a 0%, #180e36 38%, #24113f 72%, #34143f 100%);
-  --vp-sunset: linear-gradient(180deg, #ff7a45 0%, #ff4f9a 46%, #5a1c7a 100%);
-  --vp-hero-shade: linear-gradient(180deg, rgb(26 11 46 / 0) 30%, rgb(26 11 46 / 0.72) 100%);
-  --vp-orn: #f5c542;
-  --vp-orn-alpha: 0.085;
+  /* السماء: خلفية الصفحة كاملة (كحلي بيفتح شوي لتحت متل أفق مدينة بالليل) */
+  --vp-sky: linear-gradient(180deg, #040c19 0%, #061429 42%, #0a1d3a 78%, #10264a 100%);
+  --vp-sunset: linear-gradient(180deg, #f28c38 0%, #e0457b 46%, #2b1a4a 100%);
+  --vp-hero-shade: linear-gradient(180deg, rgb(5 15 31 / 0) 28%, rgb(5 15 31 / 0.8) 100%);
+  --vp-orn: #e3b04b;
+  --vp-orn-alpha: 0.07;
 
   /* ── السطوح ── */
-  --vp-bg:            #120b29;
-  --vp-surface:       #1b1336;
-  --vp-surface-2:     #150f2d;
-  --vp-surface-3:     #2a1f4d;
-  --vp-glass:         rgb(20 13 44 / 0.82);
-  --vp-overlay:       rgb(10 6 26 / 0.72);
-  --vp-border:        #352a5b;
-  --vp-border-strong: #5a4b86;
-  --vp-border-input:  #7466a3;
-  --vp-hairline:      rgb(245 197 66 / 0.22);
+  --vp-bg:            #050f1f;
+  --vp-surface:       #0d2140;
+  --vp-surface-2:     #081830;
+  --vp-surface-3:     #14305a;
+  --vp-glass:         rgb(8 22 44 / 0.86);
+  --vp-overlay:       rgb(2 8 18 / 0.74);
+  --vp-border:        #21406d;
+  --vp-border-strong: #3a6296;
+  --vp-border-input:  #5c7fb0;
+  --vp-hairline:      rgb(227 176 75 / 0.26);
 
   /* ── النصوص ── */
-  --vp-text:          #f4effd;
-  --vp-heading:       #ffe7a3;
-  --vp-text-muted:    #c3b9dc;
-  --vp-text-faint:    #a194c6;
+  --vp-text:          #f4ecdc;
+  --vp-heading:       #f6d27a;
+  --vp-text-muted:    #bcc6d8;
+  --vp-text-faint:    #9aabc6;
 
   /* ── الهوية ── */
-  --vp-brand:         #f5c542;
-  --vp-brand-strong:  #ffd86b;
-  --vp-brand-soft:    #3a2d40;
-  --vp-brand-text:    #ffd86b;
-  --vp-on-brand:      #2a1600;
-  --vp-cta:           #f5c542;
-  --vp-cta-hover:     #ffd35e;
-  --vp-cta-edge:      #a37a12;
-  --vp-on-cta:        #2a1600;
-  --vp-accent:        #3fe0b8;
-  --vp-accent-soft:   #163b45;
-  --vp-focus-ring:    #ffd86b;
+  --vp-brand:         #e3b04b;
+  --vp-brand-strong:  #f6d27a;
+  --vp-brand-soft:    #2a2814;
+  --vp-brand-text:    #f6d27a;
+  --vp-on-brand:      #1c1300;
+  --vp-cta:           #e3b04b;
+  --vp-cta-hover:     #f0c463;
+  --vp-cta-edge:      #9a6f17;
+  --vp-on-cta:        #1c1300;
+  --vp-accent:        #4fc3d8;
+  --vp-accent-soft:   #0e3346;
+  --vp-focus-ring:    #f6d27a;
 
   /* ── الحالات ── */
-  --vp-ok:            #3fe0b8;
-  --vp-ok-soft:       #163b45;
-  --vp-warn:          #ffaa63;
-  --vp-warn-soft:     #3e2737;
-  --vp-danger:        #ff7d93;
-  --vp-danger-soft:   #43183c;
-  --vp-on-danger:     #1a0712;
-  --vp-info:          #8fb0ff;
-  --vp-info-soft:     #22295b;
-  --vp-idle:          #a194c6;
-  --vp-idle-soft:     #2a1f4d;
+  --vp-ok:            #5bd77a;
+  --vp-ok-soft:       #0f3324;
+  --vp-warn:          #f2a64a;
+  --vp-warn-soft:     #3a2716;
+  --vp-danger:        #ff8a98;
+  --vp-danger-soft:   #3d1626;
+  --vp-on-danger:     #1a0610;
+  --vp-info:          #8cc0ff;
+  --vp-info-soft:     #142b52;
+  --vp-idle:          #9fb0cb;
+  --vp-idle-soft:     #172a47;
 
   /* ── الظلال ── */
-  --vp-shadow-1: 0 1px 2px rgb(0 0 0 / 0.45), 0 8px 24px rgb(5 2 18 / 0.35);
-  --vp-shadow-2: 0 4px 12px rgb(0 0 0 / 0.5), 0 24px 56px rgb(5 2 18 / 0.6);
-  --vp-glow:     0 0 0 1px rgb(245 197 66 / 0.45), 0 0 22px rgb(245 197 66 / 0.25);
-  --vp-text-shadow-hero: 3px 3px 0 #1a0b2e;
-  --vp-display-ink:    #f5c542;
+  --vp-shadow-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(1 6 16 / 0.42);
+  --vp-shadow-2: 0 4px 12px rgb(0 0 0 / 0.55), 0 24px 56px rgb(1 6 16 / 0.65);
+  --vp-glow:     0 0 0 1px rgb(227 176 75 / 0.5), 0 0 22px rgb(227 176 75 / 0.25);
+  --vp-text-shadow-hero: var(--vp-poster-outline);
+  --vp-display-ink:    #ffffff;
   --vp-display-shadow: 2px 2px 0 #000000;
 }
 
-/* ═════════ «نهار» — فاتح ═════════ */
+/* ═════════ «نهار» — حجر عمّان الفاتح ═════════ */
 [data-theme="day"],
 [data-theme="light"],
 [data-theme="calm"] {
   color-scheme: light;
 
-  --vp-sky: linear-gradient(180deg, #fbf6ec 0%, #f7eedf 50%, #f4e4d4 100%);
-  --vp-sunset: linear-gradient(180deg, #ff8a4c 0%, #f2558f 48%, #3d2a8c 100%);
-  --vp-hero-shade: linear-gradient(180deg, rgb(26 11 46 / 0) 30%, rgb(26 11 46 / 0.66) 100%);
-  --vp-orn: #9c6f0c;
-  --vp-orn-alpha: 0.09;
+  --vp-sky: linear-gradient(180deg, #f7f2e8 0%, #f2ece1 55%, #ece2d2 100%);
+  --vp-sunset: linear-gradient(180deg, #f2a15a 0%, #e06a8e 50%, #33456f 100%);
+  --vp-hero-shade: linear-gradient(180deg, rgb(11 27 51 / 0) 28%, rgb(11 27 51 / 0.7) 100%);
+  --vp-orn: #a8740f;
+  --vp-orn-alpha: 0.08;
 
-  --vp-bg:            #f6efe2;
-  --vp-surface:       #fffbf3;
-  --vp-surface-2:     #f4ecdd;
-  --vp-surface-3:     #eadfc9;
-  --vp-glass:         rgb(255 251 243 / 0.86);
-  --vp-overlay:       rgb(30 21 55 / 0.45);
-  --vp-border:        #e2d4bb;
-  --vp-border-strong: #bba787;
+  --vp-bg:            #f2ece1;
+  --vp-surface:       #fbf8f2;
+  --vp-surface-2:     #ece4d6;
+  --vp-surface-3:     #e2d7c4;
+  --vp-glass:         rgb(251 248 242 / 0.9);
+  --vp-overlay:       rgb(15 25 40 / 0.45);
+  --vp-border:        #d9ccb6;
+  --vp-border-strong: #b9a78a;
   --vp-border-input:  #8e7c60;
-  --vp-hairline:      rgb(156 111 12 / 0.28);
+  --vp-hairline:      rgb(168 116 15 / 0.28);
 
-  --vp-text:          #1e1537;
-  --vp-heading:       #22145a;
-  --vp-text-muted:    #4e4568;
-  --vp-text-faint:    #665d80;
+  --vp-text:          #1b2333;
+  --vp-heading:       #0b1b33;
+  --vp-text-muted:    #464f61;
+  --vp-text-faint:    #555e70;
 
-  --vp-brand:         #1f4fbf;
-  --vp-brand-strong:  #173d96;
-  --vp-brand-soft:    #e3e9f8;
-  --vp-brand-text:    #1a45aa;
+  --vp-brand:         #0e6f84;
+  --vp-brand-strong:  #0b5a6b;
+  --vp-brand-soft:    #dcedf0;
+  --vp-brand-text:    #0b5f71;
   --vp-on-brand:      #ffffff;
-  --vp-cta:           #f2bb2e;
-  --vp-cta-hover:     #f7c94a;
-  --vp-cta-edge:      #9c6f0c;
-  --vp-on-cta:        #2a1600;
-  --vp-accent:        #086a52;
-  --vp-accent-soft:   #dcefe8;
-  --vp-focus-ring:    #1f4fbf;
+  --vp-cta:           #e3b04b;
+  --vp-cta-hover:     #ecc060;
+  --vp-cta-edge:      #9a6f17;
+  --vp-on-cta:        #1c1300;
+  --vp-accent:        #0a6577;
+  --vp-accent-soft:   #d7ecef;
+  --vp-focus-ring:    #0a6577;
 
-  --vp-ok:            #0f6a45;
-  --vp-ok-soft:       #dff0e7;
-  --vp-warn:          #9a4f06;
-  --vp-warn-soft:     #f8e7d3;
+  --vp-ok:            #126b3f;
+  --vp-ok-soft:       #ddefe3;
+  --vp-warn:          #8f4d08;
+  --vp-warn-soft:     #f6e5cf;
   --vp-danger:        #b3223d;
-  --vp-danger-soft:   #f8e1e5;
+  --vp-danger-soft:   #f7dee2;
   --vp-on-danger:     #ffffff;
-  --vp-info:          #1f4fbf;
-  --vp-info-soft:     #e3e9f8;
-  --vp-idle:          #665d80;
-  --vp-idle-soft:     #ece3d3;
+  --vp-info:          #1f4fa8;
+  --vp-info-soft:     #e1e8f6;
+  --vp-idle:          #555e70;
+  --vp-idle-soft:     #e9e2d5;
 
-  --vp-shadow-1: 0 1px 2px rgb(60 40 10 / 0.08), 0 6px 18px rgb(60 40 10 / 0.07);
-  --vp-shadow-2: 0 4px 12px rgb(30 21 55 / 0.12), 0 22px 50px rgb(30 21 55 / 0.18);
-  --vp-glow:     0 0 0 1px rgb(31 79 191 / 0.4), 0 0 18px rgb(31 79 191 / 0.16);
-  --vp-text-shadow-hero: 3px 3px 0 #1a0b2e;
-  --vp-display-ink:    #22145a;
-  --vp-display-shadow: 2px 2px 0 #f2bb2e;
-}
-
-/* ═════════ «ساحل النيون» — ليل ساحلي بنيون (طابع بس) ═════════
-   الخلفية بنفسجي-كحلي عميق، الأساسي زهري نيون، الثانوي سماوي، الزر الأساسي أصفر.
-   العناوين بخط Lalezar (وBangers للاتيني) مع ظل أسود حاد. الحدود السودا والظلال الحادة بـ ornament.css. */
-[data-theme="neon"] {
-  color-scheme: dark;
-
-  --vp-font-heading: "Lalezar", "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
-  --vp-font-display: "Bangers", "Lalezar", "Reem Kufi", "IBM Plex Sans Arabic", "Segoe UI Black", Tahoma, sans-serif;
-
-  --vp-sky: linear-gradient(180deg, #0a0524 0%, #12073a 42%, #2a0f52 78%, #4b1356 100%);
-  --vp-sunset: linear-gradient(180deg, #ffb347 0%, #ff4fa3 46%, #5b1a8f 100%);
-  --vp-hero-shade: linear-gradient(180deg, rgb(10 5 36 / 0) 25%, rgb(10 5 36 / 0.8) 100%);
-  --vp-orn: #00e5ff;
-  --vp-orn-alpha: 0.05;
-
-  --vp-bg:            #0a0524;
-  --vp-surface:       #150a38;
-  --vp-surface-2:     #0f0829;
-  --vp-surface-3:     #261457;
-  --vp-glass:         rgb(12 6 34 / 0.88);
-  --vp-overlay:       rgb(5 2 20 / 0.78);
-  --vp-border:        #3f2b8c;
-  --vp-border-strong: #ff4fa3;
-  --vp-border-input:  #8f78e0;
-  --vp-hairline:      rgb(0 229 255 / 0.32);
-
-  --vp-text:          #f6f1ff;
-  --vp-heading:       #ffe566;
-  --vp-text-muted:    #c9bfe8;
-  --vp-text-faint:    #a99bd8;
-
-  --vp-brand:         #ff4fa3;
-  --vp-brand-strong:  #ff77b9;
-  --vp-brand-soft:    #3a1146;
-  --vp-brand-text:    #ff8cc6;
-  --vp-on-brand:      #1a0420;
-  --vp-cta:           #ffd23f;
-  --vp-cta-hover:     #ffe066;
-  --vp-cta-edge:      #000000;
-  --vp-on-cta:        #1f1300;
-  --vp-accent:        #00e5ff;
-  --vp-accent-soft:   #0b3550;
-  --vp-focus-ring:    #00e5ff;
-
-  --vp-ok:            #3dffb0;
-  --vp-ok-soft:       #0c3a3c;
-  --vp-warn:          #ffb347;
-  --vp-warn-soft:     #46233a;
-  --vp-danger:        #ff6b8a;
-  --vp-danger-soft:   #4a1038;
-  --vp-on-danger:     #1a0712;
-  --vp-info:          #7fb2ff;
-  --vp-info-soft:     #1c2a66;
-  --vp-idle:          #a99bd8;
-  --vp-idle-soft:     #261457;
-
-  --vp-shadow-1: 3px 3px 0 #000000;
-  --vp-shadow-2: 6px 6px 0 #000000, 0 0 36px rgb(255 79 163 / 0.28);
-  --vp-glow:     0 0 0 2px #ff4fa3, 0 0 22px rgb(255 79 163 / 0.45);
-  --vp-text-shadow-hero: 3px 3px 0 #000000;
-  --vp-display-ink:    #ff7ab8;
-  --vp-display-shadow: 2px 2px 0 #000000;
+  --vp-shadow-1: 0 1px 2px rgb(60 40 10 / 0.08), 0 6px 18px rgb(60 40 10 / 0.08);
+  --vp-shadow-2: 0 4px 12px rgb(11 27 51 / 0.12), 0 22px 50px rgb(11 27 51 / 0.18);
+  --vp-glow:     0 0 0 1px rgb(14 111 132 / 0.42), 0 0 18px rgb(14 111 132 / 0.16);
+  --vp-text-shadow-hero: var(--vp-poster-outline);
+  --vp-display-ink:    #0b1b33;
+  --vp-display-shadow: 2px 2px 0 #e3b04b;
 }
 
 /* ═════════ رموز مشتقة (بتتبع الثيم الحالي تلقائياً) ═════════ */

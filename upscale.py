@@ -110,6 +110,8 @@ def upscale_image(src, dest=None, scale: int = 4, tile: int = 192, pad: int = 12
     lib = _via_library(src, dest, scale, img.size)
     if lib is not None:
         return lib
+    if not available():
+        raise UpscaleError("نموذج التكبير (Real-ESRGAN) غير منزّل بمجلد models/")
     import torch
     rgb = img.convert("RGB")
     arr = np.asarray(rgb, dtype=np.float32) / 255.0

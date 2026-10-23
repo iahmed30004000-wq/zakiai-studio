@@ -29,19 +29,20 @@ mountInto("#v-extension", "#fac-extension");
 ["#set-models", "#set-keys", "#set-media"].forEach((s) => { const el = $(s); if (el) $("#fac-api").appendChild(el); });
 
 /* ───────── ❖ المكتبات ───────── */
-const LIBS = { tab: "patterns" };
-const LIBS_TABS = ["patterns", "products", "characters", "sounds", "hooks", "claims", "presets"];
+const LIBS = { tab: "products" };
+const LIBS_TABS = ["products", "characters", "patterns", "hooks", "sounds", "presets"];
 const libsRest = (p) => p.rest.slice(1);
 /* صورة بطل «المكتبات» حسب الرف المفتوح (أسماء data-img بـ ornament.css) */
-const LIBS_IMG = { patterns: "pattern", products: "products", characters: "library", sounds: "sounds", hooks: "home-night", claims: "tiles", presets: "tour" };
+const LIBS_IMG = { products: "products", characters: "library", patterns: "pattern", hooks: "home-night", sounds: "sounds", presets: "tour" };
 
 VIEWS.libs = {
   async enter(p) {
-    const tab = LIBS_TABS.includes(p.rest[0]) ? p.rest[0] : "patterns";
+    const tab = LIBS_TABS.includes(p.rest[0]) ? p.rest[0] : "products";
     LIBS.tab = selectTab("#libsTabs", "libs", tab);
     const lh = $("#libsHero"); if (lh) lh.dataset.img = LIBS_IMG[LIBS.tab] || "library";
     const sub = { name: tab, rest: libsRest(p), q: p.q };
     switch (LIBS.tab) {
+      case "claims": return location.replace("#/settings/analysis"); /* الادعاءات الممنوعة صارت قاعدة بالإعدادات */
       case "patterns": return VIEWS.library.enter({ name: "library", rest: sub.rest.length ? sub.rest : ["patterns"], q: p.q });
       case "products": {
         /* mission.js بيستعير عقد شاشة المنتجات وبيرجّعها لآخر الحاوية — نرجّع ترتيبها هون */
@@ -60,20 +61,20 @@ VIEWS.libs = {
       case "sounds": return VIEWS.ahat.enter({ name: "ahat", rest: [], q: p.q });
       case "hooks": return VIEWS.hooksBank.enter();
       case "presets": return VIEWS.presets.enter();
-      case "claims": return VIEWS.claims.enter();
     }
   },
 };
 bindTabClicks("#libsTabs", (t) => { location.hash = `#/library/${t}`; });
 
 /* ───────── ⚙ المصنع ───────── */
-const FAC = { tab: "api", sub: "models" };
-const FAC_TABS = ["api", "local", "extension"];
+/* المصنع بيفتح على «المحلي» — هو اللي بيهمه أول شي (نماذجه على جهازه)، والاتصالات خيار متقدّم بعدين */
+const FAC = { tab: "local", sub: "models" };
+const FAC_TABS = ["local", "api", "extension"];
 const FAC_API_TABS = ["models", "keys", "media"];
 
 VIEWS.factory = {
   async enter(p) {
-    const tab = FAC_TABS.includes(p.rest[0]) ? p.rest[0] : "api";
+    const tab = FAC_TABS.includes(p.rest[0]) ? p.rest[0] : "local";
     FAC.tab = selectTab("#facTabs", "fac", tab);
     renderMethods($("#facMethods"), true);
     if (FAC.tab === "api") {

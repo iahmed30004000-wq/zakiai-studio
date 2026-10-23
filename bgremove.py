@@ -108,6 +108,8 @@ def remove_background(src, dest=None, size: int = SIZE) -> dict:
     lib = _via_library(src, dest, img.size)
     if lib is not None:
         return lib
+    if not available():
+        raise BgRemoveError("نموذج تفريغ الخلفية (BiRefNet) غير منزّل بمجلد models/BiRefNet/")
     import torch
     device = "cuda" if torch.cuda.is_available() else "cpu"
     try:

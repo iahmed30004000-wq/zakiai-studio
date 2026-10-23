@@ -34,7 +34,7 @@ async function loadSettingsTab(t) {
     case "crm": loadCrmTab(); loadQueue(); break;
     case "ops": loadBackup(); loadScheduler(); loadSpend(); break;
     case "media": loadMediaSettings(); break;
-    case "analysis": loadStt(); loadSettingsValues(); break;
+    case "analysis": loadStt(); loadSettingsValues(); if (window.VIEWS && VIEWS.claims) VIEWS.claims.enter(); break;
     case "staff": accStaffLoad(); break;
     case "activity": accActivityLoad(); break;
     case "advanced": loadPrompts(); break;

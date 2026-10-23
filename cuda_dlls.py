@@ -32,10 +32,15 @@ def _site_dirs() -> list[Path]:
     return out
 
 
+def _on_windows() -> bool:
+    """منفصلة عشان الاختبارات تحاكي ويندوز بلا ما تعبث بـ os.name تبع العملية كلها."""
+    return os.name == "nt"
+
+
 def register() -> list[str]:
     """بيرجّع المجلدات اللي انضافت (فاضي على غير ويندوز أو لو الحزم مش منزّلة). آمن لو انندهى أكتر من مرة."""
     global _done
-    if _done or os.name != "nt":
+    if _done or not _on_windows():
         return list(_added)
     _done = True
     for sp in _site_dirs():

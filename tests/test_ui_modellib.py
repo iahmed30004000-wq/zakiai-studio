@@ -50,7 +50,7 @@ def test_script_order_markup_and_tab_name():
     idx = _read("index.html")
     assert re.search(r'<script src="/modellib\.js\?v=\d+"></script>', idx)
     assert idx.index('id="mlBody"') < idx.index('id="mmBody"')                                    # المكتبة فوق جدول التحريك
-    assert '<button type="button" data-tab="local">مكتبة النماذج</button>' in idx and 'id="fac-local"' in idx   # المعرّف بيضل
+    assert '<button type="button" data-tab="local" class="on">مكتبة النماذج</button>' in idx and 'id="fac-local"' in idx   # المعرّف بيضل
     assert "مكتبة النماذج" in _read("shell.js") and "/api/model-library" in _read("shell.js")        # بطاقة الحالة بتعدّ المكتبة
     g = _read("guide.js")
     assert "#/factory/local" in g and "مكتبة النماذج" in g

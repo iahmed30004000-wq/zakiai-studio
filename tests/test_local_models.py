@@ -80,7 +80,7 @@ def test_cuda_dlls_adds_nvidia_bin_dirs_once_and_only_on_windows(tmp_path, monke
     monkeypatch.setattr(cuda_dlls, "_site_dirs", lambda: [tmp_path])
     monkeypatch.setattr(cuda_dlls, "_added", [])
     monkeypatch.setattr(cuda_dlls, "_done", False)
-    monkeypatch.setattr(cuda_dlls.os, "name", "nt")
+    monkeypatch.setattr(cuda_dlls, "_on_windows", lambda: True)
     monkeypatch.setattr(cuda_dlls.os, "add_dll_directory", lambda p: None, raising=False)
     monkeypatch.setenv("PATH", "C:\base")
     added = cuda_dlls.register()
@@ -93,7 +93,7 @@ def test_cuda_dlls_does_nothing_off_windows(monkeypatch):
     import cuda_dlls
     monkeypatch.setattr(cuda_dlls, "_added", [])
     monkeypatch.setattr(cuda_dlls, "_done", False)
-    monkeypatch.setattr(cuda_dlls.os, "name", "posix")
+    monkeypatch.setattr(cuda_dlls, "_on_windows", lambda: False)
     assert cuda_dlls.register() == []
 
 

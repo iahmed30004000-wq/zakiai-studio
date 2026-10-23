@@ -6,6 +6,7 @@
 /* المسار ← الشاشة (القسم data-view) + عنصر القائمة اللي بيضوي */
 const ROUTES = {
   home: { view: "home", nav: "home" },
+  missions: { view: "missions", nav: "mission" },
   mission: { view: "mission", nav: "mission" },
   library: { view: "libs", nav: "library" },
   factory: { view: "factory", nav: "factory" },
@@ -53,6 +54,8 @@ function legacyRedirect(p) {
   const keepQ = (h) => (qs ? `${h}?${qs}` : h);
   switch (p.name) {
     case "pipeline": return "#/home";
+    /* #/mission بلا ملف = قائمة المهمات (المهمة الجديدة لها #/mission/new?stage=1) */
+    case "mission": return p.rest[0] ? null : "#/missions";
     case "products": return keepQ(`#/library/products${r[0] ? "/" + r[0] : ""}`);
     case "characters": return `#/library/characters${r[0] ? "/" + r[0] : ""}`;
     case "product-ref": return r[0] ? `#/library/products?ref=${r[0]}&tab=refs` : "#/library/products?tab=refs";   /* ملف المنتج المرجعي صار بصفحة المنتج ← «المراجع البصرية» */
@@ -79,13 +82,14 @@ function legacyRedirect(p) {
     case "library": {
       /* التبويبات القديمة جوّا المكتبة: coverage / queue / ingest صاروا تحت «الأنماط» */
       const t = r[0];
-      if (!t) return "#/library/patterns";
+      if (!t) return "#/library/products";
+      if (t === "claims") return "#/settings/analysis";       /* الادعاءات الممنوعة صارت قاعدة بالإعدادات */
       if (["coverage", "queue", "ingest"].includes(t)) return `#/library/patterns/${t}`;
       /* رابط قديم لملف المنتج المرجعي (كان تحت الشخصيات) ← صفحة المنتج */
       if (t === "characters" && p.q.ref !== undefined) return p.q.ref ? `#/library/products?ref=${encodeURIComponent(p.q.ref)}&tab=refs` : "#/library/products?tab=refs";
       return null;
     }
-    case "factory": return p.rest[0] ? null : "#/factory/api";
+    case "factory": return p.rest[0] ? null : "#/factory/local";
     case "pattern": return p.rest[0] ? null : "#/library/patterns";
     case "settings":
       if (["models", "keys", "media"].includes(p.rest[0])) return `#/factory/api/${p.rest[0]}`;
@@ -95,7 +99,6 @@ function legacyRedirect(p) {
 }
 
 let currentRoute = null;
-let lastMission = "";
 function setNavActive(key) {
   $$(".nav-item[data-route], .tb-route[data-route]").forEach((a) => {
     const on = a.dataset.route === key;
@@ -115,13 +118,7 @@ function route() {
   document.documentElement.dataset.route = p.name;
   $$(".view").forEach((v) => v.classList.toggle("active", v.dataset.view === R.view));
   setNavActive(R.nav);
-  /* زر «المهمة» بالقائمة بيرجّعك لآخر مهمة فتحتها */
-  if (p.name === "mission") {
-    lastMission = location.hash;
-    try { localStorage.setItem("vp-last-mission", lastMission); } catch { /* التخزين ممنوع */ }
-  }
-  const nm = $("#navMission");
-  if (nm && lastMission) nm.setAttribute("href", lastMission);
+  /* «المهمات» بقى فهرس ثابت (#/mission) — ما عاد بيرجّعك لآخر مهمة تلقائياً */
   closeDrawer();
   closeModal();
   if (window.Guide && Guide.closeAll) Guide.closeAll();
@@ -137,22 +134,27 @@ function route() {
 }
 window.addEventListener("hashchange", route);
 
-/* الثيم (ليالي الشرق: ليلي / نهاري · ساحل النيون) + مبدّل التطبيقات + قائمتها. n = الاسم الكامل بالقائمة، s = الاسم القصير بالزر */
+/* الثيم («نجمة وطريق»: ليل / نهار) + مبدّل التطبيقات + قائمتها. n = الاسم الكامل بالقائمة، s = الاسم القصير بالزر */
 const THEMES = [
-  { k: "night", n: "ليالي الشرق (ليلي)", s: "ليل", g: "☾" },
-  { k: "day", n: "ليالي الشرق (نهاري)", s: "نهار", g: "☀" },
-  { k: "neon", n: "ساحل النيون", s: "نيون", g: "✺" },
+  { k: "night", n: "نجمة وطريق (ليل)", s: "ليل", g: "☾" },
+  { k: "day", n: "نجمة وطريق (نهار)", s: "نهار", g: "☀" },
 ];
-/* ترحيل القيم القديمة: dark → night، light / calm → day */
-const THEME_MIGRATE = { dark: "night", light: "day", calm: "day" };
+/* ترحيل القيم القديمة: dark / neon («ساحل النيون» اندمج بالليل) → night، light / calm → day */
+const THEME_MIGRATE = { dark: "night", neon: "night", light: "day", calm: "day" };
 function normTheme(k) { return THEME_MIGRATE[k] || (THEMES.some((x) => x.k === k) ? k : "night"); }
+/* الثيم بكبسة وحدة: ليل ← نهار ← ليل. القائمة القديمة انشالت (خطوة زايدة). */
+function nextTheme() { return normTheme(document.documentElement.getAttribute("data-theme")) === "night" ? "day" : "night"; }
 function applyTheme(k) {
   const t = THEMES.find((x) => x.k === normTheme(k)) || THEMES[0];
   document.documentElement.setAttribute("data-theme", t.k);
   const el = $("#themeName"); if (el) el.textContent = t.s;
   const g = $("#themeGlyph"); if (g) g.textContent = t.g;
-  const b = $("#themeBtn"); if (b) b.title = `الثيم: ${t.n} — اضغط لتختار غيره`;
-  $$("#themeMenu .zk-dropdown__item").forEach((it) => it.setAttribute("aria-selected", String(it.dataset.value === t.k)));
+  const b = $("#themeBtn");
+  if (b) {
+    b.title = `الثيم: ${t.n} — اضغط للتبديل`;
+    b.setAttribute("aria-label", `الثيم: ${t.n} — اضغط للتبديل`);
+    b.setAttribute("aria-pressed", String(t.k === "day"));
+  }
   try { localStorage.setItem("vp-theme", t.k); } catch { /* التخزين ممنوع */ }
 }
 /* طي القائمة الجانبية (كمبيوتر): الهمبرغر بالترويسة بيطويها لشريط أيقونات وبيرجّعها، والاختيار بيتذكّر. الجوال بيضل درج الإطار. */
@@ -178,21 +180,22 @@ function initNavCollapse() {
 async function initChrome() {
   let saved = "night";
   try { saved = localStorage.getItem("vp-theme") || "night"; } catch { /* تجاهل */ }
-  try { lastMission = localStorage.getItem("vp-last-mission") || ""; } catch { /* تجاهل */ }
-  if (lastMission && !/^#\/mission\//.test(lastMission)) lastMission = "";
-  /* قائمة الثيم: بتنبني من THEMES، والاختيار بيتذكّر (vp-theme) */
-  $("#themeMenu").innerHTML = THEMES.map((t) =>
-    `<button type="button" class="zk-dropdown__item" role="menuitem" data-value="${t.k}" aria-selected="false"><span aria-hidden="true">${t.g}</span> ${t.n}</button>`).join("");
   applyTheme(saved);
-  if (window.zk && zk.dropdown) {
-    zk.dropdown($("#themeDd"), { onSelect: (k) => applyTheme(k) });
-    zk.dropdown($("#appsDd"));
+  /* كبسة وحدة: ليل ↔ نهار. ما في قائمة ولا خطوة زيادة. */
+  const tb = $("#themeBtn");
+  if (tb && !tb.dataset.bound) {
+    tb.dataset.bound = "1";
+    tb.addEventListener("click", () => applyTheme(nextTheme()));
   }
   /* العمليات: رابطها من إعداد الـ OMS لو موجود. الاستوديو هو الحالي. ما بنفترض توفّر أي تطبيق. */
   const apps = [{ id: "studio", name: "استوديو المحتوى", icon: "zk-film", url: location.origin, active: true }];
   const r = await soft("/api/crm/status");
   if (r.data && r.data.base_url) apps.unshift({ id: "ops", name: "العمليات", icon: "zk-bar-chart", url: r.data.base_url });
-  $("#appSwitcher").apps = apps;
+  const sw = $("#appSwitcher");
+  if (sw) sw.apps = apps;
+  /* مبدّل التطبيقات بيبيّن بس لو في أكتر من تطبيق (تطبيق واحد = خانة زيادة) */
+  const box = $("#appsBox");
+  if (box) box.hidden = apps.length < 2;
 }
 
 async function boot() {

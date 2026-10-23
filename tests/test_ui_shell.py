@@ -16,7 +16,7 @@ INDEX = (STATIC / "index.html").read_text(encoding="utf-8")
 NODE = shutil.which("node")
 
 CONTRACT_ORDER = ["app.js", "studio.js", "perf.js", "settings.js", "production.js", "characters.js", "productref.js",
-                  "models.js", "ext.js", "ahat.js", "guide.js", "ornament.js", "home.js", "mission.js", "boot.js"]
+                  "models.js", "ext.js", "ahat.js", "guide.js", "ornament.js", "home.js", "mission.js", "najma.js", "boot.js"]
 
 
 def _read(name: str) -> str:
@@ -67,23 +67,36 @@ def test_script_order_follows_contract_and_one_shared_version():
 # ───────── القائمة والترويسة ─────────
 def test_sidebar_has_exactly_the_five_places():
     nav = _nav()
-    routes = re.findall(r'class="zk-nav-item nav-item"[^>]*data-route="([\w-]+)"', nav)
+    routes = re.findall(r'class="zk-nav-item nav-item[^"]*"[^>]*data-route="([\w-]+)"', nav)
     assert routes == ["home", "mission", "library", "factory", "performance"], routes
-    for glyph, name in (("◆", "الرئيسية"), ("✦", "المهمة"), ("❖", "المكتبات"), ("⚙", "المصنع"), ("★", "الأداء")):
+    for glyph, name in (("◆", "الرئيسية"), ("✦", "المهمات"), ("❖", "المكتبات"), ("⚙", "المصنع"), ("★", "الأداء")):
         assert re.search(rf"{glyph}</span>\s*{name}", nav), name
+    # «الأداء» بتطلع بس لما الـ OMS مضبوط (html[data-oms="on"]) — نفس قاعدة .oms-only
+    assert re.search(r'class="zk-nav-item nav-item oms-only"[^>]*data-route="performance"', nav)
     # «النمط» و«خط الإنتاج» انحذفوا من القائمة، والإعدادات صارت ترس بالترويسة
     for gone in ("النمط<", "خط الإنتاج", 'data-route="pattern"', 'data-route="pipeline"', 'data-route="settings"'):
         assert gone not in nav, gone
     assert 'id="railStations"' in nav
+    assert 'html:not([data-oms="on"]) .oms-only' in _read("ornament.css")       # القاعدة اللي بتخفيها
 
 
 def test_header_has_settings_gear_next_tour_and_theme():
     h = _header()
-    assert re.search(r'<a [^>]*id="settingsBtn"[^>]*href="#/settings"', h) or re.search(r'href="#/settings"[^>]*id="settingsBtn"', h)
-    assert 'data-route="settings"' in h
+    # ＋ جديد: كل نقاط البداية بقائمة وحدة
+    assert 'id="newBtn"' in h and 'id="newMenu"' in h and "＋" in h
+    assert 'href="#/mission/new?stage=1"' in h and 'href="#/mission/new?free=1"' in h
     assert 'id="guideNextBtn"' in h and "شو بعمل هلأ؟" in h
-    assert 'id="tourBtn"' in h and "الجولة" in h
-    assert 'id="themeBtn"' in h
+    assert 'id="tbJobs"' in h and 'aria-label="المهام"' in h
+    # «الجولة» صارت بند جوّا قائمة «الدليل» (guideDd) مش زر مستقل بالترويسة
+    assert 'id="guideDd"' in h and 'id="guideBtn"' in h and 'id="tourBtn"' in h and "الجولة" in h
+    assert h.index('id="guideDd"') < h.index('id="tourBtn"')
+    # الثيم بكبسة وحدة: زر واحد بيبدّل ليل/نهار — بلا قائمة #themeDd
+    assert 'id="themeBtn"' in h and 'id="themeGlyph"' in h and 'id="themeName"' in h
+    assert 'id="themeDd"' not in h and 'id="themeMenu"' not in h
+    # حسابي: الاسم والإعدادات والتطبيقات والخروج جوّا قائمة واحدة
+    assert 'id="accDd"' in h and 'id="accBtn"' in h and 'id="whoChip"' in h and 'id="whoName"' in h
+    for b in ('id="settingsBtn"', 'id="appsBox"', 'id="logoutBtn"'):
+        assert b in h, b
     assert 'href="#/home"' in h                       # الشعار بيرجّع للرئيسية
 
 
@@ -100,8 +113,11 @@ def test_new_sections_and_containers():
     # الشاشات القديمة بتضل أقسام مصدر للتركيب
     for old in ("library", "pattern", "products", "studio", "characters", "models", "ahat", "extension", "production"):
         assert f'id="v-{old}"' in INDEX, old
-    for i in ("homeHero", "homeWait", "homeMissions", "homeMethods", "plLibPanel", "statCards", "catList"):
+    # الرئيسية صارت «مهمّتك الجاية»: بطل + بانتظارك + شغّال هلّق + أول خطواتك (بلا ملخص مكتبة ولا طرق توليد)
+    for i in ("homeHero", "homeWait", "homeActive", "homeFirstSteps"):
         assert f'id="{i}"' in INDEX, i
+    for gone in ('id="homeMissions"', 'id="homeMethods"', 'id="plLibPanel"', 'id="statCards"', 'id="catList"'):
+        assert gone not in INDEX, gone
 
 
 def test_settings_lost_api_tabs_to_factory():
@@ -133,9 +149,10 @@ def test_shell_mounts_old_screens_and_calls_old_views():
 REDIRECTS = {
     "#/pipeline": "#/home",
     "#/": None,
-    "#/library": "#/library/patterns",
+    "#/library": "#/library/products",
     "#/library/queue": "#/library/patterns/queue",
     "#/library/coverage": "#/library/patterns/coverage",
+    "#/library/claims": "#/settings/analysis",
     "#/library/patterns": None,
     "#/products": "#/library/products",
     "#/products/kama.json?tab=refs": "#/library/products/kama.json?tab=refs",
@@ -149,7 +166,7 @@ REDIRECTS = {
     "#/models": "#/factory/local",
     "#/models/mm_001": "#/factory/local/mm_001",
     "#/extension": "#/factory/extension",
-    "#/factory": "#/factory/api",
+    "#/factory": "#/factory/local",
     "#/settings/keys": "#/factory/api/keys",
     "#/settings/crm": None,
     "#/pattern": "#/library/patterns",
@@ -218,12 +235,18 @@ def test_station_to_stage_table(routing):
     assert routing["__stage"] == [1, 3, 4, 4, 4, 5, 5, 5, 6, 7, 7]
 
 
-def test_themes_night_day_neon_with_migration(routing):
-    assert routing["__themes"] == ["night", "day", "neon"]
-    assert routing["__migrate"] == ["night", "day", "day", "night", "day", "neon", "night"]
+def test_themes_night_day_with_migration(routing):
+    assert routing["__themes"] == ["night", "day"]
+    # dark و neon («ساحل النيون» القديم) بينزلوا على الليل؛ light و calm على النهار؛ أي قيمة غريبة على الليل
+    assert routing["__migrate"] == ["night", "day", "day", "night", "day", "night", "night"]
     assert 'data-theme="night"' in INDEX
     boot = _read("boot.js")
     assert re.search(r"try\s*\{\s*saved = localStorage\.getItem", boot)
+    # بكبسة وحدة: ليل ↔ نهار، بلا قائمة ولا خطوة زيادة
+    assert "function nextTheme()" in boot and "applyTheme(nextTheme())" in boot
+    assert 'id="themeMenu"' not in INDEX and "zk.dropdown($(\"#themeDd\")" not in boot
+    # «نيون» ما عاد ثيم: بس اسم قديم بجدول الترحيل
+    assert 'k: "neon"' not in boot
 
 
 def test_boot_uses_mission_api_when_present():
@@ -278,13 +301,16 @@ def test_term_marks_mounted_on_screen_titles():
 # ───────── الرئيسية ─────────
 def test_home_uses_existing_state_endpoints_and_moves_old_panels():
     h = _read("home.js")
-    for ep in ("/api/scripts", "/state`", "/status`", "/ext/status`", "/api/review-queue"):
+    for ep in ("/api/scripts", "/api/studio/", "/state`", "/status`", "/api/review-queue"):
         assert ep in h, ep
-    assert "loadStats()" in h and "loadDashUsage" not in h and "homeMoveOld" not in h           # الاستهلاك مكانه الإعدادات بس
+    assert "loadStats()" not in h and "loadDashUsage" not in h and "homeMoveOld" not in h   # الاستهلاك بالإعدادات، والملخص راح مع إعادة التصميم
     assert 'id="plUsagePanel"' not in INDEX and 'id="v-pipeline"' not in INDEX and "loadPipeline" not in _read("app.js")
-    assert "renderMethods($(\"#homeMethods\"), false, true)" in h
-    assert "awaiting_choice" in h and "failed" in h and "stop_code" in h
+    assert "renderMethods(" not in h                                                       # طرق التوليد مكانها المصنع
+    assert "awaiting_choice" in h and "failed" in h and "needs_owner" in h
     assert "كمّل المهمة" in h and "missionHash(" in h and "stageOfStation(" in h
+    # الأقسام الجديدة: «بانتظارك» و«شغّال هلّق» و«أول خطواتك» كلها بتتركّب من نفس مصدر الحالة
+    assert "renderWaiting(" in h and "renderActive(" in h and "firstSteps(" in h
+    assert "vp-first-steps-done" in h
     for m in ("scripts", "studio_state", "script_status", "ext_status", "review_queue"):
         assert (STATIC / "mock" / f"{m}.json").exists(), m
 

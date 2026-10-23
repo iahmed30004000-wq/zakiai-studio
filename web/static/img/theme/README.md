@@ -1,6 +1,7 @@
-# صور الهوية «ليالي الشرق» — `web/static/img/theme/`
+# صور الثيم «نجمة وطريق» — `web/static/img/theme/`
 
-صور مجانية مرخّصة (Unsplash). أسماء المصوّرين وروابط الصور بـ `CREDITS.md` بنفس المجلد — **لازم يضل موجود مع الصور**.
+صور حقيقية بحقوق مفحوصة: ويكيميديا (CC0 و CC BY، بلا BY-SA) و Unsplash. أسماء المصوّرين والروابط بـ `credits.json`
+(هو اللي بتقراه صفحة «حقوق الصور» بالموقع) و `CREDITS.md` (نفس المعلومات للقراءة). **لازم يضلّوا مع الصور.**
 
 كل فتحة صورة إلها **بديل مرسوم** (سماء غروب + أفق مدينة + نقش كيريه)، فإذا صورة انحذفت أو ما تحمّلت، ما بيبيّن شي مكسور.
 
@@ -8,18 +9,19 @@
 
 | الملف | `data-img` | المتغير بـ `ornament.css` | وين |
 |---|---|---|---|
-| `hero-home.jpg` | `home` (ثيم الليل) | `--img-hero-home` | بطل الرئيسية |
-| `hero-day.jpg` | `home` (ثيم النهار، تلقائياً) | `--img-hero-day` | بطل الرئيسية بالنهار |
-| `home-night.jpg` | `home-night` | `--img-home-night` | بديل ليلي للرئيسية |
-| `mission.jpg` | `mission` | `--img-mission` | رأس شاشة المهمة |
-| `library.jpg` | `library` | `--img-library` | رأس المكتبات |
-| `products.jpg` | `products` | `--img-products` | رف المنتجات |
-| `sounds.jpg` | `sounds` | `--img-sounds` | رف الأصوات والآهات |
-| `pattern.jpg` | `pattern` | `--img-pattern` | صفحة تفاصيل النمط |
-| `factory.jpg` | `factory` | `--img-factory` | رأس المصنع |
-| `performance.jpg` | `performance` | `--img-performance` | رأس الأداء |
-| `tour.jpg` | `tour` | `--img-tour` | بطاقة بداية الجولة |
-| `tiles.jpg` | `tiles` | `--img-tiles` | زخرفة (بطاقة أو خلفية فاتحة) — كبيرة (1.6 ميغا)، استعملها بقلّة |
+| `hero-home.webp` | `home` (ثيم الليل) | `--img-hero-home` | بطل الرئيسية |
+| `hero-day.webp` | `home` (ثيم النهار، تلقائياً) | `--img-hero-day` | بطل الرئيسية بالنهار |
+| `home-night.webp` | `home-night` | `--img-home-night` | بانوراما ليلية (شاشة التحميل وصفحة الدخول) |
+| `mission.webp` | `mission` | `--img-mission` | رأس شاشة المهمة |
+| `library.webp` | `library` | `--img-library` | رأس المكتبات |
+| `products.webp` | `products` | `--img-products` | رف المنتجات |
+| `sounds.webp` | `sounds` | `--img-sounds` | رف الأصوات (ولوحة بشاشة التحميل) |
+| `pattern.webp` | `pattern` | `--img-pattern` | الأنماط |
+| `factory.webp` | `factory` | `--img-factory` | رأس المصنع |
+| `performance.webp` | `performance` | `--img-performance` | رأس الأداء |
+| `tour.webp` | `tour` | `--img-tour` | بطاقة بداية الجولة |
+| `tiles.webp` | `tiles` | `--img-tiles` | الادعاءات الممنوعة (زخرفة) |
+| `petra-night.webp` | — | `--img-petra-night` | لوحة بشاشة التحميل |
 
 الاستعمال:
 
@@ -30,28 +32,17 @@
 
 ## المواصفات لأي صورة جديدة
 
-- **الصيغة:** JPG. **المقاس:** عرض حوالي 1920 بكسل، نسبة عريضة. **الحجم:** يفضّل أقل من 450 كيلوبايت.
+- **الصيغة:** WebP. **المقاس:** عرض 1600 بكسل أو أقل. **الحجم:** أقل من 250 كيلوبايت.
 - **التكوين:** الجزء التحتاني بيتغطّى بأفق مدينة مرسوم وظل غامق (عشان يبيّن العنوان الأبيض)، فالمهم يكون بالنص والفوق.
 - **الألوان:** غروب أو ليل. الموقع بيحط فوقها طبقة غروب خفيفة (`--hero-tint`) عشان تنسجم.
-- **ممنوع:** صور أو شعارات GTA الرسمية، أو أي صورة بلا ترخيص واضح للاستخدام التجاري.
+- **الحقوق:** سطر بـ `credits.json` (الملف، شو فيها، المصوّر، الرخصة ورابطها، المصدر، شو عدّلنا) وبنفس الوقت بـ `CREDITS.md`.
+- **ممنوع:** صور أو شعارات من ألعاب أو أفلام، أسماء شركات، صور BY-SA أو NC، أو أي صورة بلا ترخيص واضح للاستخدام التجاري.
 
-## ثيم «ساحل النيون» — `neon/`
-
-ثيم تالت (ليل ساحلي بنيون، طابع بس) بصوره الخاصة بمجلد `neon/`، ونفس أسماء `data-img` السابقة: بيبدّلها `ornament.css` تلقائياً لما الثيم يكون `neon`
-(متغيرات `--img-*` معرّفة من جديد تحت `[data-theme="neon"]`)، فما في حاجة لأي تعديل بالصفحات.
-
-| الملف بـ `neon/` | وين |
-|---|---|
-| `home.jpg` · `mission.jpg` · `library.jpg` · `factory.jpg` · `performance.jpg` · `products.jpg` · `sounds.jpg` · `pattern.jpg` | أبطال الصفحات (نفس أسماء الثيمين التانيين) — صور Unsplash، حقوقها بـ `neon/CREDITS.md` |
-| `neon-coast.door.webp` / `neon-coast.door-tall.webp` | خلفية صفحة الدخول (عريضة، وطولية للجوال) — صور المالك من الـ OMS |
-| `neon-coast.strip.webp` | شريط 5:1 (محفوظ للترويسة والفواصل) — صور المالك من الـ OMS |
-
-القواعد: بلا اسم GTA ولا شعارات Rockstar ولا لقطات من اللعبة ولا خط Pricedown. الشكل (حدود سودا، ظلال حادة، خط Bangers/Lalezar) كله بـ CSS بآخر `ornament.css`.
-تباين الألوان (4.5 على الأقل لكل أزواج النص) بيفحصه `tests/test_phase7_look.py` للثيمات التلاتة.
+`tests/test_phase7_look.py` بيفحص إن كل صورة إلها سطر حقوق، وإن تباين الألوان 4.5 على الأقل للثيمين.
 
 ## إضافة فتحة جديدة
 
-1. حط الصورة هون (مثلاً `characters.jpg`) وسجّل حقوقها بـ `CREDITS.md`.
-2. بـ `ornament.css` ضيف: `--img-characters: url("/img/theme/characters.jpg");`
+1. حط الصورة هون (مثلاً `characters.webp`) وسجّل حقوقها بـ `credits.json` و`CREDITS.md`.
+2. بـ `ornament.css` ضيف: `--img-characters: url("/img/theme/characters.webp");`
 3. وضيف: `.hero[data-img="characters"] { --hero-img: var(--img-characters); }`
    (و`.img-slot[data-img="characters"] { --slot-img: var(--img-characters); }` إذا بدك ياها كبطاقة).

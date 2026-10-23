@@ -1,6 +1,7 @@
 """ربط مكتبة النماذج بنقاط التوليد الموجودة (تفريغ، صوت، صور، تكبير، تفريغ خلفية، تحريك): الأولوية، الرجوع للطريقة الحالية، والسجل."""
 
 import json
+import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -332,6 +333,8 @@ def test_upscale_library_model_makes_the_method_available_and_does_the_work(lib,
 def test_upscale_falls_back_to_the_local_model_when_the_library_one_fails(lib, monkeypatch, capsys):
     import numpy as np
     from PIL import Image
+    if importlib.util.find_spec("torch") is None:
+        pytest.skip("torch مش منزّل بهالبيئة — الرجوع للنموذج المحلي بيتطلب torch (بجهاز المالك)")
     w = work_scripts(lib)
     (w / "boom.py").write_text("import sys\nsys.exit(3)\n", encoding="utf-8")
     cmd(w, "upscale", [sys.executable, "boom.py", "{image}", "{out}"])
@@ -348,6 +351,8 @@ def test_upscale_falls_back_to_the_local_model_when_the_library_one_fails(lib, m
 
 def test_bgremove_library_model_must_return_transparency_else_the_builtin_runs(lib, monkeypatch, capsys):
     from PIL import Image
+    if importlib.util.find_spec("torch") is None:
+        pytest.skip("torch مش منزّل بهالبيئة — الرجوع للنموذج المحلي بيتطلب torch (بجهاز المالك)")
     w = work_scripts(lib)
     monkeypatch.setattr(bgremove, "MODEL_DIR", lib / "no-birefnet")
     assert bgremove.available() is False

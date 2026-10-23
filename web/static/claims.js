@@ -13,7 +13,7 @@ const CL_GROUP_HINT = {
 VIEWS.claims = { async enter() { await loadClaims(); } };
 
 async function loadClaims() {
-  const box = $("#libs-claims");
+  const box = $("#set-claims");                       // الادعاءات صارت قاعدة بالإعدادات (#/settings/analysis)
   if (!box) return;
   const r = await soft("/api/claims/rules");
   if (!r.data) { box.innerHTML = `<div class="panel">${errBox(r.err)}</div>`; return; }
@@ -77,7 +77,7 @@ async function clCall(url, method, body, okMsg) {
   try {
     const r = await api(url, body === undefined ? { method } : jsonOpts(method, body));
     if (okMsg) toast(okMsg, "ok");
-    if (r && r.groups) { CL.data = { ...CL.data, ...r }; drawClaims($("#libs-claims")); }
+    if (r && r.groups) { CL.data = { ...CL.data, ...r }; drawClaims($("#set-claims")); }
     return r;
   } catch (e) { toast(e.message, "err"); return null; }
 }

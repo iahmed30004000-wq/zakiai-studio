@@ -37,16 +37,6 @@ const STATION_NEED = {
   11: ["ناقص تبعت طلب الإطلاق لموقع العمليات", "#lnSend"],
 };
 
-/* أبواب «يدوي بلا تسلسل»: بكل مرحلة اختصارات للشغل السريع بالمشروع الحر (free.js). المراحل نفسها وقواعدها ما بتتغيّر —
-   الباب بيفتح مشروع حر جاهز لهالخطوة لحالها، بلا سيناريو ولا مراحل قبلها. quick = اختصار من FreeProject.quick، start = نقطة بداية. */
-const MANUAL_DOORS = {
-  3: [{ start: "text", ico: "✎", name: "اكتب مشاهدك بلا قيود" }],
-  4: [{ quick: "speak" }, { quick: "transcribe" }],
-  5: [{ quick: "generate" }, { start: "images", ico: "⬆", name: "ارفع صورك" }],
-  6: [{ quick: "animate" }],
-  7: [{ quick: "montage" }],
-};
-
 /* دليل كل مرحلة — بالمثال نفسه (كريم إزالة شعر) من الأول للآخر */
 const MISSION_GUIDE = {
   1: { what: "هون بتختار المنتج اللي بدك تعمله إعلان، وبتكمّل البريف: شو هو، لمين، شو بيميّزه، وشو ممنوع ينقال عنه.",
@@ -236,26 +226,10 @@ function renderGuide() {
   if (!host) return;
   const g = MISSION_GUIDE[MS.stage];
   host.innerHTML = "";
-  if (window.Guide && typeof Guide.stagePanel === "function") { Guide.stagePanel(host, g); return; }
+  if (window.Guide && typeof Guide.stagePanel === "function") { Guide.stagePanel(host, { ...g, n: MS.stage, title: `دليل المرحلة ${MS.stage}: ${stageDef(MS.stage).name}` }); return; }
   host.innerHTML = `<details class="panel guide-panel"><summary><b>دليل المرحلة ${esc(MS.stage)}: ${esc(stageDef(MS.stage).name)}</b></summary>
     <p><b>شو:</b> ${esc(g.what)}</p><p><b>ليش:</b> ${esc(g.why)}</p><p><b>مثال:</b> ${esc(g.example)}</p>
     ${(g.tips || []).length ? `<ul class="why">${g.tips.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}</details>`;
-}
-
-function renderManual() {
-  const host = $("#msManual");
-  if (!host) return;
-  const F = window.FreeProject;
-  const rows = F ? (MANUAL_DOORS[MS.stage] || []).map((d) => {
-    const q = d.quick ? (F.quick || {})[d.quick] : null;
-    if (d.quick && !q) return "";
-    const href = d.quick ? F.quickHash(d.quick) : `#/mission/new?free=1&start=${enc(d.start)}`;
-    return `<a class="btn ghost sm" href="${href}">${esc(q ? q.ico : d.ico)} ${esc(q ? q.name : d.name)}</a>`;
-  }).filter(Boolean) : [];
-  host.innerHTML = rows.length ? `<div class="ms-manual" role="group" aria-label="شغل يدوي بلا تسلسل">
-    <b>✋ يدوي بلا تسلسل</b>
-    <span class="hint">بدك تعمل هالخطوة لحالها بدون ما تمرّ بالباقي؟ بيفتح مشروع حر جاهز (المهمة هون بتضل متل ما هي):</span>
-    ${rows.join("")}</div>` : "";
 }
 
 function renderBar() {
@@ -400,8 +374,7 @@ async function renderStage(seq) {
   /* 4–7: محطات الإنتاج */
   if (!MS.file) {
     box.innerHTML = `<div class="panel"><p class="empty">هالمرحلة بتفتح بعد ما توافق على السيناريو (المرحلة 3).</p>
-      <div class="row"><a class="zk-btn zk-btn--primary" href="${missionHash(null, 3, { product: MS.product })}">روح للسيناريو</a></div>
-      ${(MANUAL_DOORS[n] || []).length && window.FreeProject ? `<p class="hint">أو بدك بس هالخطوة لحالها؟ استعمل «✋ يدوي بلا تسلسل» فوق.</p>` : ""}</div>`;
+      <div class="row"><a class="zk-btn zk-btn--primary" href="${missionHash(null, 3, { product: MS.product })}">روح للسيناريو</a></div></div>`;
     return;
   }
   const def = stageDef(n);
@@ -448,7 +421,6 @@ VIEWS.mission = {
       <ol class="mission-steps" id="msSteps" aria-label="مراحل المهمة"></ol>
       <div id="msPassed" class="mission-passed-host"></div>
       <div id="msGuide"></div>
-      <div id="msManual"></div>
       <div id="msStage" class="mission-stage"><div class="panel"><p class="hint">جاري التحميل…</p></div></div>
       <nav class="mission-bar" id="msBar" aria-label="التنقل بين المراحل"></nav>`;
 
@@ -472,7 +444,7 @@ VIEWS.mission = {
     if (MS.stage >= 4) await loadDetail(MS.stage);
     if (seq !== MS.seq) return;
 
-    renderHead(); renderSteps(); renderGuide(); renderManual(); renderBar();
+    renderHead(); renderSteps(); renderGuide(); renderBar();
     $("#msStage").innerHTML = "";
     try { await renderStage(seq); }
     catch (e) { $("#msStage").innerHTML = `<div class="panel">${errBox(e)}</div>`; }

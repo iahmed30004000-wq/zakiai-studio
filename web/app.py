@@ -1026,24 +1026,29 @@ def restore_prompt(name: str) -> dict:
 
 
 @app.get("/api/usage")
-def api_usage(days: int | None = None) -> dict:
-    """الاستهلاك والتكلفة المقدّرة، مع رصيد المزوّدين اللي بيدعموا الاستعلام."""
+def api_usage(days: int | None = None, balances: bool = True) -> dict:
+    """الاستهلاك والتكلفة المقدّرة، مع رصيد المزوّدين اللي بيدعموا الاستعلام.
+
+    balances=False بيتخطّى كل نداءات الشبكة لرصيد المزوّدين (بيستعملها شريحة الصرف
+    بالهيدر كل 10 دقايق، بلا ما تبطّئ الصفحة).
+    """
     import usage as usage_mod
     import llm
 
     data = usage_mod.summary(days)
 
-    # اسأل كل مزوّد مستخدم فعلاً عن رصيده (اللي بيدعم)
-    balances = {}
-    seen = set()
-    for task in llm.TASK_LABELS:
-        cfg = llm.task_config(task)
-        if cfg["provider"] in seen:
-            continue
-        seen.add(cfg["provider"])
-        balances[cfg["provider"]] = usage_mod.provider_balance(cfg["provider"], cfg["api_key"])
+    # اسأل كل مزوّد مستخدم فعلاً عن رصيده (اللي بيدعم) — إلا إذا طلبوا بلا أرصدة
+    if balances:
+        provider_balances = {}
+        seen = set()
+        for task in llm.TASK_LABELS:
+            cfg = llm.task_config(task)
+            if cfg["provider"] in seen:
+                continue
+            seen.add(cfg["provider"])
+            provider_balances[cfg["provider"]] = usage_mod.provider_balance(cfg["provider"], cfg["api_key"])
+        data["balances"] = provider_balances
 
-    data["balances"] = balances
     return data
 
 

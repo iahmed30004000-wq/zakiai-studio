@@ -295,70 +295,18 @@ def test_quick_actions_are_defined_and_each_after_step_is_handled():
     assert "download=" in FREE and "نزّل" in FREE                                         # الناتج بينزّل بزر تحت كل لقطة
 
 
-def test_mission_doors_point_at_real_quick_actions_and_start_modes():
+def test_mission_links_to_the_free_project_only_from_the_start_screen():
     mission = _read("mission.js")
-    assert 'id="msManual"' in mission and "renderManual()" in mission and "const MANUAL_DOORS = {" in mission
-    # الجدول قبل دليل المراحل (اختبار دليل المراحل بيعدّ example/why جواته)
-    assert mission.index("const MANUAL_DOORS") < mission.index("const MISSION_GUIDE")
-    table = mission[mission.index("const MANUAL_DOORS"):mission.index("/* دليل كل مرحلة")]
-    stages = {int(n) for n in re.findall(r"^\s+(\d): \[", table, re.M)}
-    assert stages == {3, 4, 5, 6, 7}, stages                                              # المراحل 1 و2 مش مقفولة، ما بدها باب
-    for k in re.findall(r'quick: "(\w+)"', table):
-        assert k in _quick_keys(), k
-    starts = set(re.findall(r'^\s+\["(\w+)", "[^"]+", ', FREE[FREE.index("const START_OPTS"):FREE.index("const QUICK = {")], re.M))
-    for m in re.findall(r'start: "(\w+)"', table):
-        assert m in starts, m
-    assert "يدوي بلا تسلسل" in mission and "window.FreeProject" in mission
+    # أبواب «يدوي بلا تسلسل» اتشالت من الشاشات: الباب الوحيد لـ FreeProject هو «＋ جديد» وشاشة بداية المشروع الحر
+    assert "MANUAL_DOORS" not in mission and "renderManual" not in mission and "msManual" not in mission
+    assert "يدوي بلا تسلسل" not in mission
+    assert "FreeProject.enter(" in mission and "free=1" in mission                # تحويل + رابط «أو ابدأ مشروع حر»
     assert 'q.quick' in FREE and "q.start" in FREE                                        # شاشة البداية بتقرا quick و start من الرابط
     idx = _read("index.html")
-    assert re.search(r'href="#/mission/new\?free=1">اشتغل يدوي بلا ترتيب', idx)           # باب من الرئيسية كمان
-
-
-DOORS_HARNESS = r"""
-const fs = require("fs");
-global.window = { addEventListener() {} };
-global.document = { addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; } };
-global.matchMedia = () => ({ matches: false });
-global.$ = () => null; global.$$ = () => [];
-global.enc = encodeURIComponent;
-global.esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-global.MOCK = false;
-global.soft = async () => ({ data: null, err: null });
-global.errBox = () => "";
-eval(fs.readFileSync(process.argv[1], "utf8"));                                     // free.js ← window.FreeProject
-const F = window.FreeProject;
-const src = fs.readFileSync(process.argv[2], "utf8");
-const doors = src.slice(src.indexOf("const MANUAL_DOORS"), src.indexOf("/* دليل كل مرحلة"));
-const fn = src.slice(src.indexOf("function renderManual()"), src.indexOf("function renderBar()"));
-const MS = { stage: 1 };
-const host = { innerHTML: "" };
-global.$ = (sel) => (sel === "#msManual" ? host : null);
-eval(doors + fn + "; global.__r = (stage) => { MS.stage = stage; host.innerHTML = ''; renderManual(); return host.innerHTML; };");
-const out = { hash: F.quickHash("animate"), keys: Object.keys(F.quick), names: Object.fromEntries(Object.entries(F.quick).map(([k, v]) => [k, v.name])), stages: {} };
-for (let n = 1; n <= 7; n++) out.stages[n] = global.__r(n);
-const keep = window.FreeProject;
-window.FreeProject = undefined;
-out.noFree = [3, 4, 5, 6, 7].map((n) => global.__r(n));
-console.log(JSON.stringify(out));
-"""
-
-
-@pytest.mark.skipif(not NODE, reason="node مش موجود")
-def test_doors_render_for_each_stage_in_node():
-    r = subprocess.run(["node", "-e", DOORS_HARNESS, str(STATIC / "free.js"), str(STATIC / "mission.js")], capture_output=True, text=True, encoding="utf-8")
-    assert r.returncode == 0, r.stderr
-    o = json.loads(r.stdout)
-    assert o["hash"] == "#/mission/new?free=1&quick=animate"
-    assert o["keys"] == ["animate", "generate", "speak", "transcribe", "montage"]
-    st = o["stages"]
-    assert st["1"] == "" and st["2"] == ""
-    assert 'href="#/mission/new?free=1&start=text"' in st["3"]
-    assert "quick=speak" in st["4"] and "quick=transcribe" in st["4"]
-    assert "quick=generate" in st["5"] and "start=images" in st["5"]
-    assert "quick=animate" in st["6"] and o["names"]["animate"] in st["6"]
-    assert "quick=montage" in st["7"] and o["names"]["montage"] in st["7"]
-    assert all("يدوي بلا تسلسل" in st[n] for n in "34567")
-    assert o["noFree"] == [""] * 5                                          # free.js ما انحمّل: ما في أبواب مكسورة
+    assert re.search(r'href="#/mission/new\?free=1"', idx)                                 # باب المشروع الحر من الترويسة والرئيسية
+    assert "مشروع حر" in idx
+    home = _read("home.js")
+    assert "#/mission/new?free=1" in home and "مشروع حر" in home                            # بطل الرئيسية بيعرضه كمان
 
 
 def test_quick_flows_run_on_the_real_server_routes(env, tmp_path):

@@ -21,7 +21,7 @@ def test_the_library_has_a_presets_tab_wired_through_the_shell():
     tabs = re.search(r'<div class="seg" id="libsTabs".*?</div>', HTML, re.S).group(0)
     assert 'data-tab="presets">الحركات السينمائية</button>' in tabs and '<div id="libs-presets" class="tabpane"></div>' in HTML
     assert re.search(r'<script src="/presets\.js\?v=\d+"></script>', HTML)
-    assert '"hooks", "claims", "presets"' in SHELL and 'case "presets": return VIEWS.presets.enter();' in SHELL
+    assert re.search(r'const LIBS_TABS = \[[^\]]*"presets"', SHELL) and 'case "presets": return VIEWS.presets.enter();' in SHELL
     assert "VIEWS.presets = { async enter() { await pstLoad(); } };" in JS
 
 
