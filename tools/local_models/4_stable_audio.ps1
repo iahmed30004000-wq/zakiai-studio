@@ -18,5 +18,17 @@ Write-Host "  (3) هيّا شغّل هالسكربت من ثاني."
     --done-files 14
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+$root = "$PSScriptRoot\..\.."
+if (-not (Test-Path "$root\third_party\stable-audio\.venv\Scripts\python.exe")) {
+    New-Item -ItemType Directory -Force "$root\third_party\stable-audio" | Out-Null
+    & python -m venv "$root\third_party\stable-audio\.venv"
+    $py = "$root\third_party\stable-audio\.venv\Scripts\python.exe"
+    & $py -m pip install -U pip
+    & $py -m pip install "torch==2.6.0" "torchaudio==2.6.0" --index-url https://download.pytorch.org/whl/cu124
+    if ($LASTEXITCODE -ne 0) { Write-Host "⚠ مشكلة بتثبيت PyTorch"; exit 1 }
+    & $py -m pip install diffusers transformers accelerate scipy soundfile sentencepiece safetensors torchsde
+    if ($LASTEXITCODE -ne 0) { Write-Host "⚠ مشكلة بتثبيت مكتبات النموذج"; exit 1 }
+}
+
 Write-Host ""
 Write-Host "✓ خلص. من الاستوديو: المصنع ← نماذج محلية ← ربط «أمر تشغيل» بـ tools\local_models\stable_audio_cmd.py"

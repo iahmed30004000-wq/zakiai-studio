@@ -65,14 +65,14 @@ def main() -> None:
         prompt=prompt,
         negative_prompt=a.negative,
         num_inference_steps=a.steps,
-        audio_end_in_seconds=float(a.seconds),
+        audio_end_in_s=float(a.seconds),
         generator=generator,
     ).audios
 
-    # الناتج tensor (batch, samples) — منكتبه wav بـ 44.1kHz (أصل النموذج 44100)
+    # الناتج tensor (batch, قنوات، عينات) ستيريو — soundfile بدّه (عينات، قنوات) فبنقلب المحاور، وبمعدّل عينات النموذج نفسه
     import soundfile as sf                                    # noqa: PLC0415
-    wav = audio[0].float().cpu().numpy()
-    sf.write(str(out), wav, 44100)
+    wav = audio[0].T.float().cpu().numpy()
+    sf.write(str(out), wav, int(pipe.vae.sampling_rate))
     print(f"✓ خلص. الناتج: {out}", flush=True)
 
 

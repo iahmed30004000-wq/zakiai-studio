@@ -135,8 +135,10 @@ def _local_model(name: str, force_cpu: bool = False):
         except ImportError:
             raise STTError("faster-whisper غير مثبّت — pip install faster-whisper")
         # نسخة محلية منزّلة مسبقاً (models/faster-whisper-<الاسم>) = بلا إنترنت وبلا انتظار تنزيل
-        local = Path(config.BASE) / "models" / f"faster-whisper-{name}"
-        src = str(local) if (local / "model.bin").exists() else name
+        # (وأوزان «turbo-ar» العراقي بـ models/whisper-turbo-ar-ct2 — بتختارها باسم turbo-ar من إعداد التفريغ)
+        local = next((d for d in (Path(config.BASE) / "models" / f"faster-whisper-{name}", Path(config.BASE) / "models" / f"whisper-{name}-ct2")
+                      if (d / "model.bin").exists()), None)
+        src = str(local) if local else name
         device, compute = ("cpu", "int8") if force_cpu else (config.WHISPER_DEVICE, config.WHISPER_COMPUTE)
         if device == "cuda":
             import cuda_dlls
