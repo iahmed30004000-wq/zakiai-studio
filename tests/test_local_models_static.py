@@ -56,7 +56,7 @@ def test_fetch_model_uses_allow_patterns_and_no_trust_remote_code():
     assert "allow_patterns" in t
     assert "trust_remote_code=True" not in t           # ما مننفّذ كود من النت
     assert "MODELS_DIR" in t and "models" in t         # الأوزان تحت models/
-    assert "token=None" in t or "huggingface-cli login" in t   # ما منخزّن توكن
+    assert "token=None" in t or "hf auth login" in t   # ما منخزّن توكن
     assert "snapshot_download" in t
 
 
@@ -114,7 +114,7 @@ def test_fetch_scripts_call_fetch_model_with_models_dest(name):
 # ───────── موديلات مقيّدة بدها login قبلها ─────────
 def test_gated_model_tells_owner_to_login():
     t = _text("4_stable_audio.ps1")
-    assert "huggingface-cli login" in t
+    assert "hf auth login" in t
     assert "stabilityai/stable-audio-open-1.0" in t
     t2 = _text("fetch_model.py")
     assert "--gated" in t2

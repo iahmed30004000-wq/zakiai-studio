@@ -6,7 +6,7 @@
   · الأوزان دايماً تحت models/ (مجلد متجاهَل بالنسخ الاحتياطي و git).
   · مو ثقة للكود من النت: snapshot_download بس (ملفات أوزان وإعدادات، بلا كود).
   · ما منخزّن ولا توكن: التنزيل العام بس، والموديلات المقيّدة (مثل Stable Audio)
-    بدها huggingface-cli login من المالك قبلها — والتوكن بيضل بجهاز ويندوز.
+    بدها hf auth login من المالك قبلها — والتوكن بيضل بجهاز ويندوز.
   · كل الرسائل عربي (شامي)، والتقدم بالبايتات للملاحظة.
 استعمال:
   python fetch_model.py --repo <repo_id> --dest <models/اسم> --allow "*.safetensors" ...
@@ -43,11 +43,6 @@ def hf_info(repo: str) -> dict:
             return r.json()
     except Exception:                                        # noqa: BLE001 — الشبكة مش مضمونة، بس معلومات
         return {}
-
-
-def check_hf_cli() -> None:
-    if shutil.which("huggingface-cli") is None:
-        die("huggingface-cli مش موجود. ثبّته أول شي:  pip install -U \"huggingface_hub[cli]\"")
 
 
 def check_disk(gb_needed: float) -> None:
@@ -101,7 +96,7 @@ def download(repo: str, dest: Path, allow: list[str]) -> None:
         local_dir=str(dest),
         allow_patterns=allow,
         # ما مننفّذ كود من النت أبداً — أوزان وإعدادات بس (trust_remote_code=False مفهوم ضمناً: snapshot_download بس بينزّل ملفات، وما عنده هالوسيط)
-        token=None,                       # توكن مخزّن مسبقاً (huggingface-cli login) بيمشي لحاله، مش هون
+        token=None,                       # توكن مخزّن مسبقاً (hf auth login) بيمشي لحاله، مش هون
         max_workers=4,
     )
 
@@ -114,7 +109,7 @@ def main() -> None:
     ap.add_argument("--min-gb", type=float, default=1.0, help="المساحة الفاضية المطلوبة بالغيغا")
     ap.add_argument("--need-gpu", action="store_true")
     ap.add_argument("--min-vram-gb", type=float, default=0.0)
-    ap.add_argument("--gated", action="store_true", help="موديل مقيّد — بده huggingface-cli login قبل التنزيل")
+    ap.add_argument("--gated", action="store_true", help="موديل مقيّد — بده hf auth login قبل التنزيل")
     ap.add_argument("--done-files", type=int, default=1)
     ap.add_argument("--done-bytes", type=float, default=0.0, help="لو موجودها أكتر من هيك بايت، خلاص منزّل")
     a = ap.parse_args()
@@ -134,13 +129,13 @@ def main() -> None:
     if a.need_gpu:
         check_gpu(required=True, min_vram_gb=a.min_vram_gb)
     if a.gated:
-        check_hf_cli()
+        # بنفحص التوكن نفسه، مش وجود أمر huggingface-cli (مش دايماً بالـ PATH)
         try:
             from huggingface_hub import whoami
             whoami()
         except Exception:                                    # noqa: BLE001 — ما حدا مسجّل دخول
             die("هالموديل مقيّد وبدّه حساب HuggingFace وعِلم عليه. افتح CMD واكتب:\n"
-                "    huggingface-cli login\n"
+                "    hf auth login\n"
                 "وادخل الموقع وقبول الترخيص، ومن ثاني شغّل السكربت من جديد.")
 
     if already_done(dest, min_files=a.done_files, min_bytes=int(a.done_bytes)):

@@ -7,7 +7,7 @@ $env:PYTHONIOENCODING = "utf-8"
 
 Write-Host "◈ ستايل إوديو (موسيقى ومؤثرات) — مقيّد: بدّك تسجّل دخول عالحساب أول"
 Write-Host "  (1) افتح https://huggingface.co/stabilityai/stable-audio-open-1.0 وسجّل دخول واكبس «Agree» عالترخيص."
-Write-Host "  (2) افتح CMD واكتب:  huggingface-cli login   والصق التوكن اللي من هاتفك."
+Write-Host "  (2) افتح CMD واكتب:  hf auth login   وافتح الرابط واكتب الكود اللي بيطلعلك."
 Write-Host "  (3) هيّا شغّل هالسكربت من ثاني."
 & python "$PSScriptRoot\fetch_model.py" `
     --repo "stabilityai/stable-audio-open-1.0" `
