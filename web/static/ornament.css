@@ -988,7 +988,7 @@ html:not([data-oms="on"]) .oms-only { display: none !important; }
     max-inline-size: none; font-size: var(--vp-fs-xs);
   }
   .obj-t { font-size: var(--vp-fs-xs); }
-  .tb-menu { min-inline-size: min(19rem, calc(100vw - 2rem)); }
+  .tb-menu { min-inline-size: min(19rem, calc(100vw - 2rem)); max-inline-size: calc(100vw - 1rem); }
   .who-chip b { max-inline-size: 5.5rem; }
   .nl-panels { transform: rotate(-12deg) scale(1.15); }
   .nl-box { padding: var(--vp-space-4) var(--vp-space-3); }

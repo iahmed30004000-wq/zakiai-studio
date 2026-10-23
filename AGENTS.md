@@ -38,7 +38,7 @@ Product rules
 Engineering conventions
 - UI text, comments and messages: Levantine Arabic. Identifiers: English.
 - Each `web/static/*.js` is a closed IIFE that exposes one `window.*` name. New top-level `const/let` names collide across files (`tests/test_ui_globals.py` guards this).
-- CSS only through `--vp-*` variables. Any change under `web/static` bumps `?v=` in BOTH `index.html` and `login.html` to the same number (now 80).
+- CSS only through `--vp-*` variables. Any change under `web/static` bumps `?v=` in BOTH `index.html` and `login.html` to the same number (now 82).
 - Every new write route needs an Arabic label in `activity._R` (or SILENT): a test compares them with the OpenAPI paths.
 - Every new endpoint also needs a mock (`web/static/mock/*.json` + handler in `app.js`, page opens with `?mock=1`).
 - Ship tests with every change. Fake external services in tests (`tests/fake_gradio.py`, `fake_openai.py`, `engine_box.py`); never call real paid APIs.

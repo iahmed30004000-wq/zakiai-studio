@@ -29,7 +29,7 @@ def test_the_script_is_loaded_once_after_app_and_before_the_shell():
 
 
 def test_the_library_page_has_the_new_pattern_import_archive_and_translation_slots():
-    for needle in ('href="#/pattern/new"', 'id="peImportBtn"', 'id="peArchBtn"', 'id="peArchCount"', 'id="peTrBanner"', 'id="peArchPanel"'):
+    for needle in ('href="#/pattern/new"', 'id="peImportBtn"', 'id="peArchBtn"', 'id="peArchCount"', 'id="peArchPanel"'):
         assert needle in HTML, needle
 
 
@@ -91,12 +91,12 @@ def test_mock_import_preview_and_translation_state_have_the_shape_the_ui_reads()
         assert path in APP, path
 
 
-def test_translation_is_automatic_the_owner_has_no_trial_or_translate_buttons():
-    """المالك ما بيقعد يترجم: الواجهة بتبدأ الترجمة لحالها وبتعرض تقدّم بس. الزر الوحيد «أعد المحاولة» وقت الخطأ."""
+def test_translation_is_silent_no_banner_and_no_buttons():
+    """المالك (24/10): «شيل زر الترجمة نهائياً». ما في شريط ولا زر ولا «أعد المحاولة»؛ الترجمة بتشتغل بالخلفية بهدوء."""
     assert "data-tr=" not in JS and "جرّب على نمطين" not in JS and "ترجم الكل" not in JS and "ترجم الباقي" not in JS
-    assert 'post("/api/pattern-lib/translate", {})' in JS                          # بتبدأها لحالها
-    assert 'post("/api/pattern-lib/translate", { retry: true })' in JS and 'id="peTrRetry"' in JS
-    assert "جاري ترجمة الأنماط للعربي تلقائياً" in JS and "peTrPoll(4000)" in JS      # تقدّم حي
+    assert "peTrRetry" not in JS and "أعد المحاولة" not in JS and "جاري ترجمة الأنماط" not in JS and "peTrBanner" not in JS
+    assert "peTrBanner" not in (STATIC / "index.html").read_text(encoding="utf-8")
+    assert 'post("/api/pattern-lib/translate", {})' in JS                          # بتحفّزها لحالها
     assert "t.running" in JS and "t.retry_in" in JS and "t.stuck" in JS and "t.auto" in JS
     for state in ('"error"', '"pending"'):                                          # المحاكاة بتغطّي الحالتين
         assert f'mode === {state}' in APP or f'mode !== "pending"' in APP

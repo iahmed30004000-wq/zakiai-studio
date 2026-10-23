@@ -325,55 +325,28 @@ async function peRestore(id) {
   } catch (e) { toast(e.message, "err"); }
 }
 
-/* ═════════ تبويب «الأنماط»: الترجمة التلقائية للعربي (المالك ما بيعمل شي) ═════════ */
-function peTrPoll(ms) {
-  clearTimeout(PE.trTimer);
-  PE.trTimer = setTimeout(() => { if ($("#peTrBanner") && location.hash.startsWith("#/library")) peRenderTranslation(); }, ms);
-}
-
+/* ═════════ الترجمة للعربي: صامتة بالخلفية ═════════
+   ما في شريط ولا زر (قرار المالك 24/10: «شيل زر الترجمة نهائياً»). أنماط الاستيراد الجديدة بتنترجم لحالها بالسيرفر
+   (pattern_i18n.ensure_running)؛ هون بس منحفّزها مرة وبهدوء، ولو خلصت وإحنا واقفين بنحدّث الكروت. أي خطأ بيضل بسجل السيرفر. */
 async function peRenderTranslation() {
   clearTimeout(PE.trTimer);
-  const box = $("#peTrBanner");
-  if (!box) return;
   const { data: t } = await soft("/api/pattern-lib/translation");
-  if (!t) { box.innerHTML = ""; return; }
-  if (t.running) {                                      /* شغّالة: تقدّم بس، بلا أزرار */
+  if (!t) return;
+  if (t.running) {
     PE.trWas = true;
-    const pct = t.total ? Math.round((100 * t.done) / t.total) : 0;
-    box.innerHTML = `<div class="notice"><b>جاري ترجمة الأنماط للعربي تلقائياً…</b> ${esc(t.done)} من ${esc(t.total)} نمط.
-      بتكمّل لحالها وبتقدر تكمّل شغلك.<div class="meter"><i style="width:${pct}%"></i></div></div>`;
-    peTrPoll(4000);
+    PE.trTimer = setTimeout(() => { if (location.hash.startsWith("#/library")) peRenderTranslation(); }, 6000);
     return;
   }
   if (PE.trWas) {                                       /* خلصت وإحنا واقفين على الصفحة: حدّث الكروت */
     PE.trWas = false;
     LIB.loaded = false;
     await loadPatterns();
-    if (!t.pending_patterns) toast("اكتملت ترجمة الأنماط للعربي", "ok");
   }
-  if (!t.pending_patterns || !t.auto) { box.innerHTML = ""; return; }
-  const fresh = t.pending_patterns - (t.stuck || 0);   /* ناقص بتحاوله الترجمة التلقائية (مش الأنماط اللي استسلمت) */
-  if (!PE.trKicked && fresh > 0 && !t.retry_in) {       /* ناقص ومش شغّالة وما في انتظار: بنبدأها لحالنا مرة */
+  const fresh = t.pending_patterns - (t.stuck || 0);
+  if (t.auto && !PE.trKicked && fresh > 0 && !t.retry_in) {
     PE.trKicked = true;
     await post("/api/pattern-lib/translate", {}).catch(() => {});
-    return peRenderTranslation();
   }
-  if (t.error || t.stuck) {
-    const why = t.error ? esc(t.error) : `${esc(t.stuck)} نمط نصه ما انترجم تلقائياً بعد عدة محاولات`;
-    box.innerHTML = `<div class="notice warn"><b>الترجمة التلقائية للعربي واقفة.</b> ${why}
-      ${t.error ? ` لو السبب مفتاح أو اتصال، صلّحه من <a href="#/factory/api/keys">إعدادات المفاتيح</a>.` : ""}
-      ${t.retry_in ? ` بتحاول لحالها بعد ${esc(Math.ceil(t.retry_in / 60))} دقيقة.` : ""}
-      <div class="row" style="margin-top:8px"><button type="button" class="btn sm" id="peTrRetry">أعد المحاولة هلّق</button></div></div>`;
-    $("#peTrRetry").addEventListener("click", async (e) => {
-      e.target.disabled = true;
-      try { await post("/api/pattern-lib/translate", { retry: true }); } catch (er) { toast(er.message, "err"); }
-      PE.trKicked = true;
-      peRenderTranslation();
-    });
-    return;
-  }
-  box.innerHTML = `<div class="notice">ترجمة الأنماط للعربي بتبدأ لحالها بعد لحظات…</div>`;
-  peTrPoll(5000);
 }
 
 async function peRefreshArchive(open) {

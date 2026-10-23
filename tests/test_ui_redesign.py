@@ -169,3 +169,10 @@ def test_new_art_slots_are_real_photos_with_credits():
         assert c["source"].startswith("https://") and c["licence"], name
         assert not re.search(r"\bSA\b|NC", c["licence"]), (name, c["licence"])               # بلا ShareAlike ولا NonCommercial
     assert (art / "CREDITS.md").exists()
+
+
+def test_header_menus_are_kept_inside_the_screen():
+    """قائمة «حسابي» على الجوال كانت تنقصّ من اليسار: بعد ما تنفتح بتنزاح لجوّا الشاشة."""
+    najma = _read("najma.js")
+    assert "function keepMenusInside()" in najma and "translateX(" in najma and "keepMenusInside();" in najma
+    assert "max-inline-size: calc(100vw - 1rem)" in _read("ornament.css")

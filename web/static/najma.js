@@ -41,7 +41,20 @@
     const first = $(".nc-card", root); if (first) first.focus();
   }
   document.addEventListener("click", (e) => { const b = e.target.closest ? e.target.closest("[data-new-chooser]") : null; if (b) { e.preventDefault(); newChooser(); } });
+  /* قوائم الترويسة ما لازم تطلع برّا الشاشة (جوال: زر «حسابي» عالطرف فالقائمة كانت تنقصّ): بعد ما تنفتح منزيحها لجوّا */
+  function keepMenusInside() {
+    $$(".tb-menu").forEach((m) => {
+      new MutationObserver(() => {
+        m.style.transform = "";
+        if (m.hidden) return;
+        const r = m.getBoundingClientRect(), vw = document.documentElement.clientWidth, pad = 8;
+        const dx = r.left < pad ? pad - r.left : r.right > vw - pad ? vw - pad - r.right : 0;
+        if (dx) m.style.transform = `translateX(${Math.round(dx)}px)`;
+      }).observe(m, { attributes: true, attributeFilter: ["hidden"] });
+    });
+  }
   function initMenus() {
+    keepMenusInside();
     if (!(window.zk && zk.dropdown)) return;
     ["#accDd"].forEach((s) => { const el = $(s); if (el) zk.dropdown(el); });
     const g = $("#guideDd");
