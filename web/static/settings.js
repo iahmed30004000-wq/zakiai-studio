@@ -3,7 +3,10 @@
    المفاتيح: الواجهة بتبعتها بس ولا بترجّعها أبداً — اللي بيظهر هون مقنّع من السيرفر. */
 "use strict";
 
-const SET = { tab: "general" };
+const SET = { tab: "staff" };
+/* أربع تبويبات بس: كل تبويب بيفتح قسمه الأساسي + أقسام مرافقة. الروابط القديمة (#/settings/general|activity|crm) بتنزل على تبويبها */
+const SET_GROUP = { general: "ops", activity: "staff", crm: "advanced" };
+const SET_WITH = { staff: ["staff", "activity"], ops: ["ops", "general"], analysis: ["analysis"], advanced: ["advanced", "crm"] };
 let PROVIDERS = {};
 let PROVIDER_INFO = {};
 let STT_PROVIDERS = {};
@@ -11,8 +14,13 @@ let currentPrompt = null;
 
 VIEWS.settings = {
   enter(p) {
-    SET.tab = selectTab("#setTabs", "set", p.rest[0] || "general");
-    loadSettingsTab(SET.tab);
+    const want = p.rest[0] || "staff";
+    SET.tab = selectTab("#setTabs", "set", SET_GROUP[want] || want);
+    const panes = SET_WITH[SET.tab] || [SET.tab];
+    $$("#v-settings > .tabpane").forEach((el) => el.classList.toggle("on", panes.includes(el.id.replace(/^set-/, ""))));
+    panes.forEach((t) => loadSettingsTab(t));
+    /* رابط لقسم مرافق (مثلاً «النشاط»): منوصل لعنده */
+    if (want !== SET.tab && panes.includes(want)) setTimeout(() => { const el = $(`#set-${want}`); if (el) el.scrollIntoView({ block: "start" }); }, 80);
   },
 };
 bindTabClicks("#setTabs", (t) => { location.hash = `#/settings/${t}`; });
@@ -21,7 +29,7 @@ bindTabClicks("#setTabs", (t) => { location.hash = `#/settings/${t}`; });
 async function loadApiSection(t) {
   switch (t) {
     case "keys": loadSettingsValues(); loadKeyOverview(); if (window.adsFbLoad) adsFbLoad(); break;
-    case "media": loadMediaSettings(); break;
+    case "media": loadMediaSettings(); loadStt(); break;
     default: await loadConnections(); loadTasks(); break;
   }
 }
@@ -34,10 +42,10 @@ async function loadSettingsTab(t) {
     case "crm": loadCrmTab(); loadQueue(); break;
     case "ops": loadBackup(); loadScheduler(); loadSpend(); break;
     case "media": loadMediaSettings(); break;
-    case "analysis": loadStt(); loadSettingsValues(); if (window.VIEWS && VIEWS.claims) VIEWS.claims.enter(); break;
+    case "analysis": loadSettingsValues(); if (window.VIEWS && VIEWS.claims) VIEWS.claims.enter(); break;
     case "staff": accStaffLoad(); break;
     case "activity": accActivityLoad(); break;
-    case "advanced": loadPrompts(); break;
+    case "advanced": loadSettingsValues(); loadPrompts(); break;
   }
 }
 
@@ -220,7 +228,7 @@ async function loadKeyOverview() {
   const rows = [];
   rows.push(set.data ? row("Anthropic", set.data.api_key.set, set.data.api_key.masked) : row("Anthropic", false));
   if (conns.data) (conns.data.connections || []).forEach((c) => rows.push(row(`اتصال: ${c.label}`, !!c.key_masked, c.key_masked, c.provider)));
-  if (stt.data) rows.push(row("التفريغ (STT)", stt.data.current.key_set || (STT_PROVIDERS[stt.data.current.provider] || {}).local, stt.data.current.key_masked, stt.data.current.provider, ["#/settings/analysis", "اضبطه من هون ←"]));
+  if (stt.data) rows.push(row("التفريغ (STT)", stt.data.current.key_set || (STT_PROVIDERS[stt.data.current.provider] || {}).local, stt.data.current.key_masked, stt.data.current.provider, ["#/factory/api/media", "اضبطه من هون ←"]));
   if (tts.data) rows.push(row("الصوت (TTS)", tts.data.current.key_set, tts.data.current.key_masked, tts.data.current.provider, ["#/factory/api/media", "اضبطه من هون ←"]));
   if (img.data) rows.push(row("الصور", img.data.current.key_set, img.data.current.key_masked, img.data.current.provider, ["#/factory/api/media", "اضبطه من هون ←"]));
   if (fal.data) rows.push(row("تحريك بالـ API (fal.ai)", fal.data.has_key, fal.data.has_key ? "••••••••" : "", "", ["#/factory/local", "اضبطه من هون ←"]));
@@ -246,8 +254,9 @@ $("#clearKeyBtn").addEventListener("click", async () => {
   catch (e) { setStatus(st, e.message, "err"); }
 });
 
-$("#saveSettingsBtn").addEventListener("click", async () => {
-  const st = $("#settingsStatus");
+/* زرّين حفظ (القواعد · متقدّم) لنفس الإعدادات: كل واحد بيكتب حالته جنبه */
+async function saveSettingsValues(btn) {
+  const st = $(`#${btn.dataset.saveFor || "settingsStatus"}`);
   const payload = {};
   $$("[data-set]").forEach((el) => {
     let v = el.value;
@@ -261,7 +270,8 @@ $("#saveSettingsBtn").addEventListener("click", async () => {
     setStatus(st, r.note || "انحفظت", "ok");
     loadSettingsValues(); loadHealth();
   } catch (e) { setStatus(st, e.message, "err"); }
-});
+}
+$$(".save-settings").forEach((b) => b.addEventListener("click", () => saveSettingsValues(b)));
 
 /* ═════════ الـ OMS والطابور ═════════ */
 async function loadCrmTab() {

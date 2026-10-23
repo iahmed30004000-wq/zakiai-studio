@@ -1,4 +1,4 @@
-"""المرحلة 7 (الشكل والدليل): ثيما «نجمة وطريق» (ليل/نهار)، مبدّل بكبسة، رؤوس الصفحات كأبطال، رسومات الحالات
+"""المرحلة 7 (الشكل والدليل): ثيما «نجمة وطريق» (ليل/نهار) + «ساحل النيون» (رجع 23/10)، مبدّل بكبسة، رؤوس الصفحات كأبطال، رسومات الحالات
 الفاضية، صفحة الدخول، الترويسة على الجوال، والمصطلحات الجديدة بالدليل. كله فحص ساكن على ملفات web/static (بلا متصفح)."""
 import json
 import re
@@ -32,23 +32,28 @@ def _tokens(body: str) -> dict:
 THEMES = {
     "night": _tokens(_block(':root,\n[data-theme="night"]')),
     "day": _tokens(_block('[data-theme="day"],')),
+    "neon": _tokens(_block('[data-theme="neon"] {')),
 }
 
 
-def test_the_two_themes_define_the_same_tokens():
-    assert list(THEMES) == ["night", "day"] and len(THEMES["night"]) >= 48
+def test_the_three_themes_define_the_same_tokens():
+    assert list(THEMES) == ["night", "day", "neon"] and len(THEMES["night"]) >= 48
     assert set(THEMES["day"]) == set(THEMES["night"]), sorted(set(THEMES["night"]) ^ set(THEMES["day"]))
-    # «نيون» اندمج بالليل: ما عاد إله كتلة ثيم، بس اسم قديم بالترحيل
-    assert '[data-theme="neon"] {' not in THEME
-    assert "neon: \"night\"" in _read("boot.js")
+    # النيون بيزيد بس خطّين (عناوين Lalezar وعرض Bangers) فوق نفس الرموز
+    assert set(THEMES["neon"]) - set(THEMES["night"]) == {"--vp-font-heading", "--vp-font-display"}
+    assert set(THEMES["night"]) <= set(THEMES["neon"]), sorted(set(THEMES["night"]) - set(THEMES["neon"]))
+    # «ساحل النيون» ثيم حقيقي (رجع بطلب المالك): كتلته بـ theme.css، وما عاد بجدول الترحيل
+    assert '[data-theme="neon"] {' in THEME
+    assert "neon:" not in _read("boot.js").split("const THEME_MIGRATE")[1].split("\n")[0]
 
 
 def test_fonts_are_ibm_plex_sans_arabic():
     root = _block(":root {")
     t = _tokens(root)
     assert "IBM Plex Sans Arabic" in t["--vp-font-sans"]
-    # خط العرض العربي والعناوين عربية محلية — بلا خط لاتيني صارخ (Bangers انشال)
-    assert "Bangers" not in THEME and "Bangers" not in ORN
+    # الخط العربي والعناوين محلية؛ Bangers (لاتيني) لثيم النيون بس — مش بخطوط الليل/النهار ولا بالجذر
+    assert "Bangers" not in root and "Bangers" not in _block('[data-theme="night"]') and "Bangers" not in _block('[data-theme="day"],')
+    assert 'font-family: "Bangers"' in ORN and (STATIC / "fonts" / "bangers-latin.woff2").exists() and (STATIC / "fonts" / "OFL-Bangers.txt").exists()
     for f in ("IBMPlexSansArabic-400-arabic.woff2", "IBMPlexSansArabic-600-arabic.woff2", "IBMPlexSansArabic-700-arabic.woff2",
               "OFL-IBMPlexSansArabic.txt"):
         assert (STATIC / "fonts" / f).exists(), f
@@ -85,7 +90,7 @@ PAIRS = [
 ]
 
 
-@pytest.mark.parametrize("theme", ["night", "day"])
+@pytest.mark.parametrize("theme", ["night", "day", "neon"])
 def test_text_contrast_is_at_least_aa_on_every_surface(theme):
     t = THEMES[theme]
     bad = []
@@ -108,8 +113,9 @@ def test_theme_images_are_webp_and_every_one_is_credited():
     credits = json.loads((STATIC / "img" / "theme" / "credits.json").read_text(encoding="utf-8"))
     by_file = {c["file"]: c for c in credits}
     for u in urls:
-        name = u.rsplit("/", 1)[-1]
+        name = u[len("/img/theme/"):]                       # مثلاً hero-home.webp أو neon/mission.webp
         assert name in by_file, f"{name} بلا سطر حقوق بـ credits.json"
+    assert any(n.startswith("neon/") for n in by_file) and len([u for u in urls if "/neon/" in u]) >= 13
     for c in credits:
         for k in ("file", "what", "author", "licence", "licence_url", "source"):
             assert c.get(k), (c.get("file"), k)
@@ -140,10 +146,10 @@ def test_theme_is_a_one_click_toggle_with_no_menu():
     boot = _read("boot.js")
     assert 'id="themeBtn"' in INDEX and 'id="themeDd"' not in INDEX and 'id="themeMenu"' not in INDEX
     assert 'id="themeGlyph"' in INDEX and 'id="themeName"' in INDEX
-    # أسماء الثيمين بالعربي + الترحيل من الأسماء القديمة
-    assert '"نجمة وطريق (ليل)"' in boot and '"نجمة وطريق (نهار)"' in boot
-    assert 'THEME_MIGRATE = { dark: "night", neon: "night", light: "day", calm: "day" }' in boot
-    # كبسة وحدة بتقلب ليل ↔ نهار؛ ما في قائمة ولا applyTheme من عنصر قائمة
+    # أسماء الثيمات بالعربي + الترحيل من الأسماء القديمة (نيون ثيم حقيقي هلأ)
+    assert '"نجمة وطريق (ليل)"' in boot and '"نجمة وطريق (نهار)"' in boot and '{ k: "neon", n: "ساحل النيون"' in boot
+    assert 'THEME_MIGRATE = { dark: "night", light: "day", calm: "day" }' in boot
+    # كبسة وحدة بتدوّر ليل ← نهار ← نيون؛ ما في قائمة ولا applyTheme من عنصر قائمة
     assert "function nextTheme()" in boot and 'addEventListener("click", () => applyTheme(nextTheme()))' in boot
     assert 'zk.dropdown($("#themeDd")' not in boot
     # صفحة الدخول بتقرأ نفس المفتاح وبتطبّع الأسماء القديمة
@@ -167,8 +173,9 @@ def test_main_page_heads_are_heroes_with_known_images():
     for t in re.findall(r'"(\w+)"', tabs):
         assert t in per_tab, f"رف المكتبات «{t}» بلا صورة بطل"
     assert set(per_tab.values()) <= defined
-    # كل رأس رئيسي فيه زر «الخطوة الجاية» وفي مقبض عام لهالزر
-    assert INDEX.count("data-guide-next") >= 3
+    # «الخطوة الجاية» بمكانين بس: زر الترويسة وبطل الرئيسية (ما عاد زر مكرر برأس كل صفحة)، والمقبض العام لـ data-guide-next لسا بـ guide.js
+    assert 'id="guideNextBtn"' in INDEX and "homeNextLine" in _read("home.js") and "Guide.next" in _read("home.js")
+    assert INDEX.count("data-guide-next") == 0
     assert "[data-guide-next]" in _read("guide.js")
 
 
@@ -221,7 +228,7 @@ def test_new_glossary_terms_and_term_marks():
     assert "الثيم بيتبدّل بكبسة" in g                      # الدليل بيشرح المبدّل الجديد بكبسة
     for f, key in (("hooks.js", "hooks_bank"), ("presets.js", "cinematic_moves"), ("accounts.js", "staff"), ("accounts.js", "activity")):
         assert f'Guide.term("{key}")' in _read(f), (f, key)
-    for screen in ("#/library/hooks", "#/library/presets", "#/settings/staff", "#/settings/activity"):
+    for screen in ("#/library/hooks", "#/library/presets", "#/settings/staff", "#/guide"):
         assert f'"{screen}"' in g, screen
     assert "niون" not in g and "نيون" not in g             # «نيون» ما عاد مصطلح — اندمج بالليل
 

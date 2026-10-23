@@ -60,18 +60,11 @@ function showStudioStep(n) {
   n = Math.min(4, Math.max(1, Number(n) || 1));
   if (window.Mission && Mission.ensureStudioStep(n, ST)) { ST.step = n; return; }   // الخطوة بمرحلة تانية — المهمة بتنقل
   ST.step = n;
-  $$("#studioSteps .step").forEach((b) => {
-    const k = Number(b.dataset.step);
-    b.classList.toggle("on", k === n);
-    b.classList.toggle("done", k < n);
-    if (k === n) b.scrollIntoView({ inline: "center", block: "nearest" });
-  });
   $$(".stepview").forEach((v) => v.classList.toggle("on", v.id === `st-${n}`));
   syncStudioHash();
   if (window.Mission) Mission.onStudioStep(n);
   ({ 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4 })[n]();
 }
-$$("#studioSteps .step").forEach((b) => b.addEventListener("click", () => showStudioStep(Number(b.dataset.step))));
 
 VIEWS.studio = {
   async enter(p) {

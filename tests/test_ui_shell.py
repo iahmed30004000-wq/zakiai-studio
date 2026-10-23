@@ -16,7 +16,7 @@ INDEX = (STATIC / "index.html").read_text(encoding="utf-8")
 NODE = shutil.which("node")
 
 CONTRACT_ORDER = ["app.js", "studio.js", "perf.js", "settings.js", "production.js", "characters.js", "productref.js",
-                  "models.js", "ext.js", "ahat.js", "guide.js", "ornament.js", "home.js", "mission.js", "najma.js", "boot.js"]
+                  "models.js", "ext.js", "ahat.js", "guide.js", "guidepage.js", "ornament.js", "home.js", "mission.js", "najma.js", "boot.js"]
 
 
 def _read(name: str) -> str:
@@ -68,23 +68,27 @@ def test_script_order_follows_contract_and_one_shared_version():
 def test_sidebar_has_exactly_the_five_places():
     nav = _nav()
     routes = re.findall(r'class="zk-nav-item nav-item[^"]*"[^>]*data-route="([\w-]+)"', nav)
-    assert routes == ["home", "mission", "library", "factory", "performance"], routes
-    for glyph, name in (("◆", "الرئيسية"), ("✦", "المهمات"), ("❖", "المكتبات"), ("⚙", "المصنع"), ("★", "الأداء")):
+    assert routes == ["home", "library", "factory", "guide", "performance"], routes
+    # الزر الكبير «إعلان جديد» أول القائمة، و«المهمات» صارت «إعلاناتي» جوّا الرئيسية
+    assert 'id="navNewBtn"' in nav and "data-new-chooser" in nav and nav.index('id="navNewBtn"') < nav.index('data-route="home"')
+    assert 'data-route="mission"' not in nav
+    for glyph, name in (("◆", "الرئيسية"), ("❖", "المكتبات"), ("⚙", "المصنع"), ("✧", "الدليل"), ("★", "الأداء")):
         assert re.search(rf"{glyph}</span>\s*{name}", nav), name
     # «الأداء» بتطلع بس لما الـ OMS مضبوط (html[data-oms="on"]) — نفس قاعدة .oms-only
     assert re.search(r'class="zk-nav-item nav-item oms-only"[^>]*data-route="performance"', nav)
     # «النمط» و«خط الإنتاج» انحذفوا من القائمة، والإعدادات صارت ترس بالترويسة
     for gone in ("النمط<", "خط الإنتاج", 'data-route="pattern"', 'data-route="pipeline"', 'data-route="settings"'):
         assert gone not in nav, gone
-    assert 'id="railStations"' in nav
+    assert 'id="railStations"' in INDEX and 'id="railStations"' not in nav          # محطات المهمة صارت تبويبات جوّا المرحلة؛ الحاوية القديمة مخفية للتوافق
     assert 'html:not([data-oms="on"]) .oms-only' in _read("ornament.css")       # القاعدة اللي بتخفيها
 
 
 def test_header_has_settings_gear_next_tour_and_theme():
     h = _header()
     # ＋ جديد: كل نقاط البداية بقائمة وحدة
-    assert 'id="newBtn"' in h and 'id="newMenu"' in h and "＋" in h
-    assert 'href="#/mission/new?stage=1"' in h and 'href="#/mission/new?free=1"' in h
+    assert 'id="newBtn"' in h and "data-new-chooser" in h and "＋" in h and 'id="newMenu"' not in h
+    assert 'href="#/mission/new?stage=1"' not in h        # الخيارات الثلاثة جوّا نافذة «إعلان جديد» (najma.js)
+    assert "newChooser" in _read("najma.js") and 'href: "#/mission/new?stage=1"' in _read("najma.js")
     assert 'id="guideNextBtn"' in h and "شو بعمل هلأ؟" in h
     assert 'id="tbJobs"' in h and 'aria-label="المهام"' in h
     # «الجولة» صارت بند جوّا قائمة «الدليل» (guideDd) مش زر مستقل بالترويسة
@@ -102,20 +106,23 @@ def test_header_has_settings_gear_next_tour_and_theme():
 
 def test_new_sections_and_containers():
     assert '<section id="v-mission" class="view" data-view="mission"><div id="missionBody"></div></section>' in INDEX
-    for sid, view in (("v-home", "home"), ("v-libs", "libs"), ("v-factory", "factory")):
+    for sid, view in (("v-home", "home"), ("v-libs", "libs"), ("v-factory", "factory"), ("v-guide", "guide")):
         assert re.search(rf'<section id="{sid}" class="view" data-view="{view}"', INDEX), sid
     for t in ("patterns", "products", "characters", "sounds"):
         assert re.search(rf'id="libsTabs".*?data-tab="{t}"', INDEX, re.S) and f'id="libs-{t}"' in INDEX, t
     for t in ("api", "local", "extension"):
         assert re.search(rf'id="facTabs".*?data-tab="{t}"', INDEX, re.S) and f'id="fac-{t}"' in INDEX, t
-    for t in ("models", "keys", "media"):
+    for t in ("keys", "media", "models"):
         assert re.search(rf'id="facApiTabs".*?data-tab="{t}"', INDEX, re.S), t
+    for t in ("steps", "problems", "words"):
+        assert re.search(rf'id="guideTabs".*?data-tab="{t}"', INDEX, re.S) and f'id="guide-{t}"' in INDEX, t
     # الشاشات القديمة بتضل أقسام مصدر للتركيب
     for old in ("library", "pattern", "products", "studio", "characters", "models", "ahat", "extension", "production"):
         assert f'id="v-{old}"' in INDEX, old
     # الرئيسية صارت «مهمّتك الجاية»: بطل + بانتظارك + شغّال هلّق + أول خطواتك (بلا ملخص مكتبة ولا طرق توليد)
     for i in ("homeHero", "homeWait", "homeActive", "homeFirstSteps"):
         assert f'id="{i}"' in INDEX, i
+    assert 'id="msList"' in INDEX and 'id="msFilter"' in INDEX and 'v-missions' not in INDEX            # «إعلاناتي» جوّا الرئيسية
     for gone in ('id="homeMissions"', 'id="homeMethods"', 'id="plLibPanel"', 'id="statCards"', 'id="catList"'):
         assert gone not in INDEX, gone
 
@@ -125,8 +132,10 @@ def test_settings_lost_api_tabs_to_factory():
     for t in ("models", "keys", "media"):
         assert f'data-tab="{t}"' not in seg, t
         assert f'id="set-{t}"' in INDEX, t                 # العقد نفسها بتنتقل للمصنع (shell.js)
-    for t in ("general", "crm", "ops", "analysis", "advanced"):
+    for t in ("staff", "ops", "analysis", "advanced"):            # أربع تبويبات؛ عام/النشاط/الـ OMS أقسام مرافقة جوّاها
         assert f'data-tab="{t}"' in seg, t
+    for t in ("general", "crm", "activity"):
+        assert f'data-tab="{t}"' not in seg and f'id="set-{t}"' in INDEX, t
     sh, st = _read("shell.js"), _read("settings.js")
     assert '"#set-models", "#set-keys", "#set-media"' in sh and "#fac-api" in sh
     assert "async function loadApiSection" in st and "loadApiSection(" in sh
@@ -148,6 +157,10 @@ def test_shell_mounts_old_screens_and_calls_old_views():
 # ───────── المسارات والتحويلات (بتشغيل boot.js بـ node مع بدائل خفيفة) ─────────
 REDIRECTS = {
     "#/pipeline": "#/home",
+    "#/missions": "#/home",
+    "#/mission": "#/home",
+    "#/guide": None,
+    "#/guide/problems": None,
     "#/": None,
     "#/library": "#/library/products",
     "#/library/queue": "#/library/patterns/queue",
@@ -220,8 +233,8 @@ def routing(tmp_path_factory):
 
 
 def test_new_routes_exist(routing):
-    assert set(routing["__names"]) >= {"home", "mission", "library", "factory", "performance", "settings", "pattern"}
-    for gone in ("pipeline", "studio", "production", "products", "characters", "models", "ahat", "extension"):
+    assert set(routing["__names"]) >= {"home", "mission", "library", "factory", "performance", "settings", "pattern", "guide"}
+    for gone in ("pipeline", "studio", "production", "products", "characters", "models", "ahat", "extension", "missions"):
         assert gone not in routing["__names"], gone
         assert gone in routing["__legacy"], gone
 
@@ -236,17 +249,17 @@ def test_station_to_stage_table(routing):
 
 
 def test_themes_night_day_with_migration(routing):
-    assert routing["__themes"] == ["night", "day"]
-    # dark و neon («ساحل النيون» القديم) بينزلوا على الليل؛ light و calm على النهار؛ أي قيمة غريبة على الليل
-    assert routing["__migrate"] == ["night", "day", "day", "night", "day", "night", "night"]
+    assert routing["__themes"] == ["night", "day", "neon"]
+    # dark بينزل على الليل؛ light و calm على النهار؛ neon ثيم حقيقي هلأ؛ أي قيمة غريبة على الليل
+    assert routing["__migrate"] == ["night", "day", "day", "night", "day", "neon", "night"]
     assert 'data-theme="night"' in INDEX
     boot = _read("boot.js")
     assert re.search(r"try\s*\{\s*saved = localStorage\.getItem", boot)
-    # بكبسة وحدة: ليل ↔ نهار، بلا قائمة ولا خطوة زيادة
+    # بكبسة وحدة: ليل ← نهار ← نيون، بلا قائمة ولا خطوة زيادة
     assert "function nextTheme()" in boot and "applyTheme(nextTheme())" in boot
     assert 'id="themeMenu"' not in INDEX and "zk.dropdown($(\"#themeDd\")" not in boot
-    # «نيون» ما عاد ثيم: بس اسم قديم بجدول الترحيل
-    assert 'k: "neon"' not in boot
+    # «ساحل النيون» رجع كثيم ثالث بطلب المالك
+    assert 'k: "neon"' in boot
 
 
 def test_boot_uses_mission_api_when_present():

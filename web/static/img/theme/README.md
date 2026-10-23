@@ -46,3 +46,7 @@
 2. بـ `ornament.css` ضيف: `--img-characters: url("/img/theme/characters.webp");`
 3. وضيف: `.hero[data-img="characters"] { --hero-img: var(--img-characters); }`
    (و`.img-slot[data-img="characters"] { --slot-img: var(--img-characters); }` إذا بدك ياها كبطاقة).
+
+## ثيم «ساحل النيون»
+
+صوره بمجلد `neon/` بنفس أسماء الفتحات (hero-home، library، factory…) وبنفس القواعد (WebP، أقل من 250 KB، حقوقها بـ `credits.json` بمفتاح `neon/<اسم>.webp`، وبـ `neon/CREDITS.md`). `ornament.css` بيبدّلها لما `data-theme="neon"`. ملفات `neon-coast.*` من صنع المالك (ChatGPT). ممنوع: أي لقطة أو اسم أو شعار من لعبة.

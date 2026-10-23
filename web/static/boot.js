@@ -1,13 +1,13 @@
 /* boot.js — التوجيه (hash) وتشغيل الواجهة. آخر ملف يُحمَّل.
-   الهيكل الجديد: home · mission · library/<tab> · factory/<tab> · performance · settings (+ pattern كصفحة تفاصيل).
+   الهيكل: home (فيها «إعلاناتي») · mission · library/<tab> · factory/<tab> · guide · performance · settings (+ pattern كصفحة تفاصيل).
    المسارات القديمة (pipeline, products, studio, characters, models, ahat, extension, production…) بتتحوّل هون. */
 "use strict";
 
 /* المسار ← الشاشة (القسم data-view) + عنصر القائمة اللي بيضوي */
 const ROUTES = {
   home: { view: "home", nav: "home" },
-  missions: { view: "missions", nav: "mission" },
-  mission: { view: "mission", nav: "mission" },
+  mission: { view: "mission", nav: "home" },
+  guide: { view: "guide", nav: "guide" },
   library: { view: "libs", nav: "library" },
   factory: { view: "factory", nav: "factory" },
   performance: { view: "performance", nav: "performance" },
@@ -15,7 +15,7 @@ const ROUTES = {
   pattern: { view: "pattern", nav: "library" },
 };
 /* المسارات القديمة اللي بتتحوّل (للاختبارات والتوثيق) */
-const LEGACY_ROUTES = ["pipeline", "products", "studio", "characters", "product-ref", "models", "ahat", "extension", "production"];
+const LEGACY_ROUTES = ["pipeline", "products", "studio", "characters", "product-ref", "models", "ahat", "extension", "production", "missions"];
 const ROUTE_NAMES = Object.keys(ROUTES);
 
 /* مرحلة المهمة (1–7) لمحطة إنتاج (1–11). Mission.stageOfStation (من mission.js) هو المرجع لو موجود */
@@ -54,8 +54,9 @@ function legacyRedirect(p) {
   const keepQ = (h) => (qs ? `${h}?${qs}` : h);
   switch (p.name) {
     case "pipeline": return "#/home";
-    /* #/mission بلا ملف = قائمة المهمات (المهمة الجديدة لها #/mission/new?stage=1) */
-    case "mission": return p.rest[0] ? null : "#/missions";
+    /* قائمة المهمات صارت «إعلاناتي» بالرئيسية (المهمة الجديدة لها #/mission/new?stage=1) */
+    case "missions": return "#/home";
+    case "mission": return p.rest[0] ? null : "#/home";
     case "products": return keepQ(`#/library/products${r[0] ? "/" + r[0] : ""}`);
     case "characters": return `#/library/characters${r[0] ? "/" + r[0] : ""}`;
     case "product-ref": return r[0] ? `#/library/products?ref=${r[0]}&tab=refs` : "#/library/products?tab=refs";   /* ملف المنتج المرجعي صار بصفحة المنتج ← «المراجع البصرية» */
@@ -134,16 +135,20 @@ function route() {
 }
 window.addEventListener("hashchange", route);
 
-/* الثيم («نجمة وطريق»: ليل / نهار) + مبدّل التطبيقات + قائمتها. n = الاسم الكامل بالقائمة، s = الاسم القصير بالزر */
+/* الثيم («نجمة وطريق»: ليل / نهار · و«ساحل النيون») + مبدّل التطبيقات. n = الاسم الكامل بالتلميح، s = الاسم القصير بالزر */
 const THEMES = [
   { k: "night", n: "نجمة وطريق (ليل)", s: "ليل", g: "☾" },
   { k: "day", n: "نجمة وطريق (نهار)", s: "نهار", g: "☀" },
+  { k: "neon", n: "ساحل النيون", s: "نيون", g: "✺" },
 ];
-/* ترحيل القيم القديمة: dark / neon («ساحل النيون» اندمج بالليل) → night، light / calm → day */
-const THEME_MIGRATE = { dark: "night", neon: "night", light: "day", calm: "day" };
+/* ترحيل القيم القديمة: dark → night، light / calm → day */
+const THEME_MIGRATE = { dark: "night", light: "day", calm: "day" };
 function normTheme(k) { return THEME_MIGRATE[k] || (THEMES.some((x) => x.k === k) ? k : "night"); }
-/* الثيم بكبسة وحدة: ليل ← نهار ← ليل. القائمة القديمة انشالت (خطوة زايدة). */
-function nextTheme() { return normTheme(document.documentElement.getAttribute("data-theme")) === "night" ? "day" : "night"; }
+/* الثيم بكبسة وحدة: ليل ← نهار ← نيون ← ليل. بلا قائمة (خطوة زايدة). */
+function nextTheme() {
+  const cur = normTheme(document.documentElement.getAttribute("data-theme"));
+  return THEMES[(THEMES.findIndex((x) => x.k === cur) + 1) % THEMES.length].k;
+}
 function applyTheme(k) {
   const t = THEMES.find((x) => x.k === normTheme(k)) || THEMES[0];
   document.documentElement.setAttribute("data-theme", t.k);
@@ -153,7 +158,7 @@ function applyTheme(k) {
   if (b) {
     b.title = `الثيم: ${t.n} — اضغط للتبديل`;
     b.setAttribute("aria-label", `الثيم: ${t.n} — اضغط للتبديل`);
-    b.setAttribute("aria-pressed", String(t.k === "day"));
+    b.setAttribute("aria-pressed", String(t.k !== "night"));
   }
   try { localStorage.setItem("vp-theme", t.k); } catch { /* التخزين ممنوع */ }
 }
@@ -181,7 +186,7 @@ async function initChrome() {
   let saved = "night";
   try { saved = localStorage.getItem("vp-theme") || "night"; } catch { /* تجاهل */ }
   applyTheme(saved);
-  /* كبسة وحدة: ليل ↔ نهار. ما في قائمة ولا خطوة زيادة. */
+  /* كبسة وحدة: ليل ← نهار ← نيون. ما في قائمة ولا خطوة زيادة. */
   const tb = $("#themeBtn");
   if (tb && !tb.dataset.bound) {
     tb.dataset.bound = "1";

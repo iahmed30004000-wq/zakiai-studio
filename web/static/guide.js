@@ -158,10 +158,10 @@
   /* ───────── الجولة (5 محطات) ───────── */
   /* 5 محطات بس: من وين بتبلّش، ووين «الخطوة الجاية»، ووين القائمة، ووين الدليل، ووين حسابك. */
   const TOUR = [
-    { sel: "#newBtn", text: "من هون بتبلّش كل شغلة: «＋ جديد» ← مهمة كاملة بـ7 مراحل، أو مشروع حر بإيدك، أو شغلة سريعة لحالها (صورة، صوت، تحريك)." },
+    { sel: "#newBtn", text: "من هون بتبلّش كل شغلة: «＋ إعلان جديد» ← مهمة كاملة بـ7 خطوات، أو مشروع حر بإيدك، أو شغلة سريعة (صورة أو مجموعة صور، صوت، تحريك) وبتختار النموذج." },
     { sel: "#guideNextBtn", text: "أي وقت ضيعت: اكبس «شو بعمل هلأ؟» وبيقلك الخطوة الجاية بجملة وبيوديك عليها بكبسة." },
-    { sel: ".zk-drawer-toggle", text: "القائمة: كل الشاشات هون — المهمات، المكتبات (الأنماط والمنتجات والشخصيات والأصوات)، والمصنع والأداء. بالجوال بتنفتح بزر ☰." },
-    { sel: "#guideBtn", text: "ضيعت؟ «الدليل» فيه هالجولة تانية، والبحث السريع (Ctrl+K)، وقاموس الكلمات، وحقوق الصور." },
+    { sel: ".zk-drawer-toggle", text: "القائمة: الرئيسية (فيها إعلاناتك كلها)، المكتبات (المنتجات والشخصيات والأنماط والأصوات)، المصنع (شو جاهز وشو ناقص)، والدليل. بالجوال بتنفتح بزر ☰." },
+    { sel: "#guideBtn", text: "ضيعت؟ «الدليل» فيه هالجولة تانية، والبحث السريع (Ctrl+K)، وقاموس الكلمات، وحقوق الصور. وصفحة «الدليل» بالقائمة فيها كل شي بالتفصيل." },
     { sel: "#accBtn", text: "«حسابي»: اسمك، والإعدادات (الاستهلاك والإنفاق والموظفين)، وتبديل الحسابات، والخروج. والثيم بيتبدّل بكبسة من ☾/☀." },
   ];
   const T = { i: 0, layer: null, target: null, prevFocus: null };
@@ -242,7 +242,10 @@
 
   /* ───────── البحث السريع (Ctrl+K) ───────── */
   const SCREENS = [
-    ["الرئيسية — خريطة المهمات", "#/home", "home dashboard بانتظارك"],
+    ["الرئيسية — إعلاناتي وشو الجاي", "#/home", "home dashboard بانتظارك مهمات إعلانات"],
+    ["الدليل — أول إعلان بـ 7 خطوات", "#/guide", "guide دليل شرح كيف ابدأ"],
+    ["الدليل — عندي مشكلة", "#/guide/problems", "problems مشكلة حل مساعدة"],
+    ["الدليل — قاموس الكلمات", "#/guide/words", "glossary قاموس معنى كلمة"],
     ["مهمة جديدة", "#/mission/new?stage=1", "new mission ابدأ"],
     ["مشروع حر جديد", "#/mission/new?free=1", "free project مشروع حر يدوي بدون مراحل"],
     ["الأنماط", "#/library/patterns", "patterns مكتبة نمط"],
@@ -255,22 +258,19 @@
     ["الأصوات والآهات والموسيقى", "#/library/sounds", "ahat music sounds"],
     ["بنك الهوكات", "#/library/hooks", "hooks bank هوك خطاف افتتاحية"],
     ["الحركات السينمائية", "#/library/presets", "cinematic moves camera حركة كاميرا higgsfield"],
-    ["الادعاءات الممنوعة (تعديل المكتبة)", "#/library/claims", "claims forbidden ممنوع شفاء علاج ادعاءات"],
-    ["المصنع — API: الاتصالات والموديلات", "#/factory/api/models", "api connections llm"],
-    ["المصنع — المفاتيح", "#/factory/api/keys", "keys مفتاح"],
-    ["المصنع — الصوت والصور (TTS والصور)", "#/factory/api/media", "tts voice images صوت فويس"],
+    ["الادعاءات الممنوعة (القواعد)", "#/settings/analysis", "claims forbidden ممنوع شفاء علاج ادعاءات قواعد"],
+    ["المصنع — موديلات الكتابة", "#/factory/api/models", "api connections llm"],
+    ["المصنع — كل المفاتيح", "#/factory/api/keys", "keys مفتاح"],
+    ["المصنع — الصوت والصور والتفريغ", "#/factory/api/media", "tts voice images stt صوت فويس تفريغ"],
     ["المصنع — مكتبة النماذج (صور، صوت، تفريغ، تحريك…)", "#/factory/local", "local models library motion model مكتبة النماذج اربط نموذج تحريك صوت صور تفريغ كونفي"],
     ["المصنع — الإضافة", "#/factory/extension", "extension chrome كروم"],
     ["الأداء", "#/performance", "performance نتائج"],
     ["التعلّم الأسبوعي", "#/performance/learning", "learning"],
     ["التنبيهات والمسودات", "#/performance/alerts", "alerts drafts"],
-    ["الإعدادات — عام والاستهلاك", "#/settings/general", "settings usage تكلفة"],
-    ["الإعدادات — الـ OMS والطابور", "#/settings/crm", "oms crm queue"],
-    ["الإعدادات — النسخ والجدولة والإنفاق", "#/settings/ops", "backup schedule spend"],
-    ["الإعدادات — التحليل والقواعد", "#/settings/analysis", "analysis stt whisper"],
-    ["الإعدادات — الموظفين", "#/settings/staff", "staff employees accounts حسابات موظف"],
-    ["الإعدادات — النشاط", "#/settings/activity", "activity log مين عمل شو"],
-    ["الإعدادات — البرومبتات", "#/settings/advanced", "prompts"],
+    ["الإعدادات — الفريق والنشاط", "#/settings/staff", "staff employees accounts activity حسابات موظف نشاط مين عمل شو"],
+    ["الإعدادات — النسخ والصرف والاستهلاك", "#/settings/ops", "backup spend usage settings تكلفة نسخ"],
+    ["الإعدادات — القواعد والادعاءات", "#/settings/analysis", "rules claims script قواعد"],
+    ["الإعدادات — متقدّم (التحليل والبرومبتات والـ OMS)", "#/settings/advanced", "advanced prompts whisper ocr oms crm queue"],
   ];
   const ACTIONS = [
     ["؟ الجولة التعريفية", () => tour(true), "tour help"],

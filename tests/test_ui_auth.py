@@ -48,7 +48,8 @@ def test_the_header_shows_who_is_logged_in_with_a_logout_button():
 
 def test_settings_has_staff_and_activity_tabs_wired_to_their_loaders():
     seg = re.search(r'<div class="seg" id="setTabs".*?</div>', INDEX, re.S).group(0)
-    assert 'data-tab="staff">الموظفين</button>' in seg and 'data-tab="activity">النشاط</button>' in seg
+    assert 'data-tab="staff"' in seg and "الفريق" in seg and 'data-tab="activity"' not in seg      # «الفريق» بيفتح الموظفين + النشاط (قسمين مرافقين)
+    assert 'SET_WITH = { staff: ["staff", "activity"]' in SET
     assert 'id="set-staff" class="tabpane"' in INDEX and 'id="set-activity" class="tabpane"' in INDEX
     assert 'case "staff": accStaffLoad(); break;' in SET and 'case "activity": accActivityLoad(); break;' in SET
     assert re.search(r'<script src="/accounts\.js\?v=\d+"></script>', INDEX)

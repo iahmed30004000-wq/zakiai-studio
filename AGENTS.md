@@ -38,7 +38,7 @@ Product rules
 Engineering conventions
 - UI text, comments and messages: Levantine Arabic. Identifiers: English.
 - Each `web/static/*.js` is a closed IIFE that exposes one `window.*` name. New top-level `const/let` names collide across files (`tests/test_ui_globals.py` guards this).
-- CSS only through `--vp-*` variables. Any change under `web/static` bumps `?v=` in BOTH `index.html` and `login.html` to the same number (now 76).
+- CSS only through `--vp-*` variables. Any change under `web/static` bumps `?v=` in BOTH `index.html` and `login.html` to the same number (now 80).
 - Every new write route needs an Arabic label in `activity._R` (or SILENT): a test compares them with the OpenAPI paths.
 - Every new endpoint also needs a mock (`web/static/mock/*.json` + handler in `app.js`, page opens with `?mock=1`).
 - Ship tests with every change. Fake external services in tests (`tests/fake_gradio.py`, `fake_openai.py`, `engine_box.py`); never call real paid APIs.
@@ -73,6 +73,7 @@ Windows tips: set `PYTHONIOENCODING=utf-8` when printing Arabic. PowerShell 5.1 
 
 Done and pushed
 - Overhaul in 8 phases: names, patterns in Arabic (+ Excel import, automatic translation), 3+ hooks per script, character face consistency, cinematic camera presets, staff accounts and activity log, neon theme and in-site guide.
+- UI restructure (23 Oct): big «＋ إعلان جديد» chooser (guided mission / free project / quick task), «إعلاناتي» inside Home (no separate missions page), 4 library shelves, factory «readiness» list with fix buttons, 4 settings tabs, guide page `#/guide` (`web/static/guidepage.js`), neon theme back (real Unsplash photos under `img/theme/neon/`, credits in `credits.json`), quick tasks take one or many items and an explicit model (`provider=lib:ml_x` for image/voice, `model=mm_x` for motion).
 - Free project (manual production from any start point) and the model library: weights box on the server, Gradio apps, OpenAI-compatible servers, local commands; lip-sync from the library; music and sound effects (Stable Audio) into the sound library as unapproved.
 
 Verified

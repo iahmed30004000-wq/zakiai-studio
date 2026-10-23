@@ -458,3 +458,19 @@ def test_tts_route_needs_a_key_and_something_to_voice_then_makes_a_job(env, tmp_
     assert c.get(f"/api/studio/{f}/free/board").json()["voice"]["scenes_with_voice"] == 2
     r = c.post(f"/api/studio/{f}/free/voice/tts", json={})
     assert r.status_code == 409                                                                            # الكل إله صوت
+
+
+def test_tts_route_takes_an_explicit_library_model_and_rejects_anything_else(env, monkeypatch):
+    """اختيار النموذج بالشغلة السريعة: lib:ml_xxx بس، وبيوصل للأمر وللإعداد؛ أي قيمة غريبة = 400."""
+    import tts
+    c = client()
+    f = c.post("/api/free/projects", data={"title": "ص", "text": f"{S1}\n\n\n\n{S2}"}).json()["file"]
+    p = Path(config.SCRIPTS_DIR) / f
+    seen = []
+    monkeypatch.setattr(tts, "tts_config", lambda o=None: (seen.append(dict(o or {})) or {"api_key": "k", "provider": "x", "model": "m", "voice": "v"}))
+    r = c.post(f"/api/studio/{f}/free/voice/tts", json={"provider": "lib:ml_002", "only_missing": False})
+    assert r.status_code == 200, r.text
+    assert env.jobs[-1]["cmd"] == ["voice_upload.py", "tts", str(p), "--all", "--provider", "lib:ml_002"]
+    assert {"provider": "lib:ml_002"} in seen
+    for bad in ("elevenlabs", "lib:../x", 7, "lib:ml_1"):
+        assert c.post(f"/api/studio/{f}/free/voice/tts", json={"provider": bad}).status_code == 400, bad

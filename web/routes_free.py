@@ -223,14 +223,19 @@ def free_voice_tts(filename: str, payload: dict | None = None) -> dict:
     p = _script(filename)
     pl = payload or {}
     only_missing = bool(pl.get("only_missing", True))
+    provider = pl.get("provider")                                   # اختيار نموذج مكتبة صريح (lib:ml_001)؛ فاضي = الافتراضي
+    if provider not in (None, "") and (not isinstance(provider, str) or not re.fullmatch(r"lib:ml_\d{3,}", provider)):
+        raise HTTPException(400, "النموذج: lib:ml_001 (من مكتبة النماذج) أو فاضي للافتراضي")
     todo = _vu(voice_upload.tts_todo, p, only_missing)
-    if not tts.tts_config({}).get("api_key"):
+    if not tts.tts_config({"provider": provider} if provider else {}).get("api_key"):
         raise HTTPException(409, "ما في مفتاح لمزوّد الصوت — حطّه من الإعدادات (المصنع ← الصوت)")
     cmd = ["voice_upload.py", "tts", str(p)]
     if not only_missing:
         cmd.append("--all")
     if not bool(pl.get("fit", True)):
         cmd.append("--no-fit")
+    if provider:
+        cmd += ["--provider", provider]
     return {"job_id": jobs.create_job("voice", f"صوت بالذكاء للمشروع الحر: {p.stem}", cmd), "scenes": len(todo)}
 
 

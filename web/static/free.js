@@ -37,18 +37,25 @@ const START_OPTS = [
    mission.js بيعرض نفس الاختصارات كأبواب «يدوي» على كل مرحلة (FreeProject.quick). */
 const QUICK = {
   animate: { ico: "🎬", name: "حرّك صورة", mode: "images", after: "animate", go: "حرّك ←",
-    hint: "اختار صورة أو أكتر وبتتحرّك فوراً بالموديل الأنسب. بلا سيناريو ولا صوت ولا مراحل — والفيديو بتنزّله من اللوحة. (لو الموديل API بيصرف من رصيده)" },
+    hint: "اختار صورة أو لحد 50 صورة وبتتحرّك فوراً — بالموديل الأنسب أو بالنموذج اللي بتختاره. بلا سيناريو ولا مراحل، والفيديو بتنزّله من اللوحة." },
   generate: { ico: "🖼", name: "ولّد صورة", mode: "prompt", after: "generate", go: "ولّد ←",
-    hint: "اكتب شو بدك تشوف (كل سطر صورة، لحد 8) وبتتولّد بمزوّد الصور المضبوط عندك. بيصرف من رصيده." },
+    hint: "اكتب شو بدك تشوف: سطر واحد = صورة وحدة، وكتير أسطر (لحد 20) = كلهم مرة وحدة. بتختار النموذج وكم نسخة لكل وصف." },
   speak: { ico: "🔊", name: "حوّل كلام لصوت", mode: "text", after: "tts", go: "ولّد الصوت ←",
-    hint: "الصق كلامك (كل فقرة مشهد) وبيتحوّل لصوت بمزوّد الصوت المضبوط عندك. بيصرف من رصيده." },
+    hint: "الصق كلامك: فقرة وحدة = صوت واحد، وكذا فقرة (سطر فاضي بينها) = كل واحدة صوت. بتختار النموذج." },
   transcribe: { ico: "🎙", name: "فرّغ تسجيل", mode: "voice", after: "", go: "فرّغ ←",
     hint: "ارفع تسجيل صوتك وبينفرّغ لنص، وكل جملة بتصير مشهد — بتنسخ النص أو بتكمّل منه." },
+  sound: { ico: "🎼", name: "ولّد موسيقى أو مؤثر", mode: "sound", after: "", go: "ولّد ←",
+    hint: "اكتب شو بدك تسمع (كل سطر مقطع، لحد 10) وبتتولّد بنموذج مكتبتك. بتنزل بمكتبة الأصوات «غير معتمدة» لحد ما تسمعها وتعتمدها." },
   montage: { ico: "🎞", name: "ركّب لقطاتك", mode: "videos", after: "", tab: "montage", go: "ابدأ ←",
     hint: "ارفع فيديوهاتك وبتفتح مباشرة على «المونتاج والتنزيل»: رتّبها، حط صوت وموسيقى، ونزّل." },
 };
-const QUICK_ROW = ["animate", "generate", "speak", "transcribe", "montage"];       // اللي بتبيّنه شاشة البداية (الباقي أبواب بالمراحل)
-const MAX_PROMPTS = 8;
+const QUICK_ROW = ["animate", "generate", "speak", "sound", "transcribe", "montage"];       // اللي بتبيّنه شاشة البداية (الباقي أبواب بالمراحل)
+const MAX_PROMPTS = 20;
+const MAX_SOUNDS = 10;
+/* كم نسخة لكل وصف (توليد الصور): واحدة أو أكتر ليختار من بينها */
+const COPIES = [1, 2, 3];
+/* النماذج المتاحة للاختيار بالشغلة السريعة: مهمة المكتبة ← مفتاح الواجهة. التحريك من سجل موديلات التحريك. */
+const QUICK_MODEL_TASK = { generate: "image", speak: "voice", sound: "music" };
 const quickHash = (k) => `#/mission/new?free=1&quick=${enc(k)}`;
 
 const GUIDE = {
@@ -262,6 +269,45 @@ function head(sub) {
   return `<div class="page-head mission-head hero compact" data-img="mission"><div><h2>✎ مشروع حر</h2><p class="hint">${sub}</p></div></div>`;
 }
 
+/* ───────── اختيار النموذج بالشغلة السريعة ───────── */
+/* خيار «تلقائي» بيترك القرار للنظام (افتراضي المكتبة أو الموديل الأنسب). أي نموذج بتختاره صراحة: لو فشل بيطلع الخطأ، ما بيتبدّل بصمت. */
+const QM = { data: null, pending: null };
+function loadQuickModels() {
+  if (QM.data) return Promise.resolve(QM.data);
+  if (QM.pending) return QM.pending;
+  QM.pending = (async () => {
+    const lib = async (task) => {
+      const r = await soft(`/api/model-library/choices?task=${task}`);
+      return ((r.data && r.data.models) || []).filter((m) => m.usable !== false).map((m) => ({ v: `lib:${m.id}`, n: m.name }));
+    };
+    const [image, voice, music, sfx, mm] = await Promise.all([lib("image"), lib("voice"), lib("music"), lib("sfx"), soft("/api/motion-models")]);
+    const motion = ((mm.data && mm.data.models) || []).filter((m) => m.enabled !== false).map((m) => ({ v: m.id, n: m.name }));
+    QM.data = { image, voice, music, sfx, motion };
+    return QM.data;
+  })().finally(() => { QM.pending = null; });
+  return QM.pending;
+}
+const quickModelList = (key, kind) => {
+  const d = QM.data || {};
+  if (key === "animate") return d.motion || [];
+  if (key === "sound") return (kind === "ahat" ? d.sfx : d.music) || [];
+  return d[QUICK_MODEL_TASK[key]] || [];
+};
+function quickOptsHtml(key) {
+  if (!["animate", "generate", "speak", "sound"].includes(key)) return "";
+  const copies = key === "generate"
+    ? `<div class="field"><label for="fsCopies">كم نسخة لكل وصف؟</label><select id="fsCopies">${COPIES.map((n) => `<option value="${n}">${n}</option>`).join("")}</select></div>` : "";
+  return `<div class="free-qopts"><div class="field"><label for="fsModel">النموذج</label><select id="fsModel"><option value="">تلقائي (الأنسب)</option></select></div>${copies}</div>`;
+}
+function fillModelSelect(root, key) {
+  const sel = $("#fsModel", root);
+  if (!sel || !QM.data) return;
+  const kind = ($("#fsSoundKind", root) || {}).value;
+  const keep = sel.value;
+  sel.innerHTML = `<option value="">تلقائي (الأنسب)</option>` + quickModelList(key, kind).map((m) => `<option value="${esc(m.v)}">${esc(m.n)}</option>`).join("");
+  if ([...sel.options].some((o) => o.value === keep)) sel.value = keep;
+}
+
 /* ───────── شاشة البداية ───────── */
 function renderStart(body, q = {}) {
   const root = mountRoot(body);
@@ -306,6 +352,7 @@ function renderStart(body, q = {}) {
     data.filter((p) => !p.is_template).forEach((p) => sel.insertAdjacentHTML("beforeend", `<option value="${esc(p.file)}">${esc(p.product_name || p.file)}</option>`));
   });
   const st = { mode: "blank", quick: "" };
+  loadQuickModels().then(() => fillModelSelect(root, st.quick));
   const paintInput = () => {
     const Q = QUICK[st.quick];
     const move = st.quick === "animate"
@@ -324,11 +371,17 @@ function renderStart(body, q = {}) {
         <p class="hint">كل فيديو بيصير مشهد بطوله (الحد 60 ثانية للقطة).</p>`,
       voice: `<div class="field"><label for="fsVoice">ملف التسجيل (صوت، أو فيديو فيه صوتك)</label><input type="file" id="fsVoice" accept="${VOICE_ACCEPT}"></div>
         <p class="hint">بينفرّغ التسجيل وكل جملة بتصير مشهد (بياخد دقيقة أو أكتر)، وبعدين بتضيف الصور والفيديوهات لكل مشهد.</p>`,
+      sound: `<div class="field"><label for="fsSoundKind">النوع</label><select id="fsSoundKind"><option value="music">موسيقى</option><option value="ahat">مؤثر / آهة</option></select></div>
+        <div class="field"><label for="fsSound">شو بدك تسمع؟ (كل سطر مقطع — لحد ${MAX_SOUNDS})</label>
+          <textarea id="fsSound" rows="4" maxlength="4000" placeholder="موسيقى هادية دافئة لإعلان عطر&#10;ووش خفيف عند ظهور المنتج"></textarea></div>
+        <div class="field"><label for="fsSoundSec">المدة بالثواني (فاضي = الافتراضي)</label><input id="fsSoundSec" type="number" min="1" max="120" dir="ltr"></div>`,
       prompt: `<div class="field"><label for="fsPrompt">شو بدك تشوف؟ (كل سطر صورة — لحد ${MAX_PROMPTS})</label>
           <textarea id="fsPrompt" rows="5" maxlength="4000" placeholder="زجاجة عطر سوداء على رخام أبيض، إضاءة دافئة&#10;يد امرأة بتحط الكريم على بشرة ناعمة"></textarea></div>`,
     }[st.mode];
-    $("#fsQuickInput", root).innerHTML = Q ? html : "";                  // الإدخال بيطلع جنب اللي اختاره (بدون تكرار معرّفات)
+    const opts = Q ? quickOptsHtml(st.quick) : "";
+    $("#fsQuickInput", root).innerHTML = Q ? html + opts : "";           // الإدخال بيطلع جنب اللي اختاره (بدون تكرار معرّفات)
     $("#fsInput", root).innerHTML = Q ? "" : html;
+    fillModelSelect(root, st.quick);
   };
   const choose = (mode, quick) => {
     st.mode = mode;
@@ -342,6 +395,7 @@ function renderStart(body, q = {}) {
     $("#fsGo", root).textContent = Q ? Q.go : "ابدأ المشروع ←";
     paintInput();
   };
+  root.addEventListener("change", (e) => { if (e.target.id === "fsSoundKind") fillModelSelect(root, st.quick); });
   root.addEventListener("click", (e) => {
     const qb = e.target.closest("[data-quick]");
     if (qb && QUICK[qb.dataset.quick]) { if (st.quick === qb.dataset.quick) choose("blank", ""); else choose(QUICK[qb.dataset.quick].mode, qb.dataset.quick); return; }
@@ -356,6 +410,28 @@ function renderStart(body, q = {}) {
   choose(k ? QUICK[k].mode : m, k);
 }
 
+/* «ولّد موسيقى أو مؤثر»: بلا مشروع — كل سطر مهمة توليد وبتنزل بمكتبة الأصوات غير معتمدة (بتسمعها وبتعتمدها بنفسك) */
+async function startSounds(root, st) {
+  const btn = $("#fsGo", root), msg = $("#fsStatus", root);
+  const lines = String(($("#fsSound", root) || {}).value || "").split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
+  if (!lines.length) { setStatus(msg, "اكتب شو بدك تسمع أول", "err"); return; }
+  if (lines.length > MAX_SOUNDS) { setStatus(msg, `لحد ${MAX_SOUNDS} مقاطع بمرة وحدة`, "err"); return; }
+  const kind = ($("#fsSoundKind", root) || {}).value === "ahat" ? "ahat" : "music";
+  const secs = Number(($("#fsSoundSec", root) || {}).value) || undefined;
+  const model = ($("#fsModel", root) || {}).value || undefined;
+  btn.disabled = true;
+  let ok = 0;
+  const errs = [];
+  for (const [i, prompt] of lines.entries()) {
+    setStatus(msg, `عم يبعت ${i + 1} من ${lines.length}…`);
+    try { await post("/api/ahat/generate", { kind, prompt, name: prompt.slice(0, 40), seconds: secs, model }); ok += 1; }
+    catch (er) { errs.push(`«${prompt.slice(0, 20)}»: ${er.message}`); if (model) break; }          // نموذج صريح فشل: بنوقف (ما في بديل صامت)
+  }
+  btn.disabled = false;
+  if (!ok) { setStatus(msg, errs[0] || "ما انبعت شي", "err"); return; }
+  setStatus(msg, `انبعت ${ok} مقطع للتوليد${errs.length ? ` (${errs.length} فشلوا: ${errs[0]})` : ""} — بتلاقيهم بالأصوات «غير معتمدة» بعد ما يخلصوا، وبتتابعهم من لوحة المهام. بعد ما تسمعهم بتعتمدهم.`, errs.length ? "warn" : "ok");
+}
+
 async function startGo(root, st) {
   const btn = $("#fsGo", root), msg = $("#fsStatus", root);
   const Q = QUICK[st.quick] || null;
@@ -363,6 +439,7 @@ async function startGo(root, st) {
   const xl = ($("#fsFile", root) || {}).files ? $("#fsFile", root).files[0] : null;
   const text = ($("#fsText", root) || {}).value || "";
   const prompts = st.mode === "prompt" ? String(($("#fsPrompt", root) || {}).value || "").split(/\r?\n/).map((x) => x.trim()).filter(Boolean) : [];
+  if (st.mode === "sound") { await startSounds(root, st); return; }
   if (st.mode === "text" && !text.trim()) { setStatus(msg, "الصق النص أول", "err"); return; }
   if (st.mode === "prompt") {
     if (!prompts.length) { setStatus(msg, "اكتب وصف الصورة أول", "err"); return; }
@@ -416,7 +493,8 @@ async function startGo(root, st) {
       } catch (er) { notes.push(`انعمل المشروع بس رفع التسجيل وقف: ${er.message} — ارفعه من لوحة «الصوت».`); }
     }
     FS.notes = notes;
-    FS.after = Q && Q.after ? { file: made.file, kind: Q.after, move: (($("#fsMove", root) || {}).value || "").trim() } : null;     // الشغلة السريعة بتشتغل أول ما تنفتح لوحة هالمشروع بالذات
+    FS.after = Q && Q.after ? { file: made.file, kind: Q.after, move: (($("#fsMove", root) || {}).value || "").trim(),
+      model: (($("#fsModel", root) || {}).value || ""), n: Number(($("#fsCopies", root) || {}).value) || 1 } : null;     // الشغلة السريعة بتشتغل أول ما تنفتح لوحة هالمشروع بالذات
     location.hash = freeHash(made.file, Q && Q.tab);
   } catch (er) {
     setStatus(msg, er.message, "err");
@@ -1123,7 +1201,7 @@ async function ttsVoice(opts = {}) {
   if (!opts.quick && !confirm(`رح يولّد صوت ${n} مشهد بمزوّد الصوت (بيصرف من رصيده). تكمّل؟`)) return;
   lockVoice(true, "عم يبعت للمزوّد…");
   try {
-    const { job_id: id } = await post(`/api/studio/${enc(name)}/free/voice/tts`, { only_missing: only, fit: fitOn() });
+    const { job_id: id } = await post(`/api/studio/${enc(name)}/free/voice/tts`, { only_missing: only, fit: fitOn(), ...(opts.model ? { provider: opts.model } : {}) });
     await watchVoiceJob(id, `عم يولّد صوت ${n} مشهد… (من ثواني لدقايق)`);
   } catch (e) { if (live(tok)) { lockVoice(false); status(e.message, "err"); } }
 }
@@ -1168,7 +1246,7 @@ async function runJob(url, tok, fail) {
   return true;
 }
 
-async function genImage(sh, quiet) {
+async function genImage(sh, quiet, opt = {}) {
   const tok = FS.token, name = FS.file, sc = sceneOf(sh);
   if (!sc || FS.busy.has(sh)) return false;
   const text = (sh._prompt !== undefined ? sh._prompt : (sh.prompt_ar || sc.visual || "")).trim();
@@ -1178,7 +1256,8 @@ async function genImage(sh, quiet) {
   setBusy(sh, "عم يولّد الصورة… (ممكن ياخد دقيقة)");
   try {
     await put(`/api/studio/${enc(name)}/shots/${enc(sh.id)}/prompt`, { prompt_ar: text });
-    if (!(await runJob(`/api/studio/${enc(name)}/images/generate?shot=${enc(sh.id)}`, tok, "فشل توليد الصورة"))) return false;
+    const qs = `shot=${enc(sh.id)}${opt.model ? `&provider=${enc(opt.model)}` : ""}${opt.n > 1 ? `&n=${Number(opt.n)}` : ""}`;
+    if (!(await runJob(`/api/studio/${enc(name)}/images/generate?${qs}`, tok, "فشل توليد الصورة"))) return false;
     await refreshMedia([sh.id], tok, name);
     if (!live(tok)) return false;
     const cands = (sh.image && sh.image.candidates) || [];
@@ -1194,14 +1273,14 @@ async function genImage(sh, quiet) {
   } finally { if (live(tok)) clearBusy(sh); }
 }
 
-async function animate(sh) {
+async function animate(sh, opt = {}) {
   const tok = FS.token, name = FS.file;
   if (FS.busy.has(sh) || !sh.id) return false;
   if (!(await settle())) { toast("تعذّر حفظ التعديلات أول — جرّب كمان مرة", "err"); return false; }
   if (!live(tok)) return false;
   setBusy(sh, "عم يحرّك الصورة… (بطيء على كرت الشاشة)");
   try {
-    if (!(await runJob(`/api/studio/${enc(name)}/motion/run?shot=${enc(sh.id)}`, tok, "فشل التحريك"))) return false;
+    if (!(await runJob(`/api/studio/${enc(name)}/motion/run?shot=${enc(sh.id)}${opt.model ? `&model=${enc(opt.model)}` : ""}`, tok, "فشل التحريك"))) return false;
     await refreshMedia([sh.id], tok, name);
     if (!live(tok)) return false;
     const mcs = sh.motion_candidates || [];
@@ -1236,7 +1315,7 @@ async function pickClip(sh, clip) {
 async function runAfter(a) {
   const tok = FS.token;
   if (!live(tok)) return;
-  if (a.kind === "tts") { await ttsVoice({ quick: true }); return; }
+  if (a.kind === "tts") { await ttsVoice({ quick: true, model: a.model }); return; }
   const gen = a.kind === "generate";
   const todo = shotsOf().filter((sh) => sh.id && (gen ? !hasMedia(sh) : imgRel(sh) && !clipRel(sh)));
   if (!todo.length) { status(gen ? "ما لقيت لقطة بدها صورة" : "ما لقيت صورة بدها تتحرّك", "warn"); return; }
@@ -1247,7 +1326,7 @@ async function runAfter(a) {
     if (!gen && a.move) {
       try { await put(`/api/studio/${enc(FS.file)}/shots/${enc(sh.id)}/motion-desc`, { desc: a.move }); } catch { /* وصف الحركة اختياري */ }
     }
-    if (await (gen ? genImage(sh, true) : animate(sh))) ok += 1; else bad += 1;
+    if (await (gen ? genImage(sh, true, { model: a.model, n: a.n }) : animate(sh, { model: a.model }))) ok += 1; else bad += 1;
   }
   if (!live(tok)) return;
   const what = gen ? "صورة انولدت" : "لقطة اتحرّكت";

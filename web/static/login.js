@@ -5,8 +5,8 @@
   "use strict";
   const box = document.getElementById("loginBody");
   try {
-    const t = { dark: "night", neon: "night", light: "day", calm: "day" }[localStorage.getItem("vp-theme")] || localStorage.getItem("vp-theme");
-    document.documentElement.setAttribute("data-theme", ["night", "day"].includes(t) ? t : "night");
+    const t = { dark: "night", light: "day", calm: "day" }[localStorage.getItem("vp-theme")] || localStorage.getItem("vp-theme");
+    document.documentElement.setAttribute("data-theme", ["night", "day", "neon"].includes(t) ? t : "night");
   } catch (e) { /* التخزين ممنوع */ }
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const field = (id, label, type, extra) => `<label class="zk-field"><span class="zk-field__label">${esc(label)}</span><input class="zk-input" id="${id}" type="${type}" ${extra || ""}></label>`;

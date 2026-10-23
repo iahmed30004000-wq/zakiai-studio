@@ -87,6 +87,8 @@
 @font-face { font-family: "Reem Kufi"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/reem-kufi-arabic.woff2") format("woff2"); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1; }
 @font-face { font-family: "Reem Kufi"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/fonts/reem-kufi-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
+@font-face { font-family: "Bangers"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/bangers-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
 /* ═════════ الرسومات (SVG بالكود) وفتحات الصور ═════════ */
 :root {
   /* نقش الكيريه: نجمة ثمانية + نجمة رباعية + خطوط واصلة — بلاطة 80×80 */
@@ -126,6 +128,26 @@
   --hero-tint: linear-gradient(180deg, rgb(242 161 90 / 0.12) 0%, rgb(224 106 142 / 0.08) 45%, rgb(11 27 51 / 0.45) 100%);
   --orn-glow: radial-gradient(60rem 26rem at 12% -8%, rgb(242 161 90 / 0.12), transparent 62%),
               radial-gradient(48rem 26rem at 100% 108%, rgb(14 111 132 / 0.07), transparent 60%);
+}
+
+/* «ساحل النيون»: صور الصفحات من img/theme/neon/ (صور حقيقية، الحقوق بـ CREDITS.md وcredits.json) وغروب نيون فوقها */
+[data-theme="neon"] {
+  --img-hero-home:   url("/img/theme/neon/hero-home.webp");
+  --img-library:     url("/img/theme/neon/library.webp");
+  --img-factory:     url("/img/theme/neon/factory.webp");
+  --img-mission:     url("/img/theme/neon/mission.webp");
+  --img-performance: url("/img/theme/neon/performance.webp");
+  --img-home-night:  url("/img/theme/neon/home-night.webp");
+  --img-hero-day:    url("/img/theme/neon/hero-day.webp");
+  --img-products:    url("/img/theme/neon/products.webp");
+  --img-sounds:      url("/img/theme/neon/sounds.webp");
+  --img-pattern:     url("/img/theme/neon/pattern.webp");
+  --img-tiles:       url("/img/theme/neon/tiles.webp");
+  --img-tour:        url("/img/theme/neon/tour.webp");
+  --img-petra-night: url("/img/theme/neon/petra-night.webp");
+  --hero-tint: linear-gradient(180deg, rgb(255 79 163 / 0.22) 0%, rgb(124 58 237 / 0.26) 52%, rgb(10 5 36 / 0.55) 100%);
+  --orn-glow: radial-gradient(60rem 26rem at 12% -8%, rgb(255 79 163 / 0.16), transparent 62%),
+              radial-gradient(48rem 26rem at 100% 108%, rgb(0 229 255 / 0.12), transparent 60%);
 }
 
 /* ═════════ خلفية الصفحة: نقش الكيريه الخفيف + توهّج الأفق ═════════ */
@@ -792,6 +814,7 @@ kbd {
 .empty[data-art]::before {
   inline-size: min(260px, 80%); block-size: 180px; opacity: 1; margin-block-end: var(--vp-space-3);
   background: center / contain no-repeat; -webkit-mask: none; mask: none;
+  border-radius: var(--vp-radius-md);                       /* صور حقيقية مستطيلة: زوايا ناعمة؛ الرسومات الشفافة ما بتتأثر */
 }
 .empty[data-art="products"]::before   { background-image: url("/img/art/empty-products.png"); }
 .empty[data-art="characters"]::before { background-image: url("/img/art/empty-characters.png"); }
@@ -804,8 +827,8 @@ kbd {
 /* نص «hint» جوّا بطاقة البطل: فاتح بظل خفيف (كان رمادي ومش واضح على صورة النهار) */
 .hero .hint { color: rgb(255 255 255 / 0.9); text-shadow: 0 1px 2px rgb(0 0 0 / 0.55); }
 
-/* ═════════ صفحة الدخول: login-bg.jpg (رسمة GPT لما توصل) فوق صورة عمّان بالليل؛ ناقصين = السماء المرسومة ═════════ */
-.login-page {
+/* ═════════ صفحة الدخول: login-bg.jpg (صورة حقيقية، حقوقها بـ credits.json) فوق صورة عمّان بالليل؛ ناقصين = السماء المرسومة ═════════ */
+body.login-page {                                        /* body.login-page بدل .login-page: بدونها قاعدة body.zk بـ style.css كانت تغلب وتخفي الصورة */
   background-color: var(--vp-bg);
   background-image:
     linear-gradient(180deg, color-mix(in srgb, var(--vp-bg) 55%, transparent) 0%, color-mix(in srgb, var(--vp-bg) 20%, transparent) 45%, color-mix(in srgb, var(--vp-bg) 60%, transparent) 100%),
@@ -816,7 +839,7 @@ kbd {
   background-attachment: fixed;
 }
 @media (orientation: portrait) {
-  .login-page { background-position: center, center bottom, 30% center, center; }
+  body.login-page { background-position: center, center bottom, 30% center, center; }
 }
 .login-card { background: color-mix(in srgb, var(--vp-surface) 86%, transparent); backdrop-filter: blur(3px); }
 
@@ -978,3 +1001,153 @@ html:not([data-oms="on"]) .oms-only { display: none !important; }
   .objective, .nload { animation: none !important; }
   .nl-bar i, .np-star { animation: none !important; }
 }
+
+/* ═════════ «ساحل النيون»: حدود سودا وظلال حادة وعناوين بوستر (طابع بس) ═════════ */
+[data-theme="neon"] .login-page {
+  background-image:
+    linear-gradient(180deg, color-mix(in srgb, var(--vp-bg) 55%, transparent) 0%, color-mix(in srgb, var(--vp-bg) 20%, transparent) 45%, color-mix(in srgb, var(--vp-bg) 55%, transparent) 100%),
+    url("/img/theme/neon/neon-coast.door.webp"), var(--vp-sky);
+}
+@media (orientation: portrait) {
+  [data-theme="neon"] .login-page {
+    background-image:
+      linear-gradient(180deg, color-mix(in srgb, var(--vp-bg) 55%, transparent) 0%, color-mix(in srgb, var(--vp-bg) 20%, transparent) 45%, color-mix(in srgb, var(--vp-bg) 55%, transparent) 100%),
+      url("/img/theme/neon/neon-coast.door-tall.webp"), var(--vp-sky);
+  }
+}
+[data-theme="neon"] .panel,
+[data-theme="neon"] .card,
+[data-theme="neon"] .arch,
+[data-theme="neon"] .chip {
+  border: 2px solid var(--vp-black);
+  box-shadow: 4px 4px 0 var(--vp-black), inset 0 0 0 1px var(--vp-border);
+}
+[data-theme="neon"] .btn { border: 2px solid var(--vp-black); }
+[data-theme="neon"] .btn.ghost { border-color: var(--vp-border-strong); }
+[data-theme="neon"] .btn.danger { border-color: var(--vp-danger); }       /* حدود الحالة (خطر/تنبيه) بتضل بلونها */
+[data-theme="neon"] .btn.warn { border-color: var(--vp-warn); }
+[data-theme="neon"] .chip[data-state="danger"] { border-color: var(--vp-danger); }
+[data-theme="neon"] .chip[data-state="warn"] { border-color: var(--vp-warn); }
+[data-theme="neon"] .hero {
+  border: 2px solid var(--vp-black);
+  box-shadow: 6px 6px 0 var(--vp-black), 0 0 32px rgb(255 79 163 / 0.28);
+}
+[data-theme="neon"] .hero::before { display: none; }                /* بلا نقش الكيريه، النيون ما بدّه إياه */
+[data-theme="neon"] .hero::after { display: none; }                 /* ولا أفق المآذن */
+[data-theme="neon"] { font-synthesis: none; }                       /* Lalezar وBangers بوزن واحد: ما نخلّي المتصفح يسمّك الخط بالقوة */
+[data-theme="neon"] h2, [data-theme="neon"] h3 { text-shadow: 2px 2px 0 var(--vp-black); font-weight: 400; }
+[data-theme="neon"] .page-head h2::before { background-color: var(--vp-accent); }
+[data-theme="neon"] zk-app-shell > [slot="header"]::after { block-size: 4px; opacity: 1; }
+[data-theme="neon"] .brand-text b { letter-spacing: 0.02em; }
+
+
+/* ═════════ إعادة الهيكلة (23/10): «إعلان جديد»، جاهزية المصنع، الدليل، إطار الكيريه ═════════
+   كل الألوان من --vp-* (بتتبع الثيمات التلاتة)، والنقوش مرسومة بالكود (--orn-*). */
+
+/* إطار الكيريه للبطاقات المهمة: خط ذهبي + حلقة داخلية + نجمة ثمانية بالزاوية */
+.orn-frame {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--vp-orn) 55%, transparent);
+  box-shadow: inset 0 0 0 4px var(--vp-surface), inset 0 0 0 5px color-mix(in srgb, var(--vp-orn) 28%, transparent), var(--vp-shadow-1);
+}
+.orn-frame::after {
+  content: ""; position: absolute; inset-block-start: -9px; inset-inline-start: 18px; inline-size: 18px; block-size: 18px;
+  background-color: var(--vp-brand);
+  -webkit-mask: var(--orn-star) center / contain no-repeat; mask: var(--orn-star) center / contain no-repeat;
+  pointer-events: none;
+}
+
+/* الزر الكبير بأول القائمة الجانبية */
+.nav-new {
+  display: flex; align-items: center; justify-content: center; gap: var(--vp-space-2);
+  inline-size: calc(100% - var(--vp-space-4)); margin: var(--vp-space-3) auto var(--vp-space-2);
+  padding: var(--vp-space-3) var(--vp-space-4); cursor: pointer;
+  font: inherit; font-family: var(--vp-font-heading); font-weight: 700; font-size: var(--vp-fs-lg);
+  color: var(--vp-on-cta); background: var(--vp-cta);
+  border: 0; border-radius: var(--vp-radius-md);
+  box-shadow: 0 3px 0 var(--vp-cta-edge), var(--vp-shadow-1);
+  transition: transform var(--vp-ease), box-shadow var(--vp-ease), background var(--vp-ease);
+}
+.nav-new:hover { background: var(--vp-cta-hover); transform: translateY(-1px); }
+.nav-new:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--vp-cta-edge); }
+.nav-new:focus-visible { outline: none; box-shadow: 0 3px 0 var(--vp-cta-edge), var(--vp-focus); }
+.nav-new__star { inline-size: 18px; block-size: 18px; background-color: currentColor;
+  -webkit-mask: var(--orn-star) center / contain no-repeat; mask: var(--orn-star) center / contain no-repeat; }
+zk-app-shell[data-nav="mini"] .nav-new { inline-size: 44px; padding: var(--vp-space-3) 0; }
+zk-app-shell[data-nav="mini"] .nav-new__t { display: none; }
+
+/* نافذة «إعلان جديد» */
+.new-chooser h3 { margin-top: 0; }
+.nc-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--vp-space-3); margin-block: var(--vp-space-3); }
+.nc-card {
+  display: flex; flex-direction: column; align-items: center; gap: var(--vp-space-2); text-align: center;
+  padding: var(--vp-space-3); cursor: pointer; font: inherit; color: var(--vp-text);
+  background: var(--vp-surface-2); border: 1px solid var(--vp-border); border-radius: 50% 50% var(--vp-radius-lg) var(--vp-radius-lg) / 2.2rem 2.2rem var(--vp-radius-lg) var(--vp-radius-lg);
+  transition: transform var(--vp-ease), border-color var(--vp-ease), box-shadow var(--vp-ease);
+}
+.nc-card:hover, .nc-card:focus-visible { transform: translateY(-3px); border-color: var(--vp-brand); box-shadow: var(--vp-glow); text-decoration: none; outline: none; }
+.nc-art { position: relative; display: grid; place-items: center; inline-size: 100%; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--vp-radius-md);
+  background: var(--vp-sunset); }
+.nc-art img { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.nc-ico { position: relative; font-size: 2.2rem; color: var(--vp-on-hero); text-shadow: var(--vp-text-shadow-hero); }
+.nc-art img + .nc-ico { display: none; }
+.nc-card b { font-family: var(--vp-font-heading); font-size: var(--vp-fs-lg); color: var(--vp-heading); }
+.nc-d { font-size: var(--vp-fs-sm); color: var(--vp-text-muted); }
+.nc-ex { font-size: var(--vp-fs-xs); }
+.nc-quick { padding-top: var(--vp-space-3); border-top: 1px solid var(--vp-hairline); }
+@media (max-width: 640px) { .nc-cards { grid-template-columns: 1fr; } .nc-art { aspect-ratio: 16 / 7; } }
+
+/* الرئيسية: «الخطوة الجاية» جوّا البطل */
+.home-next { display: flex; flex-wrap: wrap; align-items: center; gap: var(--vp-space-2); margin: var(--vp-space-3) 0 0; padding: var(--vp-space-2) var(--vp-space-3);
+  background: color-mix(in srgb, var(--vp-black) 55%, transparent); border-radius: var(--vp-radius-md); color: var(--vp-on-hero); }
+.home-next__star { inline-size: 16px; block-size: 16px; flex: none; background-color: var(--vp-gold);
+  -webkit-mask: var(--orn-star) center / contain no-repeat; mask: var(--orn-star) center / contain no-repeat; }
+.home-next > span:not(.home-next__star) { flex: 1 1 14rem; }
+
+/* المصنع: جاهزية الاستوديو */
+.ready-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--vp-space-2); }
+.ready-row { display: flex; gap: var(--vp-space-3); align-items: flex-start; padding: var(--vp-space-2) var(--vp-space-3);
+  background: var(--vp-surface-2); border: 1px solid var(--vp-border); border-radius: var(--vp-radius-md); }
+.ready-star { flex: none; inline-size: 20px; block-size: 20px; margin-top: 2px; background-color: var(--vp-idle);
+  -webkit-mask: var(--orn-star) center / contain no-repeat; mask: var(--orn-star) center / contain no-repeat; }
+.ready-row[data-state="ok"] .ready-star { background-color: var(--vp-ok); }
+.ready-row[data-state="warn"] .ready-star { background-color: var(--vp-warn); }
+.ready-row[data-state="danger"] .ready-star { background-color: var(--vp-danger); }
+.ready-main { flex: 1 1 auto; min-width: 0; }
+.ready-prob { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--vp-space-2); margin-top: var(--vp-space-2);
+  padding: var(--vp-space-2); background: var(--vp-warn-soft); border-radius: var(--vp-radius-sm); font-size: var(--vp-fs-sm); }
+.seg-sm[hidden] { display: none; }
+
+/* الشغلة السريعة: صف الخيارات (النموذج + عدد النسخ) */
+.free-qopts { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--vp-space-3); }
+
+/* المهمة: شاشة «خلص الإعلان» */
+.mission-done { display: flex; align-items: center; gap: var(--vp-space-4); }
+.mission-done__art { inline-size: 120px; block-size: 120px; object-fit: contain; flex: none; }
+.mission-done h3 { margin: 0 0 var(--vp-space-1); color: var(--vp-heading); }
+
+/* صفحة الدليل */
+.gp-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--vp-space-4); }
+.gp-step { display: flex; gap: var(--vp-space-4); align-items: flex-start; }
+.gp-ico { inline-size: 64px; block-size: 64px; flex: none; object-fit: contain; }
+.gp-body { min-width: 0; }
+.gp-body h3 { margin: 0 0 var(--vp-space-2); }
+.gp-n { display: inline-grid; place-items: center; inline-size: 1.7em; block-size: 1.7em; margin-inline-end: var(--vp-space-2);
+  border-radius: 50%; background: var(--vp-brand); color: var(--vp-on-brand); font-size: .9em; }
+.gp-more { margin: var(--vp-space-2) 0; }
+.gp-problems, .gp-words { display: grid; gap: var(--vp-space-3); margin: 0; }
+.gp-words dd { margin: var(--vp-space-1) 0 0; }
+.gp-prob summary { cursor: pointer; }
+@media (max-width: 640px) { .gp-step { flex-direction: column; } }
+
+/* ═════════ تعديلات ثيم «ساحل النيون» على القطع الجديدة ═════════ */
+[data-theme="neon"] .nav-new, [data-theme="neon"] .nc-card, [data-theme="neon"] .ready-row { border: 2px solid var(--vp-black); }
+[data-theme="neon"] .nav-new { box-shadow: 3px 3px 0 var(--vp-black); }
+[data-theme="neon"] .orn-frame { border: 2px solid var(--vp-black); box-shadow: 4px 4px 0 var(--vp-black), inset 0 0 0 1px var(--vp-border); }
+[data-theme="neon"] .orn-frame::after { background-color: var(--vp-accent); }
+
+/* صور حقيقية بالدليل والمصنع (img/art/ — الحقوق بـ credits.json) */
+.gp-banner { margin: 0 0 var(--vp-space-4); border-radius: var(--vp-radius-lg); overflow: hidden; border: 1px solid var(--vp-hairline); }
+.gp-banner img { display: block; inline-size: 100%; block-size: clamp(110px, 20vw, 190px); object-fit: cover; }
+.ready-art { float: inline-end; inline-size: 120px; block-size: 90px; object-fit: cover; border-radius: var(--vp-radius-md); margin: 0 0 var(--vp-space-2) var(--vp-space-3); }
+@media (max-width: 640px) { .ready-art { display: none; } }

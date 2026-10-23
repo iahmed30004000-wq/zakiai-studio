@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zakiai Systems — استوديو المحتوى</title>
-<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=77">
-<link rel="stylesheet" href="/theme.css?v=77">
-<link rel="stylesheet" href="/style.css?v=77">
-<link rel="stylesheet" href="/ornament.css?v=77">
+<link rel="stylesheet" href="/vendor/zaki-ui/zaki-ui.all.css?v=80">
+<link rel="stylesheet" href="/theme.css?v=80">
+<link rel="stylesheet" href="/style.css?v=80">
+<link rel="stylesheet" href="/ornament.css?v=80">
 </head>
 <body class="zk">
 
@@ -37,16 +37,8 @@
   </div>
 
   <div class="zk-header__end">
-    <!-- ＋ جديد: كل نقاط البداية بمكان واحد (مهمة · مشروع حر · شغلة سريعة) -->
-    <div class="zk-dropdown" id="newDd">
-      <button class="zk-btn zk-btn--secondary" id="newBtn" type="button" aria-haspopup="menu" aria-label="ابدأ إشي جديد" title="ابدأ إشي جديد"><span aria-hidden="true">＋</span><span class="tb-lbl">جديد</span></button>
-      <div class="zk-dropdown__menu tb-menu" id="newMenu" role="menu" hidden>
-        <a class="zk-dropdown__item" role="menuitem" href="#/mission/new?stage=1" data-value="mission"><span class="mi-ico" aria-hidden="true">✦</span><span class="mi-t">مهمة جديدة<small>7 مراحل بالترتيب، وبتنطلق للعمليات</small></span></a>
-        <a class="zk-dropdown__item" role="menuitem" href="#/mission/new?free=1" data-value="free"><span class="mi-ico" aria-hidden="true">✎</span><span class="mi-t">مشروع حر<small>بإيدك، من أي نقطة، وبتنزّل الفيديو</small></span></a>
-        <p class="tb-menu-h" role="presentation">⚡ شغلة سريعة لحالها</p>
-        <div id="newQuick" role="presentation"></div>
-      </div>
-    </div>
+    <!-- ＋ جديد: بيفتح نافذة «إعلان جديد» (#newChooser) — نفس زر القائمة الجانبية -->
+    <button class="zk-btn zk-btn--secondary" id="newBtn" type="button" data-new-chooser aria-haspopup="dialog" aria-controls="newChooser" aria-label="ابدأ إعلان جديد" title="ابدأ إعلان جديد"><span aria-hidden="true">＋</span><span class="tb-lbl">جديد</span></button>
     <button class="zk-btn zk-btn--primary" id="guideNextBtn" type="button" title="شو بعمل هلأ؟ — الخطوة الجاية بكبسة"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-arrow-left"></use></svg><span class="tb-lbl">شو بعمل هلأ؟</span></button>
     <button class="zk-btn zk-btn--ghost tb-jobs" id="tbJobs" type="button" aria-controls="drawer" aria-expanded="false" aria-label="المهام" title="المهام">
       <svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-time"></use></svg><span class="tb-lbl">المهام</span><span id="jobBadge" class="count" hidden></span>
@@ -79,22 +71,22 @@
 
 <!-- ═════════ الشريط الجانبي ═════════ -->
 <nav slot="sidebar" class="zk-sidebar" id="nav" aria-label="التنقّل">
+  <!-- الزر الأهم بالموقع: كل إعلان بيبلّش من هون -->
+  <button class="nav-new" type="button" id="navNewBtn" data-new-chooser aria-haspopup="dialog" aria-controls="newChooser" data-tour="new"><span class="nav-new__star" aria-hidden="true"></span><span class="nav-new__t">إعلان جديد</span></button>
   <div class="zk-nav-group" aria-expanded="true">
     <button class="zk-nav-group__head" type="button">الأماكن<svg class="zk-icon zk-nav-group__caret" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-chevron-down"></use></svg></button>
     <div class="zk-nav-group__items" id="mainNav">
       <a class="zk-nav-item nav-item" href="#/home" data-route="home" data-tour="home"><span class="nav-glyph" aria-hidden="true">◆</span> الرئيسية</a>
-      <a class="zk-nav-item nav-item" href="#/mission" data-route="mission" data-tour="mission" id="navMission"><span class="nav-glyph" aria-hidden="true">✦</span> المهمات</a>
       <a class="zk-nav-item nav-item" href="#/library/products" data-route="library" data-tour="library"><span class="nav-glyph" aria-hidden="true">❖</span> المكتبات</a>
       <a class="zk-nav-item nav-item" href="#/factory/local" data-route="factory" data-tour="factory"><span class="nav-glyph" aria-hidden="true">⚙</span> المصنع</a>
+      <a class="zk-nav-item nav-item" href="#/guide" data-route="guide" data-tour="guide"><span class="nav-glyph" aria-hidden="true">✧</span> الدليل</a>
       <a class="zk-nav-item nav-item oms-only" href="#/performance" data-route="performance"><span class="nav-glyph" aria-hidden="true">★</span> الأداء</a>
       <button class="zk-nav-item nav-search" type="button" id="paletteBtn" aria-keyshortcuts="Control+K"><svg class="zk-icon" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-search"></use></svg> بحث سريع <kbd dir="ltr">Ctrl+K</kbd></button>
     </div>
   </div>
-  <div class="zk-nav-group" aria-expanded="true" id="railGroup">
-    <button class="zk-nav-group__head" type="button">محطات المهمة الحالية<svg class="zk-icon zk-nav-group__caret" aria-hidden="true"><use href="/vendor/zaki-ui/icons.svg#zk-chevron-down"></use></svg></button>
-    <div class="zk-nav-group__items" id="railStations"><p class="hint rail-empty">افتح مهمة من «الرئيسية» لتشوف محطاتها هون.</p></div>
-  </div>
 </nav>
+<!-- محطات المهمة: صارت تبويبات جوّا المرحلة نفسها (production.js) — الحاوية القديمة مخفية للتوافق -->
+<div id="railHolder" hidden><div id="railStations"></div></div>
 <div class="zk-scrim" hidden></div>   <!-- جوال: كبسة برّا القائمة بتسكّرها -->
 
 <main slot="content" id="main">
@@ -102,39 +94,33 @@
   <!-- ═════════ ◆ الرئيسية: مهمّتك الجاية (home.js) ═════════ -->
   <section id="v-home" class="view" data-view="home">
     <div id="homeHero"></div>
-    <div class="panel" id="homeWaitPanel">
-      <div class="row between"><h3>بانتظارك</h3><span class="count" id="homeWaitCount" hidden></span></div>
+    <!-- «بدها إيدك»: الشغلات الناطرة قرارك + اللي شغّال هلّق، بمكان واحد -->
+    <div class="panel orn-frame" id="homeWaitPanel">
+      <div class="row between"><h3>بدها إيدك</h3><span class="count" id="homeWaitCount" hidden></span></div>
       <div id="homeWait"></div>
-    </div>
-    <div class="panel" id="homeActivePanel" hidden>
-      <div class="row between"><h3>شغّال هلّق</h3><span class="hint" id="homeActiveCount"></span></div>
-      <div id="homeActive"></div>
+      <div id="homeActivePanel" hidden>
+        <h4 class="sub-h">شغّال هلّق <span class="hint" id="homeActiveCount"></span></h4>
+        <div id="homeActive"></div>
+      </div>
     </div>
     <div class="panel" id="homeFirstSteps" hidden>
       <div class="row between"><h3>أول خطواتك</h3><button id="firstStepsDismiss" class="btn ghost sm" type="button" title="خبّيها">خبّيها</button></div>
-      <p class="hint">الاستوديو بيتعلّم من عينتك: برفعك فيديوهات إعلانات رايحة بتبدأ يفهم شنو بيشتغل عندك.</p>
+      <p class="hint">الاستوديو بيتعلّم من عينتك: كل ما ترفع فيديوهات إعلانات ناجحة، بيفهم أكتر شو اللي بيبيع عندك.</p>
       <ol class="list" id="firstStepsList"></ol>
     </div>
-  </section>
-
-  <!-- ═════════ ✦ المهمات: قائمة (missions.js) ═════════ -->
-  <section id="v-missions" class="view" data-view="missions">
-    <div class="page-head hero compact" data-img="mission">
-      <div><h2>المهمات</h2><p class="hint">كل إعلان مهمة إلها 7 مراحل. كمّل من وين وقفت، أو اببلّش وحدة جديدة.</p></div>
-      <div class="hero-actions">
-        <a class="btn" href="#/mission/new?stage=1">✦ مهمة جديدة</a>
-        <a class="btn ghost" href="#/mission/new?free=1">✎ مشروع حر</a>
-        <button class="btn ghost sm" type="button" data-guide-next>شو الخطوة الجاية؟</button>
+    <!-- «إعلاناتي»: كل المهمات (الموجّهة + الحرة) — كانت صفحة «المهمات» لحالها -->
+    <div class="panel" id="homeMyAds">
+      <div class="row between"><h3>إعلاناتي</h3>
+        <div class="seg seg-sm" id="msFilter" role="tablist" aria-label="فلترة الإعلانات">
+          <button type="button" data-f="all" class="on">الكل</button>
+          <button type="button" data-f="running">شغّالة</button>
+          <button type="button" data-f="done">خلصت</button>
+          <button type="button" data-f="free">حرة</button>
+        </div>
       </div>
+      <input id="msSearch" class="input" type="search" placeholder="ابحث باسم الإعلان…" aria-label="بحث بالإعلانات">
+      <div id="msList"></div>
     </div>
-    <div class="seg seg-sm" id="msFilter" role="tablist" aria-label="فلترة المهمات">
-      <button type="button" data-f="all" class="on">الكل</button>
-      <button type="button" data-f="running">شغّالة</button>
-      <button type="button" data-f="done">خلصت</button>
-      <button type="button" data-f="free">حرة</button>
-    </div>
-    <input id="msSearch" class="input" type="search" placeholder="ابحث باسم المهمة…" aria-label="بحث بالمهمات">
-    <div id="msList"></div>
   </section>
 
   <!-- ═════════ ✦ المهمة: المراحل السبعة (mission.js) ═════════ -->
@@ -143,14 +129,18 @@
   <!-- ═════════ ❖ المكتبات (shell.js بيركّب الشاشات القديمة جوّا التبويبات) ═════════ -->
   <section id="v-libs" class="view" data-view="libs">
     <div class="page-head hero compact" id="libsHero" data-img="pattern">
-      <div><h2>المكتبات</h2><p class="hint">كل مواد شغلك بمكان واحد: منتجاتك وشخصياتك وأنماطك اللي تعلّمها، وبنك الهوكات والحركات السينمائية والأصوات.</p></div>
+      <div><h2>المكتبات</h2><p class="hint">كل مواد شغلك بأربع رفوف: منتجاتك، شخصياتك، الأنماط اللي تعلّمها الاستوديو (مع الهوكات والحركات)، والأصوات.</p></div>
     </div>
     <div class="seg" id="libsTabs" role="tablist" aria-label="رفوف المكتبات">
       <button type="button" data-tab="products" class="on">المنتجات</button>
       <button type="button" data-tab="characters">الشخصيات</button>
-      <button type="button" data-tab="patterns">الأنماط</button>
-      <button type="button" data-tab="hooks">بنك الهوكات</button>
+      <button type="button" data-tab="patterns">الأنماط والهوكات</button>
       <button type="button" data-tab="sounds">الأصوات والآهات</button>
+    </div>
+    <!-- رف «الأنماط والهوكات» جوّاه تلات أقسام صغيرة -->
+    <div class="seg seg-sm" id="libsPatTabs" role="tablist" aria-label="أقسام الأنماط" hidden>
+      <button type="button" data-tab="patterns" class="on">الأنماط</button>
+      <button type="button" data-tab="hooks">بنك الهوكات</button>
       <button type="button" data-tab="presets">الحركات السينمائية</button>
     </div>
     <div id="libs-patterns" class="tabpane on"></div>
@@ -161,23 +151,43 @@
     <div id="libs-presets" class="tabpane"></div>
 
   </section>
+  <!-- ═════════ ✧ الدليل (guidepage.js) ═════════ -->
+  <section id="v-guide" class="view" data-view="guide">
+    <div class="page-head hero compact" data-img="tour">
+      <div><h2>الدليل</h2><p class="hint">كل شي بالموقع بجمل قصيرة وأمثلة. ابدأ من «أول إعلان»، وإذا علقت روح لـ «عندي مشكلة».</p></div>
+      <div class="hero-actions"><button class="btn ghost sm" id="guideTourBtn" type="button">🧭 جولة بدقيقة</button><button class="btn sm" type="button" data-new-chooser>＋ إعلان جديد</button></div>
+    </div>
+    <div class="seg" id="guideTabs" role="tablist" aria-label="أقسام الدليل">
+      <button type="button" data-tab="steps" class="on">أول إعلان بـ 7 خطوات</button>
+      <button type="button" data-tab="problems">عندي مشكلة</button>
+      <button type="button" data-tab="words">قاموس الكلمات</button>
+    </div>
+    <div id="guide-steps" class="tabpane on"></div>
+    <div id="guide-problems" class="tabpane"></div>
+    <div id="guide-words" class="tabpane"></div>
+  </section>
+
   <!-- ═════════ ⚙ المصنع: طرق التوليد ═════════ -->
   <section id="v-factory" class="view" data-view="factory">
     <div class="page-head hero compact" data-img="factory">
-      <div><h2>المصنع</h2><p class="hint">طرق التوليد التلاتة: API (مفاتيح ومزوّدين) · مكتبة النماذج (نماذجك أنت) · الإضافة <span class="term-slot" data-term="extension"></span>. لكل طريقة: شغّالة؟ وشو آخر مشكلة؟</p></div>
-      <div class="hero-actions"><button id="facCheck" class="btn ghost sm" type="button">افحص الطرق</button><button class="btn ghost sm" type="button" data-guide-next>شو الخطوة الجاية؟</button></div>
+      <div><h2>المصنع</h2><p class="hint">من وين بتطلع الصور والأصوات والمقاطع: نماذجك أنت · مفاتيح API · الإضافة <span class="term-slot" data-term="extension"></span>. فوق: شو جاهز وشو ناقص، وكل ناقص إله زر «صلّح».</p></div>
+      <div class="hero-actions"><button id="facCheck" class="btn ghost sm" type="button">افحص من جديد</button></div>
     </div>
-    <div id="facMethods"></div>
+    <div class="panel orn-frame" id="facReady">
+      <div class="row between"><h3>جاهزية الاستوديو</h3><span class="hint" id="facReadySum"></span></div>
+      <img class="ready-art" src="/img/art/factory-ready.png" alt="" width="160" height="120" loading="lazy" onerror="this.remove()">
+      <div id="facMethods"></div>
+    </div>
     <div class="seg" id="facTabs" role="tablist" aria-label="طرق التوليد">
-      <button type="button" data-tab="local" class="on">مكتبة النماذج</button>
-      <button type="button" data-tab="api">API والمفاتيح</button>
+      <button type="button" data-tab="local" class="on">النماذج</button>
+      <button type="button" data-tab="api">المفاتيح والمزوّدين</button>
       <button type="button" data-tab="extension">الإضافة</button>
     </div>
     <div id="fac-api" class="tabpane">
-      <div class="seg seg-sm" id="facApiTabs" role="tablist" aria-label="أقسام API">
-        <button type="button" data-tab="models" class="on">الاتصالات</button>
-        <button type="button" data-tab="keys">المفاتيح</button>
-        <button type="button" data-tab="media">إعدادات الصوت والصور</button>
+      <div class="seg seg-sm" id="facApiTabs" role="tablist" aria-label="أقسام المفاتيح والمزوّدين">
+        <button type="button" data-tab="keys" class="on">كل المفاتيح</button>
+        <button type="button" data-tab="media">الصوت والصور والتفريغ</button>
+        <button type="button" data-tab="models">موديلات الكتابة</button>
       </div>
     </div>
     <div id="fac-local" class="tabpane on"></div>
@@ -301,14 +311,7 @@
 
   <!-- ═════════ 5 · الاستوديو ═════════ -->
   <section id="v-studio" class="view" data-view="studio">
-    <div class="page-head"><div><h2>الاستوديو</h2><p class="hint">منتج ← أنماط ← كتابة ← سيناريو ومراجعة ← موافقة ← اسم الإعلان وتصدير ← صوت وصور.</p></div></div>
-    <div class="steps" id="studioSteps">
-      <button type="button" class="step on" data-step="1"><i>1</i><span>المنتج والأنماط</span></button>
-      <button type="button" class="step" data-step="2"><i>2</i><span>الكتابة</span></button>
-      <button type="button" class="step" data-step="3"><i>3</i><span>السيناريو والمراجعة</span></button>
-      <button type="button" class="step" data-step="4"><i>4</i><span>الموافقة والتصدير</span></button>
-      <button type="button" class="step" data-step="5"><i>5</i><span>إعدادات الصوت والصور</span></button>
-    </div>
+    <!-- مصدر خطوات الكتابة: mission.js بيستعير #st-1..#st-4 لمراحل المهمة 2 و3 -->
 
     <div id="st-1" class="stepview on">
       <div class="panel">
@@ -398,21 +401,12 @@
       <div class="panel" id="adNamePanel"></div>
     </div>
 
-    <div id="st-5" class="stepview">
-      <div id="mediaGate"></div>
-      <div class="seg" id="mediaTabs">
-        <button type="button" data-tab="voice" class="on">الفويس أوفر</button>
-        <button type="button" data-tab="images">الصور</button>
-      </div>
-      <div id="stepVoice" class="tabpane on"></div>
-      <div id="stepImages" class="tabpane"></div>
-    </div>
   </section>
 
   <!-- ═════════ 6 · الأداء ═════════ -->
   <section id="v-performance" class="view" data-view="performance">
     <div class="page-head hero compact" data-img="performance"><div><h2>الأداء</h2><p class="hint">أي نمط وأي هوك بيبيع فعلاً: التكلفة حسب الطلب المُسلَّم ودرجة الدليل. الأرقام بتوصل من الـ OMS <span class="term-slot" data-term="oms"></span>.</p></div>
-      <div class="hero-actions"><button id="perfRefresh" class="btn ghost sm" type="button">تحديث</button><button class="btn ghost sm" type="button" data-guide-next>شو الخطوة الجاية؟</button></div></div>
+      <div class="hero-actions"><button id="perfRefresh" class="btn ghost sm" type="button">تحديث</button></div></div>
     <div class="seg" id="perfTabs">
       <button type="button" data-tab="patterns" class="on">الأنماط</button>
       <button type="button" data-tab="scripts">أحكام السيناريوهات</button>
@@ -429,15 +423,13 @@
 
   <!-- ═════════ الإعدادات ═════════ -->
   <section id="v-settings" class="view" data-view="settings">
-    <div class="page-head"><div><h2>الإعدادات</h2><p class="hint">المفاتيح والمزوّدين والصوت والصور صاروا بـ <a href="#/factory/api">المصنع ← API</a>.</p></div></div>
+    <div class="page-head"><div><h2>الإعدادات</h2><p class="hint">أربع أقسام بس. المفاتيح والمزوّدين مكانهم <a href="#/factory/api/keys">المصنع ← المفاتيح</a>.</p></div></div>
+    <!-- كل تبويب بيفتح قسم أو قسمين (settings.js ← SET_WITH): الفريق = الموظفين + النشاط · النسخ والصرف = النسخ + الاستهلاك · متقدّم = التحليل + الـ OMS + البرومبتات -->
     <div class="seg" id="setTabs">
-      <button type="button" data-tab="general" class="on">عام</button>
-      <button type="button" data-tab="crm">الـ OMS والطابور</button>
-      <button type="button" data-tab="ops">النسخ والجدولة والإنفاق</button>
-      <button type="button" data-tab="analysis">التحليل والقواعد</button>
-      <button type="button" data-tab="staff">الموظفين</button>
-      <button type="button" data-tab="activity">النشاط</button>
-      <button type="button" data-tab="advanced">متقدّم — البرومبتات</button>
+      <button type="button" data-tab="staff" class="on">الفريق</button>
+      <button type="button" data-tab="ops">النسخ والصرف</button>
+      <button type="button" data-tab="analysis">القواعد</button>
+      <button type="button" data-tab="advanced">متقدّم</button>
     </div>
 
     <!-- عام -->
@@ -605,7 +597,7 @@
 
     <!-- التحليل والقواعد -->
     <div id="set-analysis" class="tabpane">
-      <div class="panel">
+      <div class="panel" id="sttPanel">  <!-- shell.js بينقلها للمصنع ← الصوت والصور والتفريغ -->
         <h3>تحليل الصوت (التفريغ)</h3>
         <p class="hint">أي مزوّد بيرجّع توقيتات — التوقيتات إلزامية لربط الكلام بالمشاهد.</p>
         <div class="task-grid" id="sttGrid">
@@ -618,7 +610,27 @@
         <p class="hint" id="sttNote"></p>
         <div class="row end"><button id="sttSave" class="btn ghost" type="button">احفظ إعداد التفريغ</button></div>
         <div id="sttStatus" class="status"></div>
-        <h4 class="sub-h">إعدادات Whisper المحلي</h4>
+      </div>
+      <div class="panel">
+        <h3>قواعد السيناريو</h3>
+        <div class="form">
+          <div class="field"><label>عدد المشاهد</label><input type="number" data-set="SCRIPT_SCENES" min="3" max="15" dir="ltr"></div>
+          <div class="field"><label>أقل مدة (ثانية)</label><input type="number" data-set="SCRIPT_MIN_SEC" dir="ltr"></div>
+          <div class="field"><label>أقصى مدة (ثانية)</label><input type="number" data-set="SCRIPT_MAX_SEC" dir="ltr"></div>
+        </div>
+      </div>
+      <div class="row end"><button id="saveSettingsBtn" class="btn save-settings" type="button">احفظ القواعد</button></div>
+      <div id="settingsStatus" class="status"></div>
+      <div id="set-claims" class="mt"></div> <!-- مكتبة الادعاءات الممنوعة — كانت تابويبة مكتبة وصارت هون -->
+    </div>
+
+    <div id="set-staff" class="tabpane"></div>
+    <div id="set-activity" class="tabpane"></div>
+
+    <!-- متقدّم: أشيا ما بتلمسها عادة — التحليل وWhisper والبرومبتات (والـ OMS تحتها) -->
+    <div id="set-advanced" class="tabpane">
+      <div class="panel">
+        <h3>Whisper المحلي (التفريغ على جهازك)</h3>
         <div class="form">
           <div class="field"><label>الجهاز</label><select data-set="WHISPER_DEVICE"></select></div>
           <div class="field"><label>دقة الحساب</label><select data-set="WHISPER_COMPUTE"></select></div>
@@ -646,24 +658,8 @@
             <select data-set="OCR_USE_GPU"><option value="true">نعم</option><option value="false">لا</option></select></div>
         </div>
       </div>
-      <div class="panel">
-        <h3>قواعد السيناريو</h3>
-        <div class="form">
-          <div class="field"><label>عدد المشاهد</label><input type="number" data-set="SCRIPT_SCENES" min="3" max="15" dir="ltr"></div>
-          <div class="field"><label>أقل مدة (ثانية)</label><input type="number" data-set="SCRIPT_MIN_SEC" dir="ltr"></div>
-          <div class="field"><label>أقصى مدة (ثانية)</label><input type="number" data-set="SCRIPT_MAX_SEC" dir="ltr"></div>
-        </div>
-      </div>
-      <div class="row end"><button id="saveSettingsBtn" class="btn" type="button">احفظ الإعدادات</button></div>
-      <div id="settingsStatus" class="status"></div>
-      <div id="set-claims" class="mt"></div> <!-- مكتبة الادعاءات الممنوعة — كانت تابويبة مكتبة وصارت هون -->
-    </div>
-
-    <!-- متقدم: البرومبتات -->
-    <div id="set-staff" class="tabpane"></div>
-    <div id="set-activity" class="tabpane"></div>
-
-    <div id="set-advanced" class="tabpane">
+      <div class="row end"><button class="btn save-settings" type="button" data-save-for="advStatus">احفظ الإعدادات المتقدّمة</button></div>
+      <div id="advStatus" class="status"></div>
       <div class="panel">
         <h3>برومبتات المنظومة</h3>
         <p class="hint">
@@ -727,8 +723,6 @@
         <h2>الإنتاج <span class="term-slot" data-term="station"></span></h2>
         <p class="hint">إحدى عشرة محطة. الصوت أولاً: مدته وتوقيت كلماته هم الساعة لكل لقطة. كل محطة بتنتظر اعتماد اللي قبلها.</p>
       </div>
-      <label class="zk-field prod-pick"><span class="zk-field__label">السيناريو</span>
-        <select class="zk-select" id="prodPick"></select></label>
     </div>
     <div id="prodBody"></div>
   </section>
@@ -760,34 +754,34 @@
 
 <div id="toasts" class="toasts" aria-live="polite"></div>
 
-<script src="/vendor/zaki-ui/zaki-ui.all.js?v=77"></script>
-<script src="/app.js?v=77"></script>
-<script src="/studio.js?v=77"></script>
-<script src="/hooks.js?v=77"></script>
-<script src="/presets.js?v=77"></script>
-<script src="/perf.js?v=77"></script>
-<script src="/settings.js?v=77"></script>
-<script src="/accounts.js?v=77"></script>
-<script src="/production.js?v=77"></script>
-<script src="/refslots.js?v=77"></script>
-<script src="/characters.js?v=77"></script>
-<script src="/productref.js?v=77"></script>
-<script src="/models.js?v=77"></script>
-<script src="/modellib.js?v=77"></script>
-<script src="/ext.js?v=77"></script>
-<script src="/claims.js?v=77"></script>
-<script src="/patedit.js?v=77"></script>
-<script src="/adsfb.js?v=77"></script>
-<script src="/ahat.js?v=77"></script>
-<script src="/shell.js?v=77"></script>
-<script src="/guide.js?v=77"></script>
-<script src="/ornament.js?v=77"></script>
-<script src="/home.js?v=77"></script>
-<script src="/free.js?v=77"></script>
-<script src="/freemontage.js?v=77"></script>
-<script src="/mission.js?v=77"></script>
-<script src="/missions.js?v=77"></script>
-<script src="/najma.js?v=77"></script>
-<script src="/boot.js?v=77"></script>
+<script src="/vendor/zaki-ui/zaki-ui.all.js?v=80"></script>
+<script src="/app.js?v=80"></script>
+<script src="/studio.js?v=80"></script>
+<script src="/hooks.js?v=80"></script>
+<script src="/presets.js?v=80"></script>
+<script src="/perf.js?v=80"></script>
+<script src="/settings.js?v=80"></script>
+<script src="/accounts.js?v=80"></script>
+<script src="/production.js?v=80"></script>
+<script src="/refslots.js?v=80"></script>
+<script src="/characters.js?v=80"></script>
+<script src="/productref.js?v=80"></script>
+<script src="/models.js?v=80"></script>
+<script src="/modellib.js?v=80"></script>
+<script src="/ext.js?v=80"></script>
+<script src="/claims.js?v=80"></script>
+<script src="/patedit.js?v=80"></script>
+<script src="/adsfb.js?v=80"></script>
+<script src="/ahat.js?v=80"></script>
+<script src="/shell.js?v=80"></script>
+<script src="/guide.js?v=80"></script>
+<script src="/guidepage.js?v=80"></script>
+<script src="/ornament.js?v=80"></script>
+<script src="/home.js?v=80"></script>
+<script src="/free.js?v=80"></script>
+<script src="/freemontage.js?v=80"></script>
+<script src="/mission.js?v=80"></script>
+<script src="/najma.js?v=80"></script>
+<script src="/boot.js?v=80"></script>
 </body>
 </html>

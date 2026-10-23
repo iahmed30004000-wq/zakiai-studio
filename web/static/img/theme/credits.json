@@ -115,5 +115,266 @@
   "licence_url": "https://unsplash.com/license",
   "source": "https://unsplash.com/photos/8871MZG3ZrU",
   "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/hero-home.webp",
+  "what": "غروب فوق مدينة ونخيل",
+  "author": "Zoshua Colah",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/aT2JKn38cqw",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/hero-day.webp",
+  "what": "غروب وخيوط مصابيح بين النخيل",
+  "author": "Jason Leung",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/sQfv4Yl6_Ko",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/home-night.webp",
+  "what": "شارع مبلول بالمطر بالليل (بانوراما)",
+  "author": "Red Shuheart",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/hQOct36DUSY",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/petra-night.webp",
+  "what": "شارع نيون مبلول بالليل",
+  "author": "masahiro miyagi",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/uZA3P4sA3tM",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/mission.webp",
+  "what": "مدينة من فوق بأضواء نيون برتقالية وبنفسجية",
+  "author": "Nat",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/dA0-qxdbyyY",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/performance.webp",
+  "what": "أبراج مدينة مضاءة بالليل بلمسة فيروزية",
+  "author": "Irina Iriser",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/rhRlzHJcv5w",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/factory.webp",
+  "what": "غروب شبكي بنيون فيروزي (ستايل الثمانينات)",
+  "author": "Neeqolah Creative Works",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/Tn5gnXGI3hI",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/library.webp",
+  "what": "نخيل بسيلويت وسماء غروب وردية",
+  "author": "Viviana Rishe",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/UC8fvOyG5pU",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/products.webp",
+  "what": "نخيل بسيلويت وأفق ليلي أزرق وبرتقالي",
+  "author": "Sebastian Banasiewcz",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/pERCUe02B4I",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/sounds.webp",
+  "what": "شكل شبكي وردي متوهّج",
+  "author": "Logan Voss",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/5Kzn1ICMRoQ",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/pattern.webp",
+  "what": "جسر مضاء بالنيون على النهر بالليل",
+  "author": "Irina Iriser",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/tPhfHSEeGaI",
+  "changes": "صغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/tiles.webp",
+  "what": "بنايات بنيون وردي وأزرق (قصّة مقاس 3:2)",
+  "author": "cheng feng",
+  "licence": "Unsplash",
+  "licence_url": "https://unsplash.com/license",
+  "source": "https://unsplash.com/photos/psdV2Rl-GvU",
+  "changes": "قصّيناها 3:2 وصغّرناها وحوّلناها WebP"
+ },
+ {
+  "file": "neon/neon-coast.door.webp",
+  "what": "باب ساحل النيون (فنّ المالك)",
+  "author": "Zaki AI (المالك) — ChatGPT",
+  "licence": "خاص بالمالك",
+  "licence_url": "https://github.com/MKory18/zakiai-studio",
+  "source": "https://github.com/MKory18/zakiai-studio",
+  "changes": "منسوخة كما هي من مستودع العمليات OMS"
+ },
+ {
+  "file": "neon/neon-coast.door-tall.webp",
+  "what": "باب ساحل النيون طويل (فنّ المالك)",
+  "author": "Zaki AI (المالك) — ChatGPT",
+  "licence": "خاص بالمالك",
+  "licence_url": "https://github.com/MKory18/zakiai-studio",
+  "source": "https://github.com/MKory18/zakiai-studio",
+  "changes": "منسوخة كما هي من مستودع العمليات OMS"
+ },
+ {
+  "file": "neon/neon-coast.strip.webp",
+  "what": "شريط ساحل النيون (فنّ المالك)",
+  "author": "Zaki AI (المالك) — ChatGPT",
+  "licence": "خاص بالمالك",
+  "licence_url": "https://github.com/MKory18/zakiai-studio",
+  "source": "https://github.com/MKory18/zakiai-studio",
+  "changes": "منسوخة كما هي من مستودع العمليات OMS"
+ },
+ {
+  "file": "neon/tour.webp",
+  "what": "بطاقة بداية الجولة (نفس باب ساحل النيون)",
+  "author": "Zaki AI (المالك) — ChatGPT",
+  "licence": "خاص بالمالك",
+  "licence_url": "https://github.com/MKory18/zakiai-studio",
+  "source": "https://github.com/MKory18/zakiai-studio",
+  "changes": "نسخة من neon-coast.door.webp"
+ },
+ {
+  "file": "art/login-bg.jpg",
+  "what": "قبّة مسجد الإمام بأصفهان من جوّا بزخرفة زرقاء وذهبية — خلفية صفحة الدخول",
+  "author": "Stefan Krasowski",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/The_Islamic_Republic_056_(8498648658).jpg",
+  "changes": "قصّ وتحجيم 1920x1080 وتحويل"
+ },
+ {
+  "file": "art/empty-patterns.png",
+  "what": "خشب وجصّ منقوشان بأشكال هندسية بقصر الحمراء — حالة فاضية «مكتبة الأنماط»",
+  "author": "Jebulon",
+  "licence": "CC0 1.0",
+  "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://commons.wikimedia.org/wiki/Stucco,_wooden_door,_mosaics,_wall_Alhambra,_Granada,_Spain.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/empty-hooks.png",
+  "what": "فانوس رمضان مضيء بعتمة الليل — حالة فاضية «بنك الخطّافات»",
+  "author": "Hypatia Foundation",
+  "licence": "CC BY 3.0",
+  "licence_url": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/Omar_Ibn_Abdel_Aziz_st._(Ramadan_lantern)_%D8%B4%D8%A7%D8%B1%D8%B9_%D8%B9%D9%85%D8%B1_%D8%A8%D9%86_%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%B9%D8%B2%D9%8A%D8%B2_(%D9%81%D8%A7%D9%86%D9%88%D8%B3_%D8%B1%D9%85%D8%B6%D8%A7%D9%86)_-_panoramio.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/empty-moves.png",
+  "what": "صفوف أعمدة وأقواس مسجد قرطبة بممر طويل — حالة فاضية «حركات الكاميرا»",
+  "author": "James (Jim) Gordon",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/Mosque_of_Cordoba.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/empty-activity.png",
+  "what": "مكتب هادئ بدفتر مفتوح وأقلام ونظّارة (بلا أشخاص) — حالة فاضية «سجل النشاط»",
+  "author": "Shixart1985",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/Desk_with_notebook_pens_and_glasses.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/new-guided.png",
+  "what": "ممر فوانيس مضاءة يوصل لمبنى وقت الغروب بالصحراء — بطاقة «مهمة موجّهة 7 خطوات»",
+  "author": "Jorge Franganillo",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/Aiour_Luxury_Camp_(54292956804).jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/new-free.png",
+  "what": "أقمشة وسجاد ملوّنة معلّقة بالبازار الكبير بإسطنبول — بطاقة «مشروع حر»",
+  "author": "Gareth Williams",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/Istanbul_-_October_2008_-_Fabrics_in_the_Grand_Bazaar.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/new-quick.png",
+  "what": "خيوط ضوء سيارات بشارع بالليل (تعريض طويل) — بطاقة «مهمة سريعة»",
+  "author": "Vitor Y",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/Light_trails_in_London.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/guide-cover.jpg",
+  "what": "كتاب قديم مفتوح فوق كومة كتب على طاولة خشب — غلاف الدليل الداخلي",
+  "author": "Shixart1985",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+  "source": "https://commons.wikimedia.org/wiki/Old_books_placed_on_an_old_wooden_office_table.jpg",
+  "changes": "قصّ وتحجيم 1600x900 وتحويل"
+ },
+ {
+  "file": "art/guide-help.png",
+  "what": "زينة رمضان بأضواء ونجوم بزقاق مقوّس بالقدس القديمة ليلاً — «عندي مشكلة»",
+  "author": "Guillaume Paumier",
+  "licence": "CC BY 3.0",
+  "licence_url": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/Ramadan_decorations._Jerusalem_by_night_045_-_Aug_2011.jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/mission-done.png",
+  "what": "ألعاب نارية ذهبية بسماء الليل — احتفال بعد ما يخلص الإعلان",
+  "author": "Ondrejk",
+  "licence": "مشاع (Public domain)",
+  "licence_url": "https://commons.wikimedia.org/wiki/Template:PD-self",
+  "source": "https://commons.wikimedia.org/wiki/Bratislava_New_Year_Fireworks.jpg",
+  "changes": "قصّ وتحجيم 1024x1024 وتحويل"
+ },
+ {
+  "file": "art/factory-ready.png",
+  "what": "أسطرلاب إسلامي نحاسي بمتحف (آلة قديمة) — جاهزية الاستوديو",
+  "author": "Gary Todd",
+  "licence": "CC0 1.0",
+  "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "source": "https://commons.wikimedia.org/wiki/Islamic_Astrolabe_(28417763470).jpg",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
+ },
+ {
+  "file": "art/not-found.png",
+  "what": "داخل الخزنة بالبترا: غرفة فاضية وباب غامق بالحيطة — صفحة غير موجودة",
+  "author": "Berthold Werner",
+  "licence": "CC BY 3.0",
+  "licence_url": "https://creativecommons.org/licenses/by/3.0/",
+  "source": "https://commons.wikimedia.org/wiki/Petra_Jordan_BW_23_1.JPG",
+  "changes": "قصّ وتحجيم 800x600 وتحويل"
  }
 ]

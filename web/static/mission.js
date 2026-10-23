@@ -241,19 +241,35 @@ function renderBar() {
   const prev = info.ok ? null : MISSION_STAGES.slice(0, n - 1).filter((s) => s.n !== 2).map((s) => [s, stageInfo(s.n)]).find(([, i]) => !i.ok);
   if (prev) info = { ...info, why: `قبلها: مرحلة «${prev[0].name}» لسا ناقصة — ${prev[1].why}`, go: prev[1].go || { stage: prev[0].n } };
   const backHref = n > 1 ? missionHash(MS.file, n - 1, n - 1 <= 2 && MS.product ? { product: MS.product } : null) : null;
+  /* زر رئيسي واحد: جاهزة ← «التالي →»، ناقصة ← «ودّيني للناقص» (بيوديك عالخانة). ما في زرّين. */
+  const finished = n === 7 && info.ok;
   let next;
-  if (n === 7 && info.ok) next = `<a class="zk-btn zk-btn--primary" href="#/home">خلصت المهمة ✓ — للرئيسية</a>`;
+  if (finished) next = `<button class="zk-btn zk-btn--primary" type="button" data-new-chooser>＋ ابدأ إعلان جديد</button>`;
   else if (info.ok) next = `<button class="zk-btn zk-btn--primary" id="msNext" type="button">التالي →</button>`;
+  else if (info.go) next = `<button class="zk-btn zk-btn--primary" id="msGo" type="button" aria-describedby="msWhy" title="${esc(info.why || "")}">ودّيني للناقص ←</button>`;
   else next = `<button class="zk-btn zk-btn--primary" id="msNext" type="button" disabled aria-disabled="true" aria-describedby="msWhy" title="${esc(info.why || "")}">التالي →</button>`;
   bar.innerHTML = `
     ${backHref ? `<a class="zk-btn zk-btn--ghost" href="${backHref}">← رجوع</a>` : `<span></span>`}
-    <p class="hint mission-bar__why" id="msWhy" aria-live="polite">${info.ok ? (info.done ? "✓ المرحلة مكتملة" : "جاهز تكمّل") : esc(info.why || "")}</p>
-    ${!info.ok && info.go ? `<button class="zk-btn zk-btn--secondary" id="msGo" type="button">ودّيني</button>` : ""}
+    <p class="hint mission-bar__why" id="msWhy" aria-live="polite">${finished ? "✓ خلصت كل المراحل — إعلانك جاهز" : info.ok ? (info.done ? "✓ المرحلة مكتملة" : "جاهز تكمّل") : esc(info.why || "")}</p>
+    ${finished ? `<a class="zk-btn zk-btn--secondary" href="#/home">للرئيسية</a>` : ""}
     ${next}`;
+  celebrate(finished);
   const nb = $("#msNext");
   if (nb && !nb.disabled) nb.addEventListener("click", goNext);
   const gb = $("#msGo");
   if (gb) gb.addEventListener("click", () => goTo(info.go));
+}
+
+/* شاشة «خلص الإعلان ✓» بعد المرحلة 7: بتظهر مرة وحدة لكل مهمة بالجلسة */
+const CELEBRATED = new Set();
+function celebrate(finished) {
+  const host = $("#msPassed");
+  if (!host || !finished || !MS.file || CELEBRATED.has(MS.file)) return;
+  CELEBRATED.add(MS.file);
+  host.insertAdjacentHTML("beforeend", `<div class="panel orn-frame mission-done" role="status">
+    <img class="mission-done__art" src="/img/art/mission-done.png" alt="" width="120" height="120">
+    <div><h3>خلص الإعلان ✓</h3><p class="hint">مرّ على المراحل السبعة كلها. نزّل الفيديو من المونتاج، أو ابدأ إعلان جديد.</p></div></div>`);
+  const im = $(".mission-done__art", host); if (im) im.addEventListener("error", () => im.remove(), { once: true });
 }
 
 function goNext() {
@@ -351,6 +367,7 @@ async function renderStage(seq) {
       if (!node) return;
       const section = document.createElement("details");
       section.className = "panel mission-product-section";
+      section.open = label === "بريف المنتج";               // البريف مفتوح، والباقي مطوي (مراجع بصرية، اختيار منتجات)
       const summary = document.createElement("summary");
       summary.textContent = label;
       section.appendChild(summary);
@@ -493,6 +510,7 @@ window.addEventListener("hashchange", () => { if (!/^#\/mission(\/|\?|$)/.test(l
 
 /* ───────── الواجهة المشتركة ───────── */
 window.Mission = {
+  guideTexts: MISSION_GUIDE,                              // صفحة «الدليل» (guidepage.js) بتعرض نفس الشرح
   stages: MISSION_STAGES.map((s) => ({ n: s.n, name: s.name, stations: [...new Set([...s.gate, ...s.tabs])] })),
   stageOfStation,
   hash: missionHash,

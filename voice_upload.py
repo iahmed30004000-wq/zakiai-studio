@@ -652,6 +652,7 @@ def main() -> None:
             sp.add_argument("--language")
         if name == "tts":
             sp.add_argument("--all", action="store_true")
+            sp.add_argument("--provider", help="نموذج مكتبة صريح lib:ml_001 — بلا بديل صامت لو فشل")
     a = ap.parse_args()
     log = lambda m: print(m, flush=True)          # noqa: E731
     try:
@@ -664,7 +665,7 @@ def main() -> None:
         elif a.cmd == "realign":
             res = realign_free(a.script, fit=not a.no_fit, mode=a.mode, log=log)
         else:
-            res = tts_free(a.script, only_missing=not a.all, fit=not a.no_fit, log=log)
+            res = tts_free(a.script, only_missing=not a.all, fit=not a.no_fit, overrides={"provider": a.provider} if a.provider else None, log=log)
     except VoiceUploadError as e:
         sys.exit(f"[!] {e}")
     print(json.dumps(res, ensure_ascii=False, indent=2))

@@ -67,7 +67,9 @@ def test_script_order_and_cache_version_are_consistent():
 
 def test_home_and_mission_link_to_the_free_project():
     idx, home, mission, guide = _read("index.html"), _read("home.js"), _read("mission.js"), _read("guide.js")
-    assert 'href="#/mission/new?free=1"' in idx and "مشروع حر" in idx
+    # «＋ جديد» فتح نافذة «إعلان جديد» (najma.js) وفيها بطاقة المشروع الحر
+    najma = _read("najma.js")
+    assert 'id="newBtn"' in idx and "data-new-chooser" in idx and 'href: "#/mission/new?free=1"' in najma and "مشروع حر" in najma
     assert "FreeProject.enter(" in mission and "free=1" in mission                  # تحويل + رابط «أو ابدأ مشروع حر»
     assert 's.mode === "free"' in home and "freeLink(" in home and "مشروع حر" in home
     assert 'mode === "free"' in guide and "free_project:" in guide and "free=1" in guide
@@ -276,16 +278,16 @@ def _quick_keys() -> list[str]:
 
 def test_quick_actions_are_defined_and_each_after_step_is_handled():
     keys = _quick_keys()
-    assert keys == ["animate", "generate", "speak", "transcribe", "montage"], keys
+    assert keys == ["animate", "generate", "speak", "transcribe", "sound", "montage"], keys
     body = FREE[FREE.index("const QUICK = {"):FREE.index("const QUICK_ROW")]
     modes = set(re.findall(r'mode: "(\w+)"', body))
-    assert modes <= {o for o in re.findall(r'^\s+\["(\w+)", "[^"]+", ', FREE[FREE.index("const START_OPTS"):FREE.index("const QUICK = {")], re.M)} | {"prompt"}, modes
+    assert modes <= {o for o in re.findall(r'^\s+\["(\w+)", "[^"]+", ', FREE[FREE.index("const START_OPTS"):FREE.index("const QUICK = {")], re.M)} | {"prompt", "sound"}, modes
     row = re.search(r"const QUICK_ROW = \[([^\]]*)\]", FREE).group(1)
     assert set(re.findall(r'"(\w+)"', row)) == set(keys)
     afters = set(re.findall(r'after: "(\w*)"', body)) - {""}
     assert afters == {"animate", "generate", "tts"}, afters
     run = FREE[FREE.index("async function runAfter("):FREE.index("async function fillMissing()")]
-    assert 'a.kind === "tts"' in run and 'a.kind === "generate"' in run and "animate(sh)" in run and "genImage(sh, true)" in run
+    assert 'a.kind === "tts"' in run and 'a.kind === "generate"' in run and "animate(sh, { model: a.model })" in run and "genImage(sh, true, { model: a.model, n: a.n })" in run
     # بتشتغل بس لمشروعها بالذات (ما بتنطلق على مشروع تاني لو فشل فتح الأول) وبتنمسح مع شاشة البداية
     assert "a.file === FS.file" in FREE and "FS.after = null;" in FREE[FREE.index("function renderStart("):FREE.index("async function startGo(")]
     # الصوت: الشغلة السريعة ما بتسأل تأكيد مرتين، بس العادية لسا بتسأل
@@ -303,8 +305,8 @@ def test_mission_links_to_the_free_project_only_from_the_start_screen():
     assert "FreeProject.enter(" in mission and "free=1" in mission                # تحويل + رابط «أو ابدأ مشروع حر»
     assert 'q.quick' in FREE and "q.start" in FREE                                        # شاشة البداية بتقرا quick و start من الرابط
     idx = _read("index.html")
-    assert re.search(r'href="#/mission/new\?free=1"', idx)                                 # باب المشروع الحر من الترويسة والرئيسية
-    assert "مشروع حر" in idx
+    assert 'id="newBtn"' in idx and 'href: "#/mission/new?free=1"' in _read("najma.js")        # باب المشروع الحر: نافذة «إعلان جديد» (ترويسة + قائمة جانبية)
+    assert "مشروع حر" in _read("najma.js")
     home = _read("home.js")
     assert "#/mission/new?free=1" in home and "مشروع حر" in home                            # بطل الرئيسية بيعرضه كمان
 
@@ -338,3 +340,15 @@ def test_quick_flows_run_on_the_real_server_routes(env, tmp_path):
     assert d.status_code == 200, d.text
     assert timeline.load(Path(f2).stem)["scenes"][0]["shots"][0]["motion_desc"] == "الكاميرا بتقرّب ببطء"
 
+
+
+def test_quick_tasks_take_one_or_many_and_an_explicit_model():
+    """الشغلة السريعة: وحدة أو مجموعة، واختيار النموذج. خيار «تلقائي» بيترك القرار للنظام، والنموذج الصريح بيوصل للمسار (بلا بديل صامت)."""
+    assert "const MAX_PROMPTS = 20;" in FREE and "const MAX_SOUNDS = 10;" in FREE and "const COPIES = [1, 2, 3];" in FREE
+    for needle in ('id="fsModel"', 'id="fsCopies"', "تلقائي (الأنسب)", "/api/model-library/choices?task=", "/api/motion-models", "`lib:${m.id}`"):
+        assert needle in FREE, needle
+    # الصور: provider=lib:ml_x وn، التحريك: model=mm_x، الصوت: provider بالحمولة
+    assert "&provider=${enc(opt.model)}" in FREE and "&n=${Number(opt.n)}" in FREE
+    assert "&model=${enc(opt.model)}" in FREE and "provider: opts.model" in FREE
+    # الموسيقى والمؤثرات: كل سطر مهمة توليد على مسار المكتبة، وبتنزل «غير معتمدة»
+    assert '"/api/ahat/generate"' in FREE and "غير معتمدة" in FREE and "if (model) break;" in FREE

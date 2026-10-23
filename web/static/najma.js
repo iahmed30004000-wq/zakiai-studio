@@ -1,5 +1,5 @@
 /* najma.js — «نجمة وطريق»: قطع الواجهة الجديدة الخفيفة. ملف مغلق بيعرّف window.Najma بس.
-   1) قوايم الترويسة: «＋ جديد» (مهمة · مشروع حر · شغلة سريعة) و«الدليل» و«حسابي».
+   1) «＋ إعلان جديد» (نافذة اختيار: مهمة موجّهة · مشروع حر · شغلة سريعة) وقوايم الترويسة: «الدليل» و«حسابي».
    2) سطر المهمة تحت الشاشة (متل ترجمة ألعاب المدن): الخطوة الجاية بجملة، بتتسكّر.
    3) شاشة التحميل: لما شغلة طويلة تبلّش (POST رجّع job_id) بتطلع 3 لوحات مايلة وتلميح، وبعد ثواني بتتصغّر
       لحبة صغيرة بالزاوية، ولما تخلص الشغلة بيطلع «تمّت!». ما بتوقفك عن الشغل أبداً.
@@ -15,17 +15,35 @@
   const reduced = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ═════════ 1) قوايم الترويسة ═════════ */
-  function quickItems() {
-    const box = $("#newQuick");
+  /* نافذة «إعلان جديد»: 3 بطاقات بصور. نفس النافذة بتفتح من زر «＋ جديد» بالترويسة ومن زر القائمة الجانبية. */
+  const NEW_CARDS = [
+    { k: "guided", ico: "✦", t: "مهمة موجّهة", d: "7 خطوات بالترتيب من المنتج للإطلاق — النظام بيمسكك من إيدك.", ex: "كريم إزالة شعر ← إعلان 47 ثانية جاهز", href: "#/mission/new?stage=1" },
+    { k: "free", ico: "✎", t: "مشروع حر", d: "بإيدك ومن أي نقطة: ارفع صور وفيديوهات ورتّبها ونزّل الفيديو.", ex: "6 فيديوهات من موبايلك ← فيديو واحد مركّب", href: "#/mission/new?free=1" },
+    { k: "quick", ico: "⚡", t: "شغلة سريعة", d: "شغلة وحدة بلا مراحل: صورة، صوت، تحريك… وحدة أو مجموعة، وبتختار النموذج.", ex: "20 وصف ← 20 صورة مرة وحدة", href: "" },
+  ];
+  function newChooser() {
     const F = window.FreeProject;
-    if (!box || !F || !F.quick || typeof F.quickHash !== "function") { if (box) box.hidden = true; return; }
-    box.innerHTML = Object.entries(F.quick).map(([k, q]) =>
-      `<a class="zk-dropdown__item" role="menuitem" href="${esc(F.quickHash(k))}" data-value="quick-${esc(k)}"><span class="mi-ico" aria-hidden="true">${esc(q.ico || "⚡")}</span><span class="mi-t">${esc(q.name || k)}</span></a>`).join("");
+    const quick = F && F.quick && typeof F.quickHash === "function" ? Object.entries(F.quick) : [];
+    openModal(`<div class="new-chooser" id="newChooser" role="dialog" aria-labelledby="ncTitle">
+      <h3 id="ncTitle">شو بدك تعمل؟</h3>
+      <p class="hint">اختار نقطة البداية — بتقدر تغيّر رأيك بأي وقت.</p>
+      <div class="nc-cards">${NEW_CARDS.map((c) => `<${c.href ? `a href="${esc(c.href)}"` : 'button type="button"'} class="nc-card" data-nc="${esc(c.k)}">
+        <span class="nc-art" aria-hidden="true"><img src="/img/art/new-${esc(c.k)}.png" alt="" loading="lazy" width="160" height="120"><span class="nc-ico">${c.ico}</span></span>
+        <b>${esc(c.t)}</b><span class="nc-d">${esc(c.d)}</span><span class="nc-ex hint">مثال: ${esc(c.ex)}</span></${c.href ? "a" : "button"}>`).join("")}</div>
+      <div class="nc-quick" id="ncQuick" hidden><h4 class="sub-h">⚡ شو الشغلة؟</h4>
+        <div class="row">${quick.map(([k, q]) => `<a class="btn ghost" href="${esc(F.quickHash(k))}">${esc(q.ico || "⚡")} ${esc(q.name || k)}</a>`).join("")}</div></div>
+    </div>`);
+    const root = $("#newChooser");
+    $$(".nc-art img", root).forEach((im) => im.addEventListener("error", () => im.remove(), { once: true }));   // الرسمة لسا ما وصلت: بتضل النجمة المرسومة
+    $$("a.nc-card", root).forEach((a) => a.addEventListener("click", () => closeModal()));
+    const qb = $('[data-nc="quick"]', root);
+    if (qb) qb.addEventListener("click", () => { $("#ncQuick", root).hidden = false; $("#ncQuick a", root)?.focus(); });
+    const first = $(".nc-card", root); if (first) first.focus();
   }
+  document.addEventListener("click", (e) => { const b = e.target.closest ? e.target.closest("[data-new-chooser]") : null; if (b) { e.preventDefault(); newChooser(); } });
   function initMenus() {
-    quickItems();
     if (!(window.zk && zk.dropdown)) return;
-    ["#newDd", "#accDd"].forEach((s) => { const el = $(s); if (el) zk.dropdown(el); });
+    ["#accDd"].forEach((s) => { const el = $(s); if (el) zk.dropdown(el); });
     const g = $("#guideDd");
     if (g) zk.dropdown(g, {
       onSelect: (v) => {
@@ -56,13 +74,14 @@
     const route = document.documentElement.dataset.route || "";
     const el = objectiveEl();
     /* بشاشة المهمة الشريط السفلي بيقول السبب أصلاً — ما منكرّر */
-    if (route === "mission" || !window.Guide || typeof Guide.next !== "function") { el.hidden = true; return; }
+    /* بشاشة المهمة الشريط السفلي بيقول السبب، وبالرئيسية البطل بيقول الخطوة الجاية — ما منكرّر */
+    if (route === "mission" || route === "home" || !window.Guide || typeof Guide.next !== "function") { el.hidden = true; return; }
     if (force || Date.now() - OBJ.at > 20000) {
       OBJ.at = Date.now();
       try { const r = await Guide.next(); OBJ.text = String((r && r.text) || ""); OBJ.hash = String((r && r.hash) || "#/home"); }
       catch { OBJ.text = ""; }
     }
-    if (!OBJ.text || OBJ.closed === OBJ.text || (document.documentElement.dataset.route || "") === "mission") { el.hidden = true; return; }
+    if (!OBJ.text || OBJ.closed === OBJ.text || ["mission", "home"].includes(document.documentElement.dataset.route || "")) { el.hidden = true; return; }
     const a = $(".obj-t", el);
     a.innerHTML = paint(OBJ.text);
     a.setAttribute("href", OBJ.hash);
@@ -269,6 +288,6 @@
     document.addEventListener("click", () => setTimeout(loadscreenOption, 50));
   }
 
-  window.Najma = { init, objective, credits, glossary, onJob, TIPS, spendChip, loadscreenOption };
+  window.Najma = { init, newChooser, objective, credits, glossary, onJob, TIPS, spendChip, loadscreenOption };
   init();
 })();

@@ -19,7 +19,8 @@ def mock(name):
 
 def test_the_library_has_a_presets_tab_wired_through_the_shell():
     tabs = re.search(r'<div class="seg" id="libsTabs".*?</div>', HTML, re.S).group(0)
-    assert 'data-tab="presets">الحركات السينمائية</button>' in tabs and '<div id="libs-presets" class="tabpane"></div>' in HTML
+    sub = re.search(r'<div class="seg seg-sm" id="libsPatTabs".*?</div>', HTML, re.S).group(0)      # قسم جوّا رف «الأنماط والهوكات»
+    assert 'data-tab="presets">الحركات السينمائية</button>' in sub and '<div id="libs-presets" class="tabpane"></div>' in HTML
     assert re.search(r'<script src="/presets\.js\?v=\d+"></script>', HTML)
     assert re.search(r'const LIBS_TABS = \[[^\]]*"presets"', SHELL) and 'case "presets": return VIEWS.presets.enter();' in SHELL
     assert "VIEWS.presets = { async enter() { await pstLoad(); } };" in JS

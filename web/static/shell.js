@@ -27,10 +27,14 @@ mountInto("#v-models", "#fac-local");
 mountInto("#v-extension", "#fac-extension");
 /* المصنع ← API: أقسام الإعدادات الثلاثة (الاتصالات والموديلات · المفاتيح · الصوت والصور) */
 ["#set-models", "#set-keys", "#set-media"].forEach((s) => { const el = $(s); if (el) $("#fac-api").appendChild(el); });
+/* التفريغ (STT) صار جنب الصوت والصور: كل مزوّدين الوسائط بمكان واحد */
+{ const stt = $("#sttPanel"), media = $("#set-media"); if (stt && media) media.appendChild(stt); }
 
 /* ───────── ❖ المكتبات ───────── */
 const LIBS = { tab: "products" };
 const LIBS_TABS = ["products", "characters", "patterns", "hooks", "sounds", "presets"];
+/* أربع رفوف ظاهرة؛ الهوكات والحركات أقسام جوّا رف «الأنماط والهوكات» */
+const LIBS_PAT = ["patterns", "hooks", "presets"];
 const libsRest = (p) => p.rest.slice(1);
 /* صورة بطل «المكتبات» حسب الرف المفتوح (أسماء data-img بـ ornament.css) */
 const LIBS_IMG = { products: "products", characters: "library", patterns: "pattern", hooks: "home-night", sounds: "sounds", presets: "tour" };
@@ -38,7 +42,11 @@ const LIBS_IMG = { products: "products", characters: "library", patterns: "patte
 VIEWS.libs = {
   async enter(p) {
     const tab = LIBS_TABS.includes(p.rest[0]) ? p.rest[0] : "products";
-    LIBS.tab = selectTab("#libsTabs", "libs", tab);
+    const inPat = LIBS_PAT.includes(tab);
+    $$("#v-libs > .tabpane").forEach((el) => el.classList.remove("on"));
+    selectTab("#libsTabs", "libs", inPat ? "patterns" : tab);
+    $("#libsPatTabs").hidden = !inPat;
+    LIBS.tab = inPat ? selectTab("#libsPatTabs", "libs", tab) : tab;
     const lh = $("#libsHero"); if (lh) lh.dataset.img = LIBS_IMG[LIBS.tab] || "library";
     const sub = { name: tab, rest: libsRest(p), q: p.q };
     switch (LIBS.tab) {
@@ -65,12 +73,13 @@ VIEWS.libs = {
   },
 };
 bindTabClicks("#libsTabs", (t) => { location.hash = `#/library/${t}`; });
+bindTabClicks("#libsPatTabs", (t) => { location.hash = `#/library/${t}`; });
 
 /* ───────── ⚙ المصنع ───────── */
 /* المصنع بيفتح على «المحلي» — هو اللي بيهمه أول شي (نماذجه على جهازه)، والاتصالات خيار متقدّم بعدين */
-const FAC = { tab: "local", sub: "models" };
+const FAC = { tab: "local", sub: "keys" };
 const FAC_TABS = ["local", "api", "extension"];
-const FAC_API_TABS = ["models", "keys", "media"];
+const FAC_API_TABS = ["keys", "media", "models"];      /* «كل المفاتيح» أول: مكان واحد لكل مفتاح */
 
 VIEWS.factory = {
   async enter(p) {
@@ -88,6 +97,15 @@ VIEWS.factory = {
 bindTabClicks("#facTabs", (t) => { location.hash = `#/factory/${t}`; });
 bindTabClicks("#facApiTabs", (t) => { location.hash = `#/factory/api/${t}`; });
 $("#facCheck").addEventListener("click", () => { METHODS.at = 0; renderMethods($("#facMethods"), true); });
+/* «صلّح» بجاهزية الاستوديو: بيوديك للتبويب وبيركّز عالخانة الناقصة */
+document.addEventListener("click", (e) => {
+  const b = e.target.closest ? e.target.closest("[data-fix]") : null;
+  if (!b) return;
+  e.preventDefault();
+  const [hash, sel] = b.dataset.fix.split("|");
+  if (location.hash !== hash) location.hash = hash;
+  if (sel) setTimeout(() => { const el = $(sel); if (el) { el.scrollIntoView({ block: "center" }); el.focus({ preventScroll: true }); } }, 350);
+});
 
 /* ───────── حالة طرق التوليد ───────── */
 const METHODS = { at: 0, data: null, pending: null };
@@ -114,15 +132,17 @@ async function methodStatus(force) {
     const apiKey = !!(health.data && health.data.has_api_key);
     const ttsOk = !!(tts.data && tts.data.current && tts.data.current.key_set);
     const imgOk = !!(img.data && img.data.current && img.data.current.key_set);
-    const apiProblems = [];
-    if (!nConn && !apiKey) apiProblems.push("ما في أي اتصال بمزوّد موديلات");
-    if (tts.data && !ttsOk) apiProblems.push("مفتاح الصوت ناقص");
-    if (img.data && !imgOk) apiProblems.push("مفتاح الصور ناقص");
+    /* كل مشكلة معها زر «صلّح»: التبويب | الخانة الناقصة */
+    const apiProblems = [], apiFixes = [];
+    if (!nConn && !apiKey) { apiProblems.push("ما في أي اتصال بمزوّد موديلات"); apiFixes.push("#/factory/api/keys|#apiKeyInput"); }
+    if (tts.data && !ttsOk) { apiProblems.push("مفتاح الصوت ناقص"); apiFixes.push("#/factory/api/media|#sTtsKey"); }
+    if (img.data && !imgOk) { apiProblems.push("مفتاح الصور ناقص"); apiFixes.push("#/factory/api/media|#sImgKey"); }
     const api = {
       key: "api", name: "API", hash: "#/factory/api",
       state: conns.err && health.err ? "idle" : (nConn || apiKey) ? (apiProblems.length ? "warn" : "ok") : "danger",
       line: conns.data || health.data ? `${nConn} اتصال${apiKey ? " · مفتاح Anthropic مضبوط" : ""}${hist(["api"])}${cost.api ? ` · صرفت $${cost.api}` : ""}` : "الحالة غير متاحة",
       problem: apiProblems[0] || "",
+      problems: apiProblems.map((t, i) => ({ t, fix: apiFixes[i] })),
     };
     /* مكتبة النماذج: نماذج المكتبة المفعّلة + موديلات التحريك */
     const models = mm.data ? (mm.data.models || []) : null;
@@ -157,6 +177,8 @@ async function methodStatus(force) {
 }
 
 const METHOD_ST = { ok: ["شغّالة", "ok"], warn: ["بدها انتباه", "warn"], danger: ["واقفة", "danger"], idle: ["غير معروف", "idle"] };
+/* «جاهزية الاستوديو»: سطر لكل طريقة + سطر لكل مشكلة بزر «صلّح» */
+const METHOD_FIX = { local: "#/factory/local", extension: "#/factory/extension" };
 async function renderMethods(box, force, compact) {
   if (!box) return;
   if (!box.innerHTML) box.innerHTML = `<p class="hint">جاري فحص الطرق…</p>`;
@@ -168,11 +190,18 @@ async function renderMethods(box, force, compact) {
     }).join(" ")}</div>`;
     return;
   }
-  box.innerHTML = `<div class="cards methods">${list.map((m) => {
+  const probs = (m) => (m.problems && m.problems.length ? m.problems : m.problem ? [{ t: m.problem, fix: METHOD_FIX[m.key] || m.hash }] : []);
+  const nBad = list.reduce((n, m) => n + probs(m).length, 0);
+  const sum = $("#facReadySum");
+  if (sum) sum.textContent = nBad ? `${nBad} ${nBad === 1 ? "شي ناقص" : "أشيا ناقصة"}` : "كل شي جاهز ✓";
+  box.innerHTML = `<ul class="ready-list">${list.map((m) => {
     const [t, k] = METHOD_ST[m.state] || METHOD_ST.idle;
-    return `<a class="card method" href="${m.hash}" data-state="${esc(m.state)}">
-      <div class="row between nowrap"><b>${esc(m.name)}</b><span class="tag ${k}">${esc(t)}</span></div>
-      <div class="lbl">${esc(m.line)}</div>
-      ${m.problem ? `<div class="hint">آخر مشكلة: ${esc(m.problem)}</div>` : ""}</a>`;
-  }).join("")}</div>`;
+    return `<li class="ready-row" data-state="${esc(m.state)}">
+      <span class="ready-star" aria-hidden="true"></span>
+      <div class="ready-main"><a href="${m.hash}"><b>${esc(m.name)}</b></a> <span class="tag ${k}">${esc(t)}</span>
+        <div class="hint">${esc(m.line)}</div>
+        ${probs(m).map((p) => `<div class="ready-prob"><span>${esc(p.t)}</span>
+          <button class="zk-btn zk-btn--secondary zk-btn--sm" type="button" data-fix="${esc(p.fix)}">صلّح ←</button></div>`).join("")}
+      </div></li>`;
+  }).join("")}</ul>`;
 }

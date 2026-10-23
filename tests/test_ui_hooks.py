@@ -68,7 +68,9 @@ SHELL = (STATIC / "shell.js").read_text(encoding="utf-8")
 
 def test_the_bank_is_a_library_tab_wired_through_the_shell():
     tabs = re.search(r'<div class="seg" id="libsTabs".*?</div>', HTML, re.S).group(0)
-    assert 'data-tab="hooks">بنك الهوكات</button>' in tabs and '<div id="libs-hooks" class="tabpane"></div>' in HTML
+    # بنك الهوكات قسم جوّا رف «الأنماط والهوكات» (libsPatTabs)
+    sub = re.search(r'<div class="seg seg-sm" id="libsPatTabs".*?</div>', HTML, re.S).group(0)
+    assert 'data-tab="hooks">بنك الهوكات</button>' in sub and '<div id="libs-hooks" class="tabpane"></div>' in HTML
     assert re.search(r'const LIBS_TABS = \[[^\]]*"hooks"', SHELL) and 'case "hooks": return VIEWS.hooksBank.enter();' in SHELL
     assert "VIEWS.hooksBank = { async enter() { await hkbLoad(); } };" in JS
 
