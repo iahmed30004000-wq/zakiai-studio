@@ -100,8 +100,8 @@ def download(repo: str, dest: Path, allow: list[str]) -> None:
         repo_id=repo,
         local_dir=str(dest),
         allow_patterns=allow,
-        trust_remote_code=False,          # ما مننفّذ كود من النت أبداً — أوزان وإعدادات بس
-        token=None,                        # توكن مخزّن مسبقاً (huggingface-cli login) بيمشي لحاله، مش هون
+        # ما مننفّذ كود من النت أبداً — أوزان وإعدادات بس (trust_remote_code=False مفهوم ضمناً: snapshot_download بس بينزّل ملفات، وما عنده هالوسيط)
+        token=None,                       # توكن مخزّن مسبقاً (huggingface-cli login) بيمشي لحاله، مش هون
         max_workers=4,
     )
 

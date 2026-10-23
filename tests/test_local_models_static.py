@@ -54,10 +54,24 @@ def test_licence_note_present(name, licence):
 def test_fetch_model_uses_allow_patterns_and_no_trust_remote_code():
     t = _text("fetch_model.py")
     assert "allow_patterns" in t
-    assert "trust_remote_code=False" in t              # ما مننفّذ كود من النت
+    assert "trust_remote_code=True" not in t           # ما مننفّذ كود من النت
     assert "MODELS_DIR" in t and "models" in t         # الأوزان تحت models/
     assert "token=None" in t or "huggingface-cli login" in t   # ما منخزّن توكن
     assert "snapshot_download" in t
+
+
+def test_fetch_model_snapshot_download_kwargs_exist():
+    # وسيط مش موجود بالدالة بيوقّع التنزيل بـ TypeError (صار مع trust_remote_code)
+    hub = pytest.importorskip("huggingface_hub")
+    import ast
+    import inspect
+    accepted = set(inspect.signature(hub.snapshot_download).parameters)
+    calls = [n for n in ast.walk(ast.parse(_text("fetch_model.py")))
+             if isinstance(n, ast.Call) and getattr(n.func, "id", getattr(n.func, "attr", "")) == "snapshot_download"]
+    assert calls, "fetch_model.py لازم ينادي snapshot_download"
+    for c in calls:
+        unknown = {k.arg for k in c.keywords if k.arg} - accepted
+        assert not unknown, f"وسائط مش موجودة بـ snapshot_download: {unknown}"
 
 
 def test_fetch_model_checks_disk_and_gpu():
