@@ -79,7 +79,9 @@ def already_done(dest: Path, min_files: int = 1, min_bytes: int = 0) -> bool:
     """إذا الأوزان منزّلة قبل هيك، منوقف بدون تنزيل (السكربتات كلها idempotent)."""
     if not dest.exists():
         return False
-    files = [f for f in dest.rglob("*") if f.is_file() and f.name not in (".gitattributes", "README.md")]
+    # .cache/ جوّا المجلد هو بيانات snapshot_download (metadata)، مش أوزان — ما بنعدّه
+    files = [f for f in dest.rglob("*") if f.is_file() and f.name not in (".gitattributes", "README.md")
+             and ".cache" not in f.relative_to(dest).parts]
     size = sum(f.stat().st_size for f in files)
     return len(files) >= min_files and size >= min_bytes
 
