@@ -133,9 +133,10 @@ def _auto_remove_background(im):
             return out.convert("RGBA")
 
 
-def set_angle(code: str, angle: str, data: bytes, auto_remove: bool = False) -> dict:
+def set_angle(code: str, angle: str, data: bytes, auto_remove: bool = False, clean_text: bool = False) -> dict:
     """PNG مفرَّغ بقناة شفافية (alpha). بنرفض اللي بلا شفافية لأن التركيب بيعتمد عليها —
-    إلا لو طُلب التفريغ التلقائي (auto_remove): بيقبل أي صورة (JPG/PNG/WebP) وبيفرّغ خلفيتها محلياً."""
+    إلا لو طُلب التفريغ التلقائي (auto_remove): بيقبل أي صورة (JPG/PNG/WebP) وبيفرّغ خلفيتها محلياً.
+    clean_text: بيشيل الكتابة الدخيلة (إعلان، علامة مائية) قبل التفريغ، وبيخلّي نص ملصق المنتج والكرتونة."""
     from PIL import Image
     if angle not in SLOTS:
         raise ProductRefError("زاوية غير معروفة")
@@ -149,6 +150,12 @@ def set_angle(code: str, angle: str, data: bytes, auto_remove: bool = False) -> 
     except Exception:
         raise ProductRefError("الملف مش صورة صالحة")
     has_alpha = im.format == "PNG" and "A" in im.getbands() and im.convert("RGBA").getchannel("A").getextrema()[0] < 255
+    fmt, cleaned = im.format, 0
+    if clean_text:
+        import textclean
+        ref0 = load(code)
+        im, cleaned = textclean.clean(im, keep_text=f"{ref0.get('label_text') or ''} {ref0.get('box_text') or ''}")
+        im.format = fmt                                   # الفحوص تحت بتعتمد على نوع الملف الأصلي
     if auto_remove and not has_alpha:
         im = _auto_remove_background(im)
     elif im.format != "PNG":
@@ -164,6 +171,8 @@ def set_angle(code: str, angle: str, data: bytes, auto_remove: bool = False) -> 
     ref["angles"][angle] = f"angles/{angle}.png"
     box = im.getchannel("A").point(lambda v: 255 if v > 16 else 0).getbbox()        # إطار المنتج الفعلي (بدون الشفاف)
     ref.setdefault("meta", {})[angle] = {"w": box[2] - box[0], "h": box[3] - box[1]} if box else {}
+    if clean_text:
+        ref["meta"][angle]["text_removed"] = cleaned
     return _save(ref)
 
 

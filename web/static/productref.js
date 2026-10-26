@@ -61,6 +61,7 @@ async function prMountSheet(holder, code) {
     <div class="panel"><h3>الوضعيات الثابتة (صورة وجنبها برومبتها)</h3>
       <p class="hint">لقطات المنتج القريبة بتركّب فيها صورة «أمام» الحقيقية بالحجم المحسوب. الصورة لازم تكون بخلفية شفافة: إما ترفع PNG مفرَّغ، أو تفعّل التفريغ التلقائي وبنفرّغ خلفيتها على جهازك (بلا إنترنت). بنفحص نسبة كل صورة مقابل أبعاد المنتج الحقيقية. الكرتونة (العلبة لحالها وجنب المنتج) اختيارية وما بتأثر على «كامل».</p>
       <label class="check"><input type="checkbox" data-pr="auto" checked> <span>فرّغ الخلفية تلقائياً بالذكاء الاصطناعي (بتقبل JPG وPNG عادي)</span></label>
+      <label class="check"><input type="checkbox" data-pr="clean"> <span>شيل الكتابة والعلامة المائية (متل «HOT SALE»). نص ملصق المنتج والكرتونة بيضل.</span></label>
       <p class="hint">أول تفريغ بعد تشغيل النظام بياخد حوالي دقيقتين لأنو النموذج بيتحمّل، وبعدها أقل من ثانيتين.</p>
       <div data-pr="upstatus" class="status"></div>
       <div data-pr="slots"></div></div>`;
@@ -81,9 +82,14 @@ async function prMountSheet(holder, code) {
     fileBase: (slot) => `${d.code}_${slot}`,
     onUpload: async (slot, file) => {
       const fd = new FormData(); fd.append("file", file);
-      const auto = hole("auto").checked, st = hole("upstatus");
-      if (auto) setStatus(st, "عم يفرّغ الخلفية على جهازك… (أول مرة ممكن تاخد دقيقتين)");
-      try { await api(`${base}/angle/${enc(slot)}${auto ? "?auto=1" : ""}`, { method: "POST", body: fd }); toast(auto ? "انرفعت وانفرّغت خلفيتها" : "انرفعت", "ok"); setStatus(st, ""); }
+      const auto = hole("auto").checked, clean = hole("clean").checked, st = hole("upstatus");
+      if (auto || clean) setStatus(st, `عم ${clean ? "يشيل الكتابة" : ""}${auto && clean ? " و" : ""}${auto ? "يفرّغ الخلفية" : ""}… (أول مرة ممكن تاخد دقيقتين)`);
+      try {
+        const r = await api(`${base}/angle/${enc(slot)}${auto ? "?auto=1" : ""}${clean ? (auto ? "&" : "?") + "clean=1" : ""}`, { method: "POST", body: fd });
+        const n = clean ? (((r.meta || {})[slot] || {}).text_removed || 0) : 0;
+        toast(["انرفعت", auto ? "وانفرّغت خلفيتها" : "", clean ? (n ? `وانشال ${n} كتابة` : "وما لقينا كتابة دخيلة") : ""].filter(Boolean).join(" "), "ok");
+        setStatus(st, "");
+      }
       catch (e) { setStatus(st, e.message, "err"); throw e; }
       await redo();
     },
