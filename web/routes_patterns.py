@@ -67,6 +67,22 @@ def excel_template() -> Response:
                     headers={"Content-Disposition": 'attachment; filename="zakiai-patterns-template.xlsx"'})
 
 
+@router.get("/bundle.zip")
+def bundle_export() -> Response:
+    """كل الأنماط النشطة بملف مضغوط واحد — لنقل المكتبة من جهاز لجهاز (مثلاً لموقع السيرفر)."""
+    import pattern_store
+    return Response(pattern_store.export_bundle(), media_type="application/zip",
+                    headers={"Content-Disposition": 'attachment; filename="zakiai-patterns.zip"'})
+
+
+@router.post("/bundle")
+async def bundle_import(file: UploadFile = File(...)) -> dict:
+    """بيضيف الأنماط اللي مش موجودة من ملف مضغوط صدّره استوديو تاني. الموجود ما بينلمس."""
+    import pattern_store
+    data = await file.read(pattern_store.BUNDLE_MAX_BYTES + 1)
+    return _guard(pattern_store.import_bundle, data, by=_actor())
+
+
 @router.post("/import")
 async def excel_preview(file: UploadFile = File(...)) -> dict:
     """يقرأ ملف Excel ويرجّع معاينة لكل سطر (صح/غلط وليش/مشابه). ما بيكتب شي بالمكتبة."""

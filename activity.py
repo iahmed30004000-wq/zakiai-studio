@@ -162,6 +162,7 @@ _R = [
     ("POST", r"/api/pattern-lib", "create", "إضافة نمط جديد"),
     ("POST", r"/api/pattern-lib/import", "upload", "رفع ملف Excel لاستيراد أنماط (معاينة)"),
     ("POST", r"/api/pattern-lib/import/commit", "create", "استيراد أنماط من Excel"),
+    ("POST", r"/api/pattern-lib/bundle", "create", "استيراد مكتبة أنماط من ملف مضغوط"),
     ("POST", r"/api/pattern-lib/translate", "generate", "ترجمة الأنماط للعربي"),
     ("PUT", r"/api/pattern-lib/(?P<pid>[^/]+)", "edit", "تعديل النمط {pid}"),
     ("POST", r"/api/pattern-lib/(?P<pid>[^/]+)/archive", "delete", "أرشفة النمط {pid}"),
