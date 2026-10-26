@@ -57,6 +57,9 @@ STRENGTHS = {"faces": "وجوه", "product": "منتج", "camera_motion": "حر�
 MAX_PROMPT = 2000
 MAX_DESC = 600
 STRETCH_TOLERANCE = 0.15
+# المشروع الحر بس (اقتراح البحث 3): مقطع أقصر لحد النص بيتمدّد بإطارات مخترعة بالنص (minterpolate)
+# بدل الفشل وإعادة توليد مدفوعة. المهمة الموجّهة قواعدها ثابتة (١٥٪ وبس).
+SMOOTH_STRETCH_MAX = 2.0
 DURATION_EPS_MS = 60
 SECTIONS = ["قفل المرجع", "الأجواء", "الواقعية الجسدية", "الكاميرا", "الفيزياء", "المزاج", "الممنوع"]
 _CAMERA_RX = re.compile(r"كاميرا|تقريب|تبعيد|بانوراما|دفع|سحب|zoom|pan|dolly|tilt", re.I)
@@ -429,8 +432,9 @@ def probe_duration(path: Path) -> float:
         return 0.0
 
 
-def fit_duration(src: Path, dest: Path, target_ms: int) -> dict:
-    """مدة الحركة = مدة اللقطة بالضبط: قص لو أطول، تمديد لو أقصر بحدود ١٥٪، وإلا فشل."""
+def fit_duration(src: Path, dest: Path, target_ms: int, smooth: bool = False) -> dict:
+    """مدة الحركة = مدة اللقطة بالضبط: قص لو أطول، تمديد لو أقصر بحدود ١٥٪، وإلا فشل.
+    smooth=True (المشروع الحر): الأقصر لحد النص بيتمدّد بإطارات مخترعة (how=interpolated) بدل الفشل."""
     d = probe_duration(src)
     if d <= 0:
         raise TechnicalError("الموديل ما رجّع فيديو صالح", "bad_output")
@@ -443,6 +447,13 @@ def fit_duration(src: Path, dest: Path, target_ms: int) -> dict:
         cmd = ["ffmpeg", "-y", "-i", str(src), "-filter:v", f"setpts={t / d:.6f}*PTS", "-t", f"{t:.3f}", "-an",
                "-r", "30", "-c:v", "libx264", "-pix_fmt", "yuv420p", str(dest)]
         how = "stretched"
+    elif smooth and d >= t / SMOOTH_STRETCH_MAX:
+        cmd = ["ffmpeg", "-y", "-i", str(src), "-filter:v",
+               # إطارات مخترعة أول (60/ث)، بعدين إبطاء، وتثبيت آخر إطار لنص ثانية عشان -t يقص على المدة بالضبط
+               f"minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts={t / d:.6f}*PTS,fps=30,"
+               "tpad=stop_mode=clone:stop_duration=0.5",
+               "-t", f"{t:.3f}", "-an", "-r", "30", "-c:v", "libx264", "-pix_fmt", "yuv420p", str(dest)]
+        how = "interpolated"
     else:
         raise TechnicalError(f"الموديل أنتج {d:.1f}ث والمطلوب {t:.1f}ث — أقصر من الحد المسموح للتمديد ({round(STRETCH_TOLERANCE * 100)}٪)", "bad_output")
     r = subprocess.run(cmd, capture_output=True)
@@ -467,6 +478,10 @@ def abs_of(stem: str, rel: str) -> Path | None:
     base = (Path(config.LIBRARY_DIR) / "timelines" / stem).resolve()
     p = (base / rel).resolve()
     return p if base in p.parents and p.exists() else None
+
+
+def _is_free(stem: str) -> bool:
+    return (timeline.load(stem) or {}).get("mode") == "free"
 
 
 def _load(stem: str) -> dict:
@@ -875,7 +890,7 @@ def _produce(m: dict, *, img: Path, prompt: str, pf: Path, dur_ms: int, w: int, 
     if not raw.exists():
         raise TechnicalError("الموديل ما كتب ملف الخرج", "bad_output")
     final = raw.with_name(raw.name.replace("_raw", ""))
-    fit = fit_duration(raw, final, dur_ms)
+    fit = fit_duration(raw, final, dur_ms, smooth=_is_free(stem))
     if api_info:
         fit["cost_usd"] = api_info.get("cost_usd")
         fit["billed_sec"] = api_info.get("billed_sec")
@@ -1167,7 +1182,7 @@ def add_upload(script_path, shot_id: str, raw: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     final = out_dir / f"{shot_id}_{int(time.time() * 1000)}_up.mp4"
     try:
-        fit = fit_duration(Path(raw), final, dur_ms)
+        fit = fit_duration(Path(raw), final, dur_ms, smooth=tl.get("mode") == "free")
     except MotionError as e:
         final.unlink(missing_ok=True)
         raise MotionError(str(e).replace("الموديل أنتج", "الفيديو اللي رفعته مدته").replace("الموديل ما رجّع فيديو صالح", "الملف مش فيديو صالح"))
