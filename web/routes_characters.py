@@ -289,12 +289,12 @@ def put_product_ref(code: str, payload: dict) -> dict:
 
 
 @router.post("/product-refs/{code}/angle/{angle}")
-async def upload_product_angle(code: str, angle: str, file: UploadFile = File(...), auto: bool = False) -> dict:
+async def upload_product_angle(code: str, angle: str, file: UploadFile = File(...), auto: bool = False, clean: bool = False) -> dict:
     import product_ref
     from starlette.concurrency import run_in_threadpool
     try:
-        # auto=1: تفريغ الخلفية بالذكاء محلياً (ثقيل شوي، فبنشغّله بخيط منفصل عشان ما نعلّق الخادم)
-        ref = await run_in_threadpool(product_ref.set_angle, code, angle, await file.read(), auto)
+        # auto=1: تفريغ الخلفية بالذكاء محلياً · clean=1: شيل الكتابة الدخيلة (ثقيلين شوي، فبخيط منفصل عشان ما نعلّق الخادم)
+        ref = await run_in_threadpool(product_ref.set_angle, code, angle, await file.read(), auto, clean)
     except product_ref.ProductRefError as e:
         raise HTTPException(400, str(e))
     return {**ref, "missing": product_ref.missing(ref)}
