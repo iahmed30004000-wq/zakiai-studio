@@ -435,7 +435,35 @@ function peImportPreview(d) {
   });
 }
 
+/* ═════════ نقل المكتبة: ملف مضغوط واحد بين جهازك والموقع ═════════ */
+function peBundleOpen() {
+  openModal(`<h2>انقل مكتبة الأنماط</h2>
+    <p class="hint">من الجهاز اللي عليه الأنماط: نزّل الملف. وعلى الجهاز التاني: ارفعه هون. الأنماط الموجودة ما بتنلمس، وبينضاف الجديد بس.</p>
+    <div class="row"><a class="btn ghost" href="/api/pattern-lib/bundle.zip" download>صدّر المكتبة</a></div>
+    <div class="row" style="margin-top:10px">
+      <input type="file" id="peBundleFile" accept=".zip" aria-label="ملف المكتبة المضغوط">
+      <button type="button" class="btn" id="peBundleUp" disabled>استورد</button></div>
+    <div id="peBundleOut" class="status"></div>`);
+  const file = $("#peBundleFile"), up = $("#peBundleUp"), st = $("#peBundleOut");
+  file.addEventListener("change", () => { up.disabled = !file.files.length; });
+  up.addEventListener("click", async () => {
+    if (!file.files.length) return;
+    up.disabled = true;
+    setStatus(st, "جاري الاستيراد…");
+    try {
+      const fd = new FormData();
+      fd.append("file", file.files[0]);
+      const r = await api("/api/pattern-lib/bundle", { method: "POST", body: fd });
+      const bad = (r.bad || []).length, skip = (r.skipped || []).length;
+      setStatus(st, `انضاف ${r.added.length} نمط` + (skip ? `، و${skip} موجودين أصلاً` : "") + (bad ? `، وانرفض ${bad}` : "") + ".", bad ? "warn" : "ok");
+      if (r.added.length) { toast(`انضاف ${r.added.length} نمط للمكتبة`, "ok"); LIB.loaded = false; await loadPatterns(); peRenderTranslation(); }
+    } catch (e) { setStatus(st, e.message, "err"); }
+    up.disabled = false;
+  });
+}
+
 if ($("#peImportBtn")) $("#peImportBtn").addEventListener("click", peImportOpen);
+if ($("#peBundleBtn")) $("#peBundleBtn").addEventListener("click", peBundleOpen);
 if ($("#peArchBtn")) $("#peArchBtn").addEventListener("click", () => {
   const panel = $("#peArchPanel");
   if (!panel.hidden) { panel.hidden = true; return; }

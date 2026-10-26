@@ -543,6 +543,7 @@ async function mockApi(url, opts) {
     }
     if (path === "/api/pattern-lib/archived") return mockFile("pattern_archived");
     if (path === "/api/pattern-lib/template.xlsx") return NOMOCK;
+    if (path === "/api/pattern-lib/bundle.zip") return NOMOCK;
     if ((m = /^\/api\/pattern-lib\/([^/]+)$/.exec(path))) {
       const all = await mockFile("pattern_view");
       const id = decodeURIComponent(m[1]);
@@ -742,6 +743,7 @@ async function mockApi(url, opts) {
   if (/^\/api\/pattern-lib\/[^/]+\/(archive|restore)$/.test(path)) return { ok: true, refs: { count: 0, names: [] } };
   if (path === "/api/pattern-lib/translate") { mockState.trStarted = true; return { ok: true, started: true, running: true }; }
   if (path === "/api/pattern-lib/import" && method === "POST") return mockFile("pattern_import_preview");
+  if (path === "/api/pattern-lib/bundle" && method === "POST") return mockFile("pattern_bundle_import");
   if (path === "/api/pattern-lib/import/commit") return { created: [{ row: 2, id: "excel_mock", name: "كشف المكوّن السري" }], failed: [], skipped: 2 };
   if ((m = /^\/api\/products\/([^/]+)$/.exec(path)) && method === "PUT") {
     const f = decodeURIComponent(m[1]);

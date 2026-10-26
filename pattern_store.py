@@ -365,6 +365,85 @@ def apply_translation(pid: str, translations: dict, *, by: str = "ai") -> int:
     return n
 
 
+# ═════════════════ نقل المكتبة (ملف مضغوط) ═════════════════
+# تصدير الأنماط النشطة بملف واحد، واستيرادها على جهاز تاني (مثلاً من جهاز المالك للموقع على السيرفر).
+# الملف بيحمل الأنماط كاملة متل ما هي (مش من حقول الفورم)، فما بيضيع شي من تشريحها.
+BUNDLE_MAX_BYTES = 50 * 1024 * 1024
+BUNDLE_MAX_FILES = 2000
+_BUNDLE_I18N = "pattern_i18n_state.json"
+
+
+def export_bundle(directory=None) -> bytes:
+    """zip فيه patterns/<id>.pattern.json لكل نمط نشط (+ حالة الترجمة إذا موجودة). الأرشيف ما بيطلع."""
+    import io
+    import zipfile
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for pid in list_ids(directory):
+            z.write(_file(pid, directory), f"patterns/{pid}.pattern.json")
+        i18n = _dir(directory).parent / _BUNDLE_I18N
+        if i18n.exists():
+            z.write(i18n, _BUNDLE_I18N)
+    return buf.getvalue()
+
+
+def import_bundle(data: bytes, *, by: str = "owner", directory=None) -> dict:
+    """بيضيف الأنماط اللي مش موجودة (لا نشطة ولا بالأرشيف). الموجود ما بينلمس، والملف الغلط بينرفض لحاله.
+    بيرجّع {added: [ids], skipped: [ids], bad: [{name, error}]}."""
+    import io
+    import zipfile
+    if len(data) > BUNDLE_MAX_BYTES:
+        raise PatternError("الملف أكبر من 50 ميغا")
+    try:
+        z = zipfile.ZipFile(io.BytesIO(data))
+    except zipfile.BadZipFile:
+        raise PatternError("هاد مش ملف مكتبة مضغوط — صدّره من «صدّر المكتبة» بالاستوديو التاني")
+    names = [n for n in z.namelist() if not n.endswith("/")]
+    if len(names) > BUNDLE_MAX_FILES:
+        raise PatternError("الملف فيه ملفات أكتر من اللازم")
+    added, skipped, bad, i18n = [], [], [], None
+    with locked(directory=directory):
+        for name in names:
+            base = name.rsplit("/", 1)[-1]
+            if name.startswith("/") or "\\" in name or ".." in name.split("/"):
+                bad.append({"name": name, "error": "مسار غير مسموح"})
+                continue
+            if base == _BUNDLE_I18N:
+                i18n = name
+                continue
+            if not base.endswith(".pattern.json"):
+                bad.append({"name": base, "error": "مش ملف نمط"})
+                continue
+            pid = base[: -len(".pattern.json")]
+            if not ID_RX.match(pid):                     # اسم غريب (مسار، رموز): ما منكتبه أبداً
+                bad.append({"name": base, "error": "اسم ملف غير صالح"})
+                continue
+            if _file(pid, directory).exists() or _afile(pid, directory).exists():
+                skipped.append(pid)
+                continue
+            try:
+                p = json.loads(z.read(name).decode("utf-8-sig"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                bad.append({"name": base, "error": "مش JSON صالح"})
+                continue
+            if not isinstance(p, dict):
+                bad.append({"name": base, "error": "مش نمط"})
+                continue
+            _record(p, "import_bundle", by)
+            write_atomic(_file(pid, directory), p)
+            added.append(pid)
+        # حالة الترجمة: بس إذا ما في وحدة محلية (ما منمسح تقدّم ترجمة موجود)
+        target = _dir(directory).parent / _BUNDLE_I18N
+        if i18n and added and not target.exists():
+            try:
+                write_atomic(target, json.loads(z.read(i18n).decode("utf-8-sig")))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                pass
+    if added:
+        _recluster()
+    return {"added": added, "skipped": skipped, "bad": bad}
+
+
 def _recluster() -> None:
     import clusters
     try:
