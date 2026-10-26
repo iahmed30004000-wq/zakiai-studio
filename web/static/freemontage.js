@@ -78,7 +78,9 @@ function html(S) {
           <select id="fmMusic" data-fm-f="music"><option value="">بلا موسيقى</option>${optionsOf(S, amb && amb.track_id)}</select></div>
         <div class="field"><label for="fmDb">المستوى: <bdi dir="ltr"><b id="fmDbV" class="num">${Number(amb ? amb.duck_db : MUSIC_DB.def)}</b> dB</bdi></label>
           <input id="fmDb" data-fm-f="db" type="range" min="${MUSIC_DB.min}" max="${MUSIC_DB.max}" step="1" value="${Number(amb ? amb.duck_db : MUSIC_DB.def)}"></div>
+        <label class="check"><input type="checkbox" data-fm-f="beat"${amb && amb.beat_snap ? " checked" : ""}> قص اللقطات على إيقاع الموسيقى</label>
       </div>
+      <p class="hint">بيزيح تبديل اللقطات جوّا كل مشهد لأقرب ضربة (لحد ربع ثانية). حدود المشاهد والصوت ما بتتغيّر.</p>
       ${amb && amb.track_id && !S.sounds.some((t) => t.id === amb.track_id) ? `<p class="status warn">الموسيقى المختارة مش معتمدة هلأ — اعتمدها من «الأصوات» أو اختار غيرها، وإلا بيرفض التصدير.</p>` : ""}
       <audio id="fmAudio" controls preload="none"${amb && amb.track_id && !MOCK ? ` src="/api/ahat/${enc(amb.track_id)}/audio"` : ""}${amb && amb.track_id ? "" : " hidden"}></audio>
       <p class="hint">الموسيقى بتنخفض لحالها تحت الصوت، وبتتكرر لو أقصر من الفيديو.</p>` : noSounds}
@@ -111,7 +113,8 @@ function payloadOf(S) {
   const h = S.host, len = S.ctx.meta().length_ms || 0, u = S.ctx.util;
   const sel = $("#fmMusic", h);
   const track = sel ? sel.value : "";
-  const music = track ? { track_id: track, level_db: Number($("#fmDb", h).value) } : null;
+  const beat = $('[data-fm-f="beat"]', h);
+  const music = track ? { track_id: track, level_db: Number($("#fmDb", h).value), beat_snap: !!(beat && beat.checked) } : null;
   let bad = null;
   const sfx = $$(".free-sfx", h).map((row) => {
     const at = row.querySelector('[data-fm-f="at"]'), g = row.querySelector('[data-fm-f="gain"]');
