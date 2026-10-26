@@ -178,7 +178,7 @@ PROVIDER_PRESETS = {
         "label": "Ollama — محلي على جهازك", "region": "بوابات",
         "kind": "openai", "base_url": "http://localhost:11434/v1",
         "env_key": "", "vision": True,
-        "models": ["qwen2.5vl", "llama3.2-vision"],
+        "models": ["qwen3.5:4b", "qwen2.5:7b", "qwen3:4b-instruct-2507-q4_K_M", "qwen2.5vl"],
         "note": "بدون مفتاح — بس لازم Ollama شغال محلياً",
     },
     "custom": {
@@ -444,6 +444,10 @@ def _call_openai(cfg: dict, system: str, blocks: list[dict], max_tokens: int) ->
             {"role": "user", "content": _to_openai(blocks)},
         ],
     }
+    # نماذج Ollama الحديثة (qwen3.5…) بتفكّر قبل الجواب وبتصرف كل max_tokens بالتفكير، فبيرجع الرد فاضي.
+    # منطفي التفكير: الجواب بيطلع بثواني (انجرّب 26/10: 3 ثواني بدل رد فاضي).
+    if cfg["provider"] == "ollama" or ":11434" in cfg["base_url"]:
+        payload["reasoning_effort"] = "none"
     headers = {"Content-Type": "application/json"}
     if cfg["api_key"]:
         headers["Authorization"] = f"Bearer {cfg['api_key']}"
