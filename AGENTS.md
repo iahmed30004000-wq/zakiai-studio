@@ -2,6 +2,8 @@
 
 > للمالك (عربي): هذا الملف بيقرأه Hermes لحاله لما تشغّله جوّا مجلد المشروع. فيه كل شي لازم GLM يعرفه ليكمّل بلا ما يخرّب: شو المشروع، قواعدك، شو خلص، وشو الجاي. التفاصيل الأعمق بـ `docs/` وبالوثائق المذكورة بآخر الملف.
 
+> **Agents: before any task, read `docs/HANDOFF_GLM.md` completely (state, procedures, checklists, forbidden actions).**
+
 ## 1. What this is
 
 Arabic (Levantine) COD video-ad studio. It learns reusable ad patterns from winning videos, writes 7-scene scripts (45–50 s), produces voice, images and motion, edits and exports 9:16 ads, and tracks performance. Used by a small team (3 people) on a Windows PC; heavy open-weights models run later on ONE Linux GPU server in Docker.
@@ -25,7 +27,7 @@ The project continues the existing codebase. Do not rewrite or restructure it.
 ## 3. Hard rules
 
 Git and private data
-- Commit or push only when the owner asks ("ارفع"). Repo: https://github.com/iahmed30004000-wq/zakiai-studio (PUBLIC since 26 Oct; the old MKory18/zakiai-studio is private and no longer the main one). `main` is protected: never push to it directly. Push a branch, open a pull request to `main`, and turn on auto-merge (`gh pr merge --auto --merge`). It merges by itself once the `image` check (build + smoke test) passes. Every merge to `main` builds the public image `ghcr.io/iahmed30004000-wq/zakiai-studio` and Coolify deploys it to https://studio.zakiai.io automatically.
+- Commit or push only when the owner asks ("ارفع"). His standing order of 26 Oct (section 2) counts as a permanent «ارفع» for every finished and verified task. Repo: https://github.com/iahmed30004000-wq/zakiai-studio (PUBLIC since 26 Oct; the old MKory18/zakiai-studio is private and no longer the main one). `main` is protected: never push to it directly. Push a branch, open a pull request to `main`, and turn on auto-merge (`gh pr merge --auto --merge`). It merges by itself once the `image` check (build + smoke test) passes. Every merge to `main` builds the public image `ghcr.io/iahmed30004000-wq/zakiai-studio` and Coolify deploys it to https://studio.zakiai.io automatically.
 - Before every commit: `git add -A`, then `python tools/secret_scan.py` must print "نظيف". Never stage anything that `.gitignore` excludes: `settings.json`, `.env*`, `library/`, `products/*` (except `_template.json`), `models/*`, `secrets/`, `third_party/*`, `_handoff/`, media files. That is the owner's private data; the encrypted backup (`backup.py`) is where it belongs. If he asks to upload data, ask first.
 - Secret values never appear in code, logs, tests, commits or chat. Tokens are referenced by secret NAME only (`secrets_store.py`: OS keyring, or an encrypted vault when `VP_SECRETS_KEY` is set on Linux).
 - Outgoing calls to user-configured services go through `net_allow.py`: http only, loopback or docker-internal names, explicit port, no redirects, no proxies from the environment. Fixed external services written in code (Google Drive) use `net_allow.fixed_base`: https to the listed hosts only.
@@ -114,7 +116,8 @@ Decisions already made (do not reopen)
 
 ## 8. Where to read more
 
-- `docs/HANDOFF_GLM_AR.md`: the owner's full handoff report of 27 Oct (what was asked, what was done, what is left), in Arabic. Read it first.
+- `docs/HANDOFF_GLM.md`: the full handoff of 27 Oct: state, what is left, step-by-step procedures, checklists, recipes and forbidden actions. MANDATORY reading right after this file, before any task.
+- `docs/agent_skills/zakiai-studio-art-prompts/`: the art-prompt skill (pictures for studio screens), copied from the owner's PC.
 - `docs/PROJECT_STATE_AR.md`: state and decisions per area, in Arabic.
 - `docs/RESEARCH_FEATURES_AR.md`: the research report (top 10 feature ideas with open weights) and `docs/PLAN_google_drive_AR.md`.
 - `docs/PLAN_free_project_model_library_AR.md`: the approved plan of the free project and model library, with notes on how it was built.

@@ -1,0 +1,177 @@
+{
+  "title": "برومبتات رسومات استوديو المحتوى (Zakiai Systems) — الدفعة الجديدة 23/10",
+  "intro": [
+    "كيف تشتغل: افتح محادثة جديدة وحدة بـ ChatGPT لكل الدفعة. الصق برومبت الأسلوب (رقم 1) أول شي وانتظر لحتى يرد «ready» بس، بعدين الصق باقي البرومبتات واحد واحد بنفس المحادثة، فبتطلع كل الصور بنفس الأسلوب.",
+    "مثال: بتلصق برومبت الأسلوب، بعدين برومبت «صفحة الدخول»، بتحفظ الصورة باسم login-bg.jpg، وبتكمّل باللي بعده. الدفعة 13 صورة: 5 مطلوبة من جديد من 22/10 (الدخول + 4 حالات فاضية) و8 جديدة.",
+    "كل صورة احفظها بالاسم المكتوب تحتها بالضبط، وحطّها بالمجلد: C:\\Users\\LOQ\\Pictures\\المشروع\\web\\static\\img\\art\\ — وبس تخلص ابعتلي «الصور جاهزة» وأنا بفحصها وبركّبها.",
+    "إذا رجعت الصورة بخلفية بدل الشفافة ابعتها متل ما هي (الخلفية بتنشال بالأداة). بس إذا طلعت مربّعات شطرنج رمادي وأبيض مرسومة، اطلب منه يعيدها. ممنوع نص أو حروف أو أرقام أو وجوه أو شعارات داخل الصور (النصوص كلها بتنحط بالكود).",
+    "بدون الصور الموقع بيشتغل ببدائل مرسومة بالكود (نجمة خافتة)، فما في استعجال."
+  ],
+  "items": [
+    {
+      "id": "style",
+      "title": "1. برومبت الأسلوب (أول واحد، بمحادثة جديدة)",
+      "file": "—",
+      "size": "—",
+      "pack": "style",
+      "note": "بيثبّت الأسلوب والألوان لكل الصور اللي بعدو. ابعته لحاله وانتظر «ready».",
+      "prompt": "You are my art director for a Middle-Eastern \"night bazaar\" game-like UI with an Islamic geometric look. Keep ONE consistent visual style for every image I ask for in this chat:\n- Flat vector illustration like a premium mobile-game icon or sticker: bold clean shapes, thick 3px-style outlines in deep indigo (#120a2a), warm inner glow on gold and lanterns, subtle grain, no photorealism, no 3D render.\n- Palette only: deep navy night #0d2140, night indigo #120a2a, royal purple #3a1440, sunset orange #ff7a45, sunset pink #ff4f9a, gold #f5c542, lapis blue #1f4fbf, turquoise #1fd1a5, warm cream #f6efe1.\n- Motifs: eight-pointed Islamic star (khatam), girih tiles, mihrab arches, muqarnas, brass lanterns, crescent, arabesque, night-bazaar carpets and fabrics.\n- Mood: cinematic, adventurous, premium, like a mission screen in an open-world game, but respectful and Islamic-art inspired.\n- People: none unless I ask; then only dark silhouettes or hands, never a face.\n- ABSOLUTELY NO text, letters, numbers or calligraphy inside any image, not even on books, scrolls, screens or signs (use plain lines or geometric patterns instead). No logos, no real brands, no watermark.\n- Unless I say otherwise: 4:3 landscape, real transparent background PNG (never draw a grey-and-white checkerboard), centered subject, generous empty margin, still readable when shrunk to 200 px wide.\nReply \"ready\" only."
+    },
+    {
+      "id": "login-bg",
+      "title": "صفحة الدخول — خلفية",
+      "file": "login-bg.jpg",
+      "size": "1920×1080 (16:9، بدون شفافية)",
+      "pack": "new",
+      "batch": "again",
+      "status": "requested again 23/10",
+      "where": "صفحة تسجيل الدخول (خلف بطاقة الدخول)",
+      "note": "خلفية صفحة الدخول: سوق ليلي بفوانيس بيوصل لبوابة. البوابة بالنص بالضبط، عشان عالجوال بينقص الطرفين وبتضل البوابة بايّنة.",
+      "prompt": "Wide cinematic key-art for a login screen, 16:9 landscape (1920x1080), fully opaque, not transparent: a lantern-lit alley of a night bazaar leading straight to a grand ornate mihrab-arch gate with a muqarnas hood and a glowing eight-pointed star above it, under a night-to-sunset sky (deep navy at the top, orange and pink at the horizon), domes and minarets in silhouette, floating lanterns, a geometric tile floor with a faint reflection. Portrait-safe composition: on phones only the central vertical strip (about one third of the width) is shown, so the gate, the star above it and the vanishing point of the alley sit exactly on the vertical center line, and the left and right thirds are only a continuation of stalls and lanterns that can be cropped away. Keep the middle of the image (center 40% of the width, from 35% to 75% of the height) calm and darker so a login card can sit on it. No text, no letters, no signs with writing, no people. Do NOT draw a checkerboard or any transparency grid."
+    },
+    {
+      "id": "empty-patterns",
+      "title": "الأنماط — الحالة الفاضية",
+      "file": "empty-patterns.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "again",
+      "status": "requested again 23/10",
+      "where": "المكتبات ← الأنماط، لما ما في أي نمط",
+      "note": "شاشة «ما في أنماط بعد» بمكتبة الأنماط.",
+      "prompt": "Empty-state illustration \"no patterns yet\": a wooden drafting table with a blank unrolled blueprint sheet that shows only an empty grid of geometric tiles, a golden ruler and compass lying beside it, and one glowing eight-pointed star floating above the sheet like a template waiting to be filled. A small lantern hangs at the corner. No people, no writing on the sheet. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "empty-hooks",
+      "title": "بنك الهوكات — الحالة الفاضية",
+      "file": "empty-hooks.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "again",
+      "status": "requested again 23/10",
+      "where": "المكتبات ← بنك الهوكات، لما البنك فاضي",
+      "note": "الهوك = افتتاحية الإعلان (أول ثواني). الرسمة: خُطّاف ذهبي بشكل نبات عربسك معلّق من خيط فانوس.",
+      "prompt": "Empty-state illustration \"no hooks yet\": a golden fishing hook shaped like a curling arabesque vine hanging from a thin string attached to a glowing lantern, hooking nothing yet; below it an empty small market-stall counter with a few floating sparkles and a tiny crescent. No people. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "empty-moves",
+      "title": "الحركات السينمائية — الحالة الفاضية",
+      "file": "empty-moves.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "again",
+      "status": "requested again 23/10",
+      "where": "المكتبات ← الحركات السينمائية (لما ما في وصفات بقسم) ومحطة التحريك",
+      "note": "الحركات السينمائية = وصفات حركة كاميرا. الرسمة: كاميرا سينما قديمة على حامل ذهبي ومسار ضوء ذهبي منحني حولها.",
+      "prompt": "Empty-state illustration \"no cinematic moves yet\": a vintage film camera on a golden tripod, with a long sweeping curved path of golden light looping around it like a camera move, small eight-pointed stars along the path, and a tiny flying carpet at the end of the path. No people. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "empty-activity",
+      "title": "النشاط — الحالة الفاضية",
+      "file": "empty-activity.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "again",
+      "status": "requested again 23/10",
+      "where": "الإعدادات ← النشاط، لما ما في أحداث بالفلاتر",
+      "note": "سجل مين عمل شو ومتى. الرسمة: دفتر مفتوح بصفحات فاضية وريشة وساعة رملية.",
+      "prompt": "Empty-state illustration \"no activity yet\": an open ledger book with completely empty pages (only a faint grid of geometric tiles, no writing, no numbers), a golden feather pen resting on it, an hourglass of golden sand beside the book, and a small lantern glowing behind. No people. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "new-guided",
+      "title": "بطاقة «مهمة موجّهة»",
+      "file": "new-guided.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "زر «＋ جديد» ← بطاقة «مهمة موجّهة»",
+      "note": "بطاقة المهمة الموجّهة: طريق من 7 نجوم (المحطات السبعة) بيوصل لإطار فيديو طولي خالص.",
+      "prompt": "Card illustration \"guided mission\": a winding road made of exactly seven glowing golden eight-pointed stars, like stepping stones, starting small at the bottom right and rising in an S-curve toward the upper left, each star brighter than the one before, with tiny lanterns along the road. At the end of the road stands a tall vertical 9:16 video frame with a gold mihrab-arch top, its inside glowing with a soft sunset over domes and a simple white play triangle in the middle (no interface, no writing), a few sparkles around it to show it is finished. A thin crescent in the corner. No people. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "new-free",
+      "title": "بطاقة «مشروع حر»",
+      "file": "new-free.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "زر «＋ جديد» ← بطاقة «مشروع حر»",
+      "note": "بطاقة المشروع الحر: إيدين عم يرتّبوا صور وفيديوهات على طاولة هندسية بالترتيب اللي بدهم ياه.",
+      "prompt": "Card illustration \"free project\": a round inlaid wooden table seen from slightly above, its top decorated with a girih eight-pointed star inlay in gold and turquoise. Two hands in dark navy sleeves (hands and wrists only, no body, no face) freely arrange small tiles on it at playful angles: photo tiles showing tiny scenes (a dome, a palm tree, a sunset), video tiles with a small white play triangle, and one turquoise sound-wave tile; one hand is placing a tile, the other slides one aside. A small brass lantern glows at the edge of the table. No text on any tile. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "new-quick",
+      "title": "بطاقة «شغلة سريعة»",
+      "file": "new-quick.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "زر «＋ جديد» ← بطاقة «شغلة سريعة»",
+      "note": "بطاقة الشغلة السريعة: شرارة وحدة سريعة متل البرق بتطلّع صورة وحدة وموجة صوت وحدة، بلا مشوار.",
+      "prompt": "Card illustration \"quick task\": a single bright golden spark streaking diagonally from the upper right like a shooting star, with a short motion trail of tiny eight-pointed stars. Where it lands it creates, in one burst of light, one small gold-framed picture showing a dome at sunset on one side and one turquoise sound wave on the other side. Minimal composition, one focal point, a lot of empty space, a feeling of instant speed. No people. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "guide-cover",
+      "title": "غلاف «دليل زاكي»",
+      "file": "guide-cover.jpg",
+      "size": "1600×900 (16:9، بدون شفافية)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "الدليل داخل الموقع ← الغلاف فوق",
+      "note": "غلاف الدليل جوّا الموقع: كتاب مخطوط مفتوح بيطلع منه ضو هندسي، وجنبه فانوس. اليمين هادي لأن عنوان الدليل بينكتب فوقه بالكود.",
+      "prompt": "Wide cover illustration for an in-app guide, 16:9 landscape (1600x900), fully opaque, not transparent: an open illuminated manuscript on a carved wooden X-shaped book stand, inside a mihrab niche with a muqarnas canopy at night. The pages show only ornament: girih borders and eight-pointed star medallions in gold, turquoise and lapis, and the areas where text would be are left as plain cream paper with NO writing. Soft beams of geometric light rise from the book and form a faint eight-pointed star lattice in the air. A brass lantern glows beside the book. Background: deep navy night with a sunset glow through a small arched window. Composition for a right-to-left layout: the book, the stand and the lantern are on the LEFT 55% of the width; the RIGHT 45% is calm darker navy with only a faint geometric pattern, because a title will be placed over it. Strictly no text, no letters, no calligraphy, no verses, no people. Do NOT draw a checkerboard or any transparency grid."
+    },
+    {
+      "id": "guide-help",
+      "title": "«عندي مشكلة» — المساعدة",
+      "file": "guide-help.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "الدليل ← قسم «عندي مشكلة»",
+      "note": "قسم «عندي مشكلة» بالدليل: فانوس لطيف بيضوّي على خيط معقود عم ينفك ويصير مرتّب.",
+      "prompt": "Help illustration \"I have a problem\": a friendly round brass lantern (friendly through its warm glow and soft rounded shape only, no face) shining a cone of warm light onto a messy knot of golden and turquoise thread on a small carpet. On one side the knot is already loosening: one strand comes out straight and neat and winds onto a small wooden spool decorated with an eight-pointed star. A few calm sparkles in the light. Reassuring and gentle mood. No people, no hands. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "mission-done",
+      "title": "«المهمة نجحت» — احتفال",
+      "file": "mission-done.png",
+      "size": "1024×1024 (1:1، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "لما يخلص الإعلان ← شاشة «المهمة نجحت»",
+      "note": "الاحتفال لما يخلص الإعلان: ميدالية ذهبية بشكل نجمة ثمانية وألعاب نارية من شرارات هندسية.",
+      "prompt": "Celebration illustration \"mission complete\": a big golden eight-pointed star medal in the center with a turquoise and lapis girih inlay in its middle (no number, no letter), hanging from a short ribbon in sunset pink and lapis blue with no writing on it. Around it, fireworks made of geometric sparks burst outward in a ring: tiny eight-pointed stars, diamonds and rhombi in gold, turquoise, sunset pink and orange, plus a few small confetti tiles with girih patterns. Joyful, triumphant, like a victory screen in a game. No people. Square 1:1 (1024x1024), transparent background."
+    },
+    {
+      "id": "factory-ready",
+      "title": "جاهزية الاستوديو",
+      "file": "factory-ready.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "المصنع ← جاهزية الاستوديو (الربط، النماذج، الإضافة)",
+      "note": "شاشة جاهزية الاستوديو: آلة نحاسية (أسطرلاب ومسننات) وقدّامها 3 قناديل منوّرة: الربط بالخدمات، النماذج، وإضافة المتصفح.",
+      "prompt": "Status illustration \"studio ready\": a brass astrolabe merged with interlocking brass gears on a carved wooden stand, slowly turning, with a small eight-pointed star at its center. In front of it, three glass lamps stand in a row, all lit: the first glows gold with a small cloud shape inside its glass, the second glows turquoise with a small cube shape inside, the third glows sunset pink with a small puzzle-piece shape inside. Thin golden lines connect the three lamps to the machine. Calm, confident, everything working. No people, no letters or numbers. 4:3 landscape (800x600), transparent background."
+    },
+    {
+      "id": "not-found",
+      "title": "الصفحة مش موجودة",
+      "file": "not-found.png",
+      "size": "800×600 (4:3، شفافة)",
+      "pack": "new",
+      "batch": "new",
+      "status": "new 23/10",
+      "where": "أي رابط غلط ← صفحة «الصفحة مش موجودة»",
+      "note": "صفحة «الصفحة مش موجودة»: قوس محراب فاضي ما وراه شي، وقدّامه بوصلة صغيرة إبرتها دايرة.",
+      "prompt": "Illustration \"page not found\": an empty ornate mihrab-style pointed archway with a muqarnas hood, standing alone on a small patch of geometric tile floor; through the arch there is nothing but soft navy night sky and a few tiny stars. In front of it on the floor lies a small brass compass with an eight-pointed star rose, its needle spinning (short curved motion lines), and a small lantern on its side nearby. Quiet, gently humorous \"we got lost\" mood. No people. 4:3 landscape (800x600), transparent background."
+    }
+  ]
+}
