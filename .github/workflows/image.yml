@@ -96,3 +96,21 @@ jobs:
           docker push "$name:$tag"
           docker push "$name:main"
           docker inspect --format '{{index .RepoDigests 0}}' "$name:$tag"
+
+      # ── النشر التلقائي: Coolify بيسحب الصورة الجديدة لحاله ──
+      # رابط النشر مش سرّي (فيه رقم التطبيق بس). التوكن سرّي: بيحطّه المالك بسر المستودع COOLIFY_TOKEN.
+      # بلا التوكن الخطوة بتطبع سطر وبتنجح، والنشر بيضل يدوي من Coolify.
+      # التوكن بيوصل عن طريق env، وما بيندمج بنص الأمر، فما بيطلع باللوغ.
+      - name: قول لـ Coolify ينشر
+        if: github.ref == 'refs/heads/main'
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_DEPLOY_URL: https://coolify.zakiai.io/api/v1/deploy?uuid=z6dapbye0i2lui0hk0rgua8g&force=false
+        run: |
+          set -eu
+          if [ -z "${COOLIFY_TOKEN:-}" ]; then
+            echo "COOLIFY_TOKEN مش مضبوط — النشر يدوي من Coolify (Deploy)."
+            exit 0
+          fi
+          curl -fsS --max-time 30 -H "Authorization: Bearer $COOLIFY_TOKEN" "$COOLIFY_DEPLOY_URL" > /dev/null
+          echo "Coolify عم ينشر ${{ steps.image.outputs.tag }}"
