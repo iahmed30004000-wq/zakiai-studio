@@ -1114,6 +1114,37 @@ function mountMine(el) {
 }
 function refreshJobsSoon() { setTimeout(() => { loadJobs(); }, 600); }
 
+/* ═════════ «الصق رابط إعلان رابح»: مرشّح + اعتماد بكبسة وحدة (اقتراح البحث 4) ═════════ */
+async function hvAdLinkOpen() {
+  const tax = await getTax();
+  const cats = Object.entries(tax.categories || {}).map(([k, v]) => `<option value="${esc(k)}">${esc(v)}</option>`).join("");
+  openModal(`<h2>الصق رابط إعلان رابح</h2>
+    <p class="hint">رابط إعلان من مكتبة إعلانات فيسبوك (فيه <span dir="ltr">?id=</span>) أو ريلز أو تيك توك. الاستوديو بينزّل الفيديو وبيحلّله لنمط. رابط رابط بإيدك، مش سحب بالجملة.</p>
+    <div class="task-grid">
+      <label>الرابط<input id="peAdUrl" type="url" dir="ltr" placeholder="https://www.facebook.com/ads/library/?id=…"></label>
+      <label>الفئة<select id="peAdCat">${cats}</select></label>
+    </div>
+    <div class="row end"><button type="button" class="btn" id="peAdGo">نزّل وحلّل</button></div>
+    <div id="peAdOut" class="status"></div>`);
+  const go = $("#peAdGo"), st = $("#peAdOut");
+  go.addEventListener("click", async () => {
+    const url = $("#peAdUrl").value.trim();
+    if (!/^https?:\/\//.test(url)) { setStatus(st, "حط رابط الإعلان كامل (بيبلّش بـ https://)", "err"); return; }
+    if (!$("#peAdCat").value) { setStatus(st, "اختار فئة المنتج", "err"); return; }
+    go.disabled = true;
+    setStatus(st, "جاري الإضافة…");
+    try {
+      const c = await post("/api/harvest/candidates", { category: $("#peAdCat").value, url, note: "رابط إعلان رابح", source: "manual" });
+      const id = (c.item && c.item.id) || c.id;
+      const r = await api(`/api/harvest/candidates/${encodeURIComponent(id)}/approve`, { method: "POST" });
+      setStatus(st, r.job_id ? `بدأ التنزيل والتحليل (مهمة ${r.job_id}) — بتلاقي النتيجة بالمهام.` : "انضاف واعتُمد.", "ok");
+      if (typeof refreshJobsSoon === "function") refreshJobsSoon();
+    } catch (e) { setStatus(st, e.unavailable ? "الخدمة غير مفعّلة بعد" : e.message, "err"); go.disabled = false; }
+  });
+}
+
+if ($("#peAdLinkBtn")) $("#peAdLinkBtn").addEventListener("click", hvAdLinkOpen);
+
 /* ═════════ الحصاد ═════════ */
 const HARVEST_ST = { pending: ["بالانتظار", "warn"], approved: ["معتمد", "info"], rejected: ["مرفوض", "idle"], extracted: ["تم استخراجه", "ok"] };
 
