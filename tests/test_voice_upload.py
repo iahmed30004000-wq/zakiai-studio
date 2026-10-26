@@ -474,3 +474,29 @@ def test_tts_route_takes_an_explicit_library_model_and_rejects_anything_else(env
     assert {"provider": "lib:ml_002"} in seen
     for bad in ("elevenlabs", "lib:../x", 7, "lib:ml_1"):
         assert c.post(f"/api/studio/{f}/free/voice/tts", json={"provider": bad}).status_code == 400, bad
+
+
+# ───────── تنظيف التسجيل (اقتراح البحث 2) ─────────
+def _noisy(path, seconds=4.0):
+    """كلام مزيّف (نغمة) فوق ضجة ثابتة متل المكيّف — نفس شكل تسجيل الموبايل بالسيارة."""
+    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"sine=frequency=300:duration={seconds}:sample_rate=48000",
+                    "-f", "lavfi", "-i", f"anoisesrc=color=white:amplitude=0.08:duration={seconds}:sample_rate=48000",
+                    "-filter_complex", "amix=inputs=2:normalize=0", str(path)], check=True, capture_output=True)
+    return Path(path)
+
+
+def _noise_floor_db(p):
+    """مستوى الضجة: علوّ الصوت بعد ما نشيل نغمة الكلام (300Hz) بفلتر قاطع."""
+    out = subprocess.run(["ffmpeg", "-i", str(p), "-af", "bandreject=f=300:width_type=h:w=80,volumedetect", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    return float(out.split("mean_volume:")[1].split("dB")[0])
+
+
+def test_to_wav_cleans_steady_noise_and_keeps_the_length(tmp_path, monkeypatch):
+    src = _noisy(tmp_path / "car.wav")
+    monkeypatch.setattr(vu, "VOICE_CLEAN", False)
+    raw_d = vu.to_wav(src, tmp_path / "raw.wav")
+    monkeypatch.setattr(vu, "VOICE_CLEAN", True)
+    clean_d = vu.to_wav(src, tmp_path / "clean.wav")
+    assert abs(clean_d - raw_d) < 0.05                       # المدة ما بتتغيّر (توقيت المهمة الموجّهة)
+    assert _noise_floor_db(tmp_path / "clean.wav") < _noise_floor_db(tmp_path / "raw.wav") - 4   # الضجة نزلت 4dB على الأقل (انقاس: 6.4)
