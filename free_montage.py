@@ -153,7 +153,7 @@ def fingerprint(stem: str, tl: dict, mode: str, size: tuple[int, int] | None = N
 
     def track(tid):                                       # الملف + هل لسا معتمد (سحب الاعتماد بيخلّي التصدير «قديم»)
         return [_stat(ahat.audio_path(tid)), bool((ahat.get(tid) or {}).get("approved"))] if tid and re.fullmatch(r"ah_\d{3}", str(tid)) else None
-    music = [amb.get("track_id"), amb.get("duck_db"), track(amb.get("track_id"))]
+    music = [amb.get("track_id"), amb.get("duck_db"), track(amb.get("track_id"))] + ([True] if amb.get("beat_snap") else [])
     fx = [[e.get("track_id"), e.get("at_ms"), e.get("gain_db"), track(e.get("track_id"))] for e in tl.get("sfx") or []]
     raw = json.dumps([VER, mode, list(size), scenes, tl.get("captions_opts") or {}, music, fx], ensure_ascii=False, sort_keys=True)
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
@@ -391,8 +391,13 @@ def render(script_path, mode: str = "preview", size: tuple[int, int] | None = No
     music, fx = sounds(tl)
     size = size or (PREVIEW_SIZE if mode == "preview" else FINAL_SIZE)
     total_ms = int(tl["length_ms"])
-    shots = [sh for sc in tl["scenes"] for sh in sc["shots"]]
     fp = fingerprint(stem, tl, mode, size)                 # بصمة اللقطة وقت البدء: أي تعديل بعدها بيخلّي التصدير «قديم»
+    if music and (tl.get("ambience") or {}).get("beat_snap"):
+        import beats                                       # القص على الإيقاع: حدود اللقطات جوّا المشهد على أقرب ضربة
+        info = beats.detect(music[0])
+        tl, moved = beats.snap_timeline(tl, beats.looped(info, total_ms))
+        log(f"[…] إيقاع الموسيقى {info['bpm']:g} ضربة/دقيقة · {moved} قطع انزاح على الضربة")
+    shots = [sh for sc in tl["scenes"] for sh in sc["shots"]]
     wd = work_dir(stem)
     wd.mkdir(parents=True, exist_ok=True)
     log(f"[…] {mode}: {len(shots)} لقطة · {len(tl['scenes'])} مشهد · {size[0]}x{size[1]} · {total_ms / 1000:.1f}ث")
@@ -499,6 +504,8 @@ def save_settings(script_path, payload: dict) -> dict:
                 if not MUSIC_DB_RANGE[0] <= lvl <= MUSIC_DB_RANGE[1]:
                     raise FE(f"مستوى الموسيقى بين {MUSIC_DB_RANGE[0]:g} و{MUSIC_DB_RANGE[1]:g} dB")
                 tl["ambience"] = {"track_id": t["id"], "approved": True, "duck_db": round(lvl, 1)}
+                if m.get("beat_snap"):                     # القص على الإيقاع (بينحفظ بس لما يكون مفعّل)
+                    tl["ambience"]["beat_snap"] = True
         if "sfx" in payload:
             rows = payload["sfx"]
             if not isinstance(rows, list):

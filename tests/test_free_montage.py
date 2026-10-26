@@ -370,3 +370,18 @@ def test_guided_render_route_is_unchanged_for_guided_scripts(env):
     env.script_file("g.json", make_script())
     r = c.post("/api/studio/g.json/montage/render", params={"mode": "preview"})
     assert r.status_code in (404, 409) and "free_montage" not in json.dumps(env.jobs)
+
+
+@needs_ffmpeg
+def test_beat_snap_is_saved_only_when_on_changes_the_fingerprint_and_renders(env, tmp_path):
+    p = project(tmp_path, kinds=("image", "image"))
+    t = sound(tmp_path)
+    b = fm.save_settings(p, {"music": {"track_id": t, "level_db": -10}})
+    assert "beat_snap" not in b["ambience"]
+    before = fm.fingerprint(p.stem, timeline.load(p.stem), "preview", SIZE)
+    b = fm.save_settings(p, {"music": {"track_id": t, "level_db": -10, "beat_snap": True}})
+    assert b["ambience"]["beat_snap"] is True
+    assert fm.fingerprint(p.stem, timeline.load(p.stem), "preview", SIZE) != before            # تفعيله بيخلّي التصدير القديم «قديم»
+    logs = []
+    r = fm.render(p, "preview", size=SIZE, log=logs.append)
+    assert out_of(r).is_file() and any("إيقاع الموسيقى" in m for m in logs)
