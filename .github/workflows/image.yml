@@ -115,5 +115,5 @@ jobs:
             echo "COOLIFY_TOKEN مش مضبوط — النشر يدوي من Coolify (Deploy)."
             exit 0
           fi
-          curl -fsS --max-time 30 -H "Authorization: Bearer $COOLIFY_TOKEN" "$COOLIFY_DEPLOY_URL" > /dev/null
+          curl -fsS --max-time 30 -X POST -H "Authorization: Bearer $COOLIFY_TOKEN" "$COOLIFY_DEPLOY_URL" > /dev/null
           echo "Coolify عم ينشر ${{ steps.image.outputs.tag }}"
