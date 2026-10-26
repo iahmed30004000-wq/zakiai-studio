@@ -13,6 +13,9 @@ name: Image
 on:
   push:
     branches: [main]
+  # على طلب دمج: بيبني ويجرّب بس، وما بينشر شي. هاد الفحص اللي بيستناه الدمج التلقائي.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
