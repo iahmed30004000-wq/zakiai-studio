@@ -1,0 +1,98 @@
+# صورة الاستوديو بتنبنى هون على جيت هب، مش على السيرفر اللي بيخدم المتجر.
+#
+# البناء تقيل (PyTorch وOCR)، ولو صار على سيرفر Coolify بيزاحم الـ OMS الشغّال جنبه.
+# هون منبني نفس الـ Dockerfile، منتأكد إنو الصورة بتشتغل وبتردّ، ومننشرها على ghcr.io.
+# السيرفر شغلته بس يسحب صورة جاهزة.
+#
+# ── الصورة عامة (قرار المالك 26/10) ──
+# المستودع خاص، بس الصورة أي حدا بيقدر ينزّلها، يعني الكود المجمّع مكشوف.
+# فما فيها ولا مفتاح ولا بيانات: library/ وsettings.json والأسرار برّا الصورة (.dockerignore)،
+# والمفاتيح بتجي من Coolify وقت التشغيل بس (VP_SECRETS_KEY وغيره).
+name: Image
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: image-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  image:
+    # بينشر بس من مستودع النشر (iahmed30004000-wq). مستودع العمل الأصلي (MKory18) ما بيبني شي.
+    if: github.repository == 'iahmed30004000-wq/zakiai-studio'
+    runs-on: ubuntu-24.04
+    steps:
+      # الصورة كبيرة (PyTorch)، ومساحة الـ runner الافتراضية ما بتكفي.
+      - name: فضّي مساحة على الـ runner
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          docker system prune -af >/dev/null
+          df -h /
+
+      - uses: actions/checkout@v4
+
+      - name: اسم الصورة والتاغ
+        id: image
+        run: |
+          owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "name=ghcr.io/$owner/zakiai-studio" >> "$GITHUB_OUTPUT"
+          echo "tag=sha-$(echo "${{ github.sha }}" | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: ابني الصورة (بلا نشر)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          push: false
+          tags: zakiai-studio:smoke
+
+      # ── البرهان: الصورة بتشتغل وبتردّ، مش بس انبنت ──
+      - name: بتشتغل وبتردّ؟
+        run: |
+          set -eu
+          docker run -d --name smoke -p 8000:8000 -e HOME=/tmp zakiai-studio:smoke
+          code=000
+          for _ in $(seq 1 36); do
+            code=$(curl -s -o /dev/null -L -w '%{http_code}' -H 'Host: localhost' http://127.0.0.1:8000/ || echo 000)
+            [ "$code" = "200" ] && break
+            sleep 5
+          done
+          echo "HTTP: $code"
+          if [ "$code" != "200" ]; then
+            docker logs smoke 2>&1 | tail -80 || true
+            exit 1
+          fi
+
+      - name: وقّفها
+        if: always()
+        run: docker rm -f smoke 2>/dev/null || true
+
+      # ── من هون وتحت: بس على main ──
+      - uses: docker/login-action@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # الصورة اللي انجرّبت هي نفسها اللي بتنتشر. تاغين: main (اللي بيتبعه السيرفر) وsha (للرجوع).
+      - name: انشر الصورة المجرّبة
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -eu
+          name='${{ steps.image.outputs.name }}'
+          tag='${{ steps.image.outputs.tag }}'
+          docker tag zakiai-studio:smoke "$name:$tag"
+          docker tag zakiai-studio:smoke "$name:main"
+          docker push "$name:$tag"
+          docker push "$name:main"
+          docker inspect --format '{{index .RepoDigests 0}}' "$name:$tag"
