@@ -453,6 +453,9 @@ def render(script_path, mode: str = "preview", size: tuple[int, int] | None = No
                                           "cues": {"voice": len(vcues), "text": len(tcues)}, "music": bool(music), "sfx": len(fx),
                                           "segments": {"total": len(segs), "cached": reused}}
     timeline.save(stem, tl2)
+    if mode == "final":                                    # المشروع الحر ما إلو محطات: التصدير النهائي هو لحظة درايف
+        import drive_sync
+        drive_sync.request_ad(stem)
     return {"mode": mode, "file": rel, "info": info, "cues": {"voice": len(vcues), "text": len(tcues)}, "segments": {"total": len(segs), "cached": reused}}
 
 

@@ -26,7 +26,8 @@ Git and private data
 - Commit or push only when the owner asks ("ارفع"). Work on `main`, run `git pull --rebase` before pushing. Repo: https://github.com/MKory18/zakiai-studio (private).
 - Before every commit: `git add -A`, then `python tools/secret_scan.py` must print "نظيف". Never stage anything that `.gitignore` excludes: `settings.json`, `.env*`, `library/`, `products/*` (except `_template.json`), `models/*`, `secrets/`, `third_party/*`, `_handoff/`, media files. That is the owner's private data; the encrypted backup (`backup.py`) is where it belongs. If he asks to upload data, ask first.
 - Secret values never appear in code, logs, tests, commits or chat. Tokens are referenced by secret NAME only (`secrets_store.py`: OS keyring, or an encrypted vault when `VP_SECRETS_KEY` is set on Linux).
-- Outgoing calls to user-configured services go through `net_allow.py`: http only, loopback or docker-internal names, explicit port, no redirects, no proxies from the environment.
+- Outgoing calls to user-configured services go through `net_allow.py`: http only, loopback or docker-internal names, explicit port, no redirects, no proxies from the environment. Fixed external services written in code (Google Drive) use `net_allow.fixed_base`: https to the listed hosts only.
+- Approvals call `drive_sync.request_ad(stem)` (records a request, never raises, no-op unless Drive is connected). Tests run with `VIDPATTERN_NO_DRIVE=1` (conftest).
 
 Product rules
 - The guided mission (7 scenes, 45–50 s, ordered stations, AI review) behaves exactly as before. Tests that pin its rules must stay green. New manual behaviour ("free project") is gated by `_meta.mode == "free"` (script) or `tl["mode"] == "free"` (timeline).
@@ -65,6 +66,7 @@ Windows tips: set `PYTHONIOENCODING=utf-8` when printing Arabic. PowerShell 5.1 
 - Model library: `model_library.py` (+ `presets/model_templates.json`), `model_run.py`, links `link_std.py` (OpenAI-compatible), `link_cmd.py` (command), `link_engine.py` (weights box), `link_app.py` (Gradio 4+); `net_allow.py`, `gpu_lease.py`, `media_check.py`, `model_tasks.py`, `word_timing.py`, `sound_gen.py`; routes `web/routes_model_library.py`; UI `modellib.js`.
 - Weights engine (Docker): `services/engine/` (`app.py` contract v2: `/jobs`, `/health`, `/models`; `backends/_introspect.py` safety scan + hints table, `diffusers_any.py`, `_upscale.py`, `fake.py`; `Dockerfile.diffusers`), `docker-compose.engines.yml`, deployment guide `README_AR_نشر_السيرفر.md`.
 - Extension: `extension/` + `ext_contract.md` + `ext_*.py` + `web/routes_ext.py`.
+- Google Drive: `gdrive.py` (device-flow OAuth, `drive.file` only, fixed Google URLs via `net_allow.fixed_base`), `drive_sync.py` (queue `library/drive.db`, collectors, worker thread), `web/routes_drive.py`, UI `drive.js`; fake `tests/fake_drive.py`. Plan: `docs/PLAN_google_drive_AR.md`.
 - Web: `web/app.py`, `auth_gate.py` (login gate), `guard.py` (Host/Origin guard), `routes_*.py`, `web/static/*.js`.
 - Private, ignored: `library/` (data), `settings.json`, `products/`, `models/`.
 - Tools: `tools/secret_scan.py`, `tools/edge_shot.py`.

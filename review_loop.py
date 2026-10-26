@@ -154,6 +154,8 @@ def approve(script_path, by: str = "owner") -> dict:
         raise ApprovalError(f"ما بتنفع الموافقة: فيه {n} عائق (blocker) — عالجه وأعد المراجعة")
     _set_meta(path, status="approved", status_reason="",
               approved_at=datetime.now().isoformat(timespec="seconds"), approved_by=by)
+    import drive_sync
+    drive_sync.request_ad(path.stem)                 # النص والهوكات لدرايف (بلا ربط ما بيعمل شي)
     return status(path)
 
 
@@ -223,6 +225,9 @@ def _finish(path: Path, st: str, reason: str, rounds: int, history: list[dict],
         updates.update(approved_at=datetime.now().isoformat(timespec="seconds"), approved_by="auto")
     script = _set_meta(path, **updates)
     _annotate_review(path, rounds, history)
+    if st == "approved":
+        import drive_sync
+        drive_sync.request_ad(path.stem)
     out = {
         "status": st, "reason": reason, "rounds": rounds,
         "blockers": (result or {}).get("blockers"), "major": (result or {}).get("major"),

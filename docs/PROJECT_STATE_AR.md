@@ -89,6 +89,17 @@ RTX 4050 (6 GB). منزّل بـ `models/` (مش بالمستودع): BiRefNet (
 
 المراجعة المستقلة (22/10): 16 ملاحظة، 15 اتصلّحت (سقوف حجم أثناء التنزيل، فحص أوزان أصرم، حدود `extra`، التوكن قبل قراءة الجسم، سقف التكبير بالمقياس الأصلي، تصفير تأكيد الرخصة عند تغييرها، قفل ملف الطلبات…). المتروكة: `pick()` بيرجع للطريقة الحالية لو افتراضي الصوت اتعطّل أو انحذف أو الملف تالف (تصميم قديم).
 
+## 9.5 ربط Google Drive (26/10، غير مجرّب مع Google الحقيقي)
+
+- الخطة الكاملة وخطوات Google Cloud للمالك: `docs/PLAN_google_drive_AR.md`.
+- الربط بطريقة «الرمز» (device flow، عميل «TVs and Limited Input devices») بصلاحية `drive.file` بس: ما في عنوان رجوع، فبيشتغل متل بعض على ويندوز وعلى السيرفر. لازم التطبيق يكون «Published» بـ Google Cloud، وإلا الإذن بينتهي كل 7 أيام.
+- `gdrive.py` عميل HTTP (requests، بلا مكتبات Google)، وعناوينه ثابتة بالكود وبتمرّ بـ `net_allow.fixed_base`. `drive_sync.py` فيه الطابور (`library/drive.db`)، والجمع من حالة الإعلان، والعامل (خيط بالسيرفر). Client secret والـ refresh token بمخزن الأسرار (`settings.json` ← `DRIVE`).
+- لحظات الموافقة بتسجّل طلب بس: `studio_state.set_state(approved)`، و`review_loop.approve/_finish`، و`ahat.approve`، و`free_montage.render(final)`. الأنماط ومكتبة الصوت مرة باليوم من العامل.
+- الترتيب: `Zakiai/<المنتج>/<VP-… بلا -vN>/1-نص…6-نهائي`، والنص مستند Google بالعربي. ما منمسح شي من درايف أبداً.
+- الواجهة: بطاقة بالإعدادات ← «النسخ والصرف»، وكلمة «جوجل درايف» بقاموس الدليل (قائمة «عندي مشكلة» مثبّتة على 10 باختبار)، وشارة «درايف ✓» مع «ابعت لدرايف» برأس المهمة وبالمشروع الحر. بالمحاكاة: `?mock=1&drive=on`.
+- الاختبارات على خادم وهمي (`tests/fake_drive.py`)، و`VIDPATTERN_NO_DRIVE=1` بيطفي درايف بباقي الاختبارات (conftest).
+- لسا ما انبنى: الاستيراد من درايف (Google Picker)، مرحلة تانية بـ «نفّذ» لحالها.
+
 ## 10. تشغيل أول مرة على السيرفر (الخطوات)
 
 1. Docker + nvidia-container-toolkit، ثم مرة وحدة: `docker network create vidpattern_net` و`docker volume create vidpattern_gpu_locks`.

@@ -346,6 +346,7 @@ function renderStart(body, q = {}) {
     </div>`;
   const g = $("#freeGuide", root);
   if (g && window.Guide && typeof Guide.stagePanel === "function") Guide.stagePanel(g, GUIDE);
+  if (window.driveUI && FS.file) driveUI.chip($("#freeDrive", root), FS.file);             // شارة درايف (بلا ربط ما بتطلع)
   soft("/api/products").then(({ data }) => {
     const sel = $("#fsProduct", root);
     if (!sel || !data) return;
@@ -508,6 +509,7 @@ function renderBoard(body, q) {
   railNote();
   FS.tab = TABS.some((t) => t.key === q.tab) ? q.tab : "scenes";
   root.innerHTML = `${head(`الحفظ تلقائي — رتّب شغلك براحتك. <a href="#/mission/new?stage=1">مهمة موجّهة (7 مراحل)</a>`)}
+    <div id="freeDrive"></div>
     <div id="freeGuide"></div>
     <div class="panel free-top">
       <div class="form">

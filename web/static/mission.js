@@ -445,7 +445,7 @@ VIEWS.mission = {
     if (window.FreeProject && (await FreeProject.enter(body, { file, q: MS.q, alive: () => seq === MS.seq }))) return;
     if (seq !== MS.seq) return;
     body.innerHTML = `
-      <div class="page-head mission-head hero compact" data-img="mission"><div><h2 id="msTitle">✦ المهمة</h2><p class="hint" id="msSub"></p></div></div>
+      <div class="page-head mission-head hero compact" data-img="mission"><div><h2 id="msTitle">✦ المهمة</h2><p class="hint" id="msSub"></p><div id="msDrive"></div></div></div>
       <ol class="mission-steps" id="msSteps" aria-label="مراحل المهمة"></ol>
       <div id="msPassed" class="mission-passed-host"></div>
       <div id="msGuide"></div>
@@ -473,6 +473,7 @@ VIEWS.mission = {
     if (seq !== MS.seq) return;
 
     renderHead(); renderSteps(); renderGuide(); renderBar();
+    if (file && window.driveUI) driveUI.chip($("#msDrive"), file);       // شارة درايف (بلا ربط ما بتطلع)
     $("#msStage").innerHTML = "";
     try { await renderStage(seq); }
     catch (e) { $("#msStage").innerHTML = `<div class="panel">${errBox(e)}</div>`; }

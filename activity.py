@@ -56,6 +56,13 @@ _R = [
     ("DELETE", r"/api/ads/meta/connection", "settings", "فصل حساب فيسبوك للإعلانات"),
     ("POST", r"/api/ads/meta/sync", "generate", "مزامنة أرقام الإعلانات من فيسبوك"),
     ("PUT", r"/api/ads/meta/token", "settings", "حفظ مفتاح فيسبوك للإعلانات"),
+    # ── Google Drive
+    ("PUT", r"/api/drive/app", "settings", "حفظ إعدادات ربط جوجل درايف"),
+    ("POST", r"/api/drive/connect", "settings", "بدأ ربط جوجل درايف"),
+    ("POST", r"/api/drive/disconnect", "settings", "فصل جوجل درايف"),
+    ("POST", r"/api/drive/sync-all", "upload", "إرسال كل الإعلانات القديمة لدرايف"),
+    ("POST", r"/api/drive/retry", "upload", "إعادة محاولة الإرسال لدرايف"),
+    ("POST", r"/api/drive/sync/(?P<file>[^/]+)", "upload", "إرسال السيناريو {file} لدرايف"),
     # ── الآهات والموسيقى
     ("POST", r"/api/ahat", "upload", "رفع آهة أو موسيقى للمكتبة"),
     ("POST", r"/api/ahat/generate", "create", "توليد آهة أو موسيقى بنموذج من مكتبة النماذج"),
@@ -257,7 +264,7 @@ SILENT = [
     ("POST", r"/api/studio/[^/]+/ext/log"), ("POST", r"/api/studio/[^/]+/ext/stop"),
     ("POST", r"/api/pattern-lib/similar"), ("POST", r"/api/motion/models/[^/]+/probe"), ("POST", r"/api/model-library/probe"),
     ("POST", r"/api/auth/(login|logout|setup)"), ("POST", r"/api/accounts"), ("PUT", r"/api/accounts/[^/]+/active"),
-    ("POST", r"/api/accounts/[^/]+/reset"),
+    ("POST", r"/api/accounts/[^/]+/reset"), ("POST", r"/api/drive/connect/check"),
 ]
 
 RULES = [(m, re.compile(f"^{p}$"), k, t) for m, p, k, t in _R]

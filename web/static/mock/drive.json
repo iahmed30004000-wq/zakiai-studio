@@ -1,0 +1,12 @@
+{
+  "status": {"configured": false, "connected": false, "client_id": "", "email": "", "name": "", "connected_at": null,
+             "auto": true, "paused": "", "paused_msg": "", "connecting": false, "pending": 0, "failed": 0, "skipped": 0,
+             "requests": 0, "last_ok": null, "last_error": "", "folder_url": ""},
+  "connected": {"configured": true, "connected": true, "client_id": "123-abc.apps.googleusercontent.com", "email": "zaki.studio@gmail.com",
+                "name": "Zaki", "connected_at": "@now-3d", "auto": true, "paused": "", "paused_msg": "", "connecting": false,
+                "pending": 3, "failed": 0, "skipped": 0, "requests": 0, "last_ok": "@now-5m", "last_error": "",
+                "folder_url": "https://drive.google.com/drive/folders/mock-root"},
+  "device": {"user_code": "WXYZ-1234", "verification_url": "https://www.google.com/device", "expires_in": 1800, "interval": 3},
+  "ad": {"connected": true, "pending": 0, "failed": 0, "skipped": 0, "requested": false, "last_ok": "@now-12m", "error": "",
+         "folder_url": "https://drive.google.com/drive/folders/mock-ad", "paused": ""}
+}

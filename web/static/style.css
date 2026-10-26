@@ -1140,3 +1140,9 @@ details.panel > summary { cursor: pointer; display: flex; gap: var(--vp-space-3)
 .ml-maprow__name small { color: var(--vp-text-muted); font-size: var(--vp-fs-xs); }
 .ml-maprow [hidden] { display: none; }
 @media (max-width: 560px) { .ml-maprow { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── جوجل درايف (drive.js): بطاقة الإعدادات وشارة صفحة الإعلان ── */
+.drive-steps { margin: 0 0 var(--vp-space-3); padding-inline-start: var(--vp-space-5); display: grid; gap: var(--vp-space-2); font-size: var(--vp-fs-sm); }
+.drive-code__value { font-size: var(--vp-fs-xl); letter-spacing: .12em; padding: var(--vp-space-1) var(--vp-space-3); border: 1px dashed var(--vp-border); border-radius: var(--vp-radius-sm); background: var(--vp-surface-2); color: var(--vp-heading); }
+.drive-auto { display: inline-flex; align-items: center; gap: var(--vp-space-2); font-size: var(--vp-fs-sm); cursor: pointer; }
+.drive-chip { display: flex; flex-wrap: wrap; align-items: center; gap: var(--vp-space-2); margin-top: var(--vp-space-2); }

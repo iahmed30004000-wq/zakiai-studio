@@ -125,7 +125,10 @@ def approve(tid: str, heard: bool) -> dict:
     if not heard:
         raise AhatError("الاعتماد بالسمع: شغّل المقطع أولاً وأكّد إنك سمعته")
     t["approved"], t["approved_at"] = True, _now()
-    return _write(t)
+    out = _write(t)
+    import drive_sync
+    drive_sync.request("sounds")                     # مكتبة الصوت المعتمدة لدرايف (بلا ربط ما بيعمل شي)
+    return out
 
 
 def revoke(tid: str) -> dict:

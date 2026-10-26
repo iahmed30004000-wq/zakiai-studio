@@ -40,7 +40,7 @@ async function loadSettingsTab(t) {
     case "models": await loadConnections(); loadTasks(); break;
     case "keys": loadSettingsValues(); loadKeyOverview(); break;
     case "crm": loadCrmTab(); loadQueue(); break;
-    case "ops": loadBackup(); loadScheduler(); loadSpend(); break;
+    case "ops": if (window.driveUI) driveUI.load(); loadBackup(); loadScheduler(); loadSpend(); break;
     case "media": loadMediaSettings(); break;
     case "analysis": loadSettingsValues(); if (window.VIEWS && VIEWS.claims) VIEWS.claims.enter(); break;
     case "staff": accStaffLoad(); break;

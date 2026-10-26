@@ -36,7 +36,7 @@ from web.auth_gate import AuthGate  # noqa: E402
 app.add_middleware(AuthGate)          # حسابات الموظفين: كل /api/* بدها دخول (راجع web/auth_gate.py) — بتشتغل بعد LocalGuard
 app.add_middleware(LocalGuard)        # Host/Origin: يسكّر النفق ومواقع غريبة (راجع web/guard.py) — الأخير المضاف بيشتغل أول
 
-from web import routes_pipeline, routes_crm, routes_ops, routes_studio, routes_characters, routes_motion, routes_montage, routes_ext, routes_claims, routes_hooks, routes_hooks_bank, routes_patterns, routes_placements, routes_presets, routes_auth, routes_ads, routes_free, routes_model_library  # noqa: E402
+from web import routes_pipeline, routes_crm, routes_ops, routes_studio, routes_characters, routes_motion, routes_montage, routes_ext, routes_claims, routes_hooks, routes_hooks_bank, routes_patterns, routes_placements, routes_presets, routes_auth, routes_ads, routes_free, routes_model_library, routes_drive  # noqa: E402
 STATIC_DIR = Path(__file__).parent / "static"
 UPLOAD_DIR = ROOT / "library" / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -54,6 +54,11 @@ def _startup() -> None:
         scheduler.start()
     except Exception as e:   # ما بنوقف السيرفر لو الجدولة فشلت
         print(f"[!] الجدولة ما اشتغلت: {e}")
+    try:                     # عامل درايف: بيرفع نواتج المحطات المعتمدة (بلا ربط ما بيعمل شي)
+        import drive_sync
+        drive_sync.start()
+    except Exception as e:
+        print(f"[!] عامل درايف ما اشتغل: {e}")
     try:                     # أي نمط نصه لسا إنجليزي بينترجم لحاله بالخلفية (بعد لحظات من الإقلاع)
         import pattern_i18n
         pattern_i18n.schedule_startup()
@@ -1323,7 +1328,7 @@ async def no_cache_static(request, call_next):
     return response
 
 
-for _r in (routes_pipeline.router, routes_crm.router, routes_ops.router, routes_studio.router, routes_characters.router, routes_motion.router, routes_montage.router, routes_ext.router, routes_claims.router, routes_hooks.router, routes_hooks_bank.router, routes_patterns.router, routes_placements.router, routes_presets.router, routes_auth.router, routes_ads.router, routes_free.router, routes_model_library.router):
+for _r in (routes_pipeline.router, routes_crm.router, routes_ops.router, routes_studio.router, routes_characters.router, routes_motion.router, routes_montage.router, routes_ext.router, routes_claims.router, routes_hooks.router, routes_hooks_bank.router, routes_patterns.router, routes_placements.router, routes_presets.router, routes_auth.router, routes_ads.router, routes_free.router, routes_model_library.router, routes_drive.router):
     app.include_router(_r)
 
 @app.get("/icons.svg", include_in_schema=False)

@@ -7,6 +7,7 @@
   · التوكن بحقل مستقل (مش بالرابط).
 
 motion.validate_engine_url بيفوّض إلها بنفس رسائلها. بلا شبكة: فحص نصي صافي (ما بنحلّ DNS هون).
+fixed_base: قاعدة تانية للخدمات الخارجية اللي عناوينها ثابتة بالكود (Google Drive): https لعناوين محدّدة بس.
 """
 
 from __future__ import annotations
@@ -74,6 +75,41 @@ def join(base: str, path: str) -> str:
     if not isinstance(path, str) or not path.startswith("/") or ".." in path or "//" in path or "?" in path or "#" in path or BAD_CHARS_RX.search(path):
         raise NetAllowError("مسار النداء غير آمن")
     return base.rstrip("/") + path
+
+
+def _loopback(host: str) -> bool:
+    if host == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
+
+
+def fixed_base(url, bases) -> str:
+    """لخدمة خارجية معروفة عناوينها ثابتة بالكود (مش من إعداد المستخدم)، متل Google Drive: الرابط لازم يبدأ بوحدة من bases
+    (نفس البروتوكول والمضيف والمنفذ والمسار)، وبلا بيانات دخول ولا رموز غريبة. https بس — إلا مضيف loopback (الخادم الوهمي بالاختبارات).
+    بيرجّع الرابط نفسه أو NetAllowError."""
+    if not isinstance(url, str) or not url or BAD_CHARS_RX.search(url):
+        raise NetAllowError("رابط الخدمة غير صالح")
+    try:
+        p = urlsplit(url)
+        port = p.port
+    except ValueError:
+        raise NetAllowError("رابط الخدمة غير صالح") from None
+    if "@" in p.netloc or p.username or p.password:
+        raise NetAllowError("ممنوع اسم مستخدم أو كلمة سر داخل رابط الخدمة")
+    host = (p.hostname or "").lower()
+    for base in bases:
+        b = urlsplit(base)
+        if (p.scheme, host, port) != (b.scheme, (b.hostname or "").lower(), b.port):
+            continue
+        if b.scheme != "https" and not (b.scheme == "http" and _loopback(host)):
+            continue
+        if not (p.path or "/").startswith((b.path or "").rstrip("/") + "/") or ".." in p.path:
+            continue
+        return url
+    raise NetAllowError("الرابط مش من عناوين الخدمة المسموحة")
 
 
 def same_host(base: str, other: str) -> bool:

@@ -115,6 +115,9 @@ def set_state(stem: str, n: int, state: str, note: str = "", by: str = "system")
     st["stations"][str(n)] = {"state": state, "updated_at": _now(), "note": note}
     st["events"].append({"at": _now(), "station": n, "from": cur, "to": state, "by": by, "note": note})
     _save(stem, st)
+    if state == "approved":                           # نواتج المحطة لدرايف (تسجيل طلب بس، بلا ربط ما بيعمل شي)
+        import drive_sync
+        drive_sync.request_ad(stem)
     return st
 
 

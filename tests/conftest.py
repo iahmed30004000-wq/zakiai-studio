@@ -6,6 +6,8 @@ import pytest
 
 # الترجمة التلقائية للأنماط ما بتشتغل لحالها بالاختبارات (الاختبارات اللي بتفحصها بتشغّلها صراحة بـ monkeypatch.setenv)
 os.environ["VP_AUTO_TRANSLATE"] = "0"
+# درايف (drive_sync) ما بيسجّل ولا بيرفع شي بالاختبارات — اختبارات درايف بتشيل هالمتغيّر صراحة (tests/fake_drive.py)
+os.environ["VIDPATTERN_NO_DRIVE"] = "1"
 
 
 @pytest.fixture(autouse=True)

@@ -490,6 +490,25 @@ async function mockLibHook(path, method, body, raw, q) {
   return undefined;
 }
 
+/* درايف بالمحاكاة: ?drive=on بيبدأ مربوط. الربط: رمز وهمي، وبعد سؤالين بيصير «مربوط» (ما بيفتح Google). */
+async function mockDriveHook(path, method, body) {
+  if (!path.startsWith("/api/drive/")) return undefined;
+  const d = await mockFile("drive");
+  if (!mockState.drive) mockState.drive = { st: new URLSearchParams(location.search).get("drive") === "on" ? d.connected : d.status, polls: 0 };
+  const s = mockState.drive;
+  const view = () => JSON.parse(JSON.stringify(s.st));
+  if (path === "/api/drive/status") return view();
+  if (/^\/api\/drive\/ad\//.test(path)) return s.st.connected ? d.ad : { ...d.ad, connected: false, last_ok: null, folder_url: "" };
+  if (path === "/api/drive/app") { if (body && body.client_id) s.st = { ...s.st, configured: true, client_id: body.client_id }; if (body && "auto" in body) s.st = { ...s.st, auto: !!body.auto }; return view(); }
+  if (path === "/api/drive/connect") { s.polls = 0; return d.device; }
+  if (path === "/api/drive/connect/check") { s.polls += 1; if (s.polls < 2) return { state: "pending", interval: 3, status: view() }; s.st = { ...d.connected, auto: s.st.auto }; return { state: "connected", status: view() }; }
+  if (path === "/api/drive/disconnect") { s.st = { ...d.status, configured: true, client_id: s.st.client_id }; return view(); }
+  if (path === "/api/drive/sync-all") { s.st = { ...s.st, requests: 5 }; return { requested: 5, status: view() }; }
+  if (path === "/api/drive/retry") { s.st = { ...s.st, paused: "", paused_msg: "", failed: 0 }; return view(); }
+  if (/^\/api\/drive\/sync\//.test(path)) return { ...d.ad, requested: true, pending: 4 };
+  return NOMOCK;
+}
+
 async function mockApi(url, opts) {
   const u = new URL(url, location.origin);
   const path = u.pathname;
@@ -497,6 +516,11 @@ async function mockApi(url, opts) {
   const method = (opts?.method || "GET").toUpperCase();
   let m;
 
+  if (path.startsWith("/api/drive/")) {
+    let dbody = null;
+    if (typeof opts?.body === "string") { try { dbody = JSON.parse(opts.body); } catch { dbody = null; } }
+    return mockDriveHook(path, method, dbody);
+  }
   if (method === "GET") {
     if (path.startsWith("/api/model-library")) { const lr = await mockLibHook(path, method, null, null, q); if (lr !== undefined) return lr; }
     if (path === "/api/crm/status") return mockFile("crm_status");
