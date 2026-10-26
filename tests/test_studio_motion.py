@@ -303,3 +303,22 @@ def tc_client():
     app.include_router(routes_motion.router)
     app.include_router(routes_studio.router)
     return TestClient(app)
+
+
+# ───────── المشروع الحر: تمديد ناعم بإطارات مخترعة (اقتراح البحث 3) ─────────
+def test_free_project_stretches_a_short_clip_smoothly_instead_of_failing(tmp_path):
+    src = tmp_path / "a.mp4"
+    make_clip(src, 1.6)                                          # أقصر بـ 47٪: المهمة الموجّهة بترفضه
+    with pytest.raises(motion.MotionError):
+        motion.fit_duration(src, tmp_path / "guided.mp4", 3000)
+    r = motion.fit_duration(src, tmp_path / "free.mp4", 3000, smooth=True)
+    assert r["how"] == "interpolated"
+    assert abs(motion.probe_duration(tmp_path / "free.mp4") * 1000 - 3000) <= motion.DURATION_EPS_MS
+
+
+def test_smooth_stretch_still_refuses_less_than_half(tmp_path):
+    src = tmp_path / "a.mp4"
+    make_clip(src, 1.2)                                          # أقل من النص: حتى الحر بيرفض
+    with pytest.raises(motion.MotionError) as e:
+        motion.fit_duration(src, tmp_path / "o.mp4", 3000, smooth=True)
+    assert "أقصر" in str(e.value)
