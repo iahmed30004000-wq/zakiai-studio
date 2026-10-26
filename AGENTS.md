@@ -19,6 +19,8 @@ The project continues the existing codebase. Do not rewrite or restructure it.
 - He types keys, tokens and passwords himself. Never ask for them in chat, never write them anywhere.
 - If he says "وقف عند التنفيذ": write the decisions down and wait for "نفّذ".
 - Report honestly: what was verified (tests, a real run) and what was not. Never claim something works unless you ran it.
+- Since 26 Oct: write to him in Arabic ONLY, with no English word at all, even in progress lines. Write product and service names in Arabic letters (جيت هب، كوليفاي، درايف، كروم).
+- Standing order since 26 Oct: «بشكل تلقائي بتخلص شغلة شغلة… لا تسألني عن اشي اعمل الأفضل و الأنسب دمج تلقائي لجيت هاب و ديبلوي تلقائي لكوليفاي». Finish one task completely before starting the next; ship each one as a pull request with auto-merge (section 3), and Coolify deploys it.
 
 ## 3. Hard rules
 
@@ -39,7 +41,8 @@ Product rules
 Engineering conventions
 - UI text, comments and messages: Levantine Arabic. Identifiers: English.
 - Each `web/static/*.js` is a closed IIFE that exposes one `window.*` name. New top-level `const/let` names collide across files (`tests/test_ui_globals.py` guards this).
-- CSS only through `--vp-*` variables. Any change under `web/static` bumps `?v=` in BOTH `index.html` and `login.html` to the same number (now 82).
+- CSS only through `--vp-*` variables. Any change under `web/static` bumps `?v=` in BOTH `index.html` and `login.html` to the same number (now 89).
+- The search inputs (`type="search"`) carry `autocomplete="off"` (Chrome filled the owner's user name into them); `tests/test_ui_globals.py` guards it.
 - Every new write route needs an Arabic label in `activity._R` (or SILENT): a test compares them with the OpenAPI paths.
 - Every new endpoint also needs a mock (`web/static/mock/*.json` + handler in `app.js`, page opens with `?mock=1`).
 - Ship tests with every change. Fake external services in tests (`tests/fake_gradio.py`, `fake_openai.py`, `engine_box.py`); never call real paid APIs.
@@ -71,9 +74,17 @@ Windows tips: set `PYTHONIOENCODING=utf-8` when printing Arabic. PowerShell 5.1 
 - Private, ignored: `library/` (data), `settings.json`, `products/`, `models/`.
 - Tools: `tools/secret_scan.py`, `tools/edge_shot.py`.
 
-## 6. State on 22 Oct 2026
+## 6. State on 27 Oct 2026
 
-Done and pushed
+Done on 23–26 Oct (all merged to `main` and live on https://studio.zakiai.io, UI version 89)
+- Work log `docs/WORK_LOG_AR.md`/`.docx`. `tools/local_models/*.bat` are now tiny launchers for `.ps1` files (UTF-8 with BOM).
+- On the owner's PC (`models/`, ignored): BiRefNet, Real-ESRGAN, face, faster-whisper-large-v3, whisper-turbo-ar-ct2, piper-ar, stable-audio-open-1.0 (5 GB).
+- Deploy: `.github/workflows/image.yml` builds the image, checks it answers 200, publishes `ghcr.io/iahmed30004000-wq/zakiai-studio:main` (public), then POSTs the Coolify deploy hook (`COOLIFY_TOKEN` repo secret). Coolify app `zakiai-studio` (uuid `z6dapbye0i2lui0hk0rgua8g`), port 8000, volumes `/app/library` and `/app/secrets`, env `VP_ALLOWED_HOSTS=studio.zakiai.io`, `VP_SECRETS_DIR=/app/secrets`, `VP_SECRETS_KEY` (set by the owner; never change it, or the vault on the server will not open; ask the owner before rotating any Google Cloud secret). The first account was created from the container terminal (`python accounts.py create …`).
+- Google Drive (`gdrive.py`, `drive_sync.py`): connected on the site to the owner's Google account (the second account in his Chrome, `authuser=1`). Google Cloud project `zakiai-512814`, app published "In production", client type "TVs and Limited Input devices", scope `drive.file`. Every approved station output is uploaded to a «Zakiai» folder per ad. Public privacy page `web/static/privacy.html`.
+- Research report `docs/RESEARCH_FEATURES_AR.md`; built from it: Ollama `reasoning_effort=none` (#4), recording noise cleaning in `voice_upload.py` (#5), smooth motion stretch with `minterpolate` for free projects only (#7), «الصق رابط إعلان رابح» in the pattern library (#8), cut on the beat `beats.py` (#10), remove overlay text from product photos `textclean.py` (#11). Item 5 (voice conversion) was reverted by the owner; items 8–10 need the GPU server.
+- Pattern library transfer: `pattern_store.export_bundle/import_bundle`, routes `GET /api/pattern-lib/bundle.zip` and `POST /api/pattern-lib/bundle`, button «انقل المكتبة». The 53 local patterns are on the site.
+
+Done and pushed before 23 Oct
 - Overhaul in 8 phases: names, patterns in Arabic (+ Excel import, automatic translation), 3+ hooks per script, character face consistency, cinematic camera presets, staff accounts and activity log, neon theme and in-site guide.
 - UI restructure (23 Oct): big «＋ إعلان جديد» chooser (guided mission / free project / quick task), «إعلاناتي» inside Home (no separate missions page), 4 library shelves, factory «readiness» list with fix buttons, 4 settings tabs, guide page `#/guide` (`web/static/guidepage.js`), neon theme back (real Unsplash photos under `img/theme/neon/`, credits in `credits.json`), quick tasks take one or many items and an explicit model (`provider=lib:ml_x` for image/voice, `model=mm_x` for motion).
 - Free project (manual production from any start point) and the model library: weights box on the server, Gradio apps, OpenAI-compatible servers, local commands; lip-sync from the library; music and sound effects (Stable Audio) into the sound library as unapproved.
@@ -94,14 +105,18 @@ Decisions already made (do not reopen)
 
 ## 7. Open work (in order)
 
+0. Owner-side, small (26 Oct): delete the empty old Coolify app `studio-old.zakiai.io` (uuid `ifxhum7…`, needs his Coolify password); confirm the Piper and Stable Audio licences in the factory screen; link the studio to the media buyer: in the media buyer (https://mediabuyer.zakiai.io, repo `iahmed30004000-wq/zaki-mediabuyer`) Settings ← Integrations ← Content studio ← «اعمل توكن», then in the studio put `https://mediabuyer.zakiai.io` as the OMS address (`crm.py`, https is allowed), paste the token and press «مزامنة الآن». Numbers stay empty until real Meta data and orders exist.
+0b. Optional, waiting for the owner's word: move products, scripts and images from the PC to the site the same way as the patterns (only patterns were moved). He said «مش هلأ» on 26 Oct.
 1. First real server run with the guide `README_AR_نشر_السيرفر.md`; fix what the first GPU run shows (the owner pastes `docker compose logs`). Create once: `docker network create vidpattern_net` and `docker volume create vidpattern_gpu_locks`.
-2. Owner-side items that block features: create the first staff account; replace the rejected Anthropic key (401), until then auto-translation of patterns and character identity cards wait; fal.ai key for Kling/Hailuo; calibrate the face-match threshold (0.363) on real characters; install the extension 0.4.0.
+2. Owner-side items that block features: replace the rejected Anthropic key (401), until then auto-translation of patterns and character identity cards wait; fal.ai key for Kling/Hailuo; calibrate the face-match threshold (0.363) on real characters; install the extension 0.4.0.
 3. OMS side (performance read, launch, queue) is not built: specs in `مواصفات_تنفيذ_العمليات.md`, `CRM_CONTRACT.md`, `CRM_CONTRACT_QUEUE.md`. Performance and auto-launch are disabled until then. Do not touch the OMS repository without the owner's explicit word "نفّذ العمليات".
 4. Ideas, lowest priority: WanGP, video upscaling and auto-upscale after choosing, transitions and advanced montage for the free project, HEIC photos, converting a free project to a launchable mission.
 
 ## 8. Where to read more
 
+- `docs/HANDOFF_GLM_AR.md`: the owner's full handoff report of 27 Oct (what was asked, what was done, what is left), in Arabic. Read it first.
 - `docs/PROJECT_STATE_AR.md`: state and decisions per area, in Arabic.
+- `docs/RESEARCH_FEATURES_AR.md`: the research report (top 10 feature ideas with open weights) and `docs/PLAN_google_drive_AR.md`.
 - `docs/PLAN_free_project_model_library_AR.md`: the approved plan of the free project and model library, with notes on how it was built.
 - Specs: `STUDIO_DESIGN.md`, `ui_contract.md`, `ext_contract.md`, `BUILD_SPEC.md` (original pipeline), the Arabic plans `خطة_*.md`, decisions `قرارات_التنفيذ.md`.
 - Models and third-party notes: `models/README.md`, `third_party/README.md`.
