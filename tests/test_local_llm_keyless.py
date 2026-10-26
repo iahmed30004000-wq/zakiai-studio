@@ -91,3 +91,28 @@ def test_chat_calls_elsewhere_still_demand_a_key(chat):
     assert chat == []
     llm._call_openai(cfg("https://api.example.com/v1", "sk-FAKE-1234567890"), "sys", [{"type": "text", "text": "hi"}], 100)
     assert chat[-1]["headers"]["Authorization"] == "Bearer sk-FAKE-1234567890"
+
+
+# ───────── Ollama: التفكير مطفي (نماذج qwen3.5 بترجّع رد فاضي لو فكّرت) ─────────
+@pytest.mark.parametrize("provider,url,expect", [
+    ("ollama", "http://localhost:11434/v1", True),
+    ("custom", "http://127.0.0.1:11434/v1", True),                          # اتصال مخصّص بيأشّر على Ollama
+    ("custom", "http://127.0.0.1:8000/v1", False),
+    ("openai", "https://api.openai.com/v1", False),
+])
+def test_ollama_calls_turn_thinking_off(monkeypatch, provider, url, expect):
+    sent = {}
+
+    def post(u, headers=None, json=None, timeout=None):
+        sent.update(json)
+        return Resp(200, {"choices": [{"message": {"content": "تمام"}}], "usage": {}})
+    monkeypatch.setattr(llm.requests, "post", post)
+    monkeypatch.setattr(llm, "_record", lambda *a, **k: None)
+    cfg = {"task": "translate", "provider": provider, "kind": "openai", "model": "qwen3.5:4b",
+           "base_url": url, "api_key": "sk-FAKE-0123456789" if provider == "openai" else "", "vision": True}
+    assert llm._call_openai(cfg, "سيستم", [{"type": "text", "text": "hi"}], 50) == "تمام"
+    assert (sent.get("reasoning_effort") == "none") is expect
+
+
+def test_ollama_suggests_the_models_on_the_owners_pc():
+    assert llm.PROVIDER_PRESETS["ollama"]["models"][0] == "qwen3.5:4b"
