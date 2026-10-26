@@ -41,6 +41,10 @@ MIN_SOURCE_SEC = 0.8
 MIN_COVERAGE = 0.5                       # تحت هالنسبة بنحذّر: المسموع بيختلف كتير عن المكتوب
 MODES = ("auto", "by_text", "by_time", "new_scenes")
 FADE_S = 0.01
+# تنظيف التسجيل (اقتراح البحث 2): بيشيل الطنين التحتاني (مكيّف، سيارة) والضجة الثابتة قبل التفريغ والقص.
+# ما بيقص سكتات ولا بيغيّر المدة: مدة المهمة الموجّهة (45–50ث) مربوطة بطول التسجيل.
+VOICE_CLEAN = True
+CLEAN_FILTER = "highpass=f=70,afftdn=nr=12:nf=-30:tn=1"
 
 
 class VoiceUploadError(Exception):
@@ -109,7 +113,8 @@ def to_wav(src: Path, dst: Path) -> float:
     if d0 > MAX_SOURCE_SEC:                                # قبل التحويل: ما منحوّل ساعة صوت وبعدين نرفضها
         raise VoiceUploadError(f"التسجيل أطول من {int(MAX_SOURCE_SEC // 60)} دقايق — قسّمه")
     dst.parent.mkdir(parents=True, exist_ok=True)
-    _run(["ffmpeg", "-y", "-i", str(src), "-vn", "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(dst)], "تحويل الصوت")
+    clean = ["-af", CLEAN_FILTER] if VOICE_CLEAN else []
+    _run(["ffmpeg", "-y", "-i", str(src), "-vn", "-ac", "1", "-ar", "48000", *clean, "-c:a", "pcm_s16le", str(dst)], "تحويل الصوت")
     d = duration_of(dst)
     if d < MIN_SOURCE_SEC:
         dst.unlink(missing_ok=True)
