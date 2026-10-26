@@ -23,7 +23,7 @@ The project continues the existing codebase. Do not rewrite or restructure it.
 ## 3. Hard rules
 
 Git and private data
-- Commit or push only when the owner asks ("ارفع"). Work on `main`, run `git pull --rebase` before pushing. Repo: https://github.com/MKory18/zakiai-studio (private).
+- Commit or push only when the owner asks ("ارفع"). Repo: https://github.com/iahmed30004000-wq/zakiai-studio (PUBLIC since 26 Oct; the old MKory18/zakiai-studio is private and no longer the main one). `main` is protected: never push to it directly. Push a branch, open a pull request to `main`, and turn on auto-merge (`gh pr merge --auto --merge`). It merges by itself once the `image` check (build + smoke test) passes. Every merge to `main` builds the public image `ghcr.io/iahmed30004000-wq/zakiai-studio` and Coolify deploys it to https://studio.zakiai.io automatically.
 - Before every commit: `git add -A`, then `python tools/secret_scan.py` must print "نظيف". Never stage anything that `.gitignore` excludes: `settings.json`, `.env*`, `library/`, `products/*` (except `_template.json`), `models/*`, `secrets/`, `third_party/*`, `_handoff/`, media files. That is the owner's private data; the encrypted backup (`backup.py`) is where it belongs. If he asks to upload data, ask first.
 - Secret values never appear in code, logs, tests, commits or chat. Tokens are referenced by secret NAME only (`secrets_store.py`: OS keyring, or an encrypted vault when `VP_SECRETS_KEY` is set on Linux).
 - Outgoing calls to user-configured services go through `net_allow.py`: http only, loopback or docker-internal names, explicit port, no redirects, no proxies from the environment. Fixed external services written in code (Google Drive) use `net_allow.fixed_base`: https to the listed hosts only.
