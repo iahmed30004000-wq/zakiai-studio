@@ -407,3 +407,9 @@ def test_odd_looking_paths_never_reach_a_protected_route_without_a_session(app):
                 "/api/auth/me/../whoami", "/api/auth/me%2f..%2fwhoami", "/api/auth/mee", "/api/ext/download/../whoami"):
         r = c.get(url, follow_redirects=False)
         assert not (r.status_code == 200 and "who" in r.text), (url, r.status_code, r.text[:80])
+
+
+def test_privacy_page_is_public_for_google_consent(app):
+    """جوجل بيطلب رابط «سياسة خصوصية» عام لنشر تطبيق درايف: لازم ينفتح بلا جلسة."""
+    r = client(app).get("/privacy.html")
+    assert r.status_code == 200 and "drive.file" in r.text and "Privacy Policy" in r.text and "سياسة الخصوصية" in r.text
