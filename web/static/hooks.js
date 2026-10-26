@@ -211,7 +211,7 @@ function hkbDraw() {
         <div class="tags"><span class="tag">★ مفضّلة ${esc(c.starred)}</span><span class="tag">مجرّبة ${esc(c.tested)}</span><span class="tag ok">رابحة ${esc(c.winners)}</span></div></div>
       <p class="hint">كل الهوكات اللي انكتبت (الأساسي والبدائل) + هوكاتك اليدوية. اللي بينجح بالنتايج أو بتنجّمه بيروح <b>مثال للكاتب</b> بالسيناريوهات الجاية، فالنظام بيتعلّم أي افتتاحية بتبيع.</p>
       <div class="filters">
-        <input id="hkbQ" type="search" class="f-search" placeholder="ابحث بنص الهوك…" value="${esc(f.q)}">
+        <input id="hkbQ" type="search" autocomplete="off" class="f-search" placeholder="ابحث بنص الهوك…" value="${esc(f.q)}">
         <select id="hkbProduct" aria-label="المنتج"><option value="">كل المنتجات</option>${d.products.map((p) => opt(p, f.product, p)).join("")}</select>
         <select id="hkbType" aria-label="النوع"><option value="">كل الأنواع</option>${Object.entries(d.types).map(([k, v]) => opt(k, f.type, v)).join("")}</select>
         <select id="hkbRole" aria-label="المصدر"><option value="">كل المصادر</option>${Object.entries(HKB_ROLE).map(([k, v]) => opt(k, f.role, v[0])).join("")}</select>

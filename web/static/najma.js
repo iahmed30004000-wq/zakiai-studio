@@ -229,7 +229,7 @@
     const G = (window.Guide && Guide.GLOSSARY) || {};
     const rows = Object.values(G).map((g) => ({ t: g.t, d: g.d, ex: g.ex || "" }));
     openModal(`<h3>قاموس الكلمات</h3>
-      <input class="zk-input" type="search" placeholder="دوّر: نمط، هوك، محطة…" aria-label="دوّر بالقاموس" data-gq>
+      <input class="zk-input" type="search" autocomplete="off" placeholder="دوّر: نمط، هوك، محطة…" aria-label="دوّر بالقاموس" data-gq>
       <dl class="glossary-list" data-gl></dl>
       <div class="row end"><button class="btn" type="button" data-close>تمام</button></div>`);
     const box = $("#modalBody [data-gl]"), q = $("#modalBody [data-gq]");

@@ -53,7 +53,7 @@
     const norm = (s) => String(s ?? "").toLowerCase().replace(/[ً-ْـ]/g, "").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي");
     const words = norm(q || "").split(/\s+/).filter(Boolean);
     const list = Object.values(G).filter((g) => { const hay = norm(`${g.t} ${(g.a || []).join(" ")} ${g.d}`); return words.every((w) => hay.includes(w)); });
-    el("guide-words").innerHTML = `<input id="gpWordSearch" class="input" type="search" placeholder="ابحث عن كلمة…" aria-label="بحث بالقاموس" value="${esc(q || "")}">
+    el("guide-words").innerHTML = `<input id="gpWordSearch" class="input" type="search" autocomplete="off" placeholder="ابحث عن كلمة…" aria-label="بحث بالقاموس" value="${esc(q || "")}">
       <dl class="gp-words">${list.length ? list.map((g) => `<div class="panel"><dt><b>${esc(g.t)}</b></dt><dd>${esc(g.d)}<div class="hint"><b>مثال:</b> ${esc(g.ex)}</div></dd></div>`).join("") : `<p class="empty">ما لقيت هالكلمة.</p>`}</dl>`;
     const inp = el("gpWordSearch");
     inp.addEventListener("input", () => { const v = inp.value, pos = inp.selectionStart; renderWords(v); const n = el("gpWordSearch"); n.focus(); n.setSelectionRange(pos, pos); });

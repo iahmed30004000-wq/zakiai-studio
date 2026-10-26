@@ -48,3 +48,13 @@ def test_the_check_really_catches_a_collision():
     a, b = "const PL = {};\n", "const PL = { x: 1 };\n"
     seen = {m.group(1) for m in DECL.finditer(a)}
     assert any(m.group(1) in seen for m in DECL.finditer(b))
+
+
+def test_search_boxes_are_not_autofilled_by_the_browser():
+    """كروم كان يعبّي خانة البحث بالأنماط باسم المستخدم (ahmad)، فتطلع المكتبة «0 من 53»."""
+    import re
+    from pathlib import Path
+    static = Path(__file__).resolve().parents[1] / "web" / "static"
+    for f in [static / "index.html", *static.glob("*.js")]:
+        for tag in re.findall(r'<input[^>]*type="search"[^>]*>', f.read_text(encoding="utf-8")):
+            assert 'autocomplete="off"' in tag, f"{f.name}: {tag}"
