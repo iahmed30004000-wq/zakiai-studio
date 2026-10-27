@@ -2,7 +2,7 @@
 
 > للمالك (عربي): هذا الملف بيقرأه Hermes لحاله لما تشغّله جوّا مجلد المشروع. فيه كل شي لازم GLM يعرفه ليكمّل بلا ما يخرّب: شو المشروع، قواعدك، شو خلص، وشو الجاي. التفاصيل الأعمق بـ `docs/` وبالوثائق المذكورة بآخر الملف.
 
-> **Agents: before any task, read `docs/HANDOFF_GLM.md` completely (state, procedures, checklists, forbidden actions).**
+> **Agents: before any task, read `docs/HANDOFF_GLM.md` and then `docs/HANDOFF_REVIEW_AND_NEXT.md` completely (state, procedures, checklists, forbidden actions, audit plan, integrations, what is left).**
 
 ## 1. What this is
 
@@ -117,6 +117,7 @@ Decisions already made (do not reopen)
 ## 8. Where to read more
 
 - `docs/HANDOFF_GLM.md`: the full handoff of 27 Oct: state, what is left, step-by-step procedures, checklists, recipes and forbidden actions. MANDATORY reading right after this file, before any task.
+- `docs/HANDOFF_REVIEW_AND_NEXT.md`: the second handoff of 27 Oct, for the next account and the reviewing developer: where the work lives, architecture map, the audit plan (structure, logic, calculations, permissions, security, with hypotheses already found), every integration (media buyer, OMS, Meta, Drive, Coolify, providers, GPU boxes, extension) and the complete list of what is left. MANDATORY, right after HANDOFF_GLM.md. The audit comes BEFORE new features.
 - `docs/agent_skills/zakiai-studio-art-prompts/`: the art-prompt skill (pictures for studio screens), copied from the owner's PC.
 - `docs/PROJECT_STATE_AR.md`: state and decisions per area, in Arabic.
 - `docs/RESEARCH_FEATURES_AR.md`: the research report (top 10 feature ideas with open weights) and `docs/PLAN_google_drive_AR.md`.
