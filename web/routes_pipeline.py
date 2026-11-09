@@ -84,6 +84,65 @@ def product_completeness(file: str) -> dict:
     }
 
 
+_GROUP_LABELS = {"identity": "الهوية", "market": "السوق", "commercial": "التجاري",
+                 "content": "المحتوى", "safety": "السلامة"}
+_SOURCE_LABELS = {"crm": "الـ OMS", "manual": "يدوي"}
+
+
+def _csv_cell(v) -> str:
+    """نص آمن لـ CSV: بيمنع حقن الصيغ بإكسل (= + - @ بأول الخلية)."""
+    s = str(v if v is not None else "")
+    return "'" + s if s[:1] in ("=", "+", "-", "@", "\t", "\r") else s
+
+
+def brief_to_csv(b: dict) -> str:
+    """البريف كامل كجدول: حقل · مفتاح · مجموعة · مطلوب · القيمة · المصدر."""
+    import csv
+    import io
+
+    prov = b.get("_provenance") or {}
+    required = set(brief_mod.REQUIRED)
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n")
+    w.writerow(["الحقل", "المفتاح", "المجموعة", "مطلوب للكتابة", "مكتمل", "القيمة", "المصدر"])
+    for key, label, typ, group in brief_mod.FIELDS:
+        v = b.get(key)
+        if typ == "list":
+            val = "\n".join(str(x).strip() for x in (v or []) if str(x).strip())
+        elif typ == "bool":
+            val = "نعم" if v else "لا"
+        else:
+            val = str(v or "").strip()
+        src = (prov.get(key) or {}).get("source", "")
+        w.writerow([
+            _csv_cell(label), key, _GROUP_LABELS.get(group, group),
+            "نعم" if key in required else "",
+            ("نعم" if brief_mod._filled(b, key) else "لا") if key in required else "",
+            _csv_cell(val), _SOURCE_LABELS.get(src, src),
+        ])
+    w.writerow(["ادعاءات ممنوعة فعّالة (المكتبة + إضافاتك)", "forbidden_effective", "السلامة", "", "",
+                _csv_cell("\n".join(claims.effective_forbidden(b))), "المكتبة + يدوي"])
+    return buf.getvalue()
+
+
+@router.get("/products/{file}/brief.csv")
+def product_brief_csv(file: str):
+    """تنزيل البريف كامل CSV (UTF-8 مع BOM عشان إكسل يقرأ العربي صح)."""
+    from urllib.parse import quote
+
+    from fastapi.responses import Response
+
+    path = _product_path(file)
+    b = _load_brief(path)
+    body = "﻿" + brief_to_csv(b)
+    fname = f"brief-{path.stem}.csv"
+    return Response(
+        content=body.encode("utf-8"),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f"attachment; filename=\"brief.csv\"; filename*=UTF-8''{quote(fname)}"},
+    )
+
+
 def _cache_path(product_code: str) -> Path:
     safe = re.sub(r"[^A-Za-z0-9_-]", "", product_code) or "unknown"
     return Path(config.LIBRARY_DIR) / "crm_cache" / "products" / f"{safe}.json"
