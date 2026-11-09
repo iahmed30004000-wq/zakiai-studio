@@ -1647,6 +1647,7 @@ async function openProduct(file) {
   $("#saveProductBtn").hidden = isNew;
   $("#syncFactsBtn").hidden = isNew;
   $("#deleteProductBtn").disabled = isNew;
+  $("#briefCsvBtn").disabled = isNew;
   $("#matchBtn").disabled = isNew;
   if (isNew) $("#productName").value = "";
   $("#productPick").value = file;
@@ -1954,6 +1955,29 @@ $("#saveAsNewBtn").addEventListener("click", async () => {
 $("#refreshProductsBtn").addEventListener("click", async () => {
   await loadProducts(PROD.file || undefined);
   setStatus($("#genStatus"), "تم التحديث", "ok");
+});
+
+/* تنزيل البريف كامل CSV — من الملف المحفوظ على السيرفر (احفظ أول لو عدّلت شي) */
+$("#briefCsvBtn").addEventListener("click", async () => {
+  const st = $("#genStatus"), btn = $("#briefCsvBtn");
+  if (!PROD.file) { setStatus(st, "احفظ المنتج أول عشان تنزّل بريفه", "err"); return; }
+  btn.disabled = true;
+  try {
+    const r = await fetch(`/api/products/${enc(PROD.file)}/brief.csv`);
+    if (!r.ok) {
+      let msg = `خطأ ${r.status}`;
+      try { msg = (await r.json()).detail || msg; } catch { /* مش JSON */ }
+      throw new Error(msg);
+    }
+    const blob = await r.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `brief-${PROD.file.replace(/\.json$/, "")}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    setStatus(st, "تم تنزيل البريف (CSV)", "ok");
+  } catch (e) { setStatus(st, e.message || "تعذّر تنزيل البريف", "err"); }
+  finally { btn.disabled = !PROD.file; }
 });
 
 $("#deleteProductBtn").addEventListener("click", async () => {
