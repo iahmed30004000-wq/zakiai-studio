@@ -13,7 +13,27 @@ PATTERNS_DIR = LIBRARY_DIR / "patterns"  # مكتبة الأنماط (المرح
 SCRIPTS_DIR = LIBRARY_DIR / "scripts"    # السيناريوهات (المرحلة 3)
 REGISTRY_PATH = LIBRARY_DIR / "used_registry.json"
 PROMPTS_DIR = BASE / "prompts"
-PRODUCTS_DIR = BASE / "products"
+# ملفات المنتجات لازم تكون جوّا library/ — هو الحجم الدائم على السيرفر (/app/library).
+# كانت BASE/"products" داخل الصورة، فكل نشر جديد كان يمسح كل منتج انحفظ من الواجهة.
+PRODUCTS_DIR = LIBRARY_DIR / "products"
+_LEGACY_PRODUCTS_DIR = BASE / "products"   # القالب _template.json (وأي منتجات قديمة) بتنسخ منه
+
+
+def ensure_products_dir() -> None:
+    """بيجهّز مجلد المنتجات الدائم وبينسخ له الملفات الناقصة من القديم (ما بيكتب فوق شي)."""
+    import shutil
+    try:
+        PRODUCTS_DIR.mkdir(parents=True, exist_ok=True)
+        if _LEGACY_PRODUCTS_DIR.is_dir():
+            for f in _LEGACY_PRODUCTS_DIR.glob("*.json"):
+                dest = PRODUCTS_DIR / f.name
+                if not dest.exists():
+                    shutil.copy2(f, dest)
+    except OSError:
+        pass   # مجلد للقراءة بس — القراءة بتضل شغّالة والكتابة بتعطي خطأها المعتاد
+
+
+ensure_products_dir()
 
 # ── الحصاد (المرحلة 0 — Apify) ───────────────────────────────────────────
 # تأكد من معرّفات الأكترز من متجر Apify — بتتغيّر أحياناً.

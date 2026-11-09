@@ -209,7 +209,8 @@ def _list_sources(include_videos: bool, exclude_dir: Path | None, tmpdir: Path) 
             out.append((f"{prefix}/{rel.as_posix()}", path))
 
     walk(lib, "library", {"_backups", "uploads"}, True)
-    walk(Path(config.PRODUCTS_DIR), "products", set(), False)
+    if not _under(Path(config.PRODUCTS_DIR), lib):      # جوّا library/ بتنحمل مع المكتبة
+        walk(Path(config.PRODUCTS_DIR), "products", set(), False)
     walk(Path(config.PROMPTS_DIR), "prompts", set(), False)
     return out
 
